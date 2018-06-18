@@ -1,0 +1,23 @@
+{
+  "name": "drc",
+  "version": "1.0.0-alpha.0",
+  "description": "drc referentie implementatie API",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "convert": "swagger2openapi src/swagger2.0.json -o src/openapi.yaml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:maykinmedia/gemma-mock-overigeregistratiecomponenten.git"
+  },
+  "author": "Maykin Media",
+  "license": "UNLICENSED",
+  "homepage": "https://maykinmedia.nl",
+  "dependencies": {},
+  "devDependencies": {
+    "swagger2openapi": "^2.11.16"
+  }
+}
