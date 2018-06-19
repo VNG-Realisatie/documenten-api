@@ -38,63 +38,130 @@ Getting started
 Developers can follow the following steps to set up the project on their local
 development machine.
 
-1. Navigate to the location where you want to place your project.
+Obtain source
+^^^^^^^^^^^^^^
 
-2. Get the code:
-
-   .. code-block:: bash
-
-       $ git clone git@github.com:maykinmedia/gemma-zaakregistratiecomponent.git
-       $ cd drc
-
-3. Install all required libraries.
-   **Tip:** You can use the ``bootstrap.py`` script to install the requiments
-   and set the proper settings in ``manage.py``.
+You can retrieve the source code using the following command:
 
    .. code-block:: bash
 
-       $ pip install -r requirements/dev.txt
+     $ git clone git@github.com:maykinmedia/gemma-documentregistratiecomponent.git
 
-4. Install the front-end CLI tool `gulp`_ if you've never installed them
-   before and install the frontend libraries:
+**Note:** You can also use the HTTPS syntax:
 
    .. code-block:: bash
 
-       $ npm install -g gulp
-       $ npm install
-       $ gulp sass
+     $ git clone https://github.com/maykinmedia/gemma-documentregistratiecomponent.git
 
-5. Activate your virtual environment and create the statics and database:
+Setting up virtualenv
+^^^^^^^^^^^^^^^^^^^^^^
+
+1. Go to the project directory:
+
+   .. code-block:: bash
+
+        $ cd gemma-documentregistratiecomponent
+
+2. Create the virtual environment:
+
+   .. code-block:: bash
+
+       $ virtualenv -p /usr/bin/python3.x ./env
+
+3. Source the activate script in your virtual environment to enable it:
 
    .. code-block:: bash
 
        $ source env/bin/activate
-       $ python src/manage.py collectstatic --link
-       $ python src/manage.py migrate
 
-6. Create a superuser to access the management interface:
+4. Install all the required libraries:
 
    .. code-block:: bash
 
-       $ python src/manage.py createsuperuser
+       (env) $ pip install -r requirements/dev.txt
 
-7. You can now run your installation and point your browser to the address
-   given by this command:
+Installing the database
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Copy ``src/drc/conf/local_example.py`` to ``src/drc/conf/local.py``:
 
    .. code-block:: bash
 
-       $ python src/manage.py runserver
+       $ cp src/drc/conf/local_example.py src/drc/conf/local.py
 
-**Note:** If you are making local, machine specific, changes, add them to
-``src/drc/conf/local.py``. You can base this file on the
-example file included in the same directory.
+2. Edit ``local.py`` and place correct values for the presented settings.
 
-**Note:** You can run watch-tasks to compile `Sass`_ to CSS and `ECMA`_ to JS
-using `gulp`_. By default this will compile the files if they change.
+   .. code-block:: python
 
-.. _ECMA: https://ecma-international.org/
-.. _Sass: https://sass-lang.com/
-.. _gulp: https://gulpjs.com/
+       DATABASES = {
+           'default': {
+               'ENGINE': 'django.contrib.gis.db.backends.postgis',
+               'NAME': <name_of_your_pgSQL_db>,
+               'USER': <user_that_can_access_db>,
+               'PASSWORD': <password_of_this_user>,
+               'HOST': '',  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+               'PORT': '',  # Set to empty string for default.
+           }
+       }
+
+3. Launch the migration process
+
+   .. code-block:: bash
+
+     (env) $ python src/manage.py migrate
+
+**Note:** Make sure PostGIS is enabled in your database.
+You can do it with a single SQL command:
+
+   .. code-block:: bash
+
+     CREATE EXTENSION postgis;
+
+**Note:** If you are making any other local, machine specific, changes, add them to
+``local.py``.
+
+
+Running server
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Collect the static files:
+
+   .. code-block:: bash
+
+       (env) $ python src/manage.py collectstatic --link
+
+2. Create a superuser to access the management interface:
+
+   .. code-block:: bash
+
+       (env) $ python src/manage.py createsuperuser
+
+3. You can now run your installation and point your browser to the address
+given by this command:
+
+   .. code-block:: bash
+
+       (env) $ python src/manage.py runserver
+
+
+Generate the API schema
+---------------------------
+
+1. Install Javascript modules:
+
+   .. code-block:: bash
+
+       $ npm install
+
+2. Launch the ``generate_schema`` script:
+
+   .. code-block:: bash
+
+        ./env/src/zds-schema/bin/generate_schema
+
+3. The resulting ``openapi.yaml`` and ``swagger2.0.json`` files can be visualized with `Swagger`_
+
+.. _Swagger: http://petstore.swagger.io/
 
 
 Update installation
@@ -131,9 +198,9 @@ Testsuite
 
 To run the test suite:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-    $ python src/manage.py test drc
+       $ python src/manage.py test drc
 
 
 Docker
