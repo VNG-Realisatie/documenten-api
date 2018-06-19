@@ -4,10 +4,11 @@ from drc.datamodel.models import EnkelvoudigInformatieObject
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = (
-            'informatieobjectidentificatie',
+            'identificatie',
             'bronorganisatie',
             'creatiedatum',
             'titel',

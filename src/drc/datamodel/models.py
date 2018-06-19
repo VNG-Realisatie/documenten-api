@@ -6,7 +6,7 @@ from drc.validators import (
 
 
 class InformatieObject(models.Model):
-    informatieobjectidentificatie = models.CharField(
+    identificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
         validators=[alphanumeric_excluding_diacritic, ])
     bronorganisatie = models.CharField(max_length=9, validators=[validate_non_negative_string, ],
@@ -28,7 +28,7 @@ class InformatieObject(models.Model):
         abstract = True
 
     def __str__(self) -> str:
-        return self.informatieobjectidentificatie
+        return self.identificatie
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
