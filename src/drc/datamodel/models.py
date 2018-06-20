@@ -35,7 +35,7 @@ class EnkelvoudigInformatieObject(InformatieObject):
     formaat = models.CharField(
         max_length=255, blank=True,
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
-                              'INFORMATIEOBJECT is vastgelegd in een computerbestand.')
+                  'INFORMATIEOBJECT is vastgelegd in een computerbestand.')
     taal = models.CharField(
         max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
 

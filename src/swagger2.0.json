@@ -35,80 +35,22 @@
                 "description": "Registreer een EnkelvoudigInformatieObject.",
                 "parameters": [
                     {
-                        "name": "identificatie",
-                        "in": "formData",
-                        "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                        "name": "data",
+                        "in": "body",
                         "required": true,
-                        "type": "string",
-                        "maxLength": 40,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "bronorganisatie",
-                        "in": "formData",
-                        "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 9
-                    },
-                    {
-                        "name": "creatiedatum",
-                        "in": "formData",
-                        "description": "Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.",
-                        "required": true,
-                        "type": "string",
-                        "format": "date"
-                    },
-                    {
-                        "name": "titel",
-                        "in": "formData",
-                        "description": "De naam waaronder het INFORMATIEOBJECT formeel bekend is.",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 200,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "auteur",
-                        "in": "formData",
-                        "description": "De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het cre\u00ebren van de inhoud van het INFORMATIEOBJECT.",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 200,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "formaat",
-                        "in": "formData",
-                        "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    {
-                        "name": "taal",
-                        "in": "formData",
-                        "description": "Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 20,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "inhoud",
-                        "in": "formData",
-                        "required": true,
-                        "type": "file"
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                        }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": ""
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                        }
                     }
                 },
-                "consumes": [
-                    "multipart/form-data"
-                ],
                 "tags": [
                     "enkelvoudiginformatieobject"
                 ]
@@ -122,12 +64,12 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                        }
                     }
                 },
-                "consumes": [
-                    "multipart/form-data"
-                ],
                 "tags": [
                     "enkelvoudiginformatieobject"
                 ]
@@ -143,5 +85,76 @@
             ]
         }
     },
-    "definitions": {}
+    "definitions": {
+        "EnkelvoudigInformatieObject": {
+            "required": [
+                "identificatie",
+                "creatiedatum",
+                "titel",
+                "auteur",
+                "taal"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "identificatie": {
+                    "title": "Identificatie",
+                    "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 1
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                    "type": "string",
+                    "maxLength": 9
+                },
+                "creatiedatum": {
+                    "title": "Creatiedatum",
+                    "description": "Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "titel": {
+                    "title": "Titel",
+                    "description": "De naam waaronder het INFORMATIEOBJECT formeel bekend is.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "auteur": {
+                    "title": "Auteur",
+                    "description": "De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het cre\u00ebren van de inhoud van het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "formaat": {
+                    "title": "Formaat",
+                    "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "taal": {
+                    "title": "Taal",
+                    "description": "Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 1
+                },
+                "inhoud": {
+                    "title": "Inhoud",
+                    "type": "string",
+                    "readOnly": true,
+                    "format": "uri"
+                }
+            }
+        }
+    }
 }

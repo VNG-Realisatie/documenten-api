@@ -31,6 +31,7 @@ class AlphanumericExcludingDiacritic:
 # Default validator for entire string.
 alphanumeric_excluding_diacritic = AlphanumericExcludingDiacritic()
 
+
 def validate_non_negative_string(value):
     """
     Validate a string containing a integer to be non-negative.
