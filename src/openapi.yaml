@@ -10,39 +10,88 @@ info:
 security:
   - basic: []
 paths:
-  /enkelvoudiginformationobject:
+  /enkelvoudiginformatieobject:
     post:
       operationId: enkelvoudiginformatieobject_create
       description: Registreer een EnkelvoudigInformatieObject.
       responses:
         '201':
           description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObject'
       tags:
-        - enkelvoudiginformationobject
+        - enkelvoudiginformatieobject
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/EnkelvoudigInformatieObject'
-        required: true
+              type: object
+              properties:
+                identificatie:
+                  description: >-
+                    Een binnen een gegeven context ondubbelzinnige referentie
+                    naar het INFORMATIEOBJECT.
+                  type: string
+                  minLength: 1
+                  maxLength: 40
+                bronorganisatie:
+                  description: >-
+                    Het RSIN van de Niet-natuurlijk persoon zijnde de
+                    organisatie die het informatieobject heeft gecreëerd of
+                    heeft ontvangen en als eerste in een samenwerkingsketen
+                    heeft vastgelegd.
+                  type: string
+                  maxLength: 9
+                creatiedatum:
+                  description: >-
+                    Een datum of een gebeurtenis in de levenscyclus van het
+                    INFORMATIEOBJECT.
+                  type: string
+                  format: date
+                titel:
+                  description: De naam waaronder het INFORMATIEOBJECT formeel bekend is.
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                auteur:
+                  description: >-
+                    De persoon of organisatie die in de eerste plaats
+                    verantwoordelijk is voor het creëren van de inhoud van het
+                    INFORMATIEOBJECT.
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                formaat:
+                  description: >-
+                    De code voor de wijze waarop de inhoud van het ENKELVOUDIG
+                    INFORMATIEOBJECT is vastgelegd in een computerbestand.
+                  type: string
+                  maxLength: 255
+                taal:
+                  description: >-
+                    Een taal van de intellectuele inhoud van het ENKELVOUDIG
+                    INFORMATIEOBJECT
+                  type: string
+                  minLength: 1
+                  maxLength: 20
+                inhoud:
+                  type: string
+                  format: binary
+              required:
+                - identificatie
+                - creatiedatum
+                - titel
+                - auteur
+                - taal
+                - inhoud
     parameters: []
-  '/enkelvoudiginformationobject/{id}':
+  '/enkelvoudiginformatieobject/{id}':
     get:
       operationId: enkelvoudiginformatieobject_read
       description: Geef de details van een EnkelvoudigInformatieObject.
       responses:
         '200':
           description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObject'
       tags:
-        - enkelvoudiginformationobject
+        - enkelvoudiginformatieobject
     parameters:
       - name: id
         in: path
@@ -57,70 +106,3 @@ components:
     basic:
       type: http
       scheme: basic
-  schemas:
-    EnkelvoudigInformatieObject:
-      required:
-        - informatieobjectidentificatie
-        - creatiedatum
-        - titel
-        - auteur
-        - taal
-      type: object
-      properties:
-        informatieobjectidentificatie:
-          title: Informatieobjectidentificatie
-          description: >-
-            Een binnen een gegeven context ondubbelzinnige referentie naar het
-            INFORMATIEOBJECT.
-          type: string
-          maxLength: 40
-          minLength: 1
-        bronorganisatie:
-          title: Bronorganisatie
-          description: >-
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die
-            het informatieobject heeft gecreëerd of heeft ontvangen en als
-            eerste in een samenwerkingsketen heeft vastgelegd.
-          type: string
-          maxLength: 9
-        creatiedatum:
-          title: Creatiedatum
-          description: >-
-            Een datum of een gebeurtenis in de levenscyclus van het
-            INFORMATIEOBJECT.
-          type: string
-          format: date
-        titel:
-          title: Titel
-          description: De naam waaronder het INFORMATIEOBJECT formeel bekend is.
-          type: string
-          maxLength: 200
-          minLength: 1
-        auteur:
-          title: Auteur
-          description: >-
-            De persoon of organisatie die in de eerste plaats verantwoordelijk
-            is voor het creëren van de inhoud van het INFORMATIEOBJECT.
-          type: string
-          maxLength: 200
-          minLength: 1
-        formaat:
-          title: Formaat
-          description: >-
-            De code voor de wijze waarop de inhoud van het ENKELVOUDIG
-            INFORMATIEOBJECT is vastgelegd in een computerbestand.
-          type: string
-          maxLength: 255
-        taal:
-          title: Taal
-          description: >-
-            Een taal van de intellectuele inhoud van het ENKELVOUDIG
-            INFORMATIEOBJECT
-          type: string
-          maxLength: 20
-          minLength: 1
-        inhoud:
-          title: Inhoud
-          type: string
-          readOnly: true
-          format: uri
