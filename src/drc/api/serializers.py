@@ -8,6 +8,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = (
+            'url',
             'identificatie',
             'bronorganisatie',
             'creatiedatum',
