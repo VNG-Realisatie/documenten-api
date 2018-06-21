@@ -1,5 +1,5 @@
 ========================================
-Mock Documentregistratiecomponent API
+Documentregistratiecomponent
 ========================================
 
 :Version: 0.1.0
