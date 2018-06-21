@@ -20,7 +20,7 @@ You need the following libraries and/or programs:
 
 * `Python`_ 3.4 or above
 * Python `Virtualenv`_ and `Pip`_
-* `PostgreSQL`_ 9.1 or above, with postgis extension
+* `PostgreSQL`_ 9.1 or above
 * `Node.js`_
 * `npm`_
 
@@ -45,13 +45,13 @@ You can retrieve the source code using the following command:
 
    .. code-block:: bash
 
-     $ git clone git@github.com:maykinmedia/gemma-documentregistratiecomponent.git
+        $ git clone git@github.com:maykinmedia/gemma-documentregistratiecomponent.git drc
 
 **Note:** You can also use the HTTPS syntax:
 
    .. code-block:: bash
 
-     $ git clone https://github.com/maykinmedia/gemma-documentregistratiecomponent.git
+        $ git clone https://github.com/maykinmedia/gemma-documentregistratiecomponent.git drc
 
 Setting up virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ Setting up virtualenv
 
    .. code-block:: bash
 
-        $ cd gemma-documentregistratiecomponent
+        $ cd drc
 
 2. Create the virtual environment:
 
@@ -95,7 +95,7 @@ Installing the database
 
        DATABASES = {
            'default': {
-               'ENGINE': 'django.contrib.gis.db.backends.postgis',
+               'ENGINE': 'django.db.backends.postgresql',
                'NAME': <name_of_your_pgSQL_db>,
                'USER': <user_that_can_access_db>,
                'PASSWORD': <password_of_this_user>,
@@ -110,15 +110,7 @@ Installing the database
 
      (env) $ python src/manage.py migrate
 
-**Note:** Make sure PostGIS is enabled in your database.
-You can do it with a single SQL command:
-
-   .. code-block:: bash
-
-     CREATE EXTENSION postgis;
-
-**Note:** If you are making any other local, machine specific, changes, add them to
-``local.py``.
+**Note:** If you are making any other local, machine specific, changes, add them to ``local.py``.
 
 
 Running server
@@ -180,17 +172,16 @@ When updating an existing installation:
 
    .. code-block:: bash
 
-       $ git pull
-       $ pip install -r requirements/dev.txt
-       $ npm install
-       $ gulp sass
+       (env) $ git pull
+       (env) $ pip install -r requirements/dev.txt
+       (env) $ npm install
 
 3. Update the statics and database:
 
    .. code-block:: bash
 
-       $ python src/manage.py collectstatic --link
-       $ python src/manage.py migrate
+       (env) $ python src/manage.py collectstatic --link
+       (env) $ python src/manage.py migrate
 
 
 Testsuite
@@ -200,7 +191,7 @@ To run the test suite:
 
    .. code-block:: bash
 
-       $ python src/manage.py test drc
+       (env) $ python src/manage.py test drc
 
 
 Docker

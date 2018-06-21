@@ -3,7 +3,7 @@ Mock Documentregistratiecomponent API
 ========================================
 
 :Version: 0.1.0
-:Source: https://github.com/maykinmedia/gemma-mock-overigeregistratiecomponenten
+:Source: https://github.com/maykinmedia/gemma-documentregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ
 :PythonVersion: 3.6
 
@@ -17,18 +17,7 @@ Developed by `Maykin Media B.V.`_ for ``<client>``
 Introduction
 ============
 
-Deze component bevat API endpoints voor alle componenten die niet in ZTC, ZRC
-of DRC passen, zodat het mogelijk is om ketentesten uit te voeren en de
-userstories te implementeren.
-
-Deze component zal ook bereikbaar zijn voor vakapplicaties om hun implementatie
-te testen.
-
-Merk op dat de API specificatie van deze component NIET tot de API spec/standaard
-behoort. Wel kan hier een beschrijving uit volgen op basis van patronen die
-duidelijk worden. Dat kan dus betekenen dat zaken uit ORC op een andere
-plaats gaan leven.
-
+``<describe the project in a few paragraphs and briefly mention the features>``
 
 Documentation
 =============
@@ -40,8 +29,8 @@ commands.
 References
 ==========
 
-* `Issues <https://github.com/maykinmedia/gemma-mock-overigeregistratiecomponenten/issues>`_
-* `Code <https://github.com/maykinmedia/gemma-mock-overigeregistratiecomponenten/>`_
+* `Issues <https://github.com/maykinmedia/gemma-documentregistratiecomponent/issues>`_
+* `Code <https://github.com/maykinmedia/gemma-documentregistratiecomponent/>`_
 
 
 .. |build-status| image:: http://jenkins.maykin.nl/buildStatus/icon?job=drc
