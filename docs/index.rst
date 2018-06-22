@@ -1,24 +1,56 @@
-.. DocumentRegistratieComponent documentation master file, created by
-   sphinx-quickstart on Thu Jun 21 14:01:21 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+========================================
+Documentregistratiecomponent
+========================================
 
-.. include:: ../README.rst
+:Version: 0.1.0
+:Source: https://github.com/maykinmedia/gemma-documentregistratiecomponent
+:Keywords: zaken, zaakgericht werken, GEMMA, RGBZ
+:PythonVersion: 3.6
+
+
+
+``<oneliner describing the project>``
+
+Developed by `Maykin Media B.V.`_ for ``<client>``
+
+.. _Maykin Media B.V.: https://www.maykinmedia.nl
+
+Introduction
+============
+
+``<describe the project in a few paragraphs and briefly mention the features>``
+
+
+References
+============
+
+* `Issues <https://github.com/maykinmedia/gemma-documentregistratiecomponent/issues>`_
+* `Code <https://github.com/maykinmedia/gemma-documentregistratiecomponent/>`_
+
 
 Contents
 ========
 
-.. toctree::
-    :maxdepth: 2
 
-    usage
 
 .. toctree::
     :maxdepth: 1
 
-    copyright
+    contents/installation    
+    contents/usage
 
 .. toctree::
     :maxdepth: 1
 
-    changelog
+    source/drc
+    
+
+.. toctree::
+    :maxdepth: 1
+
+    contents/copyright
+
+.. toctree::
+    :maxdepth: 1
+
+    contents/changelog

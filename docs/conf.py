@@ -7,6 +7,7 @@ from __future__ import absolute_import, unicode_literals
 #
 import os
 import sys
+import django
 
 #
 # Configuration file for the Sphinx documentation builder.
@@ -16,8 +17,14 @@ import sys
 # http://www.sphinx-doc.org/en/master/config
 
 sys.path.insert(0, os.path.abspath('../src'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'drc.conf.dev'
+django.setup()
+
 
 import drc  # noqa isort:skip
+
+
+
 
 
 # -- Project information -----------------------------------------------------
@@ -151,7 +158,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'drc.tex', 'document\\_registratie\\_component Documentation',
-     'Maykin Medaia', 'manual'),
+     'Maykin Media', 'manual'),
 ]
 
 
