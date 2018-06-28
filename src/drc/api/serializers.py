@@ -6,8 +6,13 @@ from rest_framework import serializers
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
 
-class CustomBase64File(Base64FileField):
-    ALLOWED_TYPES = ['txt', 'png', 'jpg', '']
+class AnyFileType:
+    def __contains__(self, item):
+        return True
+
+
+class AnyBase64File(Base64FileField):
+    ALLOWED_TYPES = AnyFileType()
 
     def get_file_extension(self, filename, decoded_file):
         filename, file_extension = os.path.splitext(filename)
@@ -16,7 +21,7 @@ class CustomBase64File(Base64FileField):
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
-    inhoud = CustomBase64File()
+    inhoud = AnyBase64File()
 
     class Meta:
         model = EnkelvoudigInformatieObject
