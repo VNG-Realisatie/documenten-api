@@ -6,7 +6,7 @@ from .schema import schema_view
 from .viewsets import EnkelvoudigInformatieObjectViewSet
 
 router = DefaultRouter(trailing_slash=False)
-router.register('enkelvoudiginformatieobject', EnkelvoudigInformatieObjectViewSet)
+router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 

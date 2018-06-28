@@ -10,7 +10,7 @@ info:
 security:
   - basic: []
 paths:
-  /enkelvoudiginformatieobject:
+  /enkelvoudiginformatieobjecten:
     post:
       operationId: enkelvoudiginformatieobject_create
       description: Registreer een EnkelvoudigInformatieObject.
@@ -22,7 +22,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EnkelvoudigInformatieObject'
       tags:
-        - enkelvoudiginformatieobject
+        - enkelvoudiginformatieobjecten
       requestBody:
         content:
           application/json:
@@ -30,7 +30,7 @@ paths:
               $ref: '#/components/schemas/EnkelvoudigInformatieObject'
         required: true
     parameters: []
-  '/enkelvoudiginformatieobject/{id}':
+  '/enkelvoudiginformatieobjecten/{id}':
     get:
       operationId: enkelvoudiginformatieobject_read
       description: Geef de details van een EnkelvoudigInformatieObject.
@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EnkelvoudigInformatieObject'
       tags:
-        - enkelvoudiginformatieobject
+        - enkelvoudiginformatieobjecten
     parameters:
       - name: id
         in: path

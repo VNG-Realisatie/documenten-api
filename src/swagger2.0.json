@@ -29,7 +29,7 @@
         }
     ],
     "paths": {
-        "/enkelvoudiginformatieobject": {
+        "/enkelvoudiginformatieobjecten": {
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
                 "description": "Registreer een EnkelvoudigInformatieObject.",
@@ -52,12 +52,12 @@
                     }
                 },
                 "tags": [
-                    "enkelvoudiginformatieobject"
+                    "enkelvoudiginformatieobjecten"
                 ]
             },
             "parameters": []
         },
-        "/enkelvoudiginformatieobject/{id}": {
+        "/enkelvoudiginformatieobjecten/{id}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
                 "description": "Geef de details van een EnkelvoudigInformatieObject.",
@@ -71,7 +71,7 @@
                     }
                 },
                 "tags": [
-                    "enkelvoudiginformatieobject"
+                    "enkelvoudiginformatieobjecten"
                 ]
             },
             "parameters": [
