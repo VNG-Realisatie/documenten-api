@@ -7,11 +7,11 @@ from drc.datamodel.models import EnkelvoudigInformatieObject
 
 
 class CustomBase64File(Base64FileField):
-        ALLOWED_TYPES = ['txt', 'png', 'jpg', '']
+    ALLOWED_TYPES = ['txt', 'png', 'jpg', '']
 
-        def get_file_extension(self, filename, decoded_file):
-            filename, file_extension = os.path.splitext(filename)
-            return file_extension
+    def get_file_extension(self, filename, decoded_file):
+        filename, file_extension = os.path.splitext(filename)
+        return file_extension
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
