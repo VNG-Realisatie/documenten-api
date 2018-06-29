@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 from drc.validators import (
@@ -39,4 +41,4 @@ class EnkelvoudigInformatieObject(InformatieObject):
     taal = models.CharField(
         max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
 
-    inhoud = models.FileField()
+    inhoud = models.FileField(upload_to='uploads/%Y/%m/')
