@@ -50,6 +50,46 @@ paths:
         required: true
         schema:
           type: integer
+  /zaakinformatieobjecten:
+    post:
+      operationId: zaakinformatieobject_create
+      description: Registreer een INFORMATIEOBJECT bij een ZAAK.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakInformatieObject'
+      tags:
+        - zaakinformatieobjecten
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakInformatieObject'
+        required: true
+    parameters: []
+  '/zaakinformatieobjecten/{id}':
+    get:
+      operationId: zaakinformatieobject_read
+      description: Geef de details van een ZAAKINFORMATIEOBJECT relatie.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakInformatieObject'
+      tags:
+        - zaakinformatieobjecten
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Zaakinformatieobject.
+        required: true
+        schema:
+          type: integer
 servers:
   - url: /api/v1
 components:
@@ -128,4 +168,26 @@ components:
           title: Inhoud
           type: string
           readOnly: true
+          format: uri
+    ZaakInformatieObject:
+      required:
+        - zaak
+        - informatieobject
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        zaak:
+          title: Zaak
+          description: URL naar het ZAAK in het ZRC.
+          type: string
+          format: uri
+          maxLength: 200
+          minLength: 1
+        informatieobject:
+          title: Informatieobject
+          type: string
           format: uri

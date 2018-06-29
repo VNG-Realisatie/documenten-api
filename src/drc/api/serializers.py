@@ -3,7 +3,9 @@ import os
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 
-from drc.datamodel.models import EnkelvoudigInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, ZaakInformatieObject
+)
 
 
 class AnyFileType:
@@ -34,4 +36,14 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'formaat',
             'taal',
             'inhoud'
+        )
+
+
+class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ZaakInformatieObject
+        fields = (
+            'url',
+            'zaak',
+            'informatieobject'
         )

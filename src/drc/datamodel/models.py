@@ -42,3 +42,19 @@ class EnkelvoudigInformatieObject(InformatieObject):
         max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
+
+
+class ZaakInformatieObject(models.Model):
+    """
+    Modelleer een INFORMATIEOBJECT horend bij een ZAAK.
+
+    INFORMATIEOBJECTen zijn bestanden die in het DRC leven. Een collectie van
+    (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
+    """
+
+    zaak = models.URLField(help_text="URL naar het ZAAK in het ZRC.")
+    informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Zaakinformatieobject'
+        verbose_name_plural = 'Zaakinformatieobjecten'
