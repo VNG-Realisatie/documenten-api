@@ -15,8 +15,7 @@ class AnyBase64File(Base64FileField):
     ALLOWED_TYPES = AnyFileType()
 
     def get_file_extension(self, filename, decoded_file):
-        filename, file_extension = os.path.splitext(filename)
-        return file_extension
+        return "bin"
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
