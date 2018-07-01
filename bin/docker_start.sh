@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -e  # exit on error
 
 # Wait for the database container
 # See: https://docs.docker.com/compose/startup-order/

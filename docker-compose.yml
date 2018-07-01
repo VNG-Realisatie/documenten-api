@@ -3,16 +3,17 @@ version: '3'
 
 services:
   db:
-    image: postgresql
+    image: postgres
     # environment:
     #   - POSTGRES_USER=${PG_USER:drc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:drc}
     volumes:
       - postgres_data:/var/lib/postgresql/data
   web:
-    build: .
+    image: nlxio/gemma-drc
     environment:
       - DJANGO_SETTINGS_MODULE=drc.conf.docker
+      - SECRET_KEY=${SECRET_KEY}
     ports:
       - 8000:8000
     depends_on:

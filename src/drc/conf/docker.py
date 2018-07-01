@@ -1,6 +1,13 @@
+import os
+
 from django.core.exceptions import ImproperlyConfigured
 
-from .base import *
+os.environ.setdefault('DB_USER', os.getenv('DATABASE_USER', 'postgres'))
+os.environ.setdefault('DB_NAME', os.getenv('DATABASE_NAME', 'postgres'))
+os.environ.setdefault('DB_PASSWORD', os.getenv('DATABASE_PASSWORD', ''))
+os.environ.setdefault('DB_HOST', os.getenv('DATABASE_HOST', 'db'))
+
+from .base import *  # noqa isort:skip
 
 # Helper function
 missing_environment_vars = []
@@ -27,17 +34,20 @@ MANAGERS = ADMINS
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '*', split=True)
 
-# Database
-DATABASES = {
+CACHES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': getenv('DATABASE_USER', 'postgres'),
-        'NAME': getenv('DATABASE_NAME', 'postgres'),
-        'PASSWORD': getenv('DATABASE_PASSWORD', ''),
-        'HOST': getenv('DATABASE_USER', 'db'),
-        'PORT': getenv('DATABASE_PORT', '5432'),
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # https://github.com/jazzband/django-axes/blob/master/docs/configuration.rst#cache-problems
+    'axes_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+# Deal with being hosted on a subpath
+FORCE_SCRIPT_NAME = '/zrc'
+STATIC_URL = f"{FORCE_SCRIPT_NAME}{STATIC_URL}"
+MEDIA_URL = f"{FORCE_SCRIPT_NAME}{MEDIA_URL}"
 
 # See: docker-compose.yml
 # Optional Docker container usage below:
@@ -75,16 +85,18 @@ CSRF_COOKIE_SECURE = getenv('CSRF_COOKIE_SECURE', False)
 #
 # Custom settings
 #
-AXES_BEHIND_REVERSE_PROXY = False
 ENVIRONMENT = 'docker'
-
-# Override settings with local settings.
-try:
-    from .local import *
-except ImportError:
-    pass
 
 
 if missing_environment_vars:
     raise ImproperlyConfigured(
         'These environment variables are required but missing: {}'.format(', '.join(missing_environment_vars)))
+
+
+#
+# Library settings
+#
+
+# django-axes
+AXES_BEHIND_REVERSE_PROXY = False
+AXES_CACHE = 'axes_cache'

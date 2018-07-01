@@ -46,7 +46,6 @@ INSTALLED_APPS = [
 
     # Optional applications.
     'django.contrib.admin',
-    'django.contrib.gis',
     # 'django.contrib.admindocs',
     # 'django.contrib.humanize',
 
