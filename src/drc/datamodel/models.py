@@ -12,9 +12,9 @@ class InformatieObject(models.Model):
     )
     bronorganisatie = models.CharField(
         max_length=9, validators=[validate_non_negative_string],
-        blank=True, null=True,
-        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
-        'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.'
+        blank=True, help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
+                              'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft '
+                              'vastgelegd.'
     )
 
     creatiedatum = models.DateField(
