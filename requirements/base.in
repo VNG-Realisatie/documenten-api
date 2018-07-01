@@ -4,13 +4,13 @@ python-dotenv
 python-dateutil
 pytz
 raven
-unidecode
 
 Django
 django-axes
 django-choices
 
 djangorestframework
+django-extra-fields
 django-filter
 djangorestframework-camel-case
 djangorestframework-filters

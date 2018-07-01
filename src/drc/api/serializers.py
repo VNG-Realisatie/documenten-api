@@ -1,5 +1,3 @@
-import os
-
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 

@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Mock-Overige-data registratiecomponent (drc) API documentatie",
-        "description": "Deze API is GEEN referentie-implementatie van overige services",
+        "title": "Documentregistratiecomponent (drc) API documentatie",
+        "description": "Referentieimplementatie van de documentregistratiecomponent",
         "contact": {
             "email": "support@maykinmedia.nl"
         },
@@ -226,7 +226,7 @@
                 },
                 "zaak": {
                     "title": "Zaak",
-                    "description": "URL naar het ZAAK in het ZRC.",
+                    "description": "URL naar de ZAAK in het ZRC.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,

@@ -1,8 +1,6 @@
-from datetime import datetime
-
 from django.db import models
 
-from drc.validators import (
+from zds_schema.validators import (
     alphanumeric_excluding_diacritic, validate_non_negative_string
 )
 
@@ -10,19 +8,25 @@ from drc.validators import (
 class InformatieObject(models.Model):
     identificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
-        validators=[alphanumeric_excluding_diacritic, ])
-    bronorganisatie = models.CharField(max_length=9, validators=[validate_non_negative_string, ],
-                                       blank=True, null=True,
-                                       help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
-                                       'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.')
+        validators=[alphanumeric_excluding_diacritic]
+    )
+    bronorganisatie = models.CharField(
+        max_length=9, validators=[validate_non_negative_string],
+        blank=True, null=True,
+        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
+        'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.'
+    )
 
     creatiedatum = models.DateField(
-        help_text='Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.')
-    titel = models.CharField(max_length=200,
-                             help_text='De naam waaronder het INFORMATIEOBJECT formeel bekend is.')
+        help_text='Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.'
+    )
+    titel = models.CharField(
+        max_length=200, help_text='De naam waaronder het INFORMATIEOBJECT formeel bekend is.'
+    )
     auteur = models.CharField(
         max_length=200, help_text='De persoon of organisatie die in de eerste plaats verantwoordelijk '
-                                  'is voor het creëren van de inhoud van het INFORMATIEOBJECT.')
+                                  'is voor het creëren van de inhoud van het INFORMATIEOBJECT.'
+    )
 
     class Meta:
         verbose_name = 'informatieobject'
@@ -37,9 +41,11 @@ class EnkelvoudigInformatieObject(InformatieObject):
     formaat = models.CharField(
         max_length=255, blank=True,
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
-                  'INFORMATIEOBJECT is vastgelegd in een computerbestand.')
+                  'INFORMATIEOBJECT is vastgelegd in een computerbestand.'
+    )
     taal = models.CharField(
-        max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
+        max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT'
+    )
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
 
@@ -51,9 +57,8 @@ class ZaakInformatieObject(models.Model):
     INFORMATIEOBJECTen zijn bestanden die in het DRC leven. Een collectie van
     (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
     """
-
-    zaak = models.URLField(help_text="URL naar het ZAAK in het ZRC.")
     informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
+    zaak = models.URLField(help_text="URL naar de ZAAK in het ZRC.")
 
     class Meta:
         verbose_name = 'Zaakinformatieobject'

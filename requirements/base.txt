@@ -13,6 +13,7 @@ coreschema==0.0.4         # via coreapi, drf-yasg
 django-appconf==1.0.2     # via django-axes
 django-axes==4.4.0
 django-choices==1.6.0
+django-extra-fields==1.0.0
 django-filter==1.1.0
 django-ipware==2.1.0      # via django-axes
 django==2.0.6
@@ -41,4 +42,3 @@ six==1.11.0               # via drf-yasg, pip-tools, python-dateutil
 unidecode==1.0.22
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.23             # via requests
-django-extra-fields==1.0.0
