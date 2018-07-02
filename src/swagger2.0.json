@@ -1,9 +1,10 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Documentregistratiecomponent (drc) API documentatie",
-        "description": "Referentieimplementatie van de documentregistratiecomponent",
+        "title": "Documentregistratiecomponent (drc) API",
+        "description": "Een API om een documentregistratiecomponent te benaderen",
         "contact": {
+            "url": "https://github.com/VNG-Realisatie/gemma-zaken",
             "email": "support@maykinmedia.nl"
         },
         "license": {

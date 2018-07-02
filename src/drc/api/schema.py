@@ -3,10 +3,13 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 info = openapi.Info(
-    title="Documentregistratiecomponent (drc) API documentatie",
+    title="Documentregistratiecomponent (drc) API",
     default_version='1',
-    description="Referentieimplementatie van de documentregistratiecomponent",
-    contact=openapi.Contact(email="support@maykinmedia.nl"),
+    description="Een API om een documentregistratiecomponent te benaderen",
+    contact=openapi.Contact(
+        email="support@maykinmedia.nl",
+        url="https://github.com/VNG-Realisatie/gemma-zaken"
+    ),
     license=openapi.License(name="EUPL 1.2"),
 )
 

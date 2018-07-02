@@ -45,7 +45,7 @@ CACHES = {
 }
 
 # Deal with being hosted on a subpath
-FORCE_SCRIPT_NAME = '/zrc'
+FORCE_SCRIPT_NAME = '/drc'
 STATIC_URL = f"{FORCE_SCRIPT_NAME}{STATIC_URL}"
 MEDIA_URL = f"{FORCE_SCRIPT_NAME}{MEDIA_URL}"
 
