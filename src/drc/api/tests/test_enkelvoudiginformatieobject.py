@@ -8,7 +8,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -21,16 +20,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
 
         self.API_VERSION = 1
 
-        self.test_object = EnkelvoudigInformatieObjectFactory.create(
-            identificatie=uuid.uuid4().hex,
-            bronorganisatie='1',
-            creatiedatum=datetime.today(),
-            titel='some titel',
-            auteur='some auteur',
-            formaat='some formaat',
-            taal='some taal',
-            inhoud__data=b'some data',
-        )
+        self.test_object = EnkelvoudigInformatieObjectFactory.create()
 
         self.enkelvoudiginformatieobject_list_url = reverse('enkelvoudiginformatieobject-list', kwargs={
             'version': self.API_VERSION,
