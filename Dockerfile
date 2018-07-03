@@ -34,7 +34,17 @@ RUN npm install
 # Stage 1.3 - Copy source code
 COPY ./src /app/src
 
-# Stage 2 - Build docker image suitable for execution and deployment
+# Stage 2 - Prepare jenkins tests image
+FROM build AS jenkins
+COPY --from=build /app/requirements /app/requirements
+RUN pip install -r requirements/jenkins.txt --exists-action=s
+COPY ./src/drc/conf/jenkins.py /app/src/drc/conf/jenkins.py
+RUN rm /app/src/drc/conf/test.py
+COPY ./bin/runtests.sh /runtests.sh
+RUN mkdir /app/log
+CMD ["/runtests.sh"]
+
+# Stage 3 - Build docker image suitable for execution and deployment
 FROM python:3.6-alpine
 RUN apk --no-cache add \
     ca-certificates \

@@ -16,4 +16,4 @@ djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
 
--e git+https://github.com/maykinmedia/gemma-zaken-common.git@master#egg=zds_schema
+-e git+https://github.com/vng-Realisatie/gemma-zaken-common.git@master#egg=zds_schema

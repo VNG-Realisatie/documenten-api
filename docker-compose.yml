@@ -1,5 +1,5 @@
 # Inspired by https://docs.docker.com/compose/django/
-version: '3'
+version: '3.4'
 
 services:
   db:
@@ -16,6 +16,21 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     ports:
       - 8000:8000
+    depends_on:
+      - db
+  tests:
+    build:
+      context: ./
+      target: jenkins
+    volumes:
+      - ${WORKSPACE}/reports:/app/src/reports
+    environment:
+      - DJANGO_SETTINGS_MODULE=drc.conf.jenkins
+      - SECRET_KEY=jenkins
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=
+      - DB_HOST=db
     depends_on:
       - db
 
