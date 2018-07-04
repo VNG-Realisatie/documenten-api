@@ -47,6 +47,7 @@ AXES_CACHE = 'axes_cache'
 # Jenkins settings
 #
 INSTALLED_APPS += [
+    'drc.tests',
     'django_jenkins',
 ]
 PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith('drc.')]

@@ -3,7 +3,8 @@
 set -e
 set -x
 
-cd src
-python manage.py jenkins \
+python src/manage.py jenkins \
   --noinput \
-  --enable-coverage
+  --project-apps-tests \
+  --enable-coverage \
+  --coverage-rcfile=setup.cfg
