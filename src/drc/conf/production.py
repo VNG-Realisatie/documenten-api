@@ -1,5 +1,3 @@
-import raven
-
 from .base import *
 
 #
@@ -11,20 +9,6 @@ DEBUG = False
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'drc',
-        'USER': 'drc',
-        'PASSWORD': 'drc',
-        'HOST': '',  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',  # Set to empty string for default.
-    }
-}
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '8u9chcd4g1%i5z)u@s6#c#0u%s_gggx*915w(yzrf#awezmu^i'
 
 ALLOWED_HOSTS = []
 
@@ -89,25 +73,9 @@ CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
 # Only set this when we're behind Nginx as configured in our example-deployment
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_CONTENT_TYPE_NOSNIFF = True # Sets X-Content-Type-Options: nosniff
-SECURE_BROWSER_XSS_FILTER = True # Sets X-XSS-Protection: 1; mode=block
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Sets X-Content-Type-Options: nosniff
+SECURE_BROWSER_XSS_FILTER = True  # Sets X-XSS-Protection: 1; mode=block
 
 #
 # Library settings
 #
-
-# Raven
-INSTALLED_APPS = INSTALLED_APPS + [
-    'raven.contrib.django.raven_compat',
-]
-RAVEN_CONFIG = {
-    'dsn': 'https://',
-    'release': raven.fetch_git_sha(BASE_DIR),
-}
-LOGGING['handlers'].update({
-    'sentry': {
-        'level': 'WARNING',
-        'class': 'raven.handlers.logging.SentryHandler',
-        'dsn': RAVEN_CONFIG['dsn']
-    },
-})

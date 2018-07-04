@@ -36,16 +36,21 @@ COPY ./src /app/src
 
 # Stage 2 - Prepare jenkins tests image
 FROM build AS jenkins
+
+COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /app/requirements /app/requirements
+
 RUN pip install -r requirements/jenkins.txt --exists-action=s
+
 COPY ./src/drc/conf/jenkins.py /app/src/drc/conf/jenkins.py
 RUN rm /app/src/drc/conf/test.py
 COPY ./bin/runtests.sh /runtests.sh
 RUN mkdir /app/log
+
 CMD ["/runtests.sh"]
 
 # Stage 3 - Build docker image suitable for execution and deployment
-FROM python:3.6-alpine
+FROM python:3.6-alpine AS production
 RUN apk --no-cache add \
     ca-certificates \
     mailcap \

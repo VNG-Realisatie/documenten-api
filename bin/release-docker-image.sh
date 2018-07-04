@@ -8,6 +8,7 @@ CONTAINER_REPO=nlxio/gemma-drc
 RELEASE_TAG=${RELEASE_TAG:-latest}
 
 docker build \
+    --target production \
     -t ${CONTAINER_REPO}:${RELEASE_TAG} \
     -f Dockerfile .
 
