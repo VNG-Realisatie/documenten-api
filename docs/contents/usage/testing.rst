@@ -6,7 +6,7 @@ Testsuite
 
 To run the test suite:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-       (env) $ python src/manage.py test drc
+   (env) $ python src/manage.py test drc
 

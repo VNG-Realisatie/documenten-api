@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -7,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 #
 import os
 import sys
+
 import django
 
 #
@@ -17,20 +17,19 @@ import django
 # http://www.sphinx-doc.org/en/master/config
 
 sys.path.insert(0, os.path.abspath('../src'))
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'drc.conf.dev'
+
 django.setup()
 
 
 import drc  # noqa isort:skip
 
 
-
-
-
 # -- Project information -----------------------------------------------------
 
 project = 'DocumentRegistratieComponent'
-copyright = '2018, Maykin Media'
+copyright = '2018, VNG Realisatie'
 author = drc.__author__
 
 # The short X.Y version
@@ -94,7 +93,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
-    'github_user': 'maykinmedia',
+    'github_user': 'VNG-Realisatie',
     'github_banner': True,
     'github_repo': 'gemma-documentregistratiecomponent',
     'travis_button': True,
@@ -105,7 +104,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -124,8 +123,8 @@ html_sidebars = {
     ]
 }
 
-html_logo = 'images/logo.png'
-html_favicon = 'images/favicon.ico'
+# html_logo = 'images/logo.png'
+# html_favicon = 'images/favicon.ico'
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -158,7 +157,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'drc.tex', 'document\\_registratie\\_component Documentation',
-     'Maykin Media', 'manual'),
+     'VNG Realisatie', 'manual'),
 ]
 
 
@@ -186,5 +185,5 @@ texinfo_documents = [
 
 # -- Extension configuration -------------------------------------------------
 
-#Example configuration for intersphinx: refer to the Python standard library.
+# Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}

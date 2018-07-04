@@ -3,7 +3,6 @@ Serializers of the Document Registratie Component REST API
 """
 
 from drf_extra_fields.fields import Base64FileField
-
 from rest_framework import serializers
 
 from drc.datamodel.models import (

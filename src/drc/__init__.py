@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 """DocumentRegistratieComponent"""
-# :copyright: (c) 2018, Maykin Media B.V.
+# :copyright: (c) 2018, VNG Realisatie
 #             All rights reserved.
 # :license:   EUPL 1.2, see LICENSE for more details.
-
-from __future__ import absolute_import, unicode_literals
 
 import re
 from collections import namedtuple
 
-__version__ = '0.1.0'
-__author__ = 'Maykin Media B.V.'
-__contact__ = 'info@maykinmedia.nl'
-__homepage__ = 'https://github.com/maykinmedia/gemma-documentregistratiecomponent/'
+__version__ = '0.1.5'
+__author__ = 'VNG Realisatie'
+__homepage__ = 'https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent'
 __docformat__ = 'restructuredtext'
 
 # -eof meta-
@@ -29,4 +26,3 @@ VERSION = version_info = version_info_t(
     int(_temp[0]), int(_temp[1]), int(_temp[2]), _temp[3] or '', '')
 del(_temp)
 del(re)
-

@@ -1,45 +1,53 @@
-========================================
+============================
 Documentregistratiecomponent
-========================================
+============================
 
-:Version: 0.1.0
-:Source: https://github.com/maykinmedia/gemma-documentregistratiecomponent
-:Keywords: zaken, zaakgericht werken, GEMMA, RGBZ
+:Version: 0.1.5
+:Source: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent
+:Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 :PythonVersion: 3.6
 
-|build-status| |requirements|
+|build-status|
 
-``<oneliner describing the project>``
-
-Developed by `Maykin Media B.V.`_ for ``<client>``
-
+Referentieimplementatie van de documentregistratiecomponent (DRC).
 
 Introduction
 ============
 
-``<describe the project in a few paragraphs and briefly mention the features>``
+Binnen het Nederlandse gemeentelandschap wordt zaakgericht werken nagestreefd.
+Om dit mogelijk te maken is er gegevensuitwisseling nodig. Er is een behoefte
+om informatieobjecten (documenten) te relateren aan zaken.
+
+Deze referentieimplementatie toont aan dat de API specificatie voor de
+documentregistratiecomponent (hierna DRC) implementeerbaar is, en vormt een
+voorbeeld voor andere implementaties indien ergens twijfel bestaat.
+
+Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
+testen.
 
 Documentation
 =============
 
-See ``INSTALL.rst`` for installation instructions, available settings and
+See ``docs/contents/installation`` for installation instructions, available settings and
 commands.
+
+If you intend to develop on the component, we recommend the ``development.rst``
+document, otherwise ``docker.rst`` is recommended.
 
 
 References
 ==========
 
-* `Issues <https://github.com/maykinmedia/gemma-documentregistratiecomponent/issues>`_
-* `Code <https://github.com/maykinmedia/gemma-documentregistratiecomponent/>`_
+* `Issues <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/issues>`_
+* `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
 
 
-.. |build-status| image:: http://jenkins.maykin.nl/buildStatus/icon?job=drc
+.. |build-status| image:: http://jenkins.nlx.io/buildStatus/icon?job=gemma-documentregistratiecomponent-stable
     :alt: Build status
-    :target: http://jenkins.maykin.nl/job/drc
+    :target: http://jenkins.nlx.io/job/gemma-documentregistratiecomponent-stable
 
-.. |requirements| image:: https://requires.io/bitbucket/maykinmedia/drc/requirements.svg?branch=master
-     :target: https://requires.io/bitbucket/maykinmedia/drc/requirements/?branch=master
+.. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
+     :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
      :alt: Requirements status
 
-
-.. _Maykin Media B.V.: https://www.maykinmedia.nl
+.. _testomgeving: https://ref.tst.vng.cloud/drc/

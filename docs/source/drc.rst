@@ -1,12 +1,7 @@
-Source
-======
-
-Subpackages
------------
+Reference
+=========
 
 .. toctree::
 
     drc.api
     drc.datamodel
-  
-

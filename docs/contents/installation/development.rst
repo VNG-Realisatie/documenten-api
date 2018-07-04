@@ -6,9 +6,9 @@ Prerequisites
 
 You need the following libraries and/or programs:
 
-* `Python`_ 3.4 or above
+* `Python`_ 3.6 or higher
 * Python `Virtualenv`_ and `Pip`_
-* `PostgreSQL`_ 9.1 or above
+* `PostgreSQL`_ 9.5 or above
 * `Node.js`_
 * `npm`_
 
@@ -32,13 +32,13 @@ You can retrieve the source code using the following command:
 
    .. code-block:: bash
 
-        $ git clone git@github.com:maykinmedia/gemma-documentregistratiecomponent.git drc
+        $ git clone git@github.com:VNG-realisatie/gemma-documentregistratiecomponent.git drc
 
 **Note:** You can also use the HTTPS syntax:
 
    .. code-block:: bash
 
-        $ git clone https://github.com/maykinmedia/gemma-documentregistratiecomponent.git drc
+        $ git clone https://github.com/VNG-realisatie/gemma-documentregistratiecomponent.git drc
 
 Setting up virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -70,53 +70,46 @@ Setting up virtualenv
 Installing the database
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Copy ``src/drc/conf/local_example.py`` to ``src/drc/conf/local.py``:
+1. The default settings for the database are:
 
-   .. code-block:: bash
+    * name: ``drc``
+    * user: ``drc``
+    * password: ``drc``
 
-       $ cp src/drc/conf/local_example.py src/drc/conf/local.py
+    You can customize these by setting (any of) the following environment
+    variables:
 
-2. Edit ``local.py`` and place correct values for the presented settings.
+    * ``DB_NAME``
+    * ``DB_USER``
+    * ``DB_PASSWORD``
+    * ``DB_HOST``
+    * ``DB_PORT``
 
-   .. code-block:: python
-
-       DATABASES = {
-           'default': {
-               'ENGINE': 'django.db.backends.postgresql',
-               'NAME': <name_of_your_pgSQL_db>,
-               'USER': <user_that_can_access_db>,
-               'PASSWORD': <password_of_this_user>,
-               'HOST': '',  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-               'PORT': '',  # Set to empty string for default.
-           }
-       }
-
-3. Launch the migration process
+2. Launch the migration process
 
    .. code-block:: bash
 
      (env) $ python src/manage.py migrate
 
-**Note:** If you are making any other local, machine specific, changes, add them to ``local.py``.
+
+.. note::
+
+    You can put local, machine specific setting changes in
+    ``src/drc/conf/local.py``. These settings are NOT checked into version
+    control.
 
 
 Running server
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Collect the static files:
-
-   .. code-block:: bash
-
-       (env) $ python src/manage.py collectstatic --link
-
-2. Create a superuser to access the management interface:
+1. Create a superuser to access the management interface:
 
    .. code-block:: bash
 
        (env) $ python src/manage.py createsuperuser
 
-3. You can now run your installation and point your browser to the address
-given by this command:
+2. You can now run your installation and point your browser to the address
+   given by this command:
 
    .. code-block:: bash
 
@@ -131,11 +124,11 @@ Generate the API schema
 
        $ npm install
 
-2. Launch the ``generate_schema`` script:
+2. Launch the schema generation tool:
 
    .. code-block:: bash
 
-        ./env/src/zds-schema/bin/generate_schema
+        generate-schema
 
 3. The resulting ``openapi.yaml`` and ``swagger2.0.json`` files can be visualized with `Swagger`_
 
@@ -162,11 +155,10 @@ When updating an existing installation:
        (env) $ pip install -r requirements/dev.txt
        (env) $ npm install
 
-3. Update the statics and database:
+3. Update the database:
 
    .. code-block:: bash
 
-       (env) $ python src/manage.py collectstatic --link
        (env) $ python src/manage.py migrate
 
 
