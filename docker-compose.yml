@@ -23,7 +23,7 @@ services:
       context: ./
       target: jenkins
     volumes:
-      - ${WORKSPACE}/reports:/app/src/reports
+      - ${WORKSPACE}/reports:/app/reports
     environment:
       - DJANGO_SETTINGS_MODULE=drc.conf.jenkins
       - SECRET_KEY=jenkins
