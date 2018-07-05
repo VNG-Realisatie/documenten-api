@@ -11,6 +11,9 @@ Documentregistratiecomponent
 
 Referentieimplementatie van de documentregistratiecomponent (DRC).
 
+Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
+van VNG.
+
 Introduction
 ============
 
