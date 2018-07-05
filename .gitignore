@@ -25,3 +25,5 @@ local.py
 /log/*.log*
 /log/nginx/*.log*
 .env
+
+docs/_build

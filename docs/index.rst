@@ -11,9 +11,6 @@ Documentregistratiecomponent
 
 Referentieimplementatie van de documentregistratiecomponent (DRC).
 
-Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
-van VNG.
-
 Introduction
 ============
 
@@ -28,18 +25,24 @@ voorbeeld voor andere implementaties indien ergens twijfel bestaat.
 Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
 testen.
 
-Documentation
-=============
+Dit document bevat de technische documentatie voor deze component.
 
-See ``docs/contents/installation`` for installation instructions, available settings and
-commands.
 
-If you intend to develop on the component, we recommend the ``development.rst``
-document, otherwise ``docker.rst`` is recommended.
+Contents
+========
+
+.. toctree::
+    :maxdepth: 2
+
+    contents/installation
+    contents/usage
+    source/drc
+    contents/copyright
+    contents/changelog
 
 
 References
-==========
+============
 
 * `Issues <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/issues>`_
 * `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
