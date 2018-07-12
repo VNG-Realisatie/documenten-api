@@ -14,6 +14,8 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=drc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - media:/app/media
     ports:
       - 8000:8000
     depends_on:
@@ -36,6 +38,7 @@ services:
 
 volumes:
   postgres_data:
+  media:
 
 
   # See: src/drc/conf/docker.py
