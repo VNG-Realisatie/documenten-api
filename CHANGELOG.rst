@@ -3,9 +3,9 @@ Change history
 ==============
 
 
-0.1.0
-=====
+0.1.6 (2018-07-04)
+==================
 
-*<month, day year>*
-
-* Initial release.
+* Dev tooling
+* Documentation update
+* Project hygiene improved

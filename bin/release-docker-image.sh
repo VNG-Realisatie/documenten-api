@@ -28,6 +28,11 @@ docker build \
 if [[ -n "$JOB_NAME" ]]; then
     docker push ${CONTAINER_REPO}:${RELEASE_TAG}
 
+    # if this is a tag, and this is master -> push latest as well
+    if [[ -n "$git_tag" && $git_branch -eq "master" ]]; then
+        docker push ${CONTAINER_REPO}:latest
+    fi
+
     # if on jenkins AND it's a tagged release -> prepare deployment
     if [[ -n "$JENKINS_URL" && -n "$git_tag" ]]; then
         echo "

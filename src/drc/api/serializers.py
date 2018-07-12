@@ -1,3 +1,7 @@
+"""
+Serializers of the Document Registratie Component REST API
+"""
+
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 
@@ -19,7 +23,9 @@ class AnyBase64File(Base64FileField):
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-
+    """
+    Serializer for the EnkelvoudigInformatieObject model
+    """
     inhoud = AnyBase64File()
 
     class Meta:
