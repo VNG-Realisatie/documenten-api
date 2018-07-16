@@ -19,7 +19,6 @@ build_image() {
 
 get_release_tag() {
     if [[ -n "$git_tag" ]]; then
-        echo "Building image for git tag $git_tag"
         release_tag=$git_tag
     else
         release_tag=${RELEASE_TAG:-latest}
@@ -30,8 +29,9 @@ get_release_tag() {
 push_image() {
     # JOB_NAME is set by Jenkins
     # only push the image if running in CI
+    release_tag=$1
     if [[ -n "$JOB_NAME" ]]; then
-        docker push ${CONTAINER_REPO}:${RELEASE_TAG}
+        docker push ${CONTAINER_REPO}:$release_tag
 
         # if this is a tag, and this is master -> push latest as well
         if [[ -n "$git_tag" && $git_branch -eq "master" ]]; then
@@ -55,5 +55,10 @@ VERSION=${git_tag}
 }
 
 
-build_image $(get_release_tag)
-push_image
+if [[ -n "$git_tag" ]]; then
+    echo "Building image for git tag $git_tag"
+fi
+
+release_tag=$(get_release_tag)
+build_image $release_tag
+push_image $release_tag
