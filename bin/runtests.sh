@@ -19,3 +19,8 @@ python src/manage.py jenkins \
   --project-apps-tests \
   --enable-coverage \
   --coverage-rcfile=setup.cfg
+
+# patch the report so that Jenkins can read the source code for coverage
+bad_line="<source>/app/src</source>"
+correct_line="<source>${WORKSPACE}/src</source>"
+sed -i "s:$bad_line:$correct_line:g" reports/coverage.xml

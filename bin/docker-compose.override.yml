@@ -14,5 +14,6 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=
       - DB_HOST=db
+      - WORKSPACE=${WORKSPACE}
     depends_on:
       - db
