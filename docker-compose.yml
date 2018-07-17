@@ -7,38 +7,15 @@ services:
     # environment:
     #   - POSTGRES_USER=${PG_USER:drc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:drc}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
   web:
     image: vngr/gemma-drc
     environment:
       - DJANGO_SETTINGS_MODULE=drc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
-    volumes:
-      - media:/app/media
     ports:
       - 8000:8000
     depends_on:
       - db
-  tests:
-    build:
-      context: ./
-      target: jenkins
-    volumes:
-      - ${WORKSPACE}/reports:/app/reports
-    environment:
-      - DJANGO_SETTINGS_MODULE=drc.conf.jenkins
-      - SECRET_KEY=jenkins
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=
-      - DB_HOST=db
-    depends_on:
-      - db
-
-volumes:
-  postgres_data:
-  media:
 
 
   # See: src/drc/conf/docker.py
