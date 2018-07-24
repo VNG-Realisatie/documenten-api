@@ -58,7 +58,7 @@
             },
             "parameters": []
         },
-        "/enkelvoudiginformatieobjecten/{id}": {
+        "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
                 "description": "Geef de details van een EnkelvoudigInformatieObject.",
@@ -77,11 +77,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this informatieobject.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -113,7 +114,7 @@
             },
             "parameters": []
         },
-        "/zaakinformatieobjecten/{id}": {
+        "/zaakinformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakinformatieobject_read",
                 "description": "Geef de details van een ZAAKINFORMATIEOBJECT relatie.",
@@ -132,11 +133,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this Zaakinformatieobject.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         }

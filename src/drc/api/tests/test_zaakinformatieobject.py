@@ -1,4 +1,5 @@
 import uuid
+
 from django.urls import reverse, reverse_lazy
 
 from rest_framework import status
@@ -19,7 +20,7 @@ class ZaakInformatieObjectAPITests(APITestCase):
     def test_create(self):
         enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
+            'version': '1',
             'uuid': enkelvoudig_informatie.uuid,
         })
 
@@ -40,7 +41,7 @@ class ZaakInformatieObjectAPITests(APITestCase):
         self.assertEqual(stored_object.zaak, ZAAK)
 
         expected_url = reverse('zaakinformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
+            'version': '1',
             'uuid': stored_object.uuid,
         })
 
@@ -53,7 +54,7 @@ class ZaakInformatieObjectAPITests(APITestCase):
         # Retrieve from the API
 
         zio_detail_url = reverse('zaakinformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
+            'version': '1',
             'uuid': zio.uuid,
         })
         response = self.client.get(zio_detail_url)
@@ -62,7 +63,7 @@ class ZaakInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
+            'version': '1',
             'uuid': zio.informatieobject.uuid,
         })
 
