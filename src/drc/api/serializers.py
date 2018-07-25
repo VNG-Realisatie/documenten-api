@@ -41,6 +41,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'taal',
             'inhoud'
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            }
+        }
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -51,3 +56,11 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'zaak',
             'informatieobject'
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'informatieobject': {
+                'lookup_field': 'uuid',
+            }
+        }

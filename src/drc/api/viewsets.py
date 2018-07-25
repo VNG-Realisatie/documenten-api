@@ -23,6 +23,7 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
     serializer_class = EnkelvoudigInformatieObjectSerializer
+    lookup_field = 'uuid'
 
 
 class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
@@ -39,3 +40,4 @@ class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
+    lookup_field = 'uuid'

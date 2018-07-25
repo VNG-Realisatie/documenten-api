@@ -1,9 +1,8 @@
-import os
 import uuid
 from base64 import b64encode
-from datetime import datetime
+from datetime import date
 
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from freezegun import freeze_time
 from rest_framework import status
@@ -16,30 +15,9 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 @freeze_time('2018-06-27')
 class EnkelvoudigInformatieObjectAPITests(APITestCase):
 
-    def setUp(self):
-
-        self.API_VERSION = 1
-
-        self.test_object = EnkelvoudigInformatieObjectFactory.create()
-
-        self.enkelvoudiginformatieobject_list_url = reverse('enkelvoudiginformatieobject-list', kwargs={
-            'version': self.API_VERSION,
-        })
-
-        self.file_path = 'dummy.txt'
-        with open(self.file_path, 'w') as tmp:
-            tmp.write('some file content')
-        self.file = open(self.file_path, 'rb')
-
-    def tearDown(self):
-        os.remove(self.file_path)
+    list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
 
     def test_create(self):
-
-        byte_content = self.file.read()
-        base64_bytes = b64encode(byte_content)
-        base64_string = base64_bytes.decode('utf-8')
-
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '2',
@@ -48,71 +26,63 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'auteur': 'test_auteur',
             'formaat': 'txt',
             'taal': 'english',
-            'inhoud': base64_string,
+            'inhoud': b64encode(b'some file content').decode('utf-8'),
         }
 
         # Send to the API
-
-        response = self.client.post(
-            self.enkelvoudiginformatieobject_list_url,
-            content,
-            format='json')
-
-        # Test database
-
-        self.assertEqual(EnkelvoudigInformatieObject.objects.count(), 2)
-        stored_object = EnkelvoudigInformatieObject.objects.get(pk=2)
-
-        self.assertEqual(stored_object.identificatie, content['identificatie'])
-        self.assertEqual(stored_object.bronorganisatie, content['bronorganisatie'])
-        self.assertEqual(stored_object.creatiedatum, datetime.strptime(content['creatiedatum'], '%Y-%m-%d').date())
-        self.assertEqual(stored_object.titel, content['titel'])
-        self.assertEqual(stored_object.auteur, content['auteur'])
-        self.assertEqual(stored_object.formaat, content['formaat'])
-        self.assertEqual(stored_object.taal, content['taal'])
-        self.assertEqual(stored_object.inhoud.read(), byte_content)
+        response = self.client.post(self.list_url, content)
 
         # Test response
-
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # Test database
+        self.assertEqual(EnkelvoudigInformatieObject.objects.count(), 1)
+        stored_object = EnkelvoudigInformatieObject.objects.get()
+
+        self.assertEqual(stored_object.identificatie, content['identificatie'])
+        self.assertEqual(stored_object.bronorganisatie, '2')
+        self.assertEqual(stored_object.creatiedatum, date(2018, 6, 27))
+        self.assertEqual(stored_object.titel, 'detailed summary')
+        self.assertEqual(stored_object.auteur, 'test_auteur')
+        self.assertEqual(stored_object.formaat, 'txt')
+        self.assertEqual(stored_object.taal, 'english')
+        self.assertEqual(stored_object.inhoud.read(), b'some file content')
+
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
-            'pk': 2,
+            'version': '1',
+            'uuid': stored_object.uuid,
         })
 
-        expected_response = content
-        expected_response['url'] = 'http://testserver' + expected_url
-        expected_response['inhoud'] = 'http://testserver' + stored_object.inhoud.url
-
-        self.assertIsInstance(response.json(), dict)
+        expected_response = content.copy()
+        expected_response.update({
+            'url': f"http://testserver{expected_url}",
+            'inhoud': f"http://testserver{stored_object.inhoud.url}",
+        })
         self.assertEqual(response.json(), expected_response)
 
     def test_read(self):
+        test_object = EnkelvoudigInformatieObjectFactory.create()
 
         # Retrieve from the API
-
-        test_object_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': self.API_VERSION,
-            'pk': self.test_object.pk,
+        detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': test_object.uuid,
         })
-        response = self.client.get(test_object_detail_url)
+
+        response = self.client.get(detail_url)
 
         # Test response
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsInstance(response.json(), dict)
 
         expected = {
-            'identificatie': self.test_object.identificatie,
+            'url': f'http://testserver{detail_url}',
+            'identificatie': test_object.identificatie,
             'bronorganisatie': '1',
             'creatiedatum': '2018-06-27',
             'titel': 'some titel',
             'auteur': 'some auteur',
             'formaat': 'some formaat',
             'taal': 'some taal',
-            'inhoud': 'http://testserver' + self.test_object.inhoud.url,
-            'url': 'http://testserver' + test_object_detail_url,
+            'inhoud': f'http://testserver{test_object.inhoud.url}',
         }
-
         self.assertEqual(response.json(), expected)
