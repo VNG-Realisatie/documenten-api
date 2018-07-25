@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from zds_schema.validators import (
@@ -6,6 +8,10 @@ from zds_schema.validators import (
 
 
 class InformatieObject(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     identificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
         validators=[alphanumeric_excluding_diacritic]
@@ -57,6 +63,10 @@ class ZaakInformatieObject(models.Model):
     INFORMATIEOBJECTen zijn bestanden die in het DRC leven. Een collectie van
     (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
     zaak = models.URLField(help_text="URL naar de ZAAK in het ZRC.")
 
