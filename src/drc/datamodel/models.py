@@ -1,26 +1,25 @@
-import uuid
+import uuid as _uuid
 
 from django.db import models
 
-from zds_schema.validators import (
-    alphanumeric_excluding_diacritic, validate_non_negative_string
-)
+from zds_schema.fields import RSINField
+from zds_schema.validators import alphanumeric_excluding_diacritic
 
 
 class InformatieObject(models.Model):
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4,
+        unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
     identificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
-        validators=[alphanumeric_excluding_diacritic]
+        validators=[alphanumeric_excluding_diacritic], default=_uuid.uuid4
     )
-    bronorganisatie = models.CharField(
-        max_length=9, validators=[validate_non_negative_string],
-        blank=True, help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
-                              'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft '
-                              'vastgelegd.'
+    bronorganisatie = RSINField(
+        max_length=9, blank=True,
+        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
+                  'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft '
+                  'vastgelegd.'
     )
 
     creatiedatum = models.DateField(
@@ -64,7 +63,7 @@ class ZaakInformatieObject(models.Model):
     (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
     """
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4,
+        unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
     informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
