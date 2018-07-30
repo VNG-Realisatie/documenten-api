@@ -8,13 +8,13 @@ See:
 import base64
 from io import BytesIO
 
+from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
-from PIL import Image
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import get_operation_url, TypeCheckMixin
 
 
-class US169Tests(APITestCase):
+class US169Tests(TypeCheckMixin, APITestCase):
 
     def test_upload_image(self):
         url = get_operation_url('enkelvoudiginformatieobject_create')
@@ -42,3 +42,14 @@ class US169Tests(APITestCase):
 
         response_data = response.json()
         self.assertIn('identificatie', response_data)
+
+        self.assertResponseTypes(response_data, (
+            ('url', str),
+            ('inhoud', str),
+            ('bronorganisatie', str),
+            ('taal', str),
+            ('creatiedatum', str),
+            ('titel', str),
+            ('vertrouwelijkheidsaanduiding', str),
+            ('auteur', str),
+        ))

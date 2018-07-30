@@ -2,7 +2,7 @@ import uuid as _uuid
 
 from django.db import models
 
-from zds_schema.fields import RSINField
+from zds_schema.fields import LanguageField, RSINField
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 
@@ -48,9 +48,7 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
                   'INFORMATIEOBJECT is vastgelegd in een computerbestand.'
     )
-    taal = models.CharField(
-        max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT'
-    )
+    taal = LanguageField(help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
 
