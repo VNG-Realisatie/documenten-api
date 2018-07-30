@@ -2,7 +2,9 @@ import uuid as _uuid
 
 from django.db import models
 
-from zds_schema.fields import LanguageField, RSINField
+from zds_schema.fields import (
+    LanguageField, RSINField, VertrouwelijkheidsAanduidingField
+)
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 
@@ -27,6 +29,10 @@ class InformatieObject(models.Model):
     )
     titel = models.CharField(
         max_length=200, help_text='De naam waaronder het INFORMATIEOBJECT formeel bekend is.'
+    )
+    vertrouwelijkheidsaanduiding = VertrouwelijkheidsAanduidingField(
+        blank=True, help_text="Aanduiding van de mate waarin het INFORMATIEOBJECT "
+                              "voor de openbaarheid bestemd is."
     )
     auteur = models.CharField(
         max_length=200, help_text='De persoon of organisatie die in de eerste plaats verantwoordelijk '

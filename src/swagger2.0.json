@@ -223,6 +223,21 @@
                     "maxLength": 200,
                     "minLength": 1
                 },
+                "vertrouwelijkheidsaanduiding": {
+                    "title": "Vertrouwelijkheidsaanduiding",
+                    "description": "Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.",
+                    "type": "string",
+                    "enum": [
+                        "openbaar",
+                        "beperkt openbaar",
+                        "intern",
+                        "zaakvertrouwelijk",
+                        "vertrouwelijk",
+                        "confidentieel",
+                        "geheim",
+                        "zeer geheim"
+                    ]
+                },
                 "auteur": {
                     "title": "Auteur",
                     "description": "De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het cre\u00ebren van de inhoud van het INFORMATIEOBJECT.",

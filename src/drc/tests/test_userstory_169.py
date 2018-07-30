@@ -11,7 +11,7 @@ from io import BytesIO
 from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url, TypeCheckMixin
+from zds_schema.tests import TypeCheckMixin, get_operation_url
 
 
 class US169Tests(TypeCheckMixin, APITestCase):
