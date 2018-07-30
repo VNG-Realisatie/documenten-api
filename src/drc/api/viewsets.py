@@ -10,6 +10,7 @@ from .serializers import (
 
 
 class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
+                                         mixins.ListModelMixin,
                                          mixins.RetrieveModelMixin,
                                          viewsets.GenericViewSet):
     """
@@ -27,6 +28,7 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
 
 
 class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
+                                  mixins.ListModelMixin,
                                   mixins.RetrieveModelMixin,
                                   viewsets.GenericViewSet):
     """

@@ -31,6 +31,25 @@
     ],
     "paths": {
         "/enkelvoudiginformatieobjecten": {
+            "get": {
+                "operationId": "enkelvoudiginformatieobject_list",
+                "description": "EnkelvoudigInformatieObject resource.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ]
+            },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
                 "description": "Registreer een EnkelvoudigInformatieObject.",
@@ -87,6 +106,25 @@
             ]
         },
         "/zaakinformatieobjecten": {
+            "get": {
+                "operationId": "zaakinformatieobject_list",
+                "description": "Beheer relatie tussen InformatieObject en ZAAK.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ZaakInformatieObject"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakinformatieobjecten"
+                ]
+            },
             "post": {
                 "operationId": "zaakinformatieobject_create",
                 "description": "Registreer een INFORMATIEOBJECT bij een ZAAK.",
