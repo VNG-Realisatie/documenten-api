@@ -1,26 +1,27 @@
-import uuid
+import uuid as _uuid
 
 from django.db import models
 
-from zds_schema.validators import (
-    alphanumeric_excluding_diacritic, validate_non_negative_string
+from zds_schema.fields import (
+    LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
+from zds_schema.validators import alphanumeric_excluding_diacritic
 
 
 class InformatieObject(models.Model):
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4,
+        unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
     identificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
-        validators=[alphanumeric_excluding_diacritic]
+        validators=[alphanumeric_excluding_diacritic], default=_uuid.uuid4
     )
-    bronorganisatie = models.CharField(
-        max_length=9, validators=[validate_non_negative_string],
-        blank=True, help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
-                              'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft '
-                              'vastgelegd.'
+    bronorganisatie = RSINField(
+        max_length=9, blank=True,
+        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
+                  'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft '
+                  'vastgelegd.'
     )
 
     creatiedatum = models.DateField(
@@ -28,6 +29,10 @@ class InformatieObject(models.Model):
     )
     titel = models.CharField(
         max_length=200, help_text='De naam waaronder het INFORMATIEOBJECT formeel bekend is.'
+    )
+    vertrouwelijkheidsaanduiding = VertrouwelijkheidsAanduidingField(
+        blank=True, help_text="Aanduiding van de mate waarin het INFORMATIEOBJECT "
+                              "voor de openbaarheid bestemd is."
     )
     auteur = models.CharField(
         max_length=200, help_text='De persoon of organisatie die in de eerste plaats verantwoordelijk '
@@ -49,9 +54,7 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
                   'INFORMATIEOBJECT is vastgelegd in een computerbestand.'
     )
-    taal = models.CharField(
-        max_length=20, help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT'
-    )
+    taal = LanguageField(help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
 
@@ -64,7 +67,7 @@ class ZaakInformatieObject(models.Model):
     (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
     """
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4,
+        unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
     informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)

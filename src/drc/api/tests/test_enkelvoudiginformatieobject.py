@@ -20,12 +20,12 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
     def test_create(self):
         content = {
             'identificatie': uuid.uuid4().hex,
-            'bronorganisatie': '2',
+            'bronorganisatie': '159351741',
             'creatiedatum': '2018-06-27',
             'titel': 'detailed summary',
             'auteur': 'test_auteur',
             'formaat': 'txt',
-            'taal': 'english',
+            'taal': 'eng',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
         }
 
@@ -33,19 +33,19 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         response = self.client.post(self.list_url, content)
 
         # Test response
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         # Test database
         self.assertEqual(EnkelvoudigInformatieObject.objects.count(), 1)
         stored_object = EnkelvoudigInformatieObject.objects.get()
 
         self.assertEqual(stored_object.identificatie, content['identificatie'])
-        self.assertEqual(stored_object.bronorganisatie, '2')
+        self.assertEqual(stored_object.bronorganisatie, '159351741')
         self.assertEqual(stored_object.creatiedatum, date(2018, 6, 27))
         self.assertEqual(stored_object.titel, 'detailed summary')
         self.assertEqual(stored_object.auteur, 'test_auteur')
         self.assertEqual(stored_object.formaat, 'txt')
-        self.assertEqual(stored_object.taal, 'english')
+        self.assertEqual(stored_object.taal, 'eng')
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
@@ -57,6 +57,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         expected_response.update({
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{stored_object.inhoud.url}",
+            'vertrouwelijkheidsaanduiding': '',
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -82,7 +83,8 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'titel': 'some titel',
             'auteur': 'some auteur',
             'formaat': 'some formaat',
-            'taal': 'some taal',
+            'taal': 'dut',
             'inhoud': f'http://testserver{test_object.inhoud.url}',
+            'vertrouwelijkheidsaanduiding': '',
         }
         self.assertEqual(response.json(), expected)

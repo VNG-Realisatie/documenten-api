@@ -16,7 +16,7 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     titel = 'some titel'
     auteur = 'some auteur'
     formaat = 'some formaat'
-    taal = 'some taal'
+    taal = 'dut'
     inhoud = factory.django.FileField(data=b'some data', filename='file.bin')
 
     class Meta:

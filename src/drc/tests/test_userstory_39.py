@@ -27,13 +27,13 @@ class US39TestCase(APITestCase):
             'titel': 'text_extra.txt',
             'auteur': 'ANONIEM',
             'formaat': 'text/plain',
-            'taal': 'nl',
+            'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
         }
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
         self.assertIn('identificatie', data)
 
