@@ -9,6 +9,7 @@ from django.conf import settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import get_operation_url
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
@@ -29,6 +30,8 @@ class US39TestCase(APITestCase):
             'formaat': 'text/plain',
             'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
 
         response = self.client.post(url, data)

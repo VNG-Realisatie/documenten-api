@@ -7,6 +7,7 @@ from django.urls import reverse, reverse_lazy
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -27,6 +28,9 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'link': 'http://een.link',
+            'beschrijving': 'test_beschrijving',
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
         }
 
         # Send to the API
@@ -47,6 +51,10 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(stored_object.formaat, 'txt')
         self.assertEqual(stored_object.taal, 'eng')
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
+        self.assertEqual(stored_object.link, 'http://een.link')
+        self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
+        self.assertEqual(stored_object.informatieobjecttype, 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1')
+        self.assertEqual(stored_object.vertrouwelijkaanduiding, '')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
@@ -57,7 +65,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         expected_response.update({
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{stored_object.inhoud.url}",
-            'vertrouwelijkheidsaanduiding': '',
+            'vertrouwelijkaanduiding': '',
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -85,6 +93,9 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'some formaat',
             'taal': 'dut',
             'inhoud': f'http://testserver{test_object.inhoud.url}',
-            'vertrouwelijkheidsaanduiding': '',
+            'link': 'http://www.example.com/',
+            'beschrijving': 'some beschrijving',
+            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
         }
         self.assertEqual(response.json(), expected)
