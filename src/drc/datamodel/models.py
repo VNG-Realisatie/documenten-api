@@ -54,7 +54,10 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
                   'INFORMATIEOBJECT is vastgelegd in een computerbestand.'
     )
-    taal = LanguageField(help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT')
+    taal = LanguageField(
+        help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. '
+                  'De waardes komen uit ISO 639-2/B'
+    )
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
 
