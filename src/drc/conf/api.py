@@ -21,7 +21,6 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'ztc.api.utils.pagination.HALPagination',
     'DEFAULT_FILTER_BACKENDS': (
         'zds_schema.filters.Backend',
-    #     'django_filters.rest_framework.DjangoFilterBackend',
     #     'rest_framework.filters.SearchFilter',
     #     'rest_framework.filters.OrderingFilter',
     ),
@@ -59,4 +58,19 @@ SWAGGER_SETTINGS = {
     # },
     'DEFAULT_AUTO_SCHEMA_CLASS': 'zds_schema.schema.AutoSchema',
     'DEFAULT_INFO': 'drc.api.schema.info',
+    'DEFAULT_FIELD_INSPECTORS': (
+        'drf_yasg.inspectors.CamelCaseJSONFilter',
+        'drf_yasg.inspectors.RecursiveFieldInspector',
+        'drf_yasg.inspectors.ReferencingSerializerInspector',
+        'drf_yasg.inspectors.ChoiceFieldInspector',
+        'drf_yasg.inspectors.FileFieldInspector',
+        'drf_yasg.inspectors.DictFieldInspector',
+        'drf_yasg.inspectors.HiddenFieldInspector',
+        'drf_yasg.inspectors.RelatedFieldInspector',
+        'drf_yasg.inspectors.SimpleFieldInspector',
+        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ),
+    'DEFAULT_FILTER_INSPECTORS': (
+        'zds_schema.inspectors.query.FilterInspector',
+    )
 }

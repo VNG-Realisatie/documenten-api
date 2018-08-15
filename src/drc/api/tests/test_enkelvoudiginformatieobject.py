@@ -93,9 +93,9 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'some formaat',
             'taal': 'dut',
             'inhoud': f'http://testserver{test_object.inhoud.url}',
-            'link': 'http://www.example.com/',
-            'beschrijving': 'some beschrijving',
-            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            'link': '',
+            'beschrijving': '',
+            'vertrouwelijkaanduiding': '',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
         }
         self.assertEqual(response.json(), expected)

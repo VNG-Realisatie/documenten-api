@@ -73,16 +73,18 @@ paths:
       parameters:
         - name: zaak
           in: query
-          description: ''
+          description: URL naar de ZAAK in het ZRC.
           required: false
           schema:
             type: string
+            format: uri
         - name: informatieobject
           in: query
-          description: ''
+          description: URL to the related resource
           required: false
           schema:
             type: string
+            format: uri
       responses:
         '200':
           description: ''
@@ -716,6 +718,7 @@ components:
           title: Link
           description: De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is.
           type: string
+          format: uri
           maxLength: 200
         beschrijving:
           title: Beschrijving

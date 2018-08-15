@@ -47,7 +47,7 @@ class InformatieObject(models.Model):
                   'INFORMATIEOBJECT.'
     )
     beschrijving = models.TextField(
-        max_length=1000, null=True, blank=True,
+        max_length=1000, blank=True,
         help_text='Een generieke beschrijving van de inhoud van het '
                   'INFORMATIEOBJECT.'
     )
@@ -77,8 +77,8 @@ class EnkelvoudigInformatieObject(InformatieObject):
     )
 
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
-    link = models.CharField(
-        max_length=200, null=True, blank=True,
+    link = models.URLField(
+        max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '
                   'vragen is.',
     )
