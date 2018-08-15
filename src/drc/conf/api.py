@@ -19,11 +19,12 @@ REST_FRAMEWORK = {
     #
     # # Generic view behavior
     # 'DEFAULT_PAGINATION_CLASS': 'ztc.api.utils.pagination.HALPagination',
-    # 'DEFAULT_FILTER_BACKENDS': (
+    'DEFAULT_FILTER_BACKENDS': (
+        'zds_schema.filters.Backend',
     #     'django_filters.rest_framework.DjangoFilterBackend',
     #     'rest_framework.filters.SearchFilter',
     #     'rest_framework.filters.OrderingFilter',
-    # ),
+    ),
     #
     # # Filtering
     # 'SEARCH_PARAM': 'zoek',  # 'search',

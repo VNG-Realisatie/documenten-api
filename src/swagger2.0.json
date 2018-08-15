@@ -109,7 +109,22 @@
             "get": {
                 "operationId": "zaakinformatieobject_list",
                 "description": "Beheer relatie tussen InformatieObject en ZAAK.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "zaak",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "informatieobject",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",

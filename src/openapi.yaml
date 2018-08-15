@@ -70,6 +70,19 @@ paths:
     get:
       operationId: zaakinformatieobject_list
       description: Beheer relatie tussen InformatieObject en ZAAK.
+      parameters:
+        - name: zaak
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: informatieobject
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: ''
