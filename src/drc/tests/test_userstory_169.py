@@ -11,6 +11,7 @@ from io import BytesIO
 from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import TypeCheckMixin, get_operation_url
 
 
@@ -32,8 +33,9 @@ class US169Tests(TypeCheckMixin, APITestCase):
             'taal': 'dut',
             'creatiedatum': '2018-07-30',
             'titel': 'bijlage.jpg',
-            'vertrouwelijkheidsaanduiding': 'openbaar',
+            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'auteur': 'John Doe',
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
         }
 
         response = self.client.post(url, data)
@@ -50,6 +52,7 @@ class US169Tests(TypeCheckMixin, APITestCase):
             ('taal', str),
             ('creatiedatum', str),
             ('titel', str),
-            ('vertrouwelijkheidsaanduiding', str),
+            ('vertrouwelijkaanduiding', str),
             ('auteur', str),
+            ('informatieobjecttype', str),
         ))
