@@ -36,6 +36,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bronorganisatie',
             'creatiedatum',
             'titel',
+            'vertrouwelijkheidsaanduiding',
             'auteur',
             'formaat',
             'taal',
