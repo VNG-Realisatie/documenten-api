@@ -8,7 +8,6 @@ from zds_schema.fields import (
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 
-
 class InformatieObject(models.Model):
     uuid = models.UUIDField(
         unique=True, default=_uuid.uuid4,
