@@ -36,11 +36,15 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bronorganisatie',
             'creatiedatum',
             'titel',
-            'vertrouwelijkheidsaanduiding',
+            'vertrouwelijkaanduiding',
             'auteur',
             'formaat',
             'taal',
-            'inhoud'
+            'inhoud',
+            'link',
+            'beschrijving',
+
+            'informatieobjecttype'  # van-relatie
         )
         extra_kwargs = {
             'url': {

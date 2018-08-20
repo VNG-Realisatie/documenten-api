@@ -2,6 +2,18 @@
 Wijzigingen
 ===========
 
+0.2.3 (2018-08-20)
+==================
+
+Uitbreiding API spec
+
+* verduidelijking oorsprong taal enum (ISO 639-2/B)
+* ``InformatieObject`` velden toegevoegd:
+    * ``link``
+    * ``beschrijving``
+    * ``informatieobjecttype``
+* Filter toegevoegd aan ``ZaakInformatieObject`` voor zaak en informatieobject
+
 0.2.2 (2018-08-15)
 ==================
 

@@ -4,6 +4,7 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ZaakInformatieObject
 )
 
+from .filters import ZaakInformatieObjectFilter
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, ZaakInformatieObjectSerializer
 )
@@ -42,4 +43,5 @@ class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
+    filter_class = ZaakInformatieObjectFilter
     lookup_field = 'uuid'
