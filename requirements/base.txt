@@ -39,10 +39,10 @@ python-dotenv==0.8.2
 pytz==2018.4
 pyyaml==3.12              # via zds-schema
 raven==6.9.0
-requests==2.19.1          # via coreapi
+requests==2.19.1          # via coreapi, zds-schema
 ruamel.yaml==0.15.40      # via drf-yasg
 six==1.11.0               # via drf-yasg, isodate, pip-tools, python-dateutil
 unidecode==1.0.22         # via zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.23             # via requests
-zds-schema==0.0.25
+zds-schema==0.0.33
