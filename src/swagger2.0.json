@@ -100,7 +100,7 @@
             },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
-                "description": "Registreer een EnkelvoudigInformatieObject.",
+                "description": "Registreer een EnkelvoudigInformatieObject.\n\nDe URL naar het informatieobjecttype wordt gevalideerd op geldigheid.",
                 "parameters": [
                     {
                         "name": "data",

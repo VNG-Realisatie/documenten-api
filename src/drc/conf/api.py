@@ -1,4 +1,6 @@
-from zds_schema.conf.api import BASE_REST_FRAMEWORK, BASE_SWAGGER_SETTINGS
+from zds_schema.conf.api import (  # noqa
+    BASE_REST_FRAMEWORK, BASE_SWAGGER_SETTINGS, LINK_FETCHER
+)
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 

@@ -76,7 +76,10 @@ paths:
         - enkelvoudiginformatieobjecten
     post:
       operationId: enkelvoudiginformatieobject_create
-      description: Registreer een EnkelvoudigInformatieObject.
+      description: |-
+        Registreer een EnkelvoudigInformatieObject.
+
+        De URL naar het informatieobjecttype wordt gevalideerd op geldigheid.
       responses:
         '201':
           description: ''

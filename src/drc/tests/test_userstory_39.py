@@ -6,6 +6,7 @@ from datetime import date
 from urllib.parse import urlparse
 
 from django.conf import settings
+from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -17,6 +18,7 @@ from drc.datamodel.models import EnkelvoudigInformatieObject
 
 class US39TestCase(APITestCase):
 
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
     def test_create_enkelvoudiginformatieobject(self):
         """
         Registreer een ENKELVOUDIGINFORMATIEOBJECT

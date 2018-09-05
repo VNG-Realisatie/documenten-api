@@ -20,6 +20,8 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
     create:
     Registreer een EnkelvoudigInformatieObject.
 
+    De URL naar het informatieobjecttype wordt gevalideerd op geldigheid.
+
     retrieve:
     Geef de details van een EnkelvoudigInformatieObject.
     """
