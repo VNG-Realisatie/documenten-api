@@ -4,6 +4,7 @@ Serializers of the Document Registratie Component REST API
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
+from zds_schema.validators import URLValidator
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ZaakInformatieObject
@@ -49,11 +50,15 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'informatieobjecttype': {
+                'validators': [URLValidator()],
             }
         }
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+    # TODO: valideer dat ZaakInformatieObject.informatieobjecttype hoort bij zaak.zaaktype
     class Meta:
         model = ZaakInformatieObject
         fields = (
