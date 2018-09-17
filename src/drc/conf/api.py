@@ -1,6 +1,4 @@
-from zds_schema.conf.api import (  # noqa
-    BASE_REST_FRAMEWORK, BASE_SWAGGER_SETTINGS, LINK_FETCHER
-)
+from zds_schema.conf.api import *  # noqa - imports white-listed
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
@@ -11,3 +9,5 @@ SWAGGER_SETTINGS.update({
     # no geo things here
     'DEFAULT_FIELD_INSPECTORS': BASE_SWAGGER_SETTINGS['DEFAULT_FIELD_INSPECTORS'][1:]
 })
+
+GEMMA_URL_INFORMATIEMODEL_VERSIE = '1.0'
