@@ -45,6 +45,7 @@ markupsafe==1.0
 mccabe==0.6.1             # via pylint
 mock==2.0.0
 openapi-codec==1.3.2
+oyaml==0.7
 pbr==4.1.0                # via mock
 pep8==1.7.1
 pillow==5.2.0
@@ -69,4 +70,4 @@ waitress==1.1.0           # via webtest
 webob==1.8.2              # via webtest
 webtest==2.0.30
 wrapt==1.10.11            # via astroid
-zds-schema==0.0.33
+zds-schema==0.3.0
