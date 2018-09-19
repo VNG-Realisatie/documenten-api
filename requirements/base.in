@@ -1,4 +1,4 @@
-gemma-zds-client
+gemma-zds-client==0.3.1
 Pillow
 pip-tools
 psycopg2-binary

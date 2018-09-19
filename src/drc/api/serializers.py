@@ -79,6 +79,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
             'object': {
-                'validators': [URLValidator()],
+                'validators': [URLValidator(headers={'Accept-Crs': 'EPSG:4326'})],
             }
         }

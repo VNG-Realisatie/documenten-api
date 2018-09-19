@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from .api import *  # noqa
 
-SITE_ID = 1
+SITE_ID = int(os.getenv('SITE_ID', 1))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 DJANGO_PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
