@@ -6,7 +6,9 @@ from zds_schema.constants import ObjectTypes
 from zds_schema.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from zds_schema.validators import alphanumeric_excluding_diacritic, UntilNowValidator
+from zds_schema.validators import (
+    UntilNowValidator, alphanumeric_excluding_diacritic
+)
 
 
 class InformatieObject(models.Model):

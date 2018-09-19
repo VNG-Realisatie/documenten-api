@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import TypeCheckMixin, get_operation_url
 
-from drc.datamodel.tests.factories import ZaakInformatieObjectFactory
+from drc.datamodel.tests.factories import ObjectInformatieObjectFactory
 
 
 class US154Tests(TypeCheckMixin, APITestCase):
@@ -17,12 +17,12 @@ class US154Tests(TypeCheckMixin, APITestCase):
     def test_informatieobjecttype_filter(self):
         zaak_url = 'http://www.example.com/zrc/api/v1/zaken/1'
 
-        ZaakInformatieObjectFactory.create_batch(2, zaak=zaak_url)
-        ZaakInformatieObjectFactory.create(zaak='http://www.example.com/zrc/api/v1/zaken/2')
+        ObjectInformatieObjectFactory.create_batch(2, is_zaak=True, object=zaak_url)
+        ObjectInformatieObjectFactory.create(is_zaak=True, object='http://www.example.com/zrc/api/v1/zaken/2')
 
-        url = get_operation_url('zaakinformatieobject_list')
+        url = get_operation_url('objectinformatieobject_list')
 
-        response = self.client.get(url, {'zaak': zaak_url})
+        response = self.client.get(url, {'object': zaak_url})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
 
@@ -30,4 +30,4 @@ class US154Tests(TypeCheckMixin, APITestCase):
         self.assertEqual(len(response_data), 2)
 
         for zio in response_data:
-            self.assertEqual(zio['zaak'], zaak_url)
+            self.assertEqual(zio['object'], zaak_url)

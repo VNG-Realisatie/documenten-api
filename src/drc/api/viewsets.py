@@ -20,7 +20,8 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
     create:
     Registreer een EnkelvoudigInformatieObject.
 
-    De URL naar het informatieobjecttype wordt gevalideerd op geldigheid.
+    Er wordt gevalideerd op:
+    - geldigheid informatieobjecttype URL
 
     retrieve:
     Geef de details van een EnkelvoudigInformatieObject.
@@ -35,10 +36,15 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
                                     mixins.RetrieveModelMixin,
                                     viewsets.GenericViewSet):
     """
-    Beheer relatie tussen InformatieObject en ZAAK.
+    Beheer relatie tussen InformatieObject en OBJECT.
 
     create:
-    Registreer een INFORMATIEOBJECT bij een ZAAK.
+    Registreer een INFORMATIEOBJECT bij een OBJECT.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobject URL
+    - geldigheid object URL
+    - de registratiedatum mag niet in de toekomst liggen
 
     retrieve:
     Geef de details van een OBJECTINFORMATIEOBJECT relatie.
