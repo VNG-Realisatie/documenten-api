@@ -5,6 +5,8 @@ See:
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/154 (us)
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/239 (mapping)
 """
+from unittest.mock import patch
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import TypeCheckMixin, get_operation_url
@@ -13,6 +15,11 @@ from drc.datamodel.tests.factories import ObjectInformatieObjectFactory
 
 
 class US154Tests(TypeCheckMixin, APITestCase):
+
+    def setUp(self):
+        patcher = patch('drc.sync.signals.sync_create')
+        self.mocked_sync_create = patcher.start()
+        self.addCleanup(patcher.stop)
 
     def test_informatieobjecttype_filter(self):
         zaak_url = 'http://www.example.com/zrc/api/v1/zaken/1'

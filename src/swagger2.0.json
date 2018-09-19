@@ -348,7 +348,7 @@
             },
             "post": {
                 "operationId": "objectinformatieobject_create",
-                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de registratiedatum mag niet in de toekomst liggen",
+                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de registratiedatum mag niet in de toekomst liggen\n\nBij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\nrelatie aangemaakt, echter zonder de relatie-informatie.",
                 "parameters": [
                     {
                         "name": "data",

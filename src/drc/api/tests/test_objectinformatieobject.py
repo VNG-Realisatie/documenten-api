@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.urls import reverse, reverse_lazy
@@ -22,6 +23,11 @@ ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 class ObjectInformatieObjectAPITests(APITestCase):
 
     list_url = reverse_lazy('objectinformatieobject-list', kwargs={'version': '1'})
+
+    def setUp(self):
+        patcher = patch('drc.sync.signals.sync_create')
+        self.mocked_sync_create = patcher.start()
+        self.addCleanup(patcher.stop)
 
     def test_create(self):
         enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()

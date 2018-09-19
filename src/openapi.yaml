@@ -316,7 +316,12 @@ paths:
 
         - geldigheid object URL
 
-        - de registratiedatum mag niet in de toekomst liggen'
+        - de registratiedatum mag niet in de toekomst liggen
+
+
+        Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
+
+        relatie aangemaakt, echter zonder de relatie-informatie.'
       responses:
         '201':
           description: ''
