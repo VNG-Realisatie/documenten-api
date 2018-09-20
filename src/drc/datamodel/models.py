@@ -127,6 +127,7 @@ class ObjectInformatieObject(models.Model):
     class Meta:
         verbose_name = 'Zaakinformatieobject'
         verbose_name_plural = 'Zaakinformatieobjecten'
+        unique_together = ('informatieobject', 'object')
 
     def __str__(self):
         return self.get_title()

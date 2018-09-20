@@ -82,6 +82,30 @@ class ObjectInformatieObjectAPITests(APITestCase):
         error = get_validation_errors(response, 'registratiedatum')
         self.assertEqual(error['code'], UntilNowValidator.code)
 
+    def test_duplicate_object(self):
+        """
+        Test the (informatieobject, object) unique together validation.
+        """
+        oio = ObjectInformatieObjectFactory.create()
+        enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': oio.informatieobject.uuid,
+        })
+
+        content = {
+            'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
+            'object': oio.object,
+            'objectType': ObjectTypes.zaak,
+            'registratiedatum': '2018-09-19T12:25:19+0200',
+        }
+
+        # Send to the API
+        response = self.client.post(self.list_url, content)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'unique')
+
     def test_read(self):
         zio = ObjectInformatieObjectFactory.create(is_besluit=True)
         # Retrieve from the API

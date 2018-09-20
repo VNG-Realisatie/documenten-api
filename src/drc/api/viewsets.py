@@ -45,6 +45,7 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
     - geldigheid informatieobject URL
     - geldigheid object URL
     - de registratiedatum mag niet in de toekomst liggen
+    - de combinatie informatieobject en object moet uniek zijn
 
     Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
     relatie aangemaakt, echter zonder de relatie-informatie.
