@@ -1,4 +1,3 @@
-gemma-zds-client==0.3.1
 Pillow
 pip-tools
 psycopg2-binary
@@ -17,4 +16,4 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
-zds-schema==0.4.0
+zds-schema==0.6.0
