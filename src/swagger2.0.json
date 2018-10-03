@@ -44,6 +44,54 @@
                                 "$ref": "#/definitions/EnkelvoudigInformatieObject"
                             }
                         }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
                     }
                 },
                 "tags": [
@@ -52,7 +100,7 @@
             },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
-                "description": "Registreer een EnkelvoudigInformatieObject.",
+                "description": "Registreer een EnkelvoudigInformatieObject.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobjecttype URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -68,6 +116,60 @@
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
                         }
                     }
                 },
@@ -88,6 +190,60 @@
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObject"
                         }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
                     }
                 },
                 "tags": [
@@ -105,15 +261,15 @@
                 }
             ]
         },
-        "/zaakinformatieobjecten": {
+        "/objectinformatieobjecten": {
             "get": {
-                "operationId": "zaakinformatieobject_list",
-                "description": "Beheer relatie tussen InformatieObject en ZAAK.",
+                "operationId": "objectinformatieobject_list",
+                "description": "Beheer relatie tussen InformatieObject en OBJECT.",
                 "parameters": [
                     {
-                        "name": "zaak",
+                        "name": "object",
                         "in": "query",
-                        "description": "URL naar de ZAAK in het ZRC.",
+                        "description": "URL naar het gerelateerde OBJECT.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -133,25 +289,73 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ZaakInformatieObject"
+                                "$ref": "#/definitions/ObjectInformatieObject"
                             }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
                         }
                     }
                 },
                 "tags": [
-                    "zaakinformatieobjecten"
+                    "objectinformatieobjecten"
                 ]
             },
             "post": {
-                "operationId": "zaakinformatieobject_create",
-                "description": "Registreer een INFORMATIEOBJECT bij een ZAAK.",
+                "operationId": "objectinformatieobject_create",
+                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de registratiedatum mag niet in de toekomst liggen\n- de combinatie informatieobject en object moet uniek zijn\n\nBij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\nrelatie aangemaakt, echter zonder de relatie-informatie.",
                 "parameters": [
                     {
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
+                            "$ref": "#/definitions/ObjectInformatieObject"
                         }
                     }
                 ],
@@ -159,31 +363,139 @@
                     "201": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
                         }
                     }
                 },
                 "tags": [
-                    "zaakinformatieobjecten"
+                    "objectinformatieobjecten"
                 ]
             },
             "parameters": []
         },
-        "/zaakinformatieobjecten/{uuid}": {
+        "/objectinformatieobjecten/{uuid}": {
             "get": {
-                "operationId": "zaakinformatieobject_read",
-                "description": "Geef de details van een ZAAKINFORMATIEOBJECT relatie.",
+                "operationId": "objectinformatieobject_read",
+                "description": "Geef de details van een OBJECTINFORMATIEOBJECT relatie.",
                 "parameters": [],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
                         }
                     }
                 },
                 "tags": [
-                    "zaakinformatieobjecten"
+                    "objectinformatieobjecten"
                 ]
             },
             "parameters": [
@@ -790,10 +1102,139 @@
                 }
             }
         },
-        "ZaakInformatieObject": {
+        "Fout": {
             "required": [
-                "zaak",
-                "informatieobject"
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "FieldValidationError": {
+            "required": [
+                "name",
+                "code",
+                "reason"
+            ],
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "description": "Naam van het veld met ongeldige gegevens",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "title": "Reason",
+                    "description": "Uitleg wat er precies fout is met de gegevens",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "ValidatieFout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance",
+                "invalid-params"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "invalid-params": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FieldValidationError"
+                    }
+                }
+            }
+        },
+        "ObjectInformatieObject": {
+            "required": [
+                "informatieobject",
+                "object",
+                "objectType",
+                "registratiedatum"
             ],
             "type": "object",
             "properties": {
@@ -803,18 +1244,44 @@
                     "format": "uri",
                     "readOnly": true
                 },
-                "zaak": {
-                    "title": "Zaak",
-                    "description": "URL naar de ZAAK in het ZRC.",
+                "informatieobject": {
+                    "title": "Informatieobject",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "object": {
+                    "title": "Object",
+                    "description": "URL naar het gerelateerde OBJECT.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
                 },
-                "informatieobject": {
-                    "title": "Informatieobject",
+                "objectType": {
+                    "title": "Objecttype",
                     "type": "string",
-                    "format": "uri"
+                    "enum": [
+                        "besluit",
+                        "zaak"
+                    ]
+                },
+                "titel": {
+                    "title": "Titel",
+                    "description": "De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is.",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "beschrijving": {
+                    "title": "Beschrijving",
+                    "description": "Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 1000
+                },
+                "registratiedatum": {
+                    "title": "Registratiedatum",
+                    "description": "De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd.",
+                    "type": "string",
+                    "format": "date-time"
                 }
             }
         }

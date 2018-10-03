@@ -1,6 +1,6 @@
 {
   "name": "drc",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "drc referentie implementatie API",
   "main": "src/index.js",
   "directories": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "convert": "swagger2openapi src/swagger2.0.json -o src/openapi.yaml",
-     "build": "gulp build"
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",

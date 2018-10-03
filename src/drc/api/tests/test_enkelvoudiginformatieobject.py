@@ -2,12 +2,12 @@ import uuid
 from base64 import b64encode
 from datetime import date
 
+from django.test import override_settings
 from django.urls import reverse, reverse_lazy
 
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import VertrouwelijkheidsAanduiding
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -18,6 +18,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
 
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
     def test_create(self):
         content = {
             'identificatie': uuid.uuid4().hex,
@@ -53,7 +54,10 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
         self.assertEqual(stored_object.link, 'http://een.link')
         self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
-        self.assertEqual(stored_object.informatieobjecttype, 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1')
+        self.assertEqual(
+            stored_object.informatieobjecttype,
+            'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+        )
         self.assertEqual(stored_object.vertrouwelijkaanduiding, '')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={

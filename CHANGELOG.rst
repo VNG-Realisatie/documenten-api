@@ -2,6 +2,28 @@
 Wijzigingen
 ===========
 
+0.3.0 (2018-10-03)
+==================
+
+Herwerking van informatieobjectrelaties.
+
+* Mogelijke foutantwoorden in OAS 3.0 spec opgenomen
+* Validatie toegevoegd op ``informatieobjecttype`` URL
+* Licentie toegevoegd (Boris van Hoytema <boris@publiccode.net>)
+* Datamodel & API aangepast op generieke relatie tussen ``InformatieObject``
+  en gerelateerd object (zie hieronder)
+* Synchronisatie-actie gebouwd van DRC naar xRC zodat de relatie aan beide
+  kanten bekend is.
+
+**De volgende aanpassingen zijn backwards-incompatible**:
+
+* endpoints ``/zaakinformatieobjecten/...`` zijn verdwenen en vervangen door
+  ``/objectinformatieobjecten``
+* ``registratiedatum`` is een nieuw, verplicht veld bij een
+  ``ObjectInformatieObject``
+* ``objectType`` is een nieuw, verplicht veld bij een ``ObjectInformatieObject``
+
+
 0.2.3 (2018-08-20)
 ==================
 

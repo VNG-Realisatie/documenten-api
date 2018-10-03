@@ -1,12 +1,12 @@
 from zds_schema.filtersets import FilterSet
 
-from drc.datamodel.models import ZaakInformatieObject
+from drc.datamodel.models import ObjectInformatieObject
 
 
-class ZaakInformatieObjectFilter(FilterSet):
+class ObjectInformatieObjectFilter(FilterSet):
     class Meta:
-        model = ZaakInformatieObject
+        model = ObjectInformatieObject
         fields = (
-            'zaak',
+            'object',
             'informatieobject',
         )

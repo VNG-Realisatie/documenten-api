@@ -2,10 +2,13 @@ import uuid as _uuid
 
 from django.db import models
 
+from zds_schema.constants import ObjectTypes
 from zds_schema.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from zds_schema.validators import alphanumeric_excluding_diacritic
+from zds_schema.validators import (
+    UntilNowValidator, alphanumeric_excluding_diacritic
+)
 
 
 class InformatieObject(models.Model):
@@ -83,9 +86,9 @@ class EnkelvoudigInformatieObject(InformatieObject):
     )
 
 
-class ZaakInformatieObject(models.Model):
+class ObjectInformatieObject(models.Model):
     """
-    Modelleer een INFORMATIEOBJECT horend bij een ZAAK.
+    Modelleer een INFORMATIEOBJECT horend bij een OBJECT.
 
     INFORMATIEOBJECTen zijn bestanden die in het DRC leven. Een collectie van
     (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
@@ -97,8 +100,43 @@ class ZaakInformatieObject(models.Model):
     informatieobject = models.ForeignKey(
         'EnkelvoudigInformatieObject', on_delete=models.CASCADE
     )
-    zaak = models.URLField(help_text="URL naar de ZAAK in het ZRC.")
+    object = models.URLField(help_text="URL naar het gerelateerde OBJECT.")
+    object_type = models.CharField(
+        "objecttype", max_length=100,
+        choices=ObjectTypes.choices
+    )
+
+    # relatiegegevens
+    titel = models.CharField(
+        "titel", max_length=200, blank=True,
+        help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
+    )
+    beschrijving = models.TextField(
+        "beschrijving", max_length=1000, blank=True,
+        help_text="Een op het object gerichte beschrijving van de inhoud van"
+                  "het INFORMATIEOBJECT."
+    )
+    registratiedatum = models.DateTimeField(
+        "registratiedatum", validators=[UntilNowValidator()],
+        help_text="De datum waarop de behandelende organisatie het "
+                  "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
+                  "Geldige waardes zijn datumtijden gelegen op of voor de "
+                  "huidige datum en tijd."
+    )
 
     class Meta:
         verbose_name = 'Zaakinformatieobject'
         verbose_name_plural = 'Zaakinformatieobjecten'
+        unique_together = ('informatieobject', 'object')
+
+    def __str__(self):
+        return self.get_title()
+
+    def get_title(self) -> str:
+        if self.titel:
+            return self.titel
+
+        if self.informatieobject_id:
+            return self.informatieobject.titel
+
+        return '(onbekende titel)'
