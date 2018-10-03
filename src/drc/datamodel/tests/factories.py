@@ -1,11 +1,10 @@
 import datetime
 import uuid
 
-import factory
+from django.utils import timezone
 
-from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ZaakInformatieObject
-)
+import factory
+from zds_schema.constants import ObjectTypes
 
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
@@ -20,12 +19,24 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     informatieobjecttype = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
     class Meta:
-        model = EnkelvoudigInformatieObject
+        model = 'datamodel.EnkelvoudigInformatieObject'
 
 
-class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
+class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
+    object = factory.Faker('url')
+    registratiedatum = factory.Faker('past_datetime', tzinfo=timezone.utc)
 
     class Meta:
-        model = ZaakInformatieObject
+        model = 'datamodel.ObjectInformatieObject'
+
+    class Params:
+        is_zaak = factory.Trait(
+            object_type=ObjectTypes.zaak,
+            object=factory.Sequence(lambda n: f'https://zrc.nl/api/v1/zaken/{n}')
+        )
+        is_besluit = factory.Trait(
+            object_type=ObjectTypes.besluit,
+            object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}')
+        )

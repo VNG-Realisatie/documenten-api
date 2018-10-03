@@ -7,7 +7,7 @@ from rest_framework import serializers
 from zds_schema.validators import URLValidator
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ZaakInformatieObject
+    EnkelvoudigInformatieObject, ObjectInformatieObject
 )
 
 
@@ -57,14 +57,19 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         }
 
 
-class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    # TODO: valideer dat ZaakInformatieObject.informatieobjecttype hoort bij zaak.zaaktype
+class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
+    # bij zaak.zaaktype
     class Meta:
-        model = ZaakInformatieObject
+        model = ObjectInformatieObject
         fields = (
             'url',
-            'zaak',
-            'informatieobject'
+            'informatieobject',
+            'object',
+            'object_type',
+            'titel',
+            'beschrijving',
+            'registratiedatum',
         )
         extra_kwargs = {
             'url': {
@@ -72,5 +77,8 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'informatieobject': {
                 'lookup_field': 'uuid',
+            },
+            'object': {
+                'validators': [URLValidator(headers={'Accept-Crs': 'EPSG:4326'})],
             }
         }
