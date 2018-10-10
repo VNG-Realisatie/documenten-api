@@ -26,7 +26,6 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
     object = factory.Faker('url')
-    registratiedatum = factory.Faker('past_datetime', tzinfo=timezone.utc)
 
     class Meta:
         model = 'datamodel.ObjectInformatieObject'
@@ -34,7 +33,8 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
     class Params:
         is_zaak = factory.Trait(
             object_type=ObjectTypes.zaak,
-            object=factory.Sequence(lambda n: f'https://zrc.nl/api/v1/zaken/{n}')
+            object=factory.Sequence(lambda n: f'https://zrc.nl/api/v1/zaken/{n}'),
+            registratiedatum=factory.Faker('past_datetime', tzinfo=timezone.utc)
         )
         is_besluit = factory.Trait(
             object_type=ObjectTypes.besluit,

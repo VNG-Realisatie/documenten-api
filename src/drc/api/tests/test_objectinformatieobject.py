@@ -17,6 +17,7 @@ from drc.datamodel.tests.factories import (
 )
 
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
+BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
@@ -69,6 +70,42 @@ class ObjectInformatieObjectAPITests(APITestCase):
         })
         self.assertEqual(response.json(), expected_response)
 
+    def test_create_besluitinformatieobject(self):
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': enkelvoudig_informatie.uuid,
+        })
+
+        content = {
+            'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
+            'object': BESLUIT,
+            'objectType': ObjectTypes.besluit,
+        }
+
+        # Send to the API
+        response = self.client.post(self.list_url, content)
+
+        # Test response
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # Test database
+        self.assertEqual(ObjectInformatieObject.objects.count(), 1)
+        stored_object = ObjectInformatieObject.objects.get()
+        self.assertEqual(stored_object.object, BESLUIT)
+        self.assertEqual(stored_object.object_type, ObjectTypes.besluit)
+
+        expected_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': stored_object.uuid,
+        })
+
+        expected_response = content.copy()
+        expected_response.update({
+            'url': f'http://testserver{expected_url}',
+        })
+        self.assertEqual(response.json(), expected_response)
+
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_future_registratiedatum(self):
         content = {
@@ -106,7 +143,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'unique')
 
-    def test_read(self):
+    def test_read_besluit(self):
         zio = ObjectInformatieObjectFactory.create(is_besluit=True)
         # Retrieve from the API
 
@@ -129,6 +166,36 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.besluit,
+            'titel': '',
+            'beschrijving': '',
+            'registratiedatum': None,
+        }
+
+        self.assertEqual(response.json(), expected)
+
+    def test_read_zaak(self):
+        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        # Retrieve from the API
+
+        zio_detail_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': zio.uuid,
+        })
+        response = self.client.get(zio_detail_url)
+
+        # Test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': zio.informatieobject.uuid,
+        })
+
+        expected = {
+            'url': f'http://testserver{zio_detail_url}',
+            'informatieobject': f'http://testserver{eo_detail_url}',
+            'object': zio.object,
+            'objectType': ObjectTypes.zaak,
             'titel': '',
             'beschrijving': '',
             'registratiedatum': zio.registratiedatum.strftime('%Y-%m-%dT%H:%M:%SZ'),
