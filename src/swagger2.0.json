@@ -498,6 +498,176 @@
                     "objectinformatieobjecten"
                 ]
             },
+            "put": {
+                "operationId": "objectinformatieobject_update",
+                "description": "Update een INFORMATIEOBJECT bij een OBJECT.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- geldigheid object URL\n- registratiedatum is verplicht indien het een object van het type ZAAK\n  betreft\n- de registratiedatum mag niet in de toekomst liggen\n- de combinatie informatieobject en object moet uniek zijn\n\nBij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\nrelatie bijgewerkt.\n\nTitel, beschrijving en registratiedatum worden genegeneerd als het om een\nobject van het type BESLUIT gaat.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    }
+                },
+                "tags": [
+                    "objectinformatieobjecten"
+                ]
+            },
+            "patch": {
+                "operationId": "objectinformatieobject_partial_update",
+                "description": "Beheer relatie tussen InformatieObject en OBJECT.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    }
+                },
+                "tags": [
+                    "objectinformatieobjecten"
+                ]
+            },
             "parameters": [
                 {
                     "name": "uuid",
@@ -1273,8 +1443,7 @@
                 "beschrijving": {
                     "title": "Beschrijving",
                     "description": "Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT.",
-                    "type": "string",
-                    "maxLength": 1000
+                    "type": "string"
                 },
                 "registratiedatum": {
                     "title": "Registratiedatum",

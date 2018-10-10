@@ -113,7 +113,7 @@ class ObjectInformatieObject(models.Model):
         help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
     )
     beschrijving = models.TextField(
-        "beschrijving", max_length=1000, blank=True,
+        "beschrijving", blank=True,
         help_text="Een op het object gerichte beschrijving van de inhoud van"
                   "het INFORMATIEOBJECT."
     )

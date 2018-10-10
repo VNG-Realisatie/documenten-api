@@ -34,6 +34,7 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
 class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
                                     mixins.ListModelMixin,
                                     mixins.RetrieveModelMixin,
+                                    mixins.UpdateModelMixin,
                                     viewsets.GenericViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
@@ -57,6 +58,23 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
 
     retrieve:
     Geef de details van een OBJECTINFORMATIEOBJECT relatie.
+
+    update:
+    Update een INFORMATIEOBJECT bij een OBJECT.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobject URL
+    - geldigheid object URL
+    - registratiedatum is verplicht indien het een object van het type ZAAK
+      betreft
+    - de registratiedatum mag niet in de toekomst liggen
+    - de combinatie informatieobject en object moet uniek zijn
+
+    Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
+    relatie bijgewerkt.
+
+    Titel, beschrijving en registratiedatum worden genegeneerd als het om een
+    object van het type BESLUIT gaat.
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
