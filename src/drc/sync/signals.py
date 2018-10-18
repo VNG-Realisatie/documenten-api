@@ -24,7 +24,7 @@ def sync_create(relation: ObjectInformatieObject):
         'uuid': relation.informatieobject.uuid,
     })
     domain = Site.objects.get_current().domain
-    protocol = 'https' if not settings.DEBUG else 'http'
+    protocol = 'https' if settings.IS_HTTPS else 'http'
     informatieobject_url = f'{protocol}://{domain}{path}'
 
     logger.info("Remote object: %s", relation.object)

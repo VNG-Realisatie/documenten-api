@@ -250,7 +250,7 @@ LOGGING = {
         '': {
             'handlers': ['project'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
         },
         'drc': {
             'handlers': ['project'],
@@ -333,3 +333,8 @@ if SENTRY_DSN:
             'dsn': RAVEN_CONFIG['dsn']
         },
     })
+
+#
+# SSL or not?
+#
+IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']

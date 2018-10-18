@@ -1,7 +1,7 @@
 import uuid as _uuid
 
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 
 from zds_schema.constants import ObjectTypes
 from zds_schema.fields import (
