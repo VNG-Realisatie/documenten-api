@@ -247,6 +247,11 @@ LOGGING = {
         },
     },
     'loggers': {
+        '': {
+            'handlers': ['project'],
+            'level': 'INFO',
+            'propagate': True,
+        },
         'drc': {
             'handlers': ['project'],
             'level': 'INFO',
