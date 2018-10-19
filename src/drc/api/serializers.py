@@ -4,6 +4,7 @@ Serializers of the Document Registratie Component REST API
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
+from zds_schema.constants import ObjectTypes
 from zds_schema.validators import URLValidator
 
 from drc.datamodel.models import (
@@ -82,3 +83,18 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [URLValidator(headers={'Accept-Crs': 'EPSG:4326'})],
             }
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not hasattr(self, 'initial_data'):
+            return
+
+        object_type = self.initial_data.get('object_type')
+
+        if object_type == ObjectTypes.besluit:
+            del self.fields['titel']
+            del self.fields['beschrijving']
+            del self.fields['registratiedatum']
+        else:
+            self.fields['registratiedatum'].required = True

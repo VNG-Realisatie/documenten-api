@@ -2,6 +2,19 @@
 Wijzigingen
 ===========
 
+0.3.1 (2018-10-19)
+==================
+
+Fixes in omgang met informatieobjectrelaties
+
+* Serializer aangepast naar runtime gedrag. De relatie informatieobject-besluit
+  heeft geen relatiegegevens. Deze worden nu ook genegeerd.
+* Update van ZDS-client met betere logging.
+* Nieuwe setting/envvar ``IS_HTTPS`` om URL-constructie van eigen resources
+  robuuster te maken. Dit was voordien gebaseerd op de ``DEBUG`` setting.
+* Concurrency in application server ingeschakeld
+
+
 0.3.0 (2018-10-03)
 ==================
 

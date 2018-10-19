@@ -25,4 +25,13 @@ python src/manage.py migrate
 
 # Start server
 >&2 echo "Starting server"
-uwsgi --http :8000 --module drc.wsgi --static-map /static=/app/static --static-map /media=/app/media  --chdir=src
+uwsgi \
+    --http :8000 \
+    --module drc.wsgi \
+    --static-map /static=/app/static \
+    --static-map /media=/app/media  \
+    --chdir src \
+    --processes 2 \
+    --threads 2
+    # processes & threads for concurrency, needed if there's no reverse proxy
+    # sitting in front and if there are 'circular' dependencies, which DRC has
