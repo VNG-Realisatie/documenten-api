@@ -1,5 +1,6 @@
 import uuid as _uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from zds_schema.constants import ObjectTypes
@@ -112,12 +113,12 @@ class ObjectInformatieObject(models.Model):
         help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
     )
     beschrijving = models.TextField(
-        "beschrijving", max_length=1000, blank=True,
+        "beschrijving", blank=True,
         help_text="Een op het object gerichte beschrijving van de inhoud van"
                   "het INFORMATIEOBJECT."
     )
     registratiedatum = models.DateTimeField(
-        "registratiedatum", validators=[UntilNowValidator()],
+        "registratiedatum", null=True, blank=True, validators=[UntilNowValidator()],
         help_text="De datum waarop de behandelende organisatie het "
                   "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
                   "Geldige waardes zijn datumtijden gelegen op of voor de "
@@ -131,6 +132,13 @@ class ObjectInformatieObject(models.Model):
 
     def __str__(self):
         return self.get_title()
+
+    def clean(self):
+        if self.object_type == ObjectTypes.zaak and not self.registratiedatum:
+            raise ValidationError(
+                {'registratiedatum': "Registratiedatum is een verplicht veld voor aakinformatieobjecten"},
+                code='required'
+            )
 
     def get_title(self) -> str:
         if self.titel:

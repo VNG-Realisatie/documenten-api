@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_delete, post_save
@@ -7,6 +9,8 @@ from django.urls import reverse
 from zds_client import Client, extract_params, get_operation_url
 
 from drc.datamodel.models import ObjectInformatieObject
+
+logger = logging.getLogger(__name__)
 
 
 class SyncError(Exception):
@@ -20,8 +24,11 @@ def sync_create(relation: ObjectInformatieObject):
         'uuid': relation.informatieobject.uuid,
     })
     domain = Site.objects.get_current().domain
-    protocol = 'https' if not settings.DEBUG else 'http'
+    protocol = 'https' if settings.IS_HTTPS else 'http'
     informatieobject_url = f'{protocol}://{domain}{path}'
+
+    logger.info("Remote object: %s", relation.object)
+    logger.info("Informatieobject: %s", informatieobject_url)
 
     # figure out which remote resource we need to interact with
     resource = f"{relation.object_type}informatieobject"
