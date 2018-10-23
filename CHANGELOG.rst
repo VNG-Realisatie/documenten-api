@@ -2,6 +2,13 @@
 Wijzigingen
 ===========
 
+0.3.2 (2018-10-23)
+==================
+
+Fix openapi schema
+
+* Onderscheid tussen request body & response body is nu duidelijk
+
 0.3.1 (2018-10-19)
 ==================
 
