@@ -45,36 +45,28 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
     Er wordt gevalideerd op:
     - geldigheid informatieobject URL
     - geldigheid object URL
-    - registratiedatum is verplicht indien het een object van het type ZAAK
-      betreft
-    - de registratiedatum mag niet in de toekomst liggen
     - de combinatie informatieobject en object moet uniek zijn
+
+    De registratiedatum wordt door het systeem op 'NU' gezet.
 
     Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
     relatie aangemaakt, echter zonder de relatie-informatie.
 
-    Titel, beschrijving en registratiedatum worden genegeneerd als het om een
-    object van het type BESLUIT gaat.
+    Titel en beschrijving zijn enkel relevant als het om een
+    object van het type ZAAK gaat.
 
     retrieve:
     Geef de details van een OBJECTINFORMATIEOBJECT relatie.
 
     update:
-    Update een INFORMATIEOBJECT bij een OBJECT.
+    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
 
     Er wordt gevalideerd op:
-    - geldigheid informatieobject URL
-    - geldigheid object URL
-    - registratiedatum is verplicht indien het een object van het type ZAAK
-      betreft
-    - de registratiedatum mag niet in de toekomst liggen
-    - de combinatie informatieobject en object moet uniek zijn
+    - informatieobject URL, object URL en objectType mogen niet veranderen
 
-    Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
-    relatie bijgewerkt.
-
-    Titel, beschrijving en registratiedatum worden genegeneerd als het om een
-    object van het type BESLUIT gaat.
+    Titel en beschrijving zijn enkel relevant als het om een
+    object van het type ZAAK gaat.
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer

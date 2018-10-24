@@ -1,15 +1,17 @@
 import uuid
+from datetime import datetime
 from unittest.mock import patch
 
 from django.test import override_settings
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import ObjectTypes
 from zds_schema.tests import get_validation_errors
-from zds_schema.validators import UntilNowValidator
+from zds_schema.validators import IsImmutableValidator
 
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
@@ -18,6 +20,13 @@ from drc.datamodel.tests.factories import (
 
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'
+
+
+def dt_to_api(dt: datetime):
+    formatted = dt.isoformat()
+    if formatted.endswith('+00:00'):
+        return formatted[:-6] + 'Z'
+    return formatted
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
@@ -30,6 +39,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.mocked_sync_create = patcher.start()
         self.addCleanup(patcher.stop)
 
+    @freeze_time('2018-09-19T12:25:19+0200')
     def test_create(self):
         enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
@@ -41,7 +51,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
-            'registratiedatum': '2018-09-19T12:25:19+0200',
         }
 
         # Send to the API
@@ -106,18 +115,30 @@ class ObjectInformatieObjectAPITests(APITestCase):
         })
         self.assertEqual(response.json(), expected_response)
 
-    @freeze_time('2018-09-19T12:25:19+0200')
-    def test_future_registratiedatum(self):
+    @freeze_time('2018-09-20 12:00:00')
+    def test_registratiedatum_ignored(self):
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': enkelvoudig_informatie.uuid,
+        })
+
         content = {
+            'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
+            'object': ZAAK,
+            'objectType': ObjectTypes.zaak,
             'registratiedatum': '2018-09-19T12:25:20+0200',
         }
 
         # Send to the API
-        response = self.client.post(self.list_url, content)
+        self.client.post(self.list_url, content)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
-        error = get_validation_errors(response, 'registratiedatum')
-        self.assertEqual(error['code'], UntilNowValidator.code)
+        oio = ObjectInformatieObject.objects.get()
+
+        self.assertEqual(
+            oio.registratiedatum,
+            datetime(2018, 9, 20, 12, 0, 0).replace(tzinfo=timezone.utc)
+        )
 
     def test_duplicate_object(self):
         """
@@ -168,10 +189,36 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'objectType': ObjectTypes.besluit,
             'titel': '',
             'beschrijving': '',
-            'registratiedatum': None,
+            'registratiedatum': dt_to_api(zio.registratiedatum),
         }
 
         self.assertEqual(response.json(), expected)
+
+    def test_update_besluit(self):
+        eo = EnkelvoudigInformatieObjectFactory.create()
+        zio = ObjectInformatieObjectFactory.create(is_besluit=True)
+
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': eo.uuid,
+        })
+        zio_detail_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': zio.uuid,
+        })
+
+        response = self.client.patch(zio_detail_url, {
+            'object': 'https://something.different',
+            'informatieobject': eo_detail_url,
+            'objectType': ObjectTypes.zaak,
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        for field in ['object', 'informatieobject', 'objectType']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], IsImmutableValidator.code)
 
     def test_read_zaak(self):
         zio = ObjectInformatieObjectFactory.create(is_zaak=True)
@@ -198,7 +245,33 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'objectType': ObjectTypes.zaak,
             'titel': '',
             'beschrijving': '',
-            'registratiedatum': zio.registratiedatum.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'registratiedatum': dt_to_api(zio.registratiedatum),
         }
 
         self.assertEqual(response.json(), expected)
+
+    def test_update_zaak(self):
+        eo = EnkelvoudigInformatieObjectFactory.create()
+        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': eo.uuid,
+        })
+        zio_detail_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': zio.uuid,
+        })
+
+        response = self.client.patch(zio_detail_url, {
+            'object': 'https://something.different',
+            'informatieobject': eo_detail_url,
+            'objectType': ObjectTypes.besluit,
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        for field in ['object', 'informatieobject', 'objectType']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], IsImmutableValidator.code)
