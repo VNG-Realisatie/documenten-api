@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.3.3 (2018-10-24)
+==================
+
+Tweaks aan ``ObjectInformatieObject`` resource
+
+* ``registratiedatum`` wordt door het systeem gegenereerd en is read-only
+* wijzigen van relatie (``object``, ``informatieobject`` en ``objectType``) is
+  niet toegestaan
+
 0.3.2 (2018-10-23)
 ==================
 
