@@ -8,6 +8,8 @@ from zds_schema.fields import (
 )
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
+from .constants import RelatieAarden
+
 
 class InformatieObject(models.Model):
     uuid = models.UUIDField(
@@ -102,6 +104,10 @@ class ObjectInformatieObject(models.Model):
     object_type = models.CharField(
         "objecttype", max_length=100,
         choices=ObjectTypes.choices
+    )
+    aard_relatie = models.CharField(
+        "aard relatie", max_length=20,
+        choices=RelatieAarden.choices
     )
 
     # relatiegegevens

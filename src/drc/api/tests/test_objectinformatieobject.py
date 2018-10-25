@@ -13,6 +13,7 @@ from zds_schema.constants import ObjectTypes
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import IsImmutableValidator
 
+from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
@@ -51,6 +52,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
+            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -76,6 +78,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'titel': '',
             'beschrijving': '',
             'registratiedatum': '2018-09-19T10:25:19Z',
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -90,6 +93,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
             'object': BESLUIT,
             'objectType': ObjectTypes.besluit,
+            'aardRelatie': RelatieAarden.legt_vast,
         }
 
         # Send to the API
@@ -112,6 +116,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         expected_response = content.copy()
         expected_response.update({
             'url': f'http://testserver{expected_url}',
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -128,6 +133,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
             'registratiedatum': '2018-09-19T12:25:20+0200',
+            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -155,6 +161,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'object': oio.object,
             'objectType': ObjectTypes.zaak,
             'registratiedatum': '2018-09-19T12:25:19+0200',
+            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -187,6 +194,8 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.besluit,
+            'aardRelatie': RelatieAarden.legt_vast,
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
             'titel': '',
             'beschrijving': '',
             'registratiedatum': dt_to_api(zio.registratiedatum),
@@ -243,6 +252,8 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.zaak,
+            'aardRelatie': RelatieAarden.hoort_bij,
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
             'titel': '',
             'beschrijving': '',
             'registratiedatum': dt_to_api(zio.registratiedatum),
