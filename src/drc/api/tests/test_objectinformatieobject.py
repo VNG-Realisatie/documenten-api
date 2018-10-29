@@ -52,7 +52,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
-            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -66,6 +65,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         stored_object = ObjectInformatieObject.objects.get()
         self.assertEqual(stored_object.object, ZAAK)
         self.assertEqual(stored_object.object_type, ObjectTypes.zaak)
+        self.assertEqual(stored_object.aard_relatie, RelatieAarden.hoort_bij)
 
         expected_url = reverse('objectinformatieobject-detail', kwargs={
             'version': '1',
@@ -93,7 +93,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': 'http://testserver' + enkelvoudig_informatie_url,
             'object': BESLUIT,
             'objectType': ObjectTypes.besluit,
-            'aardRelatie': RelatieAarden.legt_vast,
         }
 
         # Send to the API
@@ -107,6 +106,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         stored_object = ObjectInformatieObject.objects.get()
         self.assertEqual(stored_object.object, BESLUIT)
         self.assertEqual(stored_object.object_type, ObjectTypes.besluit)
+        self.assertEqual(stored_object.aard_relatie, RelatieAarden.legt_vast)
 
         expected_url = reverse('objectinformatieobject-detail', kwargs={
             'version': '1',
@@ -133,7 +133,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
             'registratiedatum': '2018-09-19T12:25:20+0200',
-            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -150,7 +149,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         """
         Test the (informatieobject, object) unique together validation.
         """
-        oio = ObjectInformatieObjectFactory.create()
+        oio = ObjectInformatieObjectFactory.create(is_zaak=True)
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': oio.informatieobject.uuid,
@@ -160,8 +159,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
             'object': oio.object,
             'objectType': ObjectTypes.zaak,
-            'registratiedatum': '2018-09-19T12:25:19+0200',
-            'aardRelatie': RelatieAarden.hoort_bij,
         }
 
         # Send to the API
@@ -194,7 +191,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.besluit,
-            'aardRelatie': RelatieAarden.legt_vast,
             'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
             'titel': '',
             'beschrijving': '',
@@ -252,7 +248,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.zaak,
-            'aardRelatie': RelatieAarden.hoort_bij,
             'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
             'titel': '',
             'beschrijving': '',

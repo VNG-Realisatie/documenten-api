@@ -136,6 +136,11 @@ class ObjectInformatieObject(models.Model):
     def __str__(self):
         return self.get_title()
 
+    def save(self, *args, **kwargs):
+        # override to set aard_relatie
+        self.aard_relatie = RelatieAarden.from_object_type(self.object_type)
+        super().save(*args, **kwargs)
+
     def get_title(self) -> str:
         if self.titel:
             return self.titel

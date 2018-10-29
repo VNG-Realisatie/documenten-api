@@ -1,6 +1,7 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+from django.utils.encoding import force_text
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
@@ -60,7 +61,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    aard_relatie_weergave = serializers.CharField(source='get_aard_relatie_display', read_only=True)
+    aard_relatie_weergave = serializers.ChoiceField(
+        source='get_aard_relatie_display', read_only=True,
+        choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
+    )
 
     # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
     # bij zaak.zaaktype
@@ -71,7 +75,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'informatieobject',
             'object',
             'object_type',
-            'aard_relatie',
             'aard_relatie_weergave',
             'titel',
             'beschrijving',
