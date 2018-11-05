@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+0.4.4 (2018-11-05)
+==================
+
+Toevoeging van ``aardRelatie`` aan ``ObjectInformatieObject`` resource
+
+* ``aardRelatie`` (``hoort_bij``, ``legt_vast``) toegevoegd
+* implementatie waarbij ``aardRelatie`` gezet wordt op basis van ``objectType``
+
 0.3.3 (2018-10-24)
 ==================
 

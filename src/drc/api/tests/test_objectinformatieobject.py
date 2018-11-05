@@ -13,6 +13,7 @@ from zds_schema.constants import ObjectTypes
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import IsImmutableValidator
 
+from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
@@ -64,6 +65,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         stored_object = ObjectInformatieObject.objects.get()
         self.assertEqual(stored_object.object, ZAAK)
         self.assertEqual(stored_object.object_type, ObjectTypes.zaak)
+        self.assertEqual(stored_object.aard_relatie, RelatieAarden.hoort_bij)
 
         expected_url = reverse('objectinformatieobject-detail', kwargs={
             'version': '1',
@@ -76,6 +78,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'titel': '',
             'beschrijving': '',
             'registratiedatum': '2018-09-19T10:25:19Z',
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -103,6 +106,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         stored_object = ObjectInformatieObject.objects.get()
         self.assertEqual(stored_object.object, BESLUIT)
         self.assertEqual(stored_object.object_type, ObjectTypes.besluit)
+        self.assertEqual(stored_object.aard_relatie, RelatieAarden.legt_vast)
 
         expected_url = reverse('objectinformatieobject-detail', kwargs={
             'version': '1',
@@ -112,6 +116,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         expected_response = content.copy()
         expected_response.update({
             'url': f'http://testserver{expected_url}',
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -144,7 +149,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
         """
         Test the (informatieobject, object) unique together validation.
         """
-        oio = ObjectInformatieObjectFactory.create()
+        oio = ObjectInformatieObjectFactory.create(is_zaak=True)
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': oio.informatieobject.uuid,
@@ -154,7 +159,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
             'object': oio.object,
             'objectType': ObjectTypes.zaak,
-            'registratiedatum': '2018-09-19T12:25:19+0200',
         }
 
         # Send to the API
@@ -187,6 +191,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.besluit,
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
             'titel': '',
             'beschrijving': '',
             'registratiedatum': dt_to_api(zio.registratiedatum),
@@ -243,6 +248,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.zaak,
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
             'titel': '',
             'beschrijving': '',
             'registratiedatum': dt_to_api(zio.registratiedatum),

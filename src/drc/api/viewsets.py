@@ -40,20 +40,25 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
     Beheer relatie tussen InformatieObject en OBJECT.
 
     create:
-    Registreer een INFORMATIEOBJECT bij een OBJECT.
+    Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van
+    relaties met andere objecten gerealiseerd:
+
+    * INFORMATIEOBJECT behoort bij [OBJECT] en
+    * INFORMATIEOBJECT is vastlegging van [OBJECT].
 
     Er wordt gevalideerd op:
     - geldigheid informatieobject URL
     - geldigheid object URL
     - de combinatie informatieobject en object moet uniek zijn
 
-    De registratiedatum wordt door het systeem op 'NU' gezet.
+    De registratiedatum wordt door het systeem op 'NU' gezet. De aard_relatie
+    wordt ook door het systeem gezet.
 
     Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
     relatie aangemaakt, echter zonder de relatie-informatie.
 
-    Titel en beschrijving zijn enkel relevant als het om een
-    object van het type ZAAK gaat.
+    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
+    object van het type ZAAK gaat (aard relatie "hoort bij").
 
     retrieve:
     Geef de details van een OBJECTINFORMATIEOBJECT relatie.
@@ -65,8 +70,8 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
     Er wordt gevalideerd op:
     - informatieobject URL, object URL en objectType mogen niet veranderen
 
-    Titel en beschrijving zijn enkel relevant als het om een
-    object van het type ZAAK gaat.
+    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
+    object van het type ZAAK gaat (aard relatie "hoort bij").
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
