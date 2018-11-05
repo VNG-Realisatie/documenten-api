@@ -4,7 +4,10 @@ import uuid
 from django.utils import timezone
 
 import factory
+import factory.fuzzy
 from zds_schema.constants import ObjectTypes
+
+from ..constants import RelatieAarden
 
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
@@ -26,6 +29,7 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
     object = factory.Faker('url')
+    aard_relatie = factory.fuzzy.FuzzyChoice(RelatieAarden.values)
 
     class Meta:
         model = 'datamodel.ObjectInformatieObject'
@@ -34,9 +38,11 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
         is_zaak = factory.Trait(
             object_type=ObjectTypes.zaak,
             object=factory.Sequence(lambda n: f'https://zrc.nl/api/v1/zaken/{n}'),
-            registratiedatum=factory.Faker('past_datetime', tzinfo=timezone.utc)
+            registratiedatum=factory.Faker('past_datetime', tzinfo=timezone.utc),
+            aard_relatie=RelatieAarden.hoort_bij
         )
         is_besluit = factory.Trait(
             object_type=ObjectTypes.besluit,
-            object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}')
+            object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}'),
+            aard_relatie=RelatieAarden.legt_vast
         )
