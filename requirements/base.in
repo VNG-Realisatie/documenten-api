@@ -6,6 +6,8 @@ python-dateutil
 pytz
 raven
 
+gemma-zds-client>=0.6.0
+
 Django
 django-axes
 django-choices

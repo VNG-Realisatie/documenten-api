@@ -23,7 +23,7 @@ drf-nested-routers==0.90.2  # via zds-schema
 drf-yasg==1.9.0
 first==2.0.1              # via pip-tools
 future==0.16.0            # via drf-yasg
-gemma-zds-client==0.4.3   # via zds-schema
+gemma-zds-client==0.6.0
 idna==2.7                 # via requests
 inflection==0.3.1         # via drf-yasg
 iso-639==0.4.5            # via zds-schema
@@ -36,6 +36,7 @@ oyaml==0.7                # via zds-schema
 pillow==5.2.0
 pip-tools==2.0.2
 psycopg2-binary==2.7.5
+pyjwt==1.6.4              # via gemma-zds-client
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
