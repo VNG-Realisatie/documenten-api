@@ -18,4 +18,4 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
-zds-schema==0.10.7
+zds-schema==0.11.0
