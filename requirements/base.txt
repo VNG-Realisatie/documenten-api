@@ -36,7 +36,7 @@ oyaml==0.7                # via zds-schema
 pillow==5.2.0
 pip-tools==2.0.2
 psycopg2-binary==2.7.5
-pyjwt==1.6.4              # via gemma-zds-client
+pyjwt==1.6.4              # via gemma-zds-client, zds-schema
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
@@ -48,4 +48,4 @@ six==1.11.0               # via drf-yasg, isodate, pip-tools, python-dateutil
 unidecode==1.0.22         # via zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.23             # via requests
-zds-schema==0.8.0
+zds-schema==0.10.7
