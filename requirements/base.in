@@ -9,6 +9,7 @@ raven
 Django
 django-axes
 django-choices
+django-cors-middleware
 
 djangorestframework
 django-extra-fields
