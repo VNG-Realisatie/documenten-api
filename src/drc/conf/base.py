@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # External applications.
     'axes',
     'django_filters',
+    'corsheaders',
     'zds_schema',  # before drf_yasg to override the management command
     'drf_yasg',
     'rest_framework',
@@ -76,6 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'drc.urls'
@@ -313,6 +316,8 @@ HIJACK_REGISTER_ADMIN = False
 # See: http://django-hijack.readthedocs.io/en/latest/configuration/#allowing-get-method-for-hijack-views
 HIJACK_ALLOW_GET_REQUESTS = True
 
+# Django-CORS-middleware
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Raven
 SENTRY_DSN = os.getenv('SENTRY_DSN')
