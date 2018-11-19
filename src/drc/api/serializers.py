@@ -13,7 +13,7 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
 )
 
-from .auth import zrc_auth, ztc_auth
+from .auth import get_zrc_auth, get_ztc_auth
 
 
 class AnyFileType:
@@ -57,16 +57,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 'lookup_field': 'uuid',
             },
             'informatieobjecttype': {
-                'validators': [URLValidator(headers=ztc_auth.credentials)],
+                'validators': [URLValidator(get_auth=get_ztc_auth)],
             }
         }
-
-
-def get_zrc_headers() -> dict:
-    headers = {}
-    headers.update(zrc_auth.credentials())
-    headers.update({'Accept-Crs': 'EPSG:4326'})
-    return headers
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -99,7 +92,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'object': {
                 'validators': [
-                    URLValidator(headers=get_zrc_headers),
+                    URLValidator(get_auth=get_zrc_auth, headers={'Accept-Crs': 'EPSG:4326'}),
                     IsImmutableValidator(),
                 ],
             },
