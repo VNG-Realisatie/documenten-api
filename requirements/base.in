@@ -6,6 +6,8 @@ python-dateutil
 pytz
 raven
 
+gemma-zds-client>=0.6.1
+
 Django
 django-axes
 django-choices
@@ -17,4 +19,4 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
-zds-schema==0.8.0
+zds-schema==0.12.0
