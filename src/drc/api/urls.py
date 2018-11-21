@@ -1,8 +1,9 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
+from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
+from zds_schema.schema import SchemaView
 
-from .schema import schema_view
 from .viewsets import (
     EnkelvoudigInformatieObjectViewSet, ObjectInformatieObjectViewSet
 )
@@ -18,13 +19,16 @@ urlpatterns = [
 
         # API documentation
         url(r'^schema/openapi(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=None),
+            SchemaView.without_ui(cache_timeout=None),
             name='schema-json'),
         url(r'^schema/$',
-            schema_view.with_ui('redoc', cache_timeout=None),
+            SchemaView.with_ui('redoc', cache_timeout=None),
             name='schema-redoc'),
 
         # actual API
         url(r'^', include(router.urls)),
+
+        # should not be picked up by drf-yasg
+        path('', include('zds_schema.api.urls')),
     ])),
 ]

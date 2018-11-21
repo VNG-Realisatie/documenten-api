@@ -13,6 +13,8 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
 )
 
+from .auth import get_zrc_auth, get_ztc_auth
+
 
 class AnyFileType:
     def __contains__(self, item):
@@ -55,7 +57,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 'lookup_field': 'uuid',
             },
             'informatieobjecttype': {
-                'validators': [URLValidator()],
+                'validators': [URLValidator(get_auth=get_ztc_auth)],
             }
         }
 
@@ -90,7 +92,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'object': {
                 'validators': [
-                    URLValidator(headers={'Accept-Crs': 'EPSG:4326'}),
+                    URLValidator(get_auth=get_zrc_auth, headers={'Accept-Crs': 'EPSG:4326'}),
                     IsImmutableValidator(),
                 ],
             },

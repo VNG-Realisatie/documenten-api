@@ -33,7 +33,7 @@ faker==0.8.17             # via factory-boy
 first==2.0.1
 freezegun==0.3.10
 future==0.16.0
-gemma-zds-client==0.4.3
+gemma-zds-client==0.6.1
 idna==2.7
 inflection==0.3.1
 iso-639==0.4.5
@@ -53,6 +53,7 @@ pep8==1.7.1
 pillow==5.2.0
 pip-tools==2.0.2
 psycopg2-binary==2.7.5
+pyjwt==1.6.4
 pylint==1.9.2
 pyquery==1.4.0
 python-dateutil==2.7.3
@@ -72,4 +73,4 @@ waitress==1.1.0           # via webtest
 webob==1.8.2              # via webtest
 webtest==2.0.30
 wrapt==1.10.11            # via astroid
-zds-schema==0.8.0
+zds-schema==0.13.0
