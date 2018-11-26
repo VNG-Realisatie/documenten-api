@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.5.3 (2018-11-26)
+==================
+
+Updated to zds-schema 0.14.0 to handle JWT decoding issues properly
+
 0.5.2 (2018-11-22)
 ==================
 
