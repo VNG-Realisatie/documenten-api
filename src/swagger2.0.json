@@ -20,13 +20,15 @@
         "application/json"
     ],
     "securityDefinitions": {
-        "basic": {
-            "type": "basic"
+        "JWT-Claims": {
+            "bearerFormat": "JWT",
+            "scheme": "bearer",
+            "type": "http"
         }
     },
     "security": [
         {
-            "basic": []
+            "JWT-Claims": []
         }
     ],
     "paths": {
@@ -291,6 +293,12 @@
                             "items": {
                                 "$ref": "#/definitions/ObjectInformatieObject"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         }
                     },
                     "401": {
