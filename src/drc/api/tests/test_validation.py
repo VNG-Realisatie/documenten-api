@@ -30,3 +30,23 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         })
 
         self.assertNotEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class FilterValidationTests(APITestCase):
+    """
+    Test that incorrect filter usage results in HTTP 400.
+    """
+
+    def test_oio_invalid_filters(self):
+        url = reverse('objectinformatieobject-list')
+
+        invalid_filters = {
+            'object': '123',  # must be url
+            'informatieobject': '123',  # must be url
+            'foo': 'bar',  # unknown
+        }
+
+        for key, value in invalid_filters.items():
+            with self.subTest(query_param=key, value=value):
+                response = self.client.get(url, {key: value}, HTTP_ACCEPT_CRS='EPSG:4326')
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
