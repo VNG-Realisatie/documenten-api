@@ -21,3 +21,12 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'informatieobjecttype')
         self.assertEqual(error['code'], URLValidator.code)
+
+    def test_link_fetcher_cannot_connect(self):
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        response = self.client.post(url, {
+            'informatieobjecttype': 'http://invalid-host/informatieobjecttype/foo',
+        })
+
+        self.assertNotEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
