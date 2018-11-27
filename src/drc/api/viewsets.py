@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets
+from zds_schema.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
@@ -31,7 +32,8 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
 
-class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
+class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
+                                    mixins.CreateModelMixin,
                                     mixins.ListModelMixin,
                                     mixins.RetrieveModelMixin,
                                     mixins.UpdateModelMixin,
@@ -75,5 +77,5 @@ class ObjectInformatieObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
-    filter_class = ObjectInformatieObjectFilter
+    filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
