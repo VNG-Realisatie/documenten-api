@@ -1,3 +1,5 @@
+from django.test import override_settings
+
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from . import views
@@ -21,6 +23,11 @@ class DSOApiStrategyTests(APITestCase):
             self.assertGreaterEqual(doc['openapi'], '3.0.0')
         else:
             self.fail('Unknown documentation version')
+
+    @override_settings(ROOT_URLCONF='drc.api.tests.test_urls')
+    def test_api_24_version_header(self):
+        response = self.client.get('/test-view')
+        self.assertEqual(response['API-version'], '1.0.0-alpha')
 
 
 class DSOApi50Tests(APITestCase):
