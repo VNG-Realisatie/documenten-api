@@ -256,6 +256,20 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
         self.assertEqual(response.json(), expected)
 
+    def test_filter(self):
+        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': zio.informatieobject.uuid,
+        })
+        zio_list_url = reverse('objectinformatieobject-list', kwargs={'version': '1'})
+
+        response = self.client.get(zio_list_url, {
+            'informatieobject': f'http://testserver{eo_detail_url}',
+        })
+
+        self.assertEqual(response.status_code, 200)
+
     def test_update_zaak(self):
         eo = EnkelvoudigInformatieObjectFactory.create()
         zio = ObjectInformatieObjectFactory.create(is_zaak=True)
