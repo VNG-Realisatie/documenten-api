@@ -32,7 +32,7 @@ def sync_create(relation: ObjectInformatieObject):
 
     # figure out which remote resource we need to interact with
     resource = f"{relation.object_type}informatieobject"
-    client = Client.from_url(relation.object, settings.BASE_DIR)
+    client = Client.from_url(relation.object)
 
     pattern = get_operation_url(client.schema, f'{resource}_create', pattern_only=True)
     # we enforce in the standard that it's a subresource so that we can do this.
