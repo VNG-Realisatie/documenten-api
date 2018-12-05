@@ -117,11 +117,17 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             del self.fields['beschrijving']
             del self.fields['registratiedatum']
 
-    @transaction.atomic()
     def save(self, **kwargs):
+        # can't slap a transaction atomic on this, since ZRC/BRC query for the
+        # relation!
         try:
             return super().save(**kwargs)
         except SyncError as sync_error:
+            # delete the object again
+            ObjectInformatieObject.objects.filter(
+                informatieobject=self.validated_data['informatieobject'],
+                object=self.validated_data['object']
+            )._raw_delete('default')
             raise serializers.ValidationError({
                 api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
             }) from sync_error
