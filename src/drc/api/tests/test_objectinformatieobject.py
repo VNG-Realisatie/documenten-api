@@ -317,4 +317,6 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
         # Test response
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
-        import bpdb; bpdb.set_trace()
+
+        # transaction must be rolled back
+        self.assertFalse(ObjectInformatieObject.objects.exists())

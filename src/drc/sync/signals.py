@@ -48,8 +48,6 @@ def sync_create(relation: ObjectInformatieObject):
         client.create(resource, {'informatieobject': informatieobject_url}, **params)
     except Exception as exc:
         logger.error("Could not create remote relation", exc_info=1)
-        # undo the initial create to prevent desync
-        ObjectInformatieObject.objects.filter(uuid=relation.uuid)._raw_delete('default')
         raise SyncError("Could not create remote relation") from exc
 
 

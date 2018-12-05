@@ -1,10 +1,12 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+from django.db import transaction
 from django.utils.encoding import force_text
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
+from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
@@ -12,6 +14,7 @@ from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
 )
+from drc.sync.signals import SyncError
 
 from .auth import get_zrc_auth, get_ztc_auth
 
@@ -113,3 +116,12 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             del self.fields['titel']
             del self.fields['beschrijving']
             del self.fields['registratiedatum']
+
+    @transaction.atomic()
+    def save(self, **kwargs):
+        try:
+            return super().save(**kwargs)
+        except SyncError as sync_error:
+            raise serializers.ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
+            }) from sync_error
