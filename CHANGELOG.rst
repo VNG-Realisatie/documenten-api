@@ -2,6 +2,23 @@
 Wijzigingen
 ===========
 
+0.6.9 (2018-12-11)
+==================
+
+Small bugfixes
+
+* Fixed validator using newer gemma-zds-client
+* Fixed reverting the ``ObjectInformatieObject`` creation if the remote relation
+  cannot be created to prevent inconsistency
+* Fixed url-to-object resolution in filter params when hosted on a subpath
+* Fixed validation of mismatching ``object`` and ``objectType`` when relating
+  a document to an object
+* Added a name for the session cookie to preserve sessions on the same domain
+  between components.
+* Added missing Api-Version header
+* Added missing Location header to OAS
+
+
 0.6.0 (2018-11-27)
 ==================
 
