@@ -52,6 +52,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'auteur',
             'formaat',
             'taal',
+            'bestandsnaam',
             'inhoud',
             'bestandsomvang',
             'link',

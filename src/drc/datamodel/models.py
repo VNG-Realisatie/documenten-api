@@ -1,6 +1,7 @@
 import uuid as _uuid
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import ObjectTypes
 from zds_schema.fields import (
@@ -68,6 +69,7 @@ class InformatieObject(models.Model):
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
+    # TODO: validate mime types
     formaat = models.CharField(
         max_length=255, blank=True,
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
@@ -78,6 +80,11 @@ class EnkelvoudigInformatieObject(InformatieObject):
                   'INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B'
     )
 
+    bestandsnaam = models.CharField(
+        _("bestandsnaam"), max_length=255, blank=True,
+        help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
+                    "informatieobject is vastgelegd, inclusief extensie.")
+    )
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
     link = models.URLField(
         max_length=200, blank=True,

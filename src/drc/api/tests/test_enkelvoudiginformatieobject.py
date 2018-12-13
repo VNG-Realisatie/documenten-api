@@ -30,6 +30,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'auteur': 'test_auteur',
             'formaat': 'txt',
             'taal': 'eng',
+            'bestandsnaam': 'dummy.txt',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
@@ -53,6 +54,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(stored_object.auteur, 'test_auteur')
         self.assertEqual(stored_object.formaat, 'txt')
         self.assertEqual(stored_object.taal, 'eng')
+        self.assertEqual(stored_object.bestandsnaam, 'dummy.txt')
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
         self.assertEqual(stored_object.link, 'http://een.link')
         self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
@@ -99,6 +101,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'auteur': 'some auteur',
             'formaat': 'some formaat',
             'taal': 'dut',
+            'bestandsnaam': '',
             'inhoud': f'http://testserver{test_object.inhoud.url}',
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
