@@ -2,6 +2,7 @@
 Serializers of the Document Registratie Component REST API
 """
 from django.utils.encoding import force_text
+from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
@@ -9,7 +10,7 @@ from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import RelatieAarden
+from drc.datamodel.constants import ChecksumAlgoritmes, RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
 )
@@ -30,6 +31,22 @@ class AnyBase64File(Base64FileField):
         return "bin"
 
 
+class IntegriteitSerializer(serializers.Serializer):
+    algoritme = serializers.ChoiceField(
+        label=_("algoritme"), choices=ChecksumAlgoritmes.choices,
+        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_algoritme').help_text
+    )
+    waarde = serializers.CharField(
+        label=_("waarde"),
+        max_length=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').max_length,
+        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').help_text
+    )
+    datum = serializers.DateField(
+        label=_("datum"),
+        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_datum').help_text,
+    )
+
+
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the EnkelvoudigInformatieObject model
@@ -38,6 +55,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True,
         min_value=0
+    )
+    integriteit = IntegriteitSerializer(
+        label=_("integriteit"), allow_null=True, required=False,
+        help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand")
     )
 
     class Meta:
@@ -57,6 +78,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bestandsomvang',
             'link',
             'beschrijving',
+            'integriteit',
 
             'informatieobjecttype'  # van-relatie
         )
@@ -68,6 +90,23 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             }
         }
+
+    def create(self, validated_data):
+        """
+        Handle nested writes.
+        """
+        integriteit = validated_data.pop('integriteit', None)
+        eio = super().create(validated_data)
+        eio.integriteit = integriteit
+        eio.save()
+        return eio
+
+    def update(self, instance, validated_data):
+        """
+        Handle nested writes.
+        """
+        instance.integriteit = validated_data.pop('integriteit', None)
+        return super().update(instance, validated_data)
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):

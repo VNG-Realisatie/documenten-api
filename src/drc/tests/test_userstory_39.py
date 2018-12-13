@@ -26,6 +26,7 @@ class US39TestCase(APITestCase):
         url = get_operation_url('enkelvoudiginformatieobject_create')
         data = {
             'identificatie': 'AMS20180701001',
+            'bronorganisatie': '159351741',
             'creatiedatum': '2018-07-01',
             'titel': 'text_extra.txt',
             'auteur': 'ANONIEM',

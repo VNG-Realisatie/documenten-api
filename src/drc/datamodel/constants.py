@@ -17,3 +17,19 @@ class RelatieAarden(DjangoChoices):
             return cls.legt_vast
 
         raise ValueError(f"Unknown object_type '{object_type}'")
+
+
+class ChecksumAlgoritmes(DjangoChoices):
+    crc_16 = ChoiceItem('CRC-16')
+    crc_32 = ChoiceItem('CRC-32')
+    crc_64 = ChoiceItem('CRC-64')
+    fletcher_4 = ChoiceItem('fletcher-4')
+    fletcher_8 = ChoiceItem('fletcher-8')
+    fletcher_16 = ChoiceItem('fletcher-16')
+    fletcher_32 = ChoiceItem('fletcher-32')
+    hmac = ChoiceItem('HMAC')
+    md5 = ChoiceItem('MD5')
+    sha_1 = ChoiceItem('SHA-1')
+    sha_256 = ChoiceItem('SHA-256')
+    sha_512 = ChoiceItem('SHA-512')
+    sha_3 = ChoiceItem('SHA-3')
