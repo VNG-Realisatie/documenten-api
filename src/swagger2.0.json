@@ -1351,8 +1351,54 @@
         }
     },
     "definitions": {
+        "Integriteit": {
+            "title": "integriteit",
+            "description": "Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand",
+            "required": [
+                "algoritme",
+                "waarde",
+                "datum"
+            ],
+            "type": "object",
+            "properties": {
+                "algoritme": {
+                    "title": "algoritme",
+                    "description": "Aanduiding van algoritme, gebruikt om de checksum te maken.",
+                    "type": "string",
+                    "enum": [
+                        "CRC-16",
+                        "CRC-32",
+                        "CRC-64",
+                        "fletcher-4",
+                        "fletcher-8",
+                        "fletcher-16",
+                        "fletcher-32",
+                        "HMAC",
+                        "MD5",
+                        "SHA-1",
+                        "SHA-256",
+                        "SHA-512",
+                        "SHA-3"
+                    ]
+                },
+                "waarde": {
+                    "title": "waarde",
+                    "description": "De waarde van de checksum.",
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1
+                },
+                "datum": {
+                    "title": "datum",
+                    "description": "Datum waarop de checksum is gemaakt.",
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
         "EnkelvoudigInformatieObject": {
             "required": [
+                "bronorganisatie",
                 "creatiedatum",
                 "titel",
                 "auteur",
@@ -1378,7 +1424,8 @@
                     "title": "Bronorganisatie",
                     "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
                     "type": "string",
-                    "maxLength": 9
+                    "maxLength": 9,
+                    "minLength": 1
                 },
                 "creatiedatum": {
                     "title": "Creatiedatum",
@@ -1913,6 +1960,12 @@
                         "him"
                     ]
                 },
+                "bestandsnaam": {
+                    "title": "Bestandsnaam",
+                    "description": "De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie.",
+                    "type": "string",
+                    "maxLength": 255
+                },
                 "inhoud": {
                     "title": "Inhoud",
                     "type": "string",
@@ -1937,6 +1990,9 @@
                     "description": "Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.",
                     "type": "string",
                     "maxLength": 1000
+                },
+                "integriteit": {
+                    "$ref": "#/definitions/Integriteit"
                 },
                 "informatieobjecttype": {
                     "title": "Informatieobjecttype",
@@ -1996,6 +2052,7 @@
         },
         "EnkelvoudigInformatieObjectData": {
             "required": [
+                "bronorganisatie",
                 "creatiedatum",
                 "titel",
                 "auteur",
@@ -2022,7 +2079,8 @@
                     "title": "Bronorganisatie",
                     "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
                     "type": "string",
-                    "maxLength": 9
+                    "maxLength": 9,
+                    "minLength": 1
                 },
                 "creatiedatum": {
                     "title": "Creatiedatum",
@@ -2557,6 +2615,12 @@
                         "him"
                     ]
                 },
+                "bestandsnaam": {
+                    "title": "Bestandsnaam",
+                    "description": "De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie.",
+                    "type": "string",
+                    "maxLength": 255
+                },
                 "inhoud": {
                     "title": "Inhoud",
                     "type": "string",
@@ -2580,6 +2644,9 @@
                     "description": "Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.",
                     "type": "string",
                     "maxLength": 1000
+                },
+                "integriteit": {
+                    "$ref": "#/definitions/Integriteit"
                 },
                 "informatieobjecttype": {
                     "title": "Informatieobjecttype",
