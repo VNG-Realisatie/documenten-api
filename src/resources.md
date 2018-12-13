@@ -20,6 +20,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | formaat | De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand. | string | nee | C​R​U​D |
 | taal | Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B | string | ja | C​R​U​D |
 | inhoud |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| bestandsomvang |  | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
 | link | De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is. | string | nee | C​R​U​D |
 | beschrijving | Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT. | string | nee | C​R​U​D |
 | informatieobjecttype | URL naar de INFORMATIEOBJECTTYPE in het ZTC. | string | ja | C​R​U​D |

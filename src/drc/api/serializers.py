@@ -1,7 +1,6 @@
 """
 Serializers of the Document Registratie Component REST API
 """
-from django.db import transaction
 from django.utils.encoding import force_text
 
 from drf_extra_fields.fields import Base64FileField
@@ -36,6 +35,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     Serializer for the EnkelvoudigInformatieObject model
     """
     inhoud = AnyBase64File()
+    bestandsomvang = serializers.IntegerField(
+        source='inhoud.size', read_only=True,
+        min_value=0
+    )
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -50,6 +53,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'formaat',
             'taal',
             'inhoud',
+            'bestandsomvang',
             'link',
             'beschrijving',
 

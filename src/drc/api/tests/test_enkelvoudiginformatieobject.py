@@ -1,3 +1,4 @@
+import tempfile
 import uuid
 from base64 import b64encode
 from datetime import date
@@ -14,6 +15,7 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 
 @freeze_time('2018-06-27')
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class EnkelvoudigInformatieObjectAPITests(APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
@@ -70,6 +72,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{stored_object.inhoud.url}",
             'vertrouwelijkaanduiding': '',
+            'bestandsomvang': stored_object.inhoud.size,
         })
         self.assertEqual(response.json(), expected_response)
 

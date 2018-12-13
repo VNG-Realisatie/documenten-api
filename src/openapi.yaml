@@ -1721,6 +1721,11 @@ components:
           type: string
           format: uri
           readOnly: true
+        bestandsomvang:
+          title: Bestandsomvang
+          type: integer
+          readOnly: true
+          minimum: 0
         link:
           title: Link
           description: De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen
@@ -2340,6 +2345,11 @@ components:
           title: Inhoud
           type: string
           format: bytes
+        bestandsomvang:
+          title: Bestandsomvang
+          type: integer
+          readOnly: true
+          minimum: 0
         link:
           title: Link
           description: De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen
