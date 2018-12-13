@@ -97,9 +97,30 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'some formaat',
             'taal': 'dut',
             'inhoud': f'http://testserver{test_object.inhoud.url}',
+            'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',
             'vertrouwelijkaanduiding': '',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
         }
         self.assertEqual(response.json(), expected)
+
+    def test_bestandsomvang(self):
+        """
+        Assert that the API shows the filesize.
+        """
+        test_object = EnkelvoudigInformatieObjectFactory.create(
+            inhoud__data=b'some content'
+        )
+
+        # Retrieve from the API
+        detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': test_object.uuid,
+        })
+
+        response = self.client.get(detail_url)
+
+        # Test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['bestandsomvang'], 12)  # 12 bytes
