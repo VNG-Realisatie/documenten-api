@@ -79,7 +79,8 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
                 'algoritme': '',
                 'waarde': '',
                 'datum': None,
-            }
+            },
+            'ontvangstdatum': None,
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -111,6 +112,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',
+            'ontvangstdatum': None,
             'vertrouwelijkaanduiding': '',
             'integriteit': {
                 'algoritme': '',

@@ -78,6 +78,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bestandsomvang',
             'link',
             'beschrijving',
+            'ontvangstdatum',
             'integriteit',
 
             'informatieobjecttype'  # van-relatie

@@ -1991,6 +1991,12 @@
                     "type": "string",
                     "maxLength": 1000
                 },
+                "ontvangstdatum": {
+                    "title": "Ontvangstdatum",
+                    "description": "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn.",
+                    "type": "string",
+                    "format": "date"
+                },
                 "integriteit": {
                     "$ref": "#/definitions/Integriteit"
                 },
@@ -2644,6 +2650,12 @@
                     "description": "Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.",
                     "type": "string",
                     "maxLength": 1000
+                },
+                "ontvangstdatum": {
+                    "title": "Ontvangstdatum",
+                    "description": "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn.",
+                    "type": "string",
+                    "format": "date"
                 },
                 "integriteit": {
                     "$ref": "#/definitions/Integriteit"

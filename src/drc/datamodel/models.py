@@ -1,6 +1,5 @@
 import uuid as _uuid
 
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,6 +30,7 @@ class InformatieObject(models.Model):
                   'heeft ontvangen en als eerste in een samenwerkingsketen '
                   'heeft vastgelegd.'
     )
+    # TODO: change to read-only?
     creatiedatum = models.DateField(
         help_text='Een datum of een gebeurtenis in de levenscyclus van het '
                   'INFORMATIEOBJECT.'
@@ -54,6 +54,12 @@ class InformatieObject(models.Model):
         max_length=1000, blank=True,
         help_text='Een generieke beschrijving van de inhoud van het '
                   'INFORMATIEOBJECT.'
+    )
+    ontvangstdatum = models.DateField(
+        _("ontvangstdatum"), null=True, blank=True,
+        help_text=_("De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht "
+                    "te registreren voor INFORMATIEOBJECTen die van buiten de "
+                    "zaakbehandelende organisatie(s) ontvangen zijn.")
     )
 
     informatieobjecttype = models.URLField(
