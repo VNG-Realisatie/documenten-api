@@ -1,6 +1,8 @@
 import uuid as _uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import ObjectTypes
 from zds_schema.fields import (
@@ -8,7 +10,7 @@ from zds_schema.fields import (
 )
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import RelatieAarden
+from .constants import ChecksumAlgoritmes, RelatieAarden
 
 
 class InformatieObject(models.Model):
@@ -23,7 +25,7 @@ class InformatieObject(models.Model):
                   'naar het INFORMATIEOBJECT.'
     )
     bronorganisatie = RSINField(
-        max_length=9, blank=True,
+        max_length=9,
         help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
                   'organisatie die het informatieobject heeft gecreëerd of '
                   'heeft ontvangen en als eerste in een samenwerkingsketen '
@@ -68,6 +70,7 @@ class InformatieObject(models.Model):
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
+    # TODO: validate mime types
     formaat = models.CharField(
         max_length=255, blank=True,
         help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
@@ -78,12 +81,57 @@ class EnkelvoudigInformatieObject(InformatieObject):
                   'INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B'
     )
 
+    bestandsnaam = models.CharField(
+        _("bestandsnaam"), max_length=255, blank=True,
+        help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
+                    "informatieobject is vastgelegd, inclusief extensie.")
+    )
     inhoud = models.FileField(upload_to='uploads/%Y/%m/')
     link = models.URLField(
         max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '
                   'vragen is.',
     )
+
+    # these fields should not be modified directly, but go through the `integriteit` descriptor
+    integriteit_algoritme = models.CharField(
+        _("integriteit algoritme"), max_length=20,
+        choices=ChecksumAlgoritmes.choices, blank=True,
+        help_text=_("Aanduiding van algoritme, gebruikt om de checksum te maken.")
+    )
+    integriteit_waarde = models.CharField(
+        _("integriteit waarde"), max_length=128, blank=True,
+        help_text=_("De waarde van de checksum.")
+    )
+    integriteit_datum = models.DateField(
+        _("integriteit datum"), null=True, blank=True,
+        help_text=_("Datum waarop de checksum is gemaakt.")
+    )
+
+    def _get_integriteit(self):
+        return {
+            'algoritme': self.integriteit_algoritme,
+            'waarde': self.integriteit_waarde,
+            'datum': self.integriteit_datum,
+        }
+
+    def _set_integriteit(self, integrity: dict):
+        # it may be empty
+        if not integrity:
+            self.integriteit_algoritme = ''
+            self.integriteit_waarde = ''
+            self.integriteit_datum = None
+            return
+
+        self.integriteit_algoritme = integrity['algoritme']
+        self.integriteit_waarde = integrity['waarde']
+        self.integriteit_datum = integrity['datum']
+
+        assert self.integriteit_algoritme, "Empty algorithm not allowed"
+        assert self.integriteit_waarde, "Empty checksum value not allowed"
+        assert self.integriteit_datum, "Empty date not allowed"
+
+    integriteit = property(_get_integriteit, _set_integriteit)
 
 
 class ObjectInformatieObject(models.Model):
