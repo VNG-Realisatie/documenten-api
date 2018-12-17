@@ -61,6 +61,13 @@ class InformatieObject(models.Model):
                     "te registreren voor INFORMATIEOBJECTen die van buiten de "
                     "zaakbehandelende organisatie(s) ontvangen zijn.")
     )
+    # TODO: indien er gebruiksrechten gespecifieerd zijn, dan kan dit niet None/False worden
+    # maar moet het True zijn
+    indicatie_gebruiksrecht = models.NullBooleanField(
+        _("indicatie gebruiksrecht"), blank=True, default=None,
+        help_text=_("Indicatie of er beperkingen gelden aangaande het gebruik van "
+                    "het informatieobject anders dan raadpleging.")
+    )
 
     informatieobjecttype = models.URLField(
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
