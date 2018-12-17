@@ -14,6 +14,7 @@ from .serializers import (
 class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
                                          mixins.ListModelMixin,
                                          mixins.RetrieveModelMixin,
+                                         mixins.UpdateModelMixin,
                                          viewsets.GenericViewSet):
     """
     EnkelvoudigInformatieObject resource.
@@ -26,6 +27,15 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
 
     retrieve:
     Geef de details van een EnkelvoudigInformatieObject.
+
+    update:
+    Werk een EnkelVoudigInformatieObject bij.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobjecttype URL
+
+    TODO:
+    - valideer immutable attributes
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
     serializer_class = EnkelvoudigInformatieObjectSerializer
