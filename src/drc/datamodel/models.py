@@ -156,30 +156,11 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text=_("Datum waarop de checksum is gemaakt.")
     )
 
-    def _get_integriteit(self) -> dict:
-        return {
-            'algoritme': self.integriteit_algoritme,
-            'waarde': self.integriteit_waarde,
-            'datum': self.integriteit_datum,
-        }
-
-    def _set_integriteit(self, integrity: dict):
-        # it may be empty
-        if not integrity:
-            self.integriteit_algoritme = ''
-            self.integriteit_waarde = ''
-            self.integriteit_datum = None
-            return
-
-        self.integriteit_algoritme = integrity['algoritme']
-        self.integriteit_waarde = integrity['waarde']
-        self.integriteit_datum = integrity['datum']
-
-        assert self.integriteit_algoritme, "Empty algorithm not allowed"
-        assert self.integriteit_waarde, "Empty checksum value not allowed"
-        assert self.integriteit_datum, "Empty date not allowed"
-
-    integriteit = property(_get_integriteit, _set_integriteit)
+    integriteit = GegevensGroepType({
+        'algoritme': integriteit_algoritme,
+        'waarde': integriteit_waarde,
+        'datum': integriteit_datum,
+    })
 
 
 class ObjectInformatieObject(models.Model):
