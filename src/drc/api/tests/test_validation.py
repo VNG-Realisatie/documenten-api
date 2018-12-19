@@ -7,10 +7,32 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import URLValidator
 
+from drc.datamodel.constants import OndertekeningSoorten
+
 from .utils import reverse
 
 
 class EnkelvoudigInformatieObjectTests(APITestCase):
+
+    def assertGegevensGroepRequired(self, url: str, field: str, base_body: dict, cases: tuple):
+        for key, code in cases:
+            with self.subTest(key=key, expected_code=code):
+                body = deepcopy(base_body)
+                del body[key]
+                response = self.client.post(url, {field: body})
+
+                error = get_validation_errors(response, f'{field}.{key}')
+                self.assertEqual(error['code'], code)
+
+    def assertGegevensGroepValidation(self, url: str, field: str, base_body: dict, cases: tuple):
+        for key, code, blank_value in cases:
+            with self.subTest(key=key, expected_code=code):
+                body = deepcopy(base_body)
+                body[key] = blank_value
+                response = self.client.post(url, {field: body})
+
+                error = get_validation_errors(response, f'{field}.{key}')
+                self.assertEqual(error['code'], code)
 
     @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
     def test_validate_informatieobjecttype_invalid(self):
@@ -37,11 +59,9 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         url = reverse('enkelvoudiginformatieobject-list')
 
         base_body = {
-            'integriteit': {
-                'algoritme': 'MD5',
-                'waarde': 'foobarbaz',
-                'datum': '2018-12-13',
-            }
+            'algoritme': 'MD5',
+            'waarde': 'foobarbaz',
+            'datum': '2018-12-13',
         }
 
         cases = (
@@ -49,24 +69,16 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
             ('waarde', 'required'),
             ('datum', 'required'),
         )
-        for key, code in cases:
-            with self.subTest(key=key, expected_code=code):
-                body = deepcopy(base_body)
-                del body['integriteit'][key]
-                response = self.client.post(url, body)
 
-                error = get_validation_errors(response, f'integriteit.{key}')
-                self.assertEqual(error['code'], code)
+        self.assertGegevensGroepRequired(url, 'integriteit', base_body, cases)
 
     def test_integriteit_bad_values(self):
         url = reverse('enkelvoudiginformatieobject-list')
 
         base_body = {
-            'integriteit': {
-                'algoritme': 'MD5',
-                'waarde': 'foobarbaz',
-                'datum': '2018-12-13',
-            }
+            'algoritme': 'MD5',
+            'waarde': 'foobarbaz',
+            'datum': '2018-12-13',
         }
 
         cases = (
@@ -74,14 +86,37 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
             ('waarde', 'blank', ''),
             ('datum', 'null', None),
         )
-        for key, code, blank_value in cases:
-            with self.subTest(key=key, expected_code=code):
-                body = deepcopy(base_body)
-                body['integriteit'][key] = blank_value
-                response = self.client.post(url, body)
 
-                error = get_validation_errors(response, f'integriteit.{key}')
-                self.assertEqual(error['code'], code)
+        self.assertGegevensGroepValidation(url, 'integriteit', base_body, cases)
+
+    def test_ondertekening(self):
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        base_body = {
+            'soort': OndertekeningSoorten.analoog,
+            'datum': '2018-12-13',
+        }
+
+        cases = (
+            ('soort', 'required'),
+            ('datum', 'required'),
+        )
+
+        self.assertGegevensGroepRequired(url, 'ondertekening', base_body, cases)
+
+    def test_ondertekening_bad_values(self):
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        base_body = {
+            'soort': OndertekeningSoorten.digitaal,
+            'datum': '2018-12-13',
+        }
+        cases = (
+            ('soort', 'invalid_choice', ''),
+            ('datum', 'null', None),
+        )
+
+        self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
 
 
 class FilterValidationTests(APITestCase):
