@@ -79,6 +79,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'link',
             'beschrijving',
             'ontvangstdatum',
+            'verzenddatum',
             'indicatie_gebruiksrecht',
             'integriteit',
 
