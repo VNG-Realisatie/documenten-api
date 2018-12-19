@@ -1446,10 +1446,34 @@ components:
       scheme: bearer
       type: http
   schemas:
+    Ondertekening:
+      title: ondertekening
+      description: Aanduiding van de rechtskracht van een informatieobject. Mag niet
+        van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter
+        vaststelling' heeft.
+      required:
+      - soort
+      - datum
+      type: object
+      properties:
+        soort:
+          title: soort
+          description: Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT
+          type: string
+          enum:
+          - analoog
+          - digitaal
+          - pki
+        datum:
+          title: datum
+          description: De datum waarop de ondertekening van het INFORMATIEOBJECT heeft
+            plaatsgevonden.
+          type: string
+          format: date
     Integriteit:
       title: integriteit
       description: Uitdrukking van mate van volledigheid en onbeschadigd zijn van
-        digitaal bestand
+        digitaal bestand.
       required:
       - algoritme
       - waarde
@@ -2076,7 +2100,7 @@ components:
           title: Ontvangstdatum
           description: De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht
             te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende
-            organisatie(s) ontvangen zijn.Ontvangst en verzending is voorbehouden
+            organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden
             aan documenten die van of naar andere personen ontvangen of verzonden
             zijn waarbij die personen niet deel uit maken van de behandeling van de
             zaak waarin het document een rol speelt.
@@ -2087,7 +2111,7 @@ components:
           description: De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze
             op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als
             uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk
-            inkomend en uitgaand zijn.Ontvangst en verzending is voorbehouden aan
+            inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan
             documenten die van of naar andere personen ontvangen of verzonden zijn
             waarbij die personen niet deel uit maken van de behandeling van de zaak
             waarin het document een rol speelt.
@@ -2098,6 +2122,8 @@ components:
           description: Indicatie of er beperkingen gelden aangaande het gebruik van
             het informatieobject anders dan raadpleging.
           type: boolean
+        ondertekening:
+          $ref: '#/components/schemas/Ondertekening'
         integriteit:
           $ref: '#/components/schemas/Integriteit'
         informatieobjecttype:
@@ -2736,7 +2762,7 @@ components:
           title: Ontvangstdatum
           description: De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht
             te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende
-            organisatie(s) ontvangen zijn.Ontvangst en verzending is voorbehouden
+            organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden
             aan documenten die van of naar andere personen ontvangen of verzonden
             zijn waarbij die personen niet deel uit maken van de behandeling van de
             zaak waarin het document een rol speelt.
@@ -2747,7 +2773,7 @@ components:
           description: De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze
             op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als
             uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk
-            inkomend en uitgaand zijn.Ontvangst en verzending is voorbehouden aan
+            inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan
             documenten die van of naar andere personen ontvangen of verzonden zijn
             waarbij die personen niet deel uit maken van de behandeling van de zaak
             waarin het document een rol speelt.
@@ -2758,6 +2784,8 @@ components:
           description: Indicatie of er beperkingen gelden aangaande het gebruik van
             het informatieobject anders dan raadpleging.
           type: boolean
+        ondertekening:
+          $ref: '#/components/schemas/Ondertekening'
         integriteit:
           $ref: '#/components/schemas/Integriteit'
         informatieobjecttype:

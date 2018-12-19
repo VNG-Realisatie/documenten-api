@@ -82,6 +82,10 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             },
             'ontvangstdatum': None,
             'verzenddatum': None,
+            'ondertekening': {
+                'soort': '',
+                'datum': None,
+            },
             'indicatieGebruiksrecht': None,
         })
         self.assertEqual(response.json(), expected_response)
@@ -116,6 +120,10 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'beschrijving': '',
             'ontvangstdatum': None,
             'verzenddatum': None,
+            'ondertekening': {
+                'soort': '',
+                'datum': None,
+            },
             'indicatieGebruiksrecht': None,
             'vertrouwelijkaanduiding': '',
             'integriteit': {

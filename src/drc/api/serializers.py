@@ -10,7 +10,9 @@ from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import ChecksumAlgoritmes, RelatieAarden
+from drc.datamodel.constants import (
+    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden
+)
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
 )
@@ -47,6 +49,17 @@ class IntegriteitSerializer(serializers.Serializer):
     )
 
 
+class OndertekeningSerializer(serializers.Serializer):
+    soort = serializers.ChoiceField(
+        label=_("soort"), choices=OndertekeningSoorten.choices,
+        help_text=EnkelvoudigInformatieObject._meta.get_field('ondertekening_soort').help_text
+    )
+    datum = serializers.DateField(
+        label=_("datum"),
+        help_text=EnkelvoudigInformatieObject._meta.get_field('ondertekening_datum').help_text
+    )
+
+
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the EnkelvoudigInformatieObject model
@@ -58,7 +71,13 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     )
     integriteit = IntegriteitSerializer(
         label=_("integriteit"), allow_null=True, required=False,
-        help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand")
+        help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand.")
+    )
+    # TODO: validator!
+    ondertekening = OndertekeningSerializer(
+        label=_("ondertekening"), allow_null=True, required=False,
+        help_text=_("Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde "
+                    "zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.")
     )
 
     class Meta:
@@ -81,8 +100,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'ontvangstdatum',
             'verzenddatum',
             'indicatie_gebruiksrecht',
+            'ondertekening',
             'integriteit',
-
             'informatieobjecttype'  # van-relatie
         )
         extra_kwargs = {
@@ -99,8 +118,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         Handle nested writes.
         """
         integriteit = validated_data.pop('integriteit', None)
+        ondertekening = validated_data.pop('ondertekening', None)
         eio = super().create(validated_data)
         eio.integriteit = integriteit
+        eio.ondertekening = ondertekening
         eio.save()
         return eio
 
@@ -109,6 +130,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         Handle nested writes.
         """
         instance.integriteit = validated_data.pop('integriteit', None)
+        instance.ondertekening = validated_data.pop('ondertekening', None)
         return super().update(instance, validated_data)
 
 

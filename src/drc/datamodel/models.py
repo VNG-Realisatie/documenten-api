@@ -9,7 +9,8 @@ from zds_schema.fields import (
 )
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import ChecksumAlgoritmes, RelatieAarden
+from .constants import ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden
+from .descriptors import GegevensGroepType
 
 
 class InformatieObject(models.Model):
@@ -84,6 +85,20 @@ class InformatieObject(models.Model):
                     "het informatieobject anders dan raadpleging.")
     )
 
+    # signing in some sort of way
+    # TODO: De attribuutsoort mag niet van een waarde zijn voorzien
+    # als de attribuutsoort ?Status? de waarde ?in bewerking?
+    # of ?ter vaststelling? heeft.
+    ondertekening_soort = models.CharField(
+        _("ondertekeningsoort"), max_length=10, blank=True,
+        choices=OndertekeningSoorten.choices,
+        help_text=_("Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT")
+    )
+    ondertekening_datum = models.DateField(
+        _("ondertekeningdatum"), blank=True, null=True,
+        help_text=_("De datum waarop de ondertekening van het INFORMATIEOBJECT heeft plaatsgevonden.")
+    )
+
     informatieobjecttype = models.URLField(
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
     )
@@ -95,6 +110,11 @@ class InformatieObject(models.Model):
 
     def __str__(self) -> str:
         return self.identificatie
+
+    ondertekening = GegevensGroepType({
+        'soort': ondertekening_soort,
+        'datum': ondertekening_datum,
+    })
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
@@ -136,7 +156,7 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text=_("Datum waarop de checksum is gemaakt.")
     )
 
-    def _get_integriteit(self):
+    def _get_integriteit(self) -> dict:
         return {
             'algoritme': self.integriteit_algoritme,
             'waarde': self.integriteit_waarde,

@@ -33,3 +33,10 @@ class ChecksumAlgoritmes(DjangoChoices):
     sha_256 = ChoiceItem('SHA-256')
     sha_512 = ChoiceItem('SHA-512')
     sha_3 = ChoiceItem('SHA-3')
+
+
+class OndertekeningSoorten(DjangoChoices):
+    analoog = ChoiceItem('analoog', _("Analoog"))
+    digitaal = ChoiceItem('digitaal', _("Digitaal"))
+    pki = ChoiceItem('pki', _("PKI"))
+    # TODO: more...
