@@ -1835,6 +1835,17 @@
                     "maxLength": 200,
                     "minLength": 1
                 },
+                "status": {
+                    "title": "Status",
+                    "description": "Aanduiding van de stand van zaken van een INFORMATIEOBJECT",
+                    "type": "string",
+                    "enum": [
+                        "in bewerking",
+                        "ter vaststelling",
+                        "definitief",
+                        "gearchiveerd"
+                    ]
+                },
                 "formaat": {
                     "title": "Formaat",
                     "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
@@ -2509,6 +2520,17 @@
                     "type": "string",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "Aanduiding van de stand van zaken van een INFORMATIEOBJECT",
+                    "type": "string",
+                    "enum": [
+                        "in bewerking",
+                        "ter vaststelling",
+                        "definitief",
+                        "gearchiveerd"
+                    ]
                 },
                 "formaat": {
                     "title": "Formaat",

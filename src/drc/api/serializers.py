@@ -90,6 +90,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'titel',
             'vertrouwelijkaanduiding',
             'auteur',
+            'status',
             'formaat',
             'taal',
             'bestandsnaam',

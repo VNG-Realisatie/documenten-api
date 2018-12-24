@@ -9,7 +9,9 @@ from zds_schema.fields import (
 )
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden
+from .constants import (
+    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
+)
 from .descriptors import GegevensGroepType
 
 
@@ -50,6 +52,12 @@ class InformatieObject(models.Model):
         help_text='De persoon of organisatie die in de eerste plaats '
                   'verantwoordelijk is voor het creëren van de inhoud van het '
                   'INFORMATIEOBJECT.'
+    )
+    status = models.CharField(
+        _("status"), max_length=20, blank=True, choices=Statussen.choices,
+        help_text=_("Aanduiding van de stand van zaken van een INFORMATIEOBJECT. "
+                    "De waarden 'in bewerking' en 'ter vaststelling' komen niet "
+                    "voor als het attribuut `ontvangstdatum` van een waarde is voorzien.")
     )
     beschrijving = models.TextField(
         max_length=1000, blank=True,

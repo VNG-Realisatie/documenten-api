@@ -4,6 +4,15 @@ from djchoices import ChoiceItem, DjangoChoices
 from zds_schema.constants import ObjectTypes
 
 
+class Statussen(DjangoChoices):
+    in_bewerking = ChoiceItem('in bewerking', _("Aan het informatieobject wordt nog gewerkt."))
+    ter_vaststelling = ChoiceItem('ter vaststelling', _("Informatieobject gereed maar moet nog vastgesteld worden."))
+    definitief = ChoiceItem('definitief', _("Informatieobject door bevoegd iets of iemand vastgesteld "
+                                            "dan wel ontvangen."))
+    gearchiveerd = ChoiceItem('gearchiveerd', _("Informatieobject duurzaam bewaarbaar gemaakt; een "
+                                                "gearchiveerd informatie-element."))
+
+
 class RelatieAarden(DjangoChoices):
     hoort_bij = ChoiceItem('hoort_bij', _("Hoort bij, omgekeerd: kent"))
     legt_vast = ChoiceItem('legt_vast', _("Legt vast, omgekeerd: kan vastgelegd zijn als"))
