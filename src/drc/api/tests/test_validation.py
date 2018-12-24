@@ -7,9 +7,10 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import URLValidator
 
-from drc.datamodel.constants import OndertekeningSoorten
+from drc.datamodel.constants import OndertekeningSoorten, Statussen
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from .utils import reverse
+from .utils import reverse, reverse_lazy
 
 
 class EnkelvoudigInformatieObjectTests(APITestCase):
@@ -117,6 +118,72 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         )
 
         self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
+
+
+class InformatieObjectStatusTests(APITestCase):
+
+    url = reverse_lazy('enkelvoudiginformatieobject-list')
+
+    def test_ontvangen_informatieobjecten(self):
+        """
+        Assert certain statuses are not allowed for received documents.
+
+        RGBZ 2.00.02 deel II Concept 20180613: De waarden ?in bewerking?
+        en ?ter vaststelling? zijn niet van toepassing op ontvangen
+        informatieobjecten.
+        """
+        invalid_statuses = (Statussen.in_bewerking, Statussen.ter_vaststelling)
+        data = {
+            'ontvangstdatum': '2018-12-24',
+        }
+
+        for invalid_status in invalid_statuses:
+            with self.subTest(status=invalid_status):
+                _data = data.copy()
+                _data['status'] = invalid_status
+
+                response = self.client.post(self.url, _data)
+
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            error = get_validation_errors(response, 'status')
+            self.assertEqual(error['code'], 'invalid_for_received')
+
+    def test_informatieobjecten_niet_ontvangen(self):
+        """
+        All statusses should be allowed when the informatieobject doesn't have
+        a receive date.
+        """
+        for valid_status, _ in Statussen.choices:
+            with self.subTest(status=status):
+                data = {
+                    'ontvangstdatum': None,
+                    'status': valid_status
+                }
+
+                response = self.client.post(self.url, data)
+
+            error = get_validation_errors(response, 'status')
+            self.assertIsNone(error)
+
+    def test_status_set_ontvangstdatum_is_set_later(self):
+        """
+        Assert that setting the ontvangstdatum later, after an 'invalid' status
+        has been set, is not possible.
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create(ontvangstdatum=None)
+        url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
+
+        for invalid_status in (Statussen.in_bewerking, Statussen.ter_vaststelling):
+            with self.subTest(status=invalid_status):
+                eio.status = invalid_status
+                eio.save()
+                data = {'ontvangstdatum': '2018-12-24'}
+
+                response = self.client.patch(url, data)
+
+                self.assertEqual(response.status, status.HTTP_400_BAD_REQUEST)
+                error = get_validation_errors(response, 'status')
+                self.assertEqual(error['code'], 'invalid_for_received')
 
 
 class FilterValidationTests(APITestCase):

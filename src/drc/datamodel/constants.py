@@ -12,6 +12,10 @@ class Statussen(DjangoChoices):
     gearchiveerd = ChoiceItem('gearchiveerd', _("Informatieobject duurzaam bewaarbaar gemaakt; een "
                                                 "gearchiveerd informatie-element."))
 
+    @classmethod
+    def invalid_for_received(cls) -> tuple:
+        return (cls.in_bewerking, cls.ter_vaststelling)
+
 
 class RelatieAarden(DjangoChoices):
     hoort_bij = ChoiceItem('hoort_bij', _("Hoort bij, omgekeerd: kent"))
