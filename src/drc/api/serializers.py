@@ -123,6 +123,13 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                   "zijn als er Gebruiksrechten gedefinieerd zijn."),
                 code='existing-gebruiksrechten'
             )
+        # create: not self.instance or update: usage_rights exists
+        elif indicatie and (not self.instance or not self.instance.gebruiksrechten_set.exists()):
+            raise serializers.ValidationError(
+                _("De indicatie moet op 'ja' gezet worden door `gebruiksrechten` "
+                  "aan te maken, dit kan niet direct op deze resource."),
+                code='missing-gebruiksrechten'
+            )
         return indicatie
 
     def create(self, validated_data):

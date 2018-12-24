@@ -51,6 +51,20 @@ class GebruiksrechtenTests(APITestCase):
             error = get_validation_errors(response, 'indicatieGebruiksrecht')
             self.assertEqual(error['code'], 'existing-gebruiksrechten')
 
+    def test_block_setting_indication_true(self):
+        """
+        Assert that it's not possible to set the indication to true if there are
+        no gebruiksrechten.
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
+
+        response = self.client.patch(url, {'indicatieGebruiksrecht': True})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'indicatieGebruiksrecht')
+        self.assertEqual(error['code'], 'missing-gebruiksrechten')
+
     def test_delete_gebruiksrechten(self):
         gebruiksrechten = GebruiksrechtenFactory.create()
         url = reverse(
