@@ -1573,7 +1573,11 @@ components:
           minLength: 1
         status:
           title: Status
-          description: Aanduiding van de stand van zaken van een INFORMATIEOBJECT
+          description: Aanduiding van de stand van zaken van een INFORMATIEOBJECT.
+            De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als het
+            attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de
+            Status in 'gearchiveerd' impliceert dat het informatieobject een duurzaam,
+            niet-wijzigbaar Formaat dient te hebben.
           type: string
           enum:
           - in bewerking
@@ -2245,7 +2249,11 @@ components:
           minLength: 1
         status:
           title: Status
-          description: Aanduiding van de stand van zaken van een INFORMATIEOBJECT
+          description: Aanduiding van de stand van zaken van een INFORMATIEOBJECT.
+            De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als het
+            attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de
+            Status in 'gearchiveerd' impliceert dat het informatieobject een duurzaam,
+            niet-wijzigbaar Formaat dient te hebben.
           type: string
           enum:
           - in bewerking

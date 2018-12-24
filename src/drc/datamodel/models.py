@@ -58,7 +58,9 @@ class InformatieObject(models.Model):
         _("status"), max_length=20, blank=True, choices=Statussen.choices,
         help_text=_("Aanduiding van de stand van zaken van een INFORMATIEOBJECT. "
                     "De waarden 'in bewerking' en 'ter vaststelling' komen niet "
-                    "voor als het attribuut `ontvangstdatum` van een waarde is voorzien.")
+                    "voor als het attribuut `ontvangstdatum` van een waarde is voorzien. "
+                    "Wijziging van de Status in 'gearchiveerd' impliceert dat "
+                    "het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben.")
     )
     beschrijving = models.TextField(
         max_length=1000, blank=True,

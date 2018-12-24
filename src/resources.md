@@ -17,7 +17,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | titel | De naam waaronder het INFORMATIEOBJECT formeel bekend is. | string | ja | C​R​U​D |
 | vertrouwelijkaanduiding | Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is. | string | nee | C​R​U​D |
 | auteur | De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het INFORMATIEOBJECT. | string | ja | C​R​U​D |
-| status | Aanduiding van de stand van zaken van een INFORMATIEOBJECT | string | nee | C​R​U​D |
+| status | Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden &#39;in bewerking&#39; en &#39;ter vaststelling&#39; komen niet voor als het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in &#39;gearchiveerd&#39; impliceert dat het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben. | string | nee | C​R​U​D |
 | formaat | De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand. | string | nee | C​R​U​D |
 | taal | Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B | string | ja | C​R​U​D |
 | bestandsnaam | De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie. | string | nee | C​R​U​D |
