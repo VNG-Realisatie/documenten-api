@@ -116,6 +116,15 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         }
         validators = [StatusValidator()]
 
+    def validate_indicatie_gebruiksrecht(self, indicatie):
+        if self.instance and not indicatie and self.instance.gebruiksrechten_set.exists():
+            raise serializers.ValidationError(
+                _("De indicatie kan niet weggehaald worden of ongespecifieerd "
+                  "zijn als er Gebruiksrechten gedefinieerd zijn."),
+                code='existing-gebruiksrechten'
+            )
+        return indicatie
+
     def create(self, validated_data):
         """
         Handle nested writes.

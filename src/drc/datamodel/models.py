@@ -218,6 +218,11 @@ class Gebruiksrechten(models.Model):
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
 
+        other_gebruiksrechten = self.informatieobject.gebruiksrechten_set.exclude(pk=self.pk)
+        if not other_gebruiksrechten.exists():
+            self.informatieobject.indicatie_gebruiksrecht = None
+            self.informatieobject.save()
+
 
 class ObjectInformatieObject(models.Model):
     """
