@@ -120,6 +120,7 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class InformatieObjectStatusTests(APITestCase):
 
     url = reverse_lazy('enkelvoudiginformatieobject-list')
@@ -134,6 +135,13 @@ class InformatieObjectStatusTests(APITestCase):
         """
         invalid_statuses = (Statussen.in_bewerking, Statussen.ter_vaststelling)
         data = {
+            'bronorganisatie': '319582462',
+            'creatiedatum': '2018-12-24',
+            'titel': 'dummy',
+            'auteur': 'dummy',
+            'taal': 'dut',
+            'inhoud': 'aGVsbG8gd29ybGQ=',
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'ontvangstdatum': '2018-12-24',
         }
 
@@ -181,7 +189,7 @@ class InformatieObjectStatusTests(APITestCase):
 
                 response = self.client.patch(url, data)
 
-                self.assertEqual(response.status, status.HTTP_400_BAD_REQUEST)
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
                 error = get_validation_errors(response, 'status')
                 self.assertEqual(error['code'], 'invalid_for_received')
 

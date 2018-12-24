@@ -19,6 +19,7 @@ from drc.datamodel.models import (
 from drc.sync.signals import SyncError
 
 from .auth import get_zrc_auth, get_ztc_auth
+from .validators import StatusValidator
 
 
 class AnyFileType:
@@ -113,6 +114,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             }
         }
+        validators = [StatusValidator()]
 
     def create(self, validated_data):
         """

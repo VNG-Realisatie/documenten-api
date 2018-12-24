@@ -13,6 +13,7 @@ from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
 )
 from .descriptors import GegevensGroepType
+from .validators import validate_status
 
 
 class InformatieObject(models.Model):
@@ -118,6 +119,10 @@ class InformatieObject(models.Model):
 
     def __str__(self) -> str:
         return self.identificatie
+
+    def clean(self):
+        super().clean()
+        validate_status(status=self.status, ontvangstdatum=self.ontvangstdatum, instance=self)
 
     ondertekening = GegevensGroepType({
         'soort': ondertekening_soort,

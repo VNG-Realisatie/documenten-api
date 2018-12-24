@@ -12,7 +12,7 @@ from ..constants import RelatieAarden
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     identificatie = uuid.uuid4().hex
-    bronorganisatie = '1'
+    bronorganisatie = factory.Faker('ssn', locale='nl_NL')
     creatiedatum = datetime.date(2018, 6, 27)
     titel = 'some titel'
     auteur = 'some auteur'
