@@ -179,6 +179,10 @@ class EnkelvoudigInformatieObject(InformatieObject):
 
 
 class Gebruiksrechten(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=_uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
     omschrijving_voorwaarden = models.TextField(
         _("omschrijving voorwaarden"),
@@ -209,6 +213,10 @@ class Gebruiksrechten(models.Model):
             self.informatieobject.indicatie_gebruiksrecht = True
             self.informatieobject.save()
         super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
 
 
 class ObjectInformatieObject(models.Model):
