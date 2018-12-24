@@ -5,11 +5,13 @@ from rest_framework.routers import DefaultRouter
 from zds_schema.schema import SchemaView
 
 from .viewsets import (
-    EnkelvoudigInformatieObjectViewSet, ObjectInformatieObjectViewSet
+    EnkelvoudigInformatieObjectViewSet, GebruiksrechtenViewSet,
+    ObjectInformatieObjectViewSet
 )
 
 router = DefaultRouter(trailing_slash=False)
 router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet)
+router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path

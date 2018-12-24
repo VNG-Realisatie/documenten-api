@@ -14,7 +14,7 @@ from drc.datamodel.constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden
 )
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ObjectInformatieObject
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 from drc.sync.signals import SyncError
 
@@ -203,3 +203,24 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError({
                 api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
             }) from sync_error
+
+
+class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Gebruiksrechten
+        fields = (
+            'url',
+            'informatieobject',
+            'startdatum',
+            'einddatum',
+            'omschrijving_voorwaarden'
+        )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'informatieobject': {
+                'lookup_field': 'uuid',
+                'validators': [IsImmutableValidator()],
+            },
+        }

@@ -2,12 +2,13 @@ from rest_framework import mixins, viewsets
 from zds_schema.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ObjectInformatieObject
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
-from .filters import ObjectInformatieObjectFilter
+from .filters import GebruiksrechtenFilter, ObjectInformatieObjectFilter
 from .serializers import (
-    EnkelvoudigInformatieObjectSerializer, ObjectInformatieObjectSerializer
+    EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
+    ObjectInformatieObjectSerializer
 )
 
 
@@ -88,4 +89,13 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
+    lookup_field = 'uuid'
+
+
+class GebruiksrechtenViewSet(viewsets.ModelViewSet):
+    """
+    """
+    queryset = Gebruiksrechten.objects.all()
+    serializer_class = GebruiksrechtenSerializer
+    filterset_class = GebruiksrechtenFilter
     lookup_field = 'uuid'
