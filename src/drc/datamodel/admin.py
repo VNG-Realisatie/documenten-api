@@ -1,11 +1,19 @@
 from django.contrib import admin
 
-from .models import EnkelvoudigInformatieObject, ObjectInformatieObject
+from .models import (
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+)
+
+
+class GebruiksrechtenInline(admin.TabularInline):
+    model = Gebruiksrechten
+    extra = 1
 
 
 @admin.register(EnkelvoudigInformatieObject)
 class EnkelvoudigInformatieObjectAdmin(admin.ModelAdmin):
     list_display = ['__str__']
+    inlines = [GebruiksrechtenInline]
 
 
 @admin.register(ObjectInformatieObject)

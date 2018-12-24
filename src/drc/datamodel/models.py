@@ -1,6 +1,6 @@
 import uuid as _uuid
 
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import ObjectTypes
@@ -176,6 +176,39 @@ class EnkelvoudigInformatieObject(InformatieObject):
         'waarde': integriteit_waarde,
         'datum': integriteit_datum,
     })
+
+
+class Gebruiksrechten(models.Model):
+    informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
+    omschrijving_voorwaarden = models.TextField(
+        _("omschrijving voorwaarden"),
+        help_text=_("Omschrijving van de van toepassing zijnde voorwaarden aan "
+                    "het gebruik anders dan raadpleging")
+    )
+    startdatum = models.DateTimeField(
+        _("startdatum"),
+        help_text=_("Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. "
+                    "Doorgaans is de datum van creatie van het informatieobject de startdatum.")
+    )
+    einddatum = models.DateTimeField(
+        _("startdatum"), blank=True, null=True,
+        help_text=_("Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn.")
+    )
+
+    class Meta:
+        verbose_name = _("gebruiksrecht informatieobject")
+        verbose_name_plural = _("gebruiksrechten informatieobject")
+
+    def __str__(self):
+        return str(self.informatieobject)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        # ensure the indication is set properly on the IO
+        if not self.informatieobject.indicatie_gebruiksrecht:
+            self.informatieobject.indicatie_gebruiksrecht = True
+            self.informatieobject.save()
+        super().save(*args, **kwargs)
 
 
 class ObjectInformatieObject(models.Model):
