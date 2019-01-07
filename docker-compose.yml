@@ -3,7 +3,7 @@ version: '3.4'
 
 services:
   db:
-    image: postgres
+    image: postgres:10
     # environment:
     #   - POSTGRES_USER=${PG_USER:drc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:drc}
