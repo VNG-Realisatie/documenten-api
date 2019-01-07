@@ -4,6 +4,7 @@ from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import ObjectTypes
+from zds_schema.descriptors import GegevensGroepType
 from zds_schema.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
@@ -12,7 +13,6 @@ from zds_schema.validators import alphanumeric_excluding_diacritic
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
 )
-from .descriptors import GegevensGroepType
 from .validators import validate_status
 
 

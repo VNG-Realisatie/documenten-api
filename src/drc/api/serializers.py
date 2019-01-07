@@ -8,11 +8,10 @@ from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
+from zds_schema.serializers import GegevensGroepSerializer
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import (
-    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden
-)
+from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
@@ -34,31 +33,16 @@ class AnyBase64File(Base64FileField):
         return "bin"
 
 
-class IntegriteitSerializer(serializers.Serializer):
-    algoritme = serializers.ChoiceField(
-        label=_("algoritme"), choices=ChecksumAlgoritmes.choices,
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_algoritme').help_text
-    )
-    waarde = serializers.CharField(
-        label=_("waarde"),
-        max_length=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').max_length,
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').help_text
-    )
-    datum = serializers.DateField(
-        label=_("datum"),
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_datum').help_text,
-    )
+class IntegriteitSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        gegevensgroep = 'integriteit'
 
 
-class OndertekeningSerializer(serializers.Serializer):
-    soort = serializers.ChoiceField(
-        label=_("soort"), choices=OndertekeningSoorten.choices,
-        help_text=EnkelvoudigInformatieObject._meta.get_field('ondertekening_soort').help_text
-    )
-    datum = serializers.DateField(
-        label=_("datum"),
-        help_text=EnkelvoudigInformatieObject._meta.get_field('ondertekening_datum').help_text
-    )
+class OndertekeningSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        gegevensgroep = 'ondertekening'
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
