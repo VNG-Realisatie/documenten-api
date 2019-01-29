@@ -79,7 +79,15 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
                 'algoritme': '',
                 'waarde': '',
                 'datum': None,
-            }
+            },
+            'ontvangstdatum': None,
+            'verzenddatum': None,
+            'ondertekening': {
+                'soort': '',
+                'datum': None,
+            },
+            'indicatieGebruiksrecht': None,
+            'status': '',
         })
         self.assertEqual(response.json(), expected_response)
 
@@ -100,10 +108,11 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         expected = {
             'url': f'http://testserver{detail_url}',
             'identificatie': test_object.identificatie,
-            'bronorganisatie': '1',
+            'bronorganisatie': test_object.bronorganisatie,
             'creatiedatum': '2018-06-27',
             'titel': 'some titel',
             'auteur': 'some auteur',
+            'status': '',
             'formaat': 'some formaat',
             'taal': 'dut',
             'bestandsnaam': '',
@@ -111,6 +120,13 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',
+            'ontvangstdatum': None,
+            'verzenddatum': None,
+            'ondertekening': {
+                'soort': '',
+                'datum': None,
+            },
+            'indicatieGebruiksrecht': None,
             'vertrouwelijkaanduiding': '',
             'integriteit': {
                 'algoritme': '',

@@ -1,16 +1,19 @@
 import uuid as _uuid
 
-from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import ObjectTypes
+from zds_schema.descriptors import GegevensGroepType
 from zds_schema.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import ChecksumAlgoritmes, RelatieAarden
+from .constants import (
+    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
+)
+from .validators import validate_status
 
 
 class InformatieObject(models.Model):
@@ -31,6 +34,7 @@ class InformatieObject(models.Model):
                   'heeft ontvangen en als eerste in een samenwerkingsketen '
                   'heeft vastgelegd.'
     )
+    # TODO: change to read-only?
     creatiedatum = models.DateField(
         help_text='Een datum of een gebeurtenis in de levenscyclus van het '
                   'INFORMATIEOBJECT.'
@@ -50,10 +54,61 @@ class InformatieObject(models.Model):
                   'verantwoordelijk is voor het creëren van de inhoud van het '
                   'INFORMATIEOBJECT.'
     )
+    status = models.CharField(
+        _("status"), max_length=20, blank=True, choices=Statussen.choices,
+        help_text=_("Aanduiding van de stand van zaken van een INFORMATIEOBJECT. "
+                    "De waarden 'in bewerking' en 'ter vaststelling' komen niet "
+                    "voor als het attribuut `ontvangstdatum` van een waarde is voorzien. "
+                    "Wijziging van de Status in 'gearchiveerd' impliceert dat "
+                    "het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben.")
+    )
     beschrijving = models.TextField(
         max_length=1000, blank=True,
         help_text='Een generieke beschrijving van de inhoud van het '
                   'INFORMATIEOBJECT.'
+    )
+    ontvangstdatum = models.DateField(
+        _("ontvangstdatum"), null=True, blank=True,
+        help_text=_("De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht "
+                    "te registreren voor INFORMATIEOBJECTen die van buiten de "
+                    "zaakbehandelende organisatie(s) ontvangen zijn. "
+                    "Ontvangst en verzending is voorbehouden aan documenten die "
+                    "van of naar andere personen ontvangen of verzonden zijn "
+                    "waarbij die personen niet deel uit maken van de behandeling "
+                    "van de zaak waarin het document een rol speelt.")
+    )
+    verzenddatum = models.DateField(
+        _("verzenddatum"), null=True, blank=True,
+        help_text=_("De datum waarop het INFORMATIEOBJECT verzonden is, zoals "
+                    "deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel "
+                    "inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde "
+                    "informatieobject kan niet tegelijk inkomend en uitgaand zijn. "
+                    "Ontvangst en verzending is voorbehouden aan documenten die "
+                    "van of naar andere personen ontvangen of verzonden zijn "
+                    "waarbij die personen niet deel uit maken van de behandeling "
+                    "van de zaak waarin het document een rol speelt.")
+    )
+    indicatie_gebruiksrecht = models.NullBooleanField(
+        _("indicatie gebruiksrecht"), blank=True, default=None,
+        help_text=_("Indicatie of er beperkingen gelden aangaande het gebruik van "
+                    "het informatieobject anders dan raadpleging. Dit veld mag "
+                    "'null' zijn om aan te geven dat de indicatie nog niet bekend is. "
+                    "Als de indicatie gezet is, dan kan je de gebruiksrechten die "
+                    "van toepassing zijn raadplegen via de `Gebruiksrechten` resource.")
+    )
+
+    # signing in some sort of way
+    # TODO: De attribuutsoort mag niet van een waarde zijn voorzien
+    # als de attribuutsoort ?Status? de waarde ?in bewerking?
+    # of ?ter vaststelling? heeft.
+    ondertekening_soort = models.CharField(
+        _("ondertekeningsoort"), max_length=10, blank=True,
+        choices=OndertekeningSoorten.choices,
+        help_text=_("Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT")
+    )
+    ondertekening_datum = models.DateField(
+        _("ondertekeningdatum"), blank=True, null=True,
+        help_text=_("De datum waarop de ondertekening van het INFORMATIEOBJECT heeft plaatsgevonden.")
     )
 
     informatieobjecttype = models.URLField(
@@ -67,6 +122,15 @@ class InformatieObject(models.Model):
 
     def __str__(self) -> str:
         return self.identificatie
+
+    def clean(self):
+        super().clean()
+        validate_status(status=self.status, ontvangstdatum=self.ontvangstdatum, instance=self)
+
+    ondertekening = GegevensGroepType({
+        'soort': ondertekening_soort,
+        'datum': ondertekening_datum,
+    })
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
@@ -108,30 +172,57 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text=_("Datum waarop de checksum is gemaakt.")
     )
 
-    def _get_integriteit(self):
-        return {
-            'algoritme': self.integriteit_algoritme,
-            'waarde': self.integriteit_waarde,
-            'datum': self.integriteit_datum,
-        }
+    integriteit = GegevensGroepType({
+        'algoritme': integriteit_algoritme,
+        'waarde': integriteit_waarde,
+        'datum': integriteit_datum,
+    })
 
-    def _set_integriteit(self, integrity: dict):
-        # it may be empty
-        if not integrity:
-            self.integriteit_algoritme = ''
-            self.integriteit_waarde = ''
-            self.integriteit_datum = None
-            return
 
-        self.integriteit_algoritme = integrity['algoritme']
-        self.integriteit_waarde = integrity['waarde']
-        self.integriteit_datum = integrity['datum']
+class Gebruiksrechten(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=_uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    informatieobject = models.ForeignKey('EnkelvoudigInformatieObject', on_delete=models.CASCADE)
+    omschrijving_voorwaarden = models.TextField(
+        _("omschrijving voorwaarden"),
+        help_text=_("Omschrijving van de van toepassing zijnde voorwaarden aan "
+                    "het gebruik anders dan raadpleging")
+    )
+    startdatum = models.DateTimeField(
+        _("startdatum"),
+        help_text=_("Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. "
+                    "Doorgaans is de datum van creatie van het informatieobject de startdatum.")
+    )
+    einddatum = models.DateTimeField(
+        _("startdatum"), blank=True, null=True,
+        help_text=_("Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn.")
+    )
 
-        assert self.integriteit_algoritme, "Empty algorithm not allowed"
-        assert self.integriteit_waarde, "Empty checksum value not allowed"
-        assert self.integriteit_datum, "Empty date not allowed"
+    class Meta:
+        verbose_name = _("gebruiksrecht informatieobject")
+        verbose_name_plural = _("gebruiksrechten informatieobject")
 
-    integriteit = property(_get_integriteit, _set_integriteit)
+    def __str__(self):
+        return str(self.informatieobject)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        # ensure the indication is set properly on the IO
+        if not self.informatieobject.indicatie_gebruiksrecht:
+            self.informatieobject.indicatie_gebruiksrecht = True
+            self.informatieobject.save()
+        super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
+        other_gebruiksrechten = self.informatieobject.gebruiksrechten_set.exclude(pk=self.pk)
+        if not other_gebruiksrechten.exists():
+            self.informatieobject.indicatie_gebruiksrecht = None
+            self.informatieobject.save()
 
 
 class ObjectInformatieObject(models.Model):

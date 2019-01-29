@@ -12,7 +12,7 @@ from ..constants import RelatieAarden
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     identificatie = uuid.uuid4().hex
-    bronorganisatie = '1'
+    bronorganisatie = factory.Faker('ssn', locale='nl_NL')
     creatiedatum = datetime.date(2018, 6, 27)
     titel = 'some titel'
     auteur = 'some auteur'
@@ -46,3 +46,18 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
             object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}'),
             aard_relatie=RelatieAarden.legt_vast
         )
+
+
+class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
+    omschrijving_voorwaarden = factory.Faker('paragraph')
+
+    class Meta:
+        model = 'datamodel.Gebruiksrechten'
+
+    @factory.lazy_attribute
+    def startdatum(self):
+        return datetime.datetime.combine(
+            self.informatieobject.creatiedatum,
+            datetime.time(0, 0)
+        ).replace(tzinfo=timezone.utc)

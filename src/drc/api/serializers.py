@@ -8,15 +8,17 @@ from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
+from zds_schema.serializers import GegevensGroepSerializer
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import ChecksumAlgoritmes, RelatieAarden
+from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ObjectInformatieObject
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 from drc.sync.signals import SyncError
 
 from .auth import get_zrc_auth, get_ztc_auth
+from .validators import StatusValidator
 
 
 class AnyFileType:
@@ -31,20 +33,16 @@ class AnyBase64File(Base64FileField):
         return "bin"
 
 
-class IntegriteitSerializer(serializers.Serializer):
-    algoritme = serializers.ChoiceField(
-        label=_("algoritme"), choices=ChecksumAlgoritmes.choices,
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_algoritme').help_text
-    )
-    waarde = serializers.CharField(
-        label=_("waarde"),
-        max_length=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').max_length,
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_waarde').help_text
-    )
-    datum = serializers.DateField(
-        label=_("datum"),
-        help_text=EnkelvoudigInformatieObject._meta.get_field('integriteit_datum').help_text,
-    )
+class IntegriteitSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        gegevensgroep = 'integriteit'
+
+
+class OndertekeningSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        gegevensgroep = 'ondertekening'
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -58,7 +56,13 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     )
     integriteit = IntegriteitSerializer(
         label=_("integriteit"), allow_null=True, required=False,
-        help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand")
+        help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand.")
+    )
+    # TODO: validator!
+    ondertekening = OndertekeningSerializer(
+        label=_("ondertekening"), allow_null=True, required=False,
+        help_text=_("Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde "
+                    "zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.")
     )
 
     class Meta:
@@ -71,6 +75,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'titel',
             'vertrouwelijkaanduiding',
             'auteur',
+            'status',
             'formaat',
             'taal',
             'bestandsnaam',
@@ -78,8 +83,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bestandsomvang',
             'link',
             'beschrijving',
+            'ontvangstdatum',
+            'verzenddatum',
+            'indicatie_gebruiksrecht',
+            'ondertekening',
             'integriteit',
-
             'informatieobjecttype'  # van-relatie
         )
         extra_kwargs = {
@@ -90,14 +98,33 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             }
         }
+        validators = [StatusValidator()]
+
+    def validate_indicatie_gebruiksrecht(self, indicatie):
+        if self.instance and not indicatie and self.instance.gebruiksrechten_set.exists():
+            raise serializers.ValidationError(
+                _("De indicatie kan niet weggehaald worden of ongespecifieerd "
+                  "zijn als er Gebruiksrechten gedefinieerd zijn."),
+                code='existing-gebruiksrechten'
+            )
+        # create: not self.instance or update: usage_rights exists
+        elif indicatie and (not self.instance or not self.instance.gebruiksrechten_set.exists()):
+            raise serializers.ValidationError(
+                _("De indicatie moet op 'ja' gezet worden door `gebruiksrechten` "
+                  "aan te maken, dit kan niet direct op deze resource."),
+                code='missing-gebruiksrechten'
+            )
+        return indicatie
 
     def create(self, validated_data):
         """
         Handle nested writes.
         """
         integriteit = validated_data.pop('integriteit', None)
+        ondertekening = validated_data.pop('ondertekening', None)
         eio = super().create(validated_data)
         eio.integriteit = integriteit
+        eio.ondertekening = ondertekening
         eio.save()
         return eio
 
@@ -106,6 +133,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         Handle nested writes.
         """
         instance.integriteit = validated_data.pop('integriteit', None)
+        instance.ondertekening = validated_data.pop('ondertekening', None)
         return super().update(instance, validated_data)
 
 
@@ -175,3 +203,24 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError({
                 api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
             }) from sync_error
+
+
+class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Gebruiksrechten
+        fields = (
+            'url',
+            'informatieobject',
+            'startdatum',
+            'einddatum',
+            'omschrijving_voorwaarden'
+        )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'informatieobject': {
+                'lookup_field': 'uuid',
+                'validators': [IsImmutableValidator()],
+            },
+        }

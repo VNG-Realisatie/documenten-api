@@ -4,6 +4,19 @@ from djchoices import ChoiceItem, DjangoChoices
 from zds_schema.constants import ObjectTypes
 
 
+class Statussen(DjangoChoices):
+    in_bewerking = ChoiceItem('in bewerking', _("Aan het informatieobject wordt nog gewerkt."))
+    ter_vaststelling = ChoiceItem('ter vaststelling', _("Informatieobject gereed maar moet nog vastgesteld worden."))
+    definitief = ChoiceItem('definitief', _("Informatieobject door bevoegd iets of iemand vastgesteld "
+                                            "dan wel ontvangen."))
+    gearchiveerd = ChoiceItem('gearchiveerd', _("Informatieobject duurzaam bewaarbaar gemaakt; een "
+                                                "gearchiveerd informatie-element."))
+
+    @classmethod
+    def invalid_for_received(cls) -> tuple:
+        return (cls.in_bewerking, cls.ter_vaststelling)
+
+
 class RelatieAarden(DjangoChoices):
     hoort_bij = ChoiceItem('hoort_bij', _("Hoort bij, omgekeerd: kent"))
     legt_vast = ChoiceItem('legt_vast', _("Legt vast, omgekeerd: kan vastgelegd zijn als"))
@@ -33,3 +46,10 @@ class ChecksumAlgoritmes(DjangoChoices):
     sha_256 = ChoiceItem('SHA-256')
     sha_512 = ChoiceItem('SHA-512')
     sha_3 = ChoiceItem('SHA-3')
+
+
+class OndertekeningSoorten(DjangoChoices):
+    analoog = ChoiceItem('analoog', _("Analoog"))
+    digitaal = ChoiceItem('digitaal', _("Digitaal"))
+    pki = ChoiceItem('pki', _("PKI"))
+    # TODO: more...

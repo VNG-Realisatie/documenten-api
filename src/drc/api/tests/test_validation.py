@@ -7,10 +7,33 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import URLValidator
 
-from .utils import reverse
+from drc.datamodel.constants import OndertekeningSoorten, Statussen
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
+
+from .utils import reverse, reverse_lazy
 
 
 class EnkelvoudigInformatieObjectTests(APITestCase):
+
+    def assertGegevensGroepRequired(self, url: str, field: str, base_body: dict, cases: tuple):
+        for key, code in cases:
+            with self.subTest(key=key, expected_code=code):
+                body = deepcopy(base_body)
+                del body[key]
+                response = self.client.post(url, {field: body})
+
+                error = get_validation_errors(response, f'{field}.{key}')
+                self.assertEqual(error['code'], code)
+
+    def assertGegevensGroepValidation(self, url: str, field: str, base_body: dict, cases: tuple):
+        for key, code, blank_value in cases:
+            with self.subTest(key=key, expected_code=code):
+                body = deepcopy(base_body)
+                body[key] = blank_value
+                response = self.client.post(url, {field: body})
+
+                error = get_validation_errors(response, f'{field}.{key}')
+                self.assertEqual(error['code'], code)
 
     @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
     def test_validate_informatieobjecttype_invalid(self):
@@ -37,11 +60,9 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         url = reverse('enkelvoudiginformatieobject-list')
 
         base_body = {
-            'integriteit': {
-                'algoritme': 'MD5',
-                'waarde': 'foobarbaz',
-                'datum': '2018-12-13',
-            }
+            'algoritme': 'MD5',
+            'waarde': 'foobarbaz',
+            'datum': '2018-12-13',
         }
 
         cases = (
@@ -49,24 +70,16 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
             ('waarde', 'required'),
             ('datum', 'required'),
         )
-        for key, code in cases:
-            with self.subTest(key=key, expected_code=code):
-                body = deepcopy(base_body)
-                del body['integriteit'][key]
-                response = self.client.post(url, body)
 
-                error = get_validation_errors(response, f'integriteit.{key}')
-                self.assertEqual(error['code'], code)
+        self.assertGegevensGroepRequired(url, 'integriteit', base_body, cases)
 
     def test_integriteit_bad_values(self):
         url = reverse('enkelvoudiginformatieobject-list')
 
         base_body = {
-            'integriteit': {
-                'algoritme': 'MD5',
-                'waarde': 'foobarbaz',
-                'datum': '2018-12-13',
-            }
+            'algoritme': 'MD5',
+            'waarde': 'foobarbaz',
+            'datum': '2018-12-13',
         }
 
         cases = (
@@ -74,14 +87,111 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
             ('waarde', 'blank', ''),
             ('datum', 'null', None),
         )
-        for key, code, blank_value in cases:
-            with self.subTest(key=key, expected_code=code):
-                body = deepcopy(base_body)
-                body['integriteit'][key] = blank_value
-                response = self.client.post(url, body)
 
-                error = get_validation_errors(response, f'integriteit.{key}')
-                self.assertEqual(error['code'], code)
+        self.assertGegevensGroepValidation(url, 'integriteit', base_body, cases)
+
+    def test_ondertekening(self):
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        base_body = {
+            'soort': OndertekeningSoorten.analoog,
+            'datum': '2018-12-13',
+        }
+
+        cases = (
+            ('soort', 'required'),
+            ('datum', 'required'),
+        )
+
+        self.assertGegevensGroepRequired(url, 'ondertekening', base_body, cases)
+
+    def test_ondertekening_bad_values(self):
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        base_body = {
+            'soort': OndertekeningSoorten.digitaal,
+            'datum': '2018-12-13',
+        }
+        cases = (
+            ('soort', 'invalid_choice', ''),
+            ('datum', 'null', None),
+        )
+
+        self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
+
+
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+class InformatieObjectStatusTests(APITestCase):
+
+    url = reverse_lazy('enkelvoudiginformatieobject-list')
+
+    def test_ontvangen_informatieobjecten(self):
+        """
+        Assert certain statuses are not allowed for received documents.
+
+        RGBZ 2.00.02 deel II Concept 20180613: De waarden ?in bewerking?
+        en ?ter vaststelling? zijn niet van toepassing op ontvangen
+        informatieobjecten.
+        """
+        invalid_statuses = (Statussen.in_bewerking, Statussen.ter_vaststelling)
+        data = {
+            'bronorganisatie': '319582462',
+            'creatiedatum': '2018-12-24',
+            'titel': 'dummy',
+            'auteur': 'dummy',
+            'taal': 'dut',
+            'inhoud': 'aGVsbG8gd29ybGQ=',
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'ontvangstdatum': '2018-12-24',
+        }
+
+        for invalid_status in invalid_statuses:
+            with self.subTest(status=invalid_status):
+                _data = data.copy()
+                _data['status'] = invalid_status
+
+                response = self.client.post(self.url, _data)
+
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            error = get_validation_errors(response, 'status')
+            self.assertEqual(error['code'], 'invalid_for_received')
+
+    def test_informatieobjecten_niet_ontvangen(self):
+        """
+        All statusses should be allowed when the informatieobject doesn't have
+        a receive date.
+        """
+        for valid_status, _ in Statussen.choices:
+            with self.subTest(status=status):
+                data = {
+                    'ontvangstdatum': None,
+                    'status': valid_status
+                }
+
+                response = self.client.post(self.url, data)
+
+            error = get_validation_errors(response, 'status')
+            self.assertIsNone(error)
+
+    def test_status_set_ontvangstdatum_is_set_later(self):
+        """
+        Assert that setting the ontvangstdatum later, after an 'invalid' status
+        has been set, is not possible.
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create(ontvangstdatum=None)
+        url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
+
+        for invalid_status in (Statussen.in_bewerking, Statussen.ter_vaststelling):
+            with self.subTest(status=invalid_status):
+                eio.status = invalid_status
+                eio.save()
+                data = {'ontvangstdatum': '2018-12-24'}
+
+                response = self.client.patch(url, data)
+
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                error = get_validation_errors(response, 'status')
+                self.assertEqual(error['code'], 'invalid_for_received')
 
 
 class FilterValidationTests(APITestCase):
