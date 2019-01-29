@@ -3431,7 +3431,7 @@
                 },
                 "indicatieGebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
-                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging.",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
                     "type": "boolean"
                 },
                 "ondertekening": {
@@ -4116,7 +4116,7 @@
                 },
                 "indicatie_gebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
-                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging.",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
                     "type": "boolean"
                 },
                 "ondertekening": {

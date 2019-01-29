@@ -88,12 +88,13 @@ class InformatieObject(models.Model):
                     "waarbij die personen niet deel uit maken van de behandeling "
                     "van de zaak waarin het document een rol speelt.")
     )
-    # TODO: indien er gebruiksrechten gespecifieerd zijn, dan kan dit niet None/False worden
-    # maar moet het True zijn
     indicatie_gebruiksrecht = models.NullBooleanField(
         _("indicatie gebruiksrecht"), blank=True, default=None,
         help_text=_("Indicatie of er beperkingen gelden aangaande het gebruik van "
-                    "het informatieobject anders dan raadpleging.")
+                    "het informatieobject anders dan raadpleging. Dit veld mag "
+                    "'null' zijn om aan te geven dat de indicatie nog niet bekend is. "
+                    "Als de indicatie gezet is, dan kan je de gebruiksrechten die "
+                    "van toepassing zijn raadplegen via de `Gebruiksrechten` resource.")
     )
 
     # signing in some sort of way
