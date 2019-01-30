@@ -2,8 +2,30 @@
 Wijzigingen
 ===========
 
-0.6.10 (2018-12-13)
+0.7.0 (2018-01-30)
 ==================
+
+API maturity release
+
+* Attributes added (#549)
+    * ``EnkelvoudingInformatieObject.bestandsomvang`` (read-only)
+    * ``EnkelvoudingInformatieObject.bestandsnaam`` (NOT as a group attribute)
+    * ``EnkelvoudingInformatieObject.integriteit`` as nested object, possible
+      checksum algorithm values are defined in enum
+    * ``EnkelvoudingInformatieObject.ontvangstdatum``
+    * ``EnkelvoudingInformatieObject.verzenddatum``
+    * ``EnkelvoudingInformatieObject.indicatieGebruiksrecht`` - values ``null``
+      and ``false`` are writable, for ``true`` you need to leverage the
+      ``Gebruiksrechten`` resource
+    * ``EnkelvoudingInformatieObject.ondertekening`` as nested object
+    * ``EnkelvoudingInformatieObject.status`` with business logic and interaction
+      with ``ontvangstdatum``
+* (Partial) updates enabled for ``EnkelvoudingInformatieObject``
+* Added ``Gebruiksrechten`` resource with interaction on ``indicatieGebruiksrecht``
+* Updated to latest zds-schema version
+
+0.6.10 (2018-12-13)
+===================
 
 Bump Django and urllib
 
