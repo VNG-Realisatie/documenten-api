@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Documentregistratiecomponent (drc) API",
-        "description": "Een API om een documentregistratiecomponent te benaderen",
+        "description": "Een API om een documentregistratiecomponent te benaderen.\n\nEen informatieobject is een digitaal document voorzien van meta-gegevens.\nInformatieobjecten kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.\nGebruiksrechten leggen voorwaarden op aan het gebruik van het informatieobject\n(buiten raadpleging). Deze gebruiksrechten worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van informatieobjecten is in de zaaktypecatalogus (ZTC)\nondergebracht in de vorm van informatieobjecttypen.\n\n**Autorisatie**\n\nDeze API vereist nog geen autorisatie. Je mag wel JWT-tokens gegenereerd door\nde [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken - deze worden\nvoor nu genegeerd.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
         "contact": {
             "url": "https://github.com/VNG-Realisatie/gemma-zaken",
             "email": "support@maykinmedia.nl"
@@ -10,7 +10,7 @@
         "license": {
             "name": "EUPL 1.2"
         },
-        "version": "1"
+        "version": "1.0.0-alpha"
     },
     "basePath": "/api/v1",
     "consumes": [
