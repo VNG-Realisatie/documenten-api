@@ -5,6 +5,8 @@ python-dotenv
 python-dateutil
 pytz
 raven
+Sphinx
+sphinx-rtd-theme
 
 Django
 django-axes

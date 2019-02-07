@@ -2,5 +2,3 @@
 -r testing.txt
 
 django-debug-toolbar
-
-Sphinx==1.7.5
