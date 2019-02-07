@@ -35,6 +35,7 @@ Contents
     :maxdepth: 2
 
     contents/installation
+    contents/configuration
     contents/usage
     source/drc
     contents/copyright

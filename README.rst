@@ -31,12 +31,13 @@ testen.
 Documentation
 =============
 
-See ``docs/contents/installation`` for installation instructions, available settings and
+See ``docs/contents/installation.rst`` for installation instructions, available settings and
 commands.
 
 If you intend to develop on the component, we recommend the ``development.rst``
 document, otherwise ``docker.rst`` is recommended.
 
+See ``docs/contents/configuration.rst`` for runtime configuration.
 
 References
 ==========
