@@ -18,7 +18,7 @@ import django
 
 sys.path.insert(0, os.path.abspath('../src'))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'drc.conf.dev'
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drc.conf.dev')
 
 django.setup()
 

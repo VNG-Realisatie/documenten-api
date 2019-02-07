@@ -29,6 +29,7 @@ uwsgi \
     --module drc.wsgi \
     --static-map /static=/app/static \
     --static-map /media=/app/media  \
+    --static-map /_docs=/app/docs/_build/html  \
     --chdir src \
     --processes 2 \
     --threads 2 \
