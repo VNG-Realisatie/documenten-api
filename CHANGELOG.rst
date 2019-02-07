@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.7.1 (2019-02-07)
+==================
+
+Documentation improvements
+
+* #620 - improve API documentation
+* Bump Django and zds-schema to new patch versions
+* Ship non-api documentation in Docker image
+
 0.7.0 (2019-01-30)
 ==================
 
