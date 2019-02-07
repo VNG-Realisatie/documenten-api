@@ -18,24 +18,44 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
                                          mixins.UpdateModelMixin,
                                          viewsets.GenericViewSet):
     """
-    EnkelvoudigInformatieObject resource.
+    Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
 
     create:
-    Registreer een EnkelvoudigInformatieObject.
+    Registreer een ENKELVOUDIG INFORMATIEOBJECT.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid informatieobjecttype URL
+
+    list:
+    Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).
+
+    De objecten bevatten metadata over de documenten en de downloadlink naar
+    de binary data.
 
     retrieve:
-    Geef de details van een EnkelvoudigInformatieObject.
+    Geef de details van een ENKELVOUDIG INFORMATIEOBJECT.
+
+    Het object bevat metadata over het informatieobject en de downloadlink naar
+    de binary data.
 
     update:
-    Werk een EnkelVoudigInformatieObject bij.
+    Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource mee
+    te sturen.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid informatieobjecttype URL
 
-    TODO:
+    *TODO*
+    - valideer immutable attributes
+
+    partial_update:
+    Werk een ENKELVOUDIG INFORMATIEOBJECT bij door enkel de gewijzigde velden
+    mee te sturen.
+
+    **Er wordt gevalideerd op**
+    - geldigheid informatieobjecttype URL
+
+    *TODO*
     - valideer immutable attributes
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
@@ -59,28 +79,43 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
     * INFORMATIEOBJECT behoort bij [OBJECT] en
     * INFORMATIEOBJECT is vastlegging van [OBJECT].
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
     - geldigheid object URL
     - de combinatie informatieobject en object moet uniek zijn
 
-    De registratiedatum wordt door het systeem op 'NU' gezet. De aard_relatie
-    wordt ook door het systeem gezet.
+    **Opmerkingen**
+    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
+      wordt ook door het systeem gezet.
+    - Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
+      relatie aangemaakt, echter zonder de relatie-informatie.
+    - Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
+      object van het type ZAAK gaat (aard relatie "hoort bij").
 
-    Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
-    relatie aangemaakt, echter zonder de relatie-informatie.
+    list:
+    Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.
 
-    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-    object van het type ZAAK gaat (aard relatie "hoort bij").
+    Deze lijst kan gefilterd wordt met querystringparameters.
 
     retrieve:
-    Geef de details van een OBJECTINFORMATIEOBJECT relatie.
+    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ander
+    OBJECT.
 
     update:
     Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
     van de relatie bewerken, en niet de relatie zelf aanpassen.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
+    - informatieobject URL, object URL en objectType mogen niet veranderen
+
+    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
+    object van het type ZAAK gaat (aard relatie "hoort bij").
+
+    partial_update:
+    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+    **Er wordt gevalideerd op**
     - informatieobject URL, object URL en objectType mogen niet veranderen
 
     Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
@@ -94,6 +129,34 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
 
 class GebruiksrechtenViewSet(viewsets.ModelViewSet):
     """
+    list:
+    Geef een lijst van gebruiksrechten horend bij informatieobjecten.
+
+    Er kan gefiltered worden met querystringparameters.
+
+    retrieve:
+    Haal de details op van een gebruiksrecht van een informatieobject.
+
+    create:
+    Voeg gebruiksrechten toe voor een informatieobject.
+
+    **Opmerkingen**
+    - Het toevoegen van gebruiksrechten zorgt ervoor dat de
+      `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
+
+    update:
+    Werk een gebruiksrecht van een informatieobject bij.
+
+    partial_update:
+    Werk een gebruiksrecht van een informatieobject bij.
+
+    destroy:
+    Verwijder een gebruiksrecht van een informatieobject.
+
+    **Opmerkingen**
+    - Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,
+      dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`
+      gezet.
     """
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer

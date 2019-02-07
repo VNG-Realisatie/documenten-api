@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Documentregistratiecomponent (drc) API",
-        "description": "Een API om een documentregistratiecomponent te benaderen",
+        "description": "Een API om een documentregistratiecomponent te benaderen.\n\nEen informatieobject is een digitaal document voorzien van meta-gegevens.\nInformatieobjecten kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.\nGebruiksrechten leggen voorwaarden op aan het gebruik van het informatieobject\n(buiten raadpleging). Deze gebruiksrechten worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van informatieobjecten is in de zaaktypecatalogus (ZTC)\nondergebracht in de vorm van informatieobjecttypen.\n\n**Autorisatie**\n\nDeze API vereist nog geen autorisatie. Je mag wel JWT-tokens gegenereerd door\nde [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken - deze worden\nvoor nu genegeerd.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
         "contact": {
             "url": "https://github.com/VNG-Realisatie/gemma-zaken",
             "email": "support@maykinmedia.nl"
@@ -10,7 +10,7 @@
         "license": {
             "name": "EUPL 1.2"
         },
-        "version": "1"
+        "version": "1.0.0-alpha"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -35,7 +35,7 @@
         "/enkelvoudiginformatieobjecten": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
-                "description": "EnkelvoudigInformatieObject resource.",
+                "description": "Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).\n\nDe objecten bevatten metadata over de documenten en de downloadlink naar\nde binary data.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -174,7 +174,7 @@
             },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
-                "description": "Registreer een EnkelvoudigInformatieObject.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobjecttype URL",
+                "description": "Registreer een ENKELVOUDIG INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -343,7 +343,7 @@
         "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
-                "description": "Geef de details van een EnkelvoudigInformatieObject.",
+                "description": "Geef de details van een ENKELVOUDIG INFORMATIEOBJECT.\n\nHet object bevat metadata over het informatieobject en de downloadlink naar\nde binary data.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -493,7 +493,7 @@
             },
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
-                "description": "Werk een EnkelVoudigInformatieObject bij.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobjecttype URL",
+                "description": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource mee\nte sturen.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -666,7 +666,7 @@
             },
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
-                "description": "EnkelvoudigInformatieObject resource.",
+                "description": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door enkel de gewijzigde velden\nmee te sturen.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -851,7 +851,7 @@
         "/gebruiksrechten": {
             "get": {
                 "operationId": "gebruiksrechten_list",
-                "description": "",
+                "description": "Geef een lijst van gebruiksrechten horend bij informatieobjecten.\n\nEr kan gefiltered worden met querystringparameters.",
                 "parameters": [
                     {
                         "name": "informatieobject",
@@ -1069,7 +1069,7 @@
             },
             "post": {
                 "operationId": "gebruiksrechten_create",
-                "description": "",
+                "description": "Voeg gebruiksrechten toe voor een informatieobject.\n\n**Opmerkingen**\n- Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1238,7 +1238,7 @@
         "/gebruiksrechten/{uuid}": {
             "get": {
                 "operationId": "gebruiksrechten_read",
-                "description": "",
+                "description": "Haal de details op van een gebruiksrecht van een informatieobject.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -1388,7 +1388,7 @@
             },
             "put": {
                 "operationId": "gebruiksrechten_update",
-                "description": "",
+                "description": "Werk een gebruiksrecht van een informatieobject bij.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1561,7 +1561,7 @@
             },
             "patch": {
                 "operationId": "gebruiksrechten_partial_update",
-                "description": "",
+                "description": "Werk een gebruiksrecht van een informatieobject bij.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1734,7 +1734,7 @@
             },
             "delete": {
                 "operationId": "gebruiksrechten_delete",
-                "description": "",
+                "description": "Verwijder een gebruiksrecht van een informatieobject.\n\n**Opmerkingen**\n- Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n  gezet.",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -1893,7 +1893,7 @@
         "/objectinformatieobjecten": {
             "get": {
                 "operationId": "objectinformatieobject_list",
-                "description": "Beheer relatie tussen InformatieObject en OBJECT.",
+                "description": "Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.\n\nDeze lijst kan gefilterd wordt met querystringparameters.",
                 "parameters": [
                     {
                         "name": "object",
@@ -2063,7 +2063,7 @@
             },
             "post": {
                 "operationId": "objectinformatieobject_create",
-                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n* INFORMATIEOBJECT behoort bij [OBJECT] en\n* INFORMATIEOBJECT is vastlegging van [OBJECT].\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de combinatie informatieobject en object moet uniek zijn\n\nDe registratiedatum wordt door het systeem op 'NU' gezet. De aard_relatie\nwordt ook door het systeem gezet.\n\nBij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\nrelatie aangemaakt, echter zonder de relatie-informatie.\n\nTitel, beschrijving en registratiedatum zijn enkel relevant als het om een\nobject van het type ZAAK gaat (aard relatie \"hoort bij\").",
+                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n* INFORMATIEOBJECT behoort bij [OBJECT] en\n* INFORMATIEOBJECT is vastlegging van [OBJECT].\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de combinatie informatieobject en object moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\n  relatie aangemaakt, echter zonder de relatie-informatie.\n- Titel, beschrijving en registratiedatum zijn enkel relevant als het om een\n  object van het type ZAAK gaat (aard relatie \"hoort bij\").",
                 "parameters": [
                     {
                         "name": "data",
@@ -2232,7 +2232,7 @@
         "/objectinformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "objectinformatieobject_read",
-                "description": "Geef de details van een OBJECTINFORMATIEOBJECT relatie.",
+                "description": "Geef de details van een relatie tussen een INFORMATIEOBJECT en een ander\nOBJECT.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -2382,7 +2382,7 @@
             },
             "put": {
                 "operationId": "objectinformatieobject_update",
-                "description": "Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\nEr wordt gevalideerd op:\n- informatieobject URL, object URL en objectType mogen niet veranderen\n\nTitel, beschrijving en registratiedatum zijn enkel relevant als het om een\nobject van het type ZAAK gaat (aard relatie \"hoort bij\").",
+                "description": "Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL, object URL en objectType mogen niet veranderen\n\nTitel, beschrijving en registratiedatum zijn enkel relevant als het om een\nobject van het type ZAAK gaat (aard relatie \"hoort bij\").",
                 "parameters": [
                     {
                         "name": "data",
@@ -2555,7 +2555,7 @@
             },
             "patch": {
                 "operationId": "objectinformatieobject_partial_update",
-                "description": "Beheer relatie tussen InformatieObject en OBJECT.",
+                "description": "Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL, object URL en objectType mogen niet veranderen\n\nTitel, beschrijving en registratiedatum zijn enkel relevant als het om een\nobject van het type ZAAK gaat (aard relatie \"hoort bij\").",
                 "parameters": [
                     {
                         "name": "data",
