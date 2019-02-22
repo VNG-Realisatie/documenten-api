@@ -1,4 +1,5 @@
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
+from zds_schema.permissions import ActionScopesRequired
 from zds_schema.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
@@ -6,17 +7,14 @@ from drc.datamodel.models import (
 )
 
 from .filters import GebruiksrechtenFilter, ObjectInformatieObjectFilter
+from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
     ObjectInformatieObjectSerializer
 )
 
 
-class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
-                                         mixins.ListModelMixin,
-                                         mixins.RetrieveModelMixin,
-                                         mixins.UpdateModelMixin,
-                                         viewsets.GenericViewSet):
+class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
 
@@ -57,18 +55,20 @@ class EnkelvoudigInformatieObjectViewSet(mixins.CreateModelMixin,
 
     *TODO*
     - valideer immutable attributes
+
+    delete:
+    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde resources binnen deze API.
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
     serializer_class = EnkelvoudigInformatieObjectSerializer
     lookup_field = 'uuid'
+    permission_classes = (ActionScopesRequired, )
+    required_scopes = {
+        'delete': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    }
 
 
-class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
-                                    mixins.CreateModelMixin,
-                                    mixins.ListModelMixin,
-                                    mixins.RetrieveModelMixin,
-                                    mixins.UpdateModelMixin,
-                                    viewsets.GenericViewSet):
+class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
 
@@ -120,6 +120,9 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
 
     Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
     object van het type ZAAK gaat (aard relatie "hoort bij").
+
+    delete:
+    Verwijdert de relatie tussen OBJECT en INFORMATIEOBJECT.
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
