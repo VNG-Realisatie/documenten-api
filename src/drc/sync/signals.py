@@ -17,7 +17,7 @@ class SyncError(Exception):
     pass
 
 
-def sync_create(relation: ObjectInformatieObject):
+def sync(relation: ObjectInformatieObject, operation: str):
     # build the URL of the informatieobject
     path = reverse('enkelvoudiginformatieobject-detail', kwargs={
         'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
@@ -35,7 +35,7 @@ def sync_create(relation: ObjectInformatieObject):
     client = Client.from_url(relation.object)
 
     try:
-        pattern = get_operation_url(client.schema, f'{resource}_create', pattern_only=True)
+        pattern = get_operation_url(client.schema, f'{resource}_{operation}', pattern_only=True)
     except ValueError as exc:
         raise SyncError("Could not determine remote operation") from exc
 
@@ -45,14 +45,19 @@ def sync_create(relation: ObjectInformatieObject):
     params = extract_params(f"{relation.object}/irrelevant", pattern)
 
     try:
-        client.create(resource, {'informatieobject': informatieobject_url}, **params)
+        operation_function = getattr(client, operation)
+        operation_function(resource, {'informatieobject': informatieobject_url}, **params)
     except Exception as exc:
-        logger.error("Could not create remote relation", exc_info=1)
-        raise SyncError("Could not create remote relation") from exc
+        logger.error(f"Could not {operation} remote relation", exc_info=1)
+        raise SyncError(f"Could not {operation} remote relation") from exc
+
+
+def sync_create(relation: ObjectInformatieObject):
+    sync(relation, 'create')
 
 
 def sync_delete(relation: ObjectInformatieObject):
-    raise NotImplementedError
+    sync(relation, 'delete')
 
 
 @receiver([post_save, post_delete], sender=ObjectInformatieObject, dispatch_uid='sync.sync_informatieobject_relation')

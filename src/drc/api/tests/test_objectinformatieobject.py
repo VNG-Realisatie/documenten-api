@@ -14,7 +14,7 @@ from zds_schema.tests import get_validation_errors
 from zds_schema.validators import IsImmutableValidator
 
 from drc.datamodel.constants import RelatieAarden
-from drc.datamodel.models import ObjectInformatieObject
+from drc.datamodel.models import EnkelvoudigInformatieObject, ObjectInformatieObject
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
@@ -37,9 +37,15 @@ class ObjectInformatieObjectAPITests(APITestCase):
     list_url = reverse_lazy('objectinformatieobject-list', kwargs={'version': '1'})
 
     def setUp(self):
-        patcher = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher.start()
-        self.addCleanup(patcher.stop)
+        super().setUp()
+
+        patcher_sync_create = patch('drc.sync.signals.sync_create')
+        self.mocked_sync_create = patcher_sync_create.start()
+        self.addCleanup(patcher_sync_create.stop)
+
+        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
+        self.mocked_sync_delete = patcher_sync_delete.start()
+        self.addCleanup(patcher_sync_delete.stop)
 
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_create(self):
@@ -320,3 +326,28 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
         # transaction must be rolled back
         self.assertFalse(ObjectInformatieObject.objects.exists())
+
+    @freeze_time('2018-09-19T12:25:19+0200')
+    def test_delete(self):
+        document = EnkelvoudigInformatieObjectFactory.create()
+        oio = ObjectInformatieObjectFactory.create(
+            informatieobject=document,
+            object=ZAAK,
+            object_type=ObjectTypes.zaak,
+            aard_relatie=RelatieAarden.hoort_bij
+        )
+        oio_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': oio.uuid,
+        })
+
+        self.assertEqual(self.mocked_sync_delete.call_count, 0)
+
+        response = self.client.delete(oio_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
+
+        self.assertEqual(self.mocked_sync_delete.call_count, 1)
+
+        # Relation is gone, document still exists.
+        self.assertFalse(ObjectInformatieObject.objects.exists())
+        self.assertTrue(EnkelvoudigInformatieObject.objects.exists())

@@ -17,6 +17,8 @@ from drc.datamodel.tests.factories import ObjectInformatieObjectFactory
 class US154Tests(TypeCheckMixin, APITestCase):
 
     def setUp(self):
+        super().setUp()
+
         patcher = patch('drc.sync.signals.sync_create')
         self.mocked_sync_create = patcher.start()
         self.addCleanup(patcher.stop)
