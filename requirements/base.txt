@@ -60,4 +60,4 @@ sphinxcontrib-websupport==1.1.0  # via sphinx
 unidecode==1.0.22         # via zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.1           # via requests
-zds-schema==0.21.0
+zds-schema==0.21.4
