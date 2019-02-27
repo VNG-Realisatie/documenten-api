@@ -27,7 +27,7 @@ drf-nested-routers==0.90.2  # via zds-schema
 drf-yasg==1.9.0
 first==2.0.1              # via pip-tools
 future==0.16.0            # via drf-yasg
-gemma-zds-client==0.8.0   # via zds-schema
+gemma-zds-client==0.9.2
 idna==2.7                 # via requests
 imagesize==1.1.0          # via sphinx
 inflection==0.3.1         # via drf-yasg
@@ -60,4 +60,4 @@ sphinxcontrib-websupport==1.1.0  # via sphinx
 unidecode==1.0.22         # via zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.1           # via requests
-zds-schema==0.20.5
+zds-schema==0.21.4
