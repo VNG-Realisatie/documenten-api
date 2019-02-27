@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.8.0 (2019-02-27)
+==================
+
+Archiving feature release
+
+* added support for ``DELETE`` requests to ``EnkelvoudigInformatieObject``
+  resource
+* added support for ``DELETE`` requests to ``ObjectInformatieObject`` resource
+
 0.7.1 (2019-02-07)
 ==================
 
