@@ -839,7 +839,7 @@
             },
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
-                "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde resources binnen deze API.",
+                "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde\nresources binnen deze API.\n\n**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -982,6 +982,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "scopes.documenten.verwijderen"
+                        ]
+                    }
                 ]
             },
             "parameters": [

@@ -56,15 +56,20 @@ class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
     *TODO*
     - valideer immutable attributes
 
-    delete:
-    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde resources binnen deze API.
+    destroy:
+    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde
+    resources binnen deze API.
+
+    **Gerelateerde resources**
+    - `ObjectInformatieObject` - alle relaties van het informatieobject
+    - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
     serializer_class = EnkelvoudigInformatieObjectSerializer
     lookup_field = 'uuid'
     permission_classes = (ActionScopesRequired, )
     required_scopes = {
-        'delete': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     }
 
 
@@ -121,7 +126,7 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet
     Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
     object van het type ZAAK gaat (aard relatie "hoort bij").
 
-    delete:
+    destroy:
     Verwijdert de relatie tussen OBJECT en INFORMATIEOBJECT.
     """
     queryset = ObjectInformatieObject.objects.all()
