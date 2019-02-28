@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+0.8.1 (2019-02-27)
+==================
+
+Fix operation -> scopes mapping
+
+* Enforced required scopes
+* Ensured scopes end up in OAS
+
 0.8.0 (2019-02-27)
 ==================
 
