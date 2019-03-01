@@ -62,7 +62,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             stored_object.informatieobjecttype,
             'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
         )
-        self.assertEqual(stored_object.vertrouwelijkaanduiding, '')
+        self.assertEqual(stored_object.vertrouwelijkheidaanduiding, '')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
@@ -73,7 +73,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         expected_response.update({
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{stored_object.inhoud.url}",
-            'vertrouwelijkaanduiding': '',
+            'vertrouwelijkheidaanduiding': '',
             'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
                 'algoritme': '',
@@ -127,7 +127,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
                 'datum': None,
             },
             'indicatieGebruiksrecht': None,
-            'vertrouwelijkaanduiding': '',
+            'vertrouwelijkheidaanduiding': '',
             'integriteit': {
                 'algoritme': '',
                 'waarde': '',

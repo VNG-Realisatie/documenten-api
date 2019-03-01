@@ -36,7 +36,7 @@ class US169Tests(TypeCheckMixin, APITestCase):
             'taal': 'dut',
             'creatiedatum': '2018-07-30',
             'titel': 'bijlage.jpg',
-            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'auteur': 'John Doe',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
         }
@@ -55,7 +55,7 @@ class US169Tests(TypeCheckMixin, APITestCase):
             ('taal', str),
             ('creatiedatum', str),
             ('titel', str),
-            ('vertrouwelijkaanduiding', str),
+            ('vertrouwelijkheidaanduiding', str),
             ('auteur', str),
             ('informatieobjecttype', str),
         ))

@@ -43,7 +43,7 @@ class InformatieObject(models.Model):
         max_length=200,
         help_text='De naam waaronder het INFORMATIEOBJECT formeel bekend is.'
     )
-    vertrouwelijkaanduiding = VertrouwelijkheidsAanduidingField(
+    vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduidingField(
         blank=True,
         help_text='Aanduiding van de mate waarin het INFORMATIEOBJECT voor de '
                   'openbaarheid bestemd is.'

@@ -34,7 +34,7 @@ class US39TestCase(APITestCase):
             'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
-            'vertrouwelijkaanduiding': VertrouwelijkheidsAanduiding.openbaar
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
 
         response = self.client.post(url, data)
