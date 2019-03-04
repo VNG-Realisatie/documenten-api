@@ -35,6 +35,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'vertrouwelijkheidaanduiding': 'openbaar',
         }
 
         # Send to the API
@@ -62,7 +63,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             stored_object.informatieobjecttype,
             'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
         )
-        self.assertEqual(stored_object.vertrouwelijkheidaanduiding, '')
+        self.assertEqual(stored_object.vertrouwelijkheidaanduiding, 'openbaar')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
@@ -73,7 +74,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         expected_response.update({
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{stored_object.inhoud.url}",
-            'vertrouwelijkheidaanduiding': '',
+            'vertrouwelijkheidaanduiding': 'openbaar',
             'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
                 'algoritme': '',
@@ -127,7 +128,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
                 'datum': None,
             },
             'indicatieGebruiksrecht': None,
-            'vertrouwelijkheidaanduiding': '',
+            'vertrouwelijkheidaanduiding': 'openbaar',
             'integriteit': {
                 'algoritme': '',
                 'waarde': '',
@@ -171,6 +172,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'text/plain',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
+            'vertrouwelijkheidaanduiding': 'openbaar',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': None,
@@ -201,6 +203,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'formaat': 'text/plain',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
+            'vertrouwelijkheidaanduiding': 'openbaar',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': {

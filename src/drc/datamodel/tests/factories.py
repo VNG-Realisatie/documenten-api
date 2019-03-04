@@ -5,7 +5,7 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from zds_schema.constants import ObjectTypes
+from zds_schema.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
 from ..constants import RelatieAarden
 
@@ -20,6 +20,7 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     taal = 'dut'
     inhoud = factory.django.FileField(data=b'some data', filename='file.bin')
     informatieobjecttype = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+    vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
 
     class Meta:
         model = 'datamodel.EnkelvoudigInformatieObject'

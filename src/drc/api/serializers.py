@@ -1,18 +1,18 @@
 """
 Serializers of the Document Registratie Component REST API
 """
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
+from zds_schema.models import APICredential
 from zds_schema.serializers import GegevensGroepSerializer
 from zds_schema.validators import IsImmutableValidator, URLValidator
-from zds_schema.models import APICredential
 
 from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
