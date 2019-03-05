@@ -2,7 +2,7 @@
 Documentregistratiecomponent
 ============================
 
-:Version: 0.8.1
+:Version: 0.8.2
 :Source: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 :PythonVersion: 3.6

@@ -2,6 +2,13 @@
 Wijzigingen
 ===========
 
+0.8.2 (2019-03-05)
+==================
+
+Security release
+
+* Bumped version of Django to latest security release
+
 0.8.1 (2019-02-27)
 ==================
 
