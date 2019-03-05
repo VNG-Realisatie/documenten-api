@@ -1,13 +1,16 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+from django.conf import settings
 from django.utils.encoding import force_text
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from zds_schema.constants import ObjectTypes
+from zds_schema.models import APICredential
 from zds_schema.serializers import GegevensGroepSerializer
 from zds_schema.validators import IsImmutableValidator, URLValidator
 
@@ -73,7 +76,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'bronorganisatie',
             'creatiedatum',
             'titel',
-            'vertrouwelijkaanduiding',
+            'vertrouwelijkheidaanduiding',
             'auteur',
             'status',
             'formaat',
@@ -100,6 +103,18 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         }
         validators = [StatusValidator()]
 
+    def _get_informatieobjecttype(self, informatieobjecttype_url: str) -> dict:
+        if not hasattr(self, 'informatieobjecttype'):
+            # dynamic so that it can be mocked in tests easily
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(informatieobjecttype_url)
+            client.auth = APICredential.get_auth(
+                informatieobjecttype_url,
+                scopes=['zds.scopes.zaaktypes.lezen']
+            )
+            self._informatieobjecttype = client.request(informatieobjecttype_url, 'informatieobjecttype')
+        return self._informatieobjecttype
+
     def validate_indicatie_gebruiksrecht(self, indicatie):
         if self.instance and not indicatie and self.instance.gebruiksrechten_set.exists():
             raise serializers.ValidationError(
@@ -122,6 +137,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         """
         integriteit = validated_data.pop('integriteit', None)
         ondertekening = validated_data.pop('ondertekening', None)
+        # add vertrouwelijkheidaanduiding
+        if 'vertrouwelijkheidaanduiding' not in validated_data:
+            informatieobjecttype = self._get_informatieobjecttype(validated_data['informatieobjecttype'])
+            validated_data['vertrouwelijkheidaanduiding'] = informatieobjecttype['vertrouwelijkheidaanduiding']
+
         eio = super().create(validated_data)
         eio.integriteit = integriteit
         eio.ondertekening = ondertekening
