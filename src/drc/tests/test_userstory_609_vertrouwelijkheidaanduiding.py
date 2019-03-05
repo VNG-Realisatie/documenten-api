@@ -12,18 +12,14 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_client.tests.mocks import mock_client
 from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import JWTScopesMixin, reverse
-
-from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+from zds_schema.tests import TypeCheckMixin, reverse
 
 
 @override_settings(
     LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
 )
-class US6609TestCase(JWTScopesMixin, APITestCase):
-
-    scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
+class US609TestCase(TypeCheckMixin, APITestCase):
 
     @tag('mock_client')
     def test_vertrouwelijkheidaanduiding_derived(self):
