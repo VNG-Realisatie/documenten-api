@@ -24,7 +24,7 @@ django-filter==2.0.0
 django-ipware==2.1.0
 django-jenkins==0.110.0
 django-webtest==1.9.3
-django==2.0.10
+django==2.0.13
 djangorestframework-camel-case==0.2.0
 djangorestframework-filters==0.10.2
 djangorestframework==3.8.2
