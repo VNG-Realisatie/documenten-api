@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.8.3 (2019-03-05)
+==================
+
+Bugfix release
+
+* Fixed #40 -- the required gemma-zds-client version had a bug leading to
+  double slashes in generated URLs, thereby breaking the
+  ``ObjectInformatieObject`` sync operation
+
 0.8.2 (2019-03-05)
 ==================
 
