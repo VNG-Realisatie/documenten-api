@@ -1,6 +1,6 @@
 import logging
 
-from zds_schema.models import APICredential
+from vng_api_common.models import APICredential
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import TypeCheckMixin, get_operation_url
+from vng_api_common.tests import TypeCheckMixin, get_operation_url
 
 from drc.datamodel.tests.factories import ObjectInformatieObjectFactory
 

@@ -4,8 +4,8 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_validation_errors
-from zds_schema.validators import URLValidator
+from vng_api_common.tests import get_validation_errors
+from vng_api_common.validators import URLValidator
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -35,7 +35,7 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
                 error = get_validation_errors(response, f'{field}.{key}')
                 self.assertEqual(error['code'], code)
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_validate_informatieobjecttype_invalid(self):
         url = reverse('enkelvoudiginformatieobject-list')
 
@@ -120,7 +120,7 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class InformatieObjectStatusTests(APITestCase):
 
     url = reverse_lazy('enkelvoudiginformatieobject-list')

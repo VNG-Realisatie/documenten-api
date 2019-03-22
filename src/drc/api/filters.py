@@ -1,4 +1,4 @@
-from zds_schema.filtersets import FilterSet
+from vng_api_common.filtersets import FilterSet
 
 from drc.datamodel.models import Gebruiksrechten, ObjectInformatieObject
 

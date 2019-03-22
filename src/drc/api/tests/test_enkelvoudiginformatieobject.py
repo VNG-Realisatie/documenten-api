@@ -20,7 +20,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create(self):
         content = {
             'identificatie': uuid.uuid4().hex,
@@ -158,7 +158,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['bestandsomvang'], 12)  # 12 bytes
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_integrity_empty(self):
         """
         Assert that integrity is optional.
@@ -189,7 +189,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             "datum": None,
         })
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_integrity_provided(self):
         """
         Assert that integrity is saved.

@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_validation_errors
+from vng_api_common.tests import get_validation_errors
 
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory

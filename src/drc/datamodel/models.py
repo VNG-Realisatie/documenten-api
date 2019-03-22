@@ -3,12 +3,12 @@ import uuid as _uuid
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
-from zds_schema.constants import ObjectTypes
-from zds_schema.descriptors import GegevensGroepType
-from zds_schema.fields import (
+from vng_api_common.constants import ObjectTypes
+from vng_api_common.descriptors import GegevensGroepType
+from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from zds_schema.validators import alphanumeric_excluding_diacritic
+from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen

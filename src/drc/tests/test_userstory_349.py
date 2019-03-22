@@ -6,7 +6,7 @@ from mock import patch
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -14,7 +14,7 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory, Ge
     ObjectInformatieObjectFactory
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US349TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]

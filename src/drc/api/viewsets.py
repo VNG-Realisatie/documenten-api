@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from zds_schema.permissions import ActionScopesRequired
-from zds_schema.viewsets import CheckQueryParamsMixin
+from vng_api_common.permissions import ActionScopesRequired
+from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject

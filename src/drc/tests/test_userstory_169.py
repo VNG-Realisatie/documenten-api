@@ -13,13 +13,13 @@ from django.test import override_settings
 from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import TypeCheckMixin, get_operation_url
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import TypeCheckMixin, get_operation_url
 
 
 class US169Tests(TypeCheckMixin, APITestCase):
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_upload_image(self):
         url = get_operation_url('enkelvoudiginformatieobject_create')
 
