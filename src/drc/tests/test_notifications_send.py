@@ -1,5 +1,5 @@
-import json
 import base64
+import json
 
 from django.conf import settings
 from django.test import override_settings
@@ -11,7 +11,10 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory, GebruiksrechtenFactory
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
+    ObjectInformatieObjectFactory
+)
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')

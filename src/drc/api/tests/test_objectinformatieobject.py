@@ -14,7 +14,9 @@ from vng_api_common.tests import get_validation_errors
 from vng_api_common.validators import IsImmutableValidator
 
 from drc.datamodel.constants import RelatieAarden
-from drc.datamodel.models import EnkelvoudigInformatieObject, ObjectInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, ObjectInformatieObject
+)
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )

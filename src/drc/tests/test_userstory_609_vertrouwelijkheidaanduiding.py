@@ -10,9 +10,9 @@ from django.test import override_settings, tag
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_client.tests.mocks import mock_client
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import TypeCheckMixin, reverse
+from zds_client.tests.mocks import mock_client
 
 
 @override_settings(

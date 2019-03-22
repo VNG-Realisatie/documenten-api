@@ -2,16 +2,20 @@
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
 from django.test import override_settings
-from mock import patch
 
+from mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory, \
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+)
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
     ObjectInformatieObjectFactory
+)
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
