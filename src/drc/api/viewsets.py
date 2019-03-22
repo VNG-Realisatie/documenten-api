@@ -1,4 +1,10 @@
+from django.conf import settings
+
 from rest_framework import viewsets
+from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
+from vng_api_common.notifications.publish.viewsets import (
+    NotificationViewSetMixin
+)
 from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -14,7 +20,8 @@ from .serializers import (
 )
 
 
-class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
+class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
+                                         viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
 
@@ -72,8 +79,13 @@ class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     }
 
+    def get_kenmerken(self, data):
+        return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
 
-class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
+
+class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
+                                    CheckQueryParamsMixin,
+                                    viewsets.ModelViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
 
@@ -134,8 +146,17 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet
     filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
 
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['informatieobject'],
+            model=EnkelvoudigInformatieObject,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
 
-class GebruiksrechtenViewSet(viewsets.ModelViewSet):
+
+class GebruiksrechtenViewSet(NotificationViewSetMixin,
+                             viewsets.ModelViewSet):
     """
     list:
     Geef een lijst van gebruiksrechten horend bij informatieobjecten.
@@ -170,3 +191,11 @@ class GebruiksrechtenViewSet(viewsets.ModelViewSet):
     serializer_class = GebruiksrechtenSerializer
     filterset_class = GebruiksrechtenFilter
     lookup_field = 'uuid'
+
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['informatieobject'],
+            model=EnkelvoudigInformatieObject,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
