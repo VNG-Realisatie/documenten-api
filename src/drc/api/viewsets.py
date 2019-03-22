@@ -78,6 +78,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     required_scopes = {
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     }
+    hoofd_resource = 'enkelvoudiginformatieobject'
 
     def get_kenmerken(self, data):
         return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
