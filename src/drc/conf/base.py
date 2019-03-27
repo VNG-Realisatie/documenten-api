@@ -57,8 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'vng_api_common',  # before drf_yasg to override the management command
     'vng_api_common.notifications',
-    'vng_api_common.notifications.publish',
-    # 'zds_schema',  # TODO: remove once all environents have migrated
+    'drc.zds_schema.ZDSSchemaConfig',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
     'rest_framework_filters',
@@ -352,8 +351,4 @@ if SENTRY_DSN:
 IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 # settings for sending notifications
-NOTIFICATIES_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
-NOTIFICATIES_KANAAL = 'documenten'
-NOTIFICATIES_KANAAL_URL = 'http://127.0.0.1:8001/api/v1/kanaal'
-NOTIFICATIES_HOOFD_RESOURCE = 'informatieobject'
-NOTIFICATIES_KENMERKEN_NAMES = ['bronorganisatie', 'informatieobjecttype', 'vertrouwelijkheidaanduiding']
+NOTIFICATIONS_KANAAL = 'documenten'

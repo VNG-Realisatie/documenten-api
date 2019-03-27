@@ -1,10 +1,5 @@
-from django.conf import settings
-
 from rest_framework import viewsets
-from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
-from vng_api_common.notifications.publish.viewsets import (
-    NotificationViewSetMixin
-)
+from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -13,6 +8,7 @@ from drc.datamodel.models import (
 )
 
 from .filters import GebruiksrechtenFilter, ObjectInformatieObjectFilter
+from .kanalen import KANAAL_DOCUMENTEN
 from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
@@ -78,10 +74,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     required_scopes = {
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     }
-    hoofd_resource = 'enkelvoudiginformatieobject'
-
-    def get_kenmerken(self, data):
-        return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
+    notifications_kanaal = KANAAL_DOCUMENTEN
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
@@ -146,14 +139,8 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['informatieobject'],
-            model=EnkelvoudigInformatieObject,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = 'informatieobject'
 
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
@@ -192,11 +179,5 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     serializer_class = GebruiksrechtenSerializer
     filterset_class = GebruiksrechtenFilter
     lookup_field = 'uuid'
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['informatieobject'],
-            model=EnkelvoudigInformatieObject,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = 'informatieobject'
