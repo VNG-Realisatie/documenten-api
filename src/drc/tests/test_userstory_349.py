@@ -1,20 +1,25 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
+from unittest.mock import patch
+
 from django.test import override_settings
-from mock import patch
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory, \
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+)
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
     ObjectInformatieObjectFactory
+)
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US349TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
@@ -40,7 +45,10 @@ class US349TestCase(JWTScopesMixin, APITestCase):
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
         ObjectInformatieObjectFactory.create(informatieobject=informatieobject, is_zaak=True)
 
-        informatieobject_delete_url = get_operation_url('enkelvoudiginformatieobject_delete', uuid=informatieobject.uuid)
+        informatieobject_delete_url = get_operation_url(
+            'enkelvoudiginformatieobject_delete',
+            uuid=informatieobject.uuid
+        )
 
         response = self.client.delete(informatieobject_delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)

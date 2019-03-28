@@ -19,4 +19,7 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
+vng-api-common[notifications]==0.35.3
+
+# data migration - keep it around for a while
 zds-schema==0.21.5

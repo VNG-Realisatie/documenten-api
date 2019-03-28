@@ -2,7 +2,7 @@
 
 from django.db import migrations
 from django.db.models import F
-from zds_schema.constants import ObjectTypes
+from vng_api_common.constants import ObjectTypes
 
 
 def zaak_naar_object(apps, _):

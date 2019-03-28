@@ -1,4 +1,4 @@
-from zds_schema.conf.api import *  # noqa - imports white-listed
+from vng_api_common.conf.api import *  # noqa - imports white-listed
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
@@ -26,7 +26,7 @@ SWAGGER_SETTINGS.update({
 
     # no geo things here
     'DEFAULT_FIELD_INSPECTORS': (
-        'zds_schema.inspectors.files.FileFieldInspector',
+        'vng_api_common.inspectors.files.FileFieldInspector',
     ) + BASE_SWAGGER_SETTINGS['DEFAULT_FIELD_INSPECTORS'][1:]
 })
 

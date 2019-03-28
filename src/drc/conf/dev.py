@@ -1,4 +1,5 @@
 import os
+import sys
 
 os.environ.setdefault('SECRET_KEY', '%jp_t1u42ldzeb4s2d4tqj3ythtm)2)^ph%-b71#$*7_=&-(!g')
 os.environ.setdefault('DB_NAME', 'drc')
@@ -97,6 +98,9 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += (
 )
 
 IS_HTTPS = False
+
+if 'test' in sys.argv:
+    NOTIFICATIONS_DISABLED = True
 
 # Override settings with local settings.
 try:

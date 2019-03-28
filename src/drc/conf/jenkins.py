@@ -51,8 +51,11 @@ INSTALLED_APPS += [
     'django_jenkins',
 ]
 PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith('drc.')]
+PROJECT_APPS.remove("drc.zds_schema.ZDSSchemaConfig")
 
 JENKINS_TASKS = (
     'django_jenkins.tasks.run_pylint',
     'django_jenkins.tasks.run_pep8',
 )
+
+NOTIFICATIONS_DISABLED = True

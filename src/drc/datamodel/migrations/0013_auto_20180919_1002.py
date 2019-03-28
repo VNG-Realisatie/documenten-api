@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 from django.utils import timezone
-import zds_schema.validators
+import vng_api_common.validators
 
 
 class Migration(migrations.Migration):
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='objectinformatieobject',
             name='registratiedatum',
-            field=models.DateTimeField(help_text='De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd.', validators=[zds_schema.validators.UntilNowValidator()], verbose_name='registratiedatum', default=timezone.now()),
+            field=models.DateTimeField(help_text='De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd.', validators=[vng_api_common.validators.UntilNowValidator()], verbose_name='registratiedatum', default=timezone.now()),
             preserve_default=False,
         ),
     ]

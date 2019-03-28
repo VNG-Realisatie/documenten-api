@@ -1,12 +1,14 @@
 from rest_framework import viewsets
-from zds_schema.permissions import ActionScopesRequired
-from zds_schema.viewsets import CheckQueryParamsMixin
+from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.permissions import ActionScopesRequired
+from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
 from .filters import GebruiksrechtenFilter, ObjectInformatieObjectFilter
+from .kanalen import KANAAL_DOCUMENTEN
 from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
@@ -14,7 +16,8 @@ from .serializers import (
 )
 
 
-class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
+class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
+                                         viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
 
@@ -71,9 +74,12 @@ class EnkelvoudigInformatieObjectViewSet(viewsets.ModelViewSet):
     required_scopes = {
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     }
+    notifications_kanaal = KANAAL_DOCUMENTEN
 
 
-class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
+class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
+                                    CheckQueryParamsMixin,
+                                    viewsets.ModelViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
 
@@ -133,9 +139,12 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = 'informatieobject'
 
 
-class GebruiksrechtenViewSet(viewsets.ModelViewSet):
+class GebruiksrechtenViewSet(NotificationViewSetMixin,
+                             viewsets.ModelViewSet):
     """
     list:
     Geef een lijst van gebruiksrechten horend bij informatieobjecten.
@@ -170,3 +179,5 @@ class GebruiksrechtenViewSet(viewsets.ModelViewSet):
     serializer_class = GebruiksrechtenSerializer
     filterset_class = GebruiksrechtenFilter
     lookup_field = 'uuid'
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = 'informatieobject'

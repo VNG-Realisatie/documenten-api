@@ -4,7 +4,6 @@ django-webtest
 factory_boy
 freezegun
 isort
-mock
 pyquery
 tblib
 webtest

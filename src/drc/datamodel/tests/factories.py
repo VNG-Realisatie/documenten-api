@@ -5,7 +5,7 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from zds_schema.constants import ObjectTypes, VertrouwelijkheidsAanduiding
+from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
 from ..constants import RelatieAarden
 
