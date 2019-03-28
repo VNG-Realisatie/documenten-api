@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework_filters',
+    'django_markup',
+    'solo',
 
     # Project applications.
     'drc.accounts',

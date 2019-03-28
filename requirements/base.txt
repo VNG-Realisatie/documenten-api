@@ -18,6 +18,7 @@ django-cors-middleware==1.3.1
 django-extra-fields==1.0.0
 django-filter==2.0.0
 django-ipware==2.1.0      # via django-axes
+django-markup==1.3
 django-solo==1.1.3        # via vng-api-common
 django==2.0.13
 djangorestframework-camel-case==0.2.0
@@ -36,6 +37,7 @@ iso-639==0.4.5            # via vng-api-common, zds-schema
 isodate==0.6.0            # via vng-api-common, zds-schema
 itypes==1.1.0             # via coreapi
 jinja2==2.10              # via coreschema, sphinx
+markdown==3.1
 markupsafe==1.0           # via jinja2
 openapi-codec==1.3.2      # via drf-yasg
 oyaml==0.7                # via vng-api-common, zds-schema
@@ -53,7 +55,7 @@ pyyaml==3.12              # via gemma-zds-client, oyaml, vng-api-common, zds-sch
 raven==6.9.0
 requests==2.21            # via coreapi, gemma-zds-client, sphinx, vng-api-common, zds-schema
 ruamel.yaml==0.15.40      # via drf-yasg
-six==1.11.0               # via drf-yasg, isodate, packaging, pip-tools, python-dateutil, sphinx
+six==1.11.0               # via django-markup, drf-yasg, isodate, packaging, pip-tools, python-dateutil, sphinx
 snowballstemmer==1.2.1    # via sphinx
 sphinx-rtd-theme==0.4.2
 sphinx==1.8.4

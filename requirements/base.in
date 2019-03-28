@@ -7,11 +7,13 @@ pytz
 raven
 Sphinx
 sphinx-rtd-theme
+markdown
 
 Django==2.0.13
 django-axes
 django-choices
 django-cors-middleware
+django-markup==1.3
 
 djangorestframework
 django-extra-fields
