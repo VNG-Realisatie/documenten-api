@@ -1,9 +1,10 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
+from unittest.mock import patch
+
 from django.test import override_settings
 
-from mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTScopesMixin, get_operation_url
@@ -44,7 +45,10 @@ class US349TestCase(JWTScopesMixin, APITestCase):
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
         ObjectInformatieObjectFactory.create(informatieobject=informatieobject, is_zaak=True)
 
-        informatieobject_delete_url = get_operation_url('enkelvoudiginformatieobject_delete', uuid=informatieobject.uuid)
+        informatieobject_delete_url = get_operation_url(
+            'enkelvoudiginformatieobject_delete',
+            uuid=informatieobject.uuid
+        )
 
         response = self.client.delete(informatieobject_delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
