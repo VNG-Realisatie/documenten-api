@@ -3157,8 +3157,8 @@
                     "maxLength": 200,
                     "minLength": 1
                 },
-                "vertrouwelijkaanduiding": {
-                    "title": "Vertrouwelijkaanduiding",
+                "vertrouwelijkheidaanduiding": {
+                    "title": "Vertrouwelijkheidaanduiding",
                     "description": "Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.",
                     "type": "string",
                     "enum": [
@@ -3843,8 +3843,8 @@
                     "maxLength": 200,
                     "minLength": 1
                 },
-                "vertrouwelijkaanduiding": {
-                    "title": "Vertrouwelijkaanduiding",
+                "vertrouwelijkheidaanduiding": {
+                    "title": "Vertrouwelijkheidaanduiding",
                     "description": "Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.",
                     "type": "string",
                     "enum": [
