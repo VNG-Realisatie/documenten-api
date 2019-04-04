@@ -2,6 +2,35 @@
 Wijzigingen
 ===========
 
+0.9.0 (2019-04-04)
+==================
+
+Feature release for notifications
+
+New features
+------------
+
+* added notifications machinery. Configure the NC to use in the admin and then
+  run ``python src/manage.py register_kanaal`` to register the notifications
+  exchange and be able to publish events.
+* added notifications documentation.
+
+Breaking changes
+----------------
+
+* renamed ``EnkelvoudigInformatieObject.vertrouwelijkaanduiding`` to
+  ``EnkelvoudigInformatieObject.vertrouwelijkheidaanduiding``
+* replaced zds-schema with vng-api-common. Run
+  ``python src/manage.py migrate_from_zds_schema`` on existing installs to
+  complete the migration.
+
+Misc
+----
+
+* added URL to EUPL 1.2 license in API spec
+* added contributing guidelines
+* removed some unused sample templates
+
 0.8.3 (2019-03-05)
 ==================
 
