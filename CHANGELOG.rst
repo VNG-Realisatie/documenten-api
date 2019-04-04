@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.9.1 (2019-04-04)
+==================
+
+vng-api-common notifications bugfixes
+
 0.9.0 (2019-04-04)
 ==================
 
