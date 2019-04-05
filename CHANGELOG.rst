@@ -2,6 +2,41 @@
 Wijzigingen
 ===========
 
+0.10.0 (2019-04-??)
+===================
+
+Breaking changes
+----------------
+
+* Flattened the ``kenmerken`` in notifications sent from a list of objects with
+  one key-value to a single object with multiple key-value pairs.
+  Requires the NC to be at version 0.4.0 or higher.
+
+  Old:
+
+  .. code-block:: json
+
+  {
+    "kenmerken": [
+      {"key1": "value1"},
+      {"key2": "value2"},
+    ]
+  }
+
+  New:
+
+  .. code-block:: json
+
+  {
+    "kenmerken": {
+      "key1": "value1",
+      "key2": "value2",
+    }
+  }
+
+* Removed the zds-schema compatibility. Upgrade to 0.9.1 first if you haven't
+  done so yet.
+
 0.9.1 (2019-04-04)
 ==================
 
