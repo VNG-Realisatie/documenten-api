@@ -296,7 +296,9 @@ SESSION_COOKIE_NAME = 'drc_sessionid'
 #
 # Custom settings
 #
-PROJECT_NAME = 'drc'
+PROJECT_NAME = 'Documenten'
+SITE_TITLE = 'Document Registratie Component (DRC)'
+
 ENVIRONMENT = None
 SHOW_ALERT = True
 
