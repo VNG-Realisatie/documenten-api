@@ -1,4 +1,5 @@
 import logging
+import requests
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -41,14 +42,27 @@ def sync(relation: ObjectInformatieObject, operation: str):
     except ValueError as exc:
         raise SyncError("Could not determine remote operation") from exc
 
-    # we enforce in the standard that it's a subresource so that we can do this.
-    # The real resource URL is extracted from the ``openapi.yaml`` based on
-    # the operation
-    params = extract_params(f"{relation.object}/irrelevant", pattern)
+    if operation == 'create':
+        # we enforce in the standard that it's a subresource so that we can do this.
+        # The real resource URL is extracted from the ``openapi.yaml`` based on
+        # the operation
+        params = extract_params(f"{relation.object}/irrelevant", pattern)
+    elif operation == 'delete':
+        # Retrieve the url of the relation between the object and the
+        # InformatieObject that must be deleted
+        response = requests.get(f"{relation.object}/informatieobjecten")
+        for relatie in response.json():
+            if str(relation.informatieobject.uuid) in relatie['informatieobject']:
+                relation_url = relatie['url']
+                break
+        params = extract_params(f"{relation.object}/irrelevant/{relation_url}", pattern)
 
     try:
         operation_function = getattr(client, operation)
-        operation_function(resource, {'informatieobject': informatieobject_url}, **params)
+        if operation == 'create':
+            operation_function(resource, {'informatieobject': informatieobject_url}, **params)
+        elif operation == 'delete':
+            operation_function(resource, **params)
     except Exception as exc:
         logger.error(f"Could not {operation} remote relation", exc_info=1)
         raise SyncError(f"Could not {operation} remote relation") from exc
