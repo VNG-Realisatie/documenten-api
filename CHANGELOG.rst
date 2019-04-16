@@ -2,8 +2,13 @@
 Wijzigingen
 ===========
 
-0.10.0 (2019-04-??)
+0.10.0 (2019-04-16)
 ===================
+
+API-lab release
+
+* Improved homepage layout, using vng-api-common boilerplate
+* Bumped to latest bugfix release of gemma-zds-client
 
 Breaking changes
 ----------------
