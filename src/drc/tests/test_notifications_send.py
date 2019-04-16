@@ -1,8 +1,6 @@
 import base64
-import json
 from unittest.mock import patch
 
-from django.conf import settings
 from django.test import override_settings
 
 from freezegun import freeze_time
@@ -11,10 +9,8 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
-from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
-    ObjectInformatieObjectFactory
+    EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
 
 
@@ -70,11 +66,11 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
                 'resourceUrl': data['url'],
                 'actie': 'create',
                 'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': [
-                    {'bronorganisatie': '159351741'},
-                    {'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'},
-                    {'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar}
-                ]
+                'kenmerken': {
+                    'bronorganisatie': '159351741',
+                    'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+                    'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                }
             }
         )
 
@@ -102,10 +98,10 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
                 'resourceUrl': f'http://testserver{oio_delete_url}',
                 'actie': 'destroy',
                 'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': [
-                    {'bronorganisatie': io.bronorganisatie},
-                    {'informatieobjecttype': io.informatieobjecttype},
-                    {'vertrouwelijkheidaanduiding': io.vertrouwelijkheidaanduiding}
-                ]
+                'kenmerken': {
+                    'bronorganisatie': io.bronorganisatie,
+                    'informatieobjecttype': io.informatieobjecttype,
+                    'vertrouwelijkheidaanduiding': io.vertrouwelijkheidaanduiding,
+                }
             }
         )

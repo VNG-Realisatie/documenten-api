@@ -25,43 +25,42 @@ djangorestframework-camel-case==0.2.0
 djangorestframework-filters==0.10.2
 djangorestframework==3.8.2
 docutils==0.14            # via sphinx
-drf-nested-routers==0.90.2  # via vng-api-common, zds-schema
+drf-nested-routers==0.90.2  # via vng-api-common
 drf-yasg==1.9.0
 first==2.0.1              # via pip-tools
 future==0.16.0            # via drf-yasg
-gemma-zds-client==0.9.4   # via vng-api-common, zds-schema
+gemma-zds-client==0.9.5   # via vng-api-common
 idna==2.7                 # via requests
 imagesize==1.1.0          # via sphinx
 inflection==0.3.1         # via drf-yasg
-iso-639==0.4.5            # via vng-api-common, zds-schema
-isodate==0.6.0            # via vng-api-common, zds-schema
+iso-639==0.4.5            # via vng-api-common
+isodate==0.6.0            # via vng-api-common
 itypes==1.1.0             # via coreapi
 jinja2==2.10              # via coreschema, sphinx
 markdown==3.1
 markupsafe==1.0           # via jinja2
 openapi-codec==1.3.2      # via drf-yasg
-oyaml==0.7                # via vng-api-common, zds-schema
+oyaml==0.7                # via vng-api-common
 packaging==19.0           # via sphinx
 pillow==5.2.0
 pip-tools==2.0.2
 psycopg2-binary==2.7.5
 pygments==2.3.1           # via sphinx
-pyjwt==1.6.4              # via gemma-zds-client, vng-api-common, zds-schema
+pyjwt==1.6.4              # via gemma-zds-client, vng-api-common
 pyparsing==2.3.1          # via packaging
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
-pyyaml==3.12              # via gemma-zds-client, oyaml, vng-api-common, zds-schema
+pyyaml==3.12              # via gemma-zds-client, oyaml, vng-api-common
 raven==6.9.0
-requests==2.21            # via coreapi, gemma-zds-client, sphinx, vng-api-common, zds-schema
+requests==2.21            # via coreapi, gemma-zds-client, sphinx, vng-api-common
 ruamel.yaml==0.15.40      # via drf-yasg
 six==1.11.0               # via django-markup, drf-yasg, isodate, packaging, pip-tools, python-dateutil, sphinx
 snowballstemmer==1.2.1    # via sphinx
 sphinx-rtd-theme==0.4.2
 sphinx==1.8.4
 sphinxcontrib-websupport==1.1.0  # via sphinx
-unidecode==1.0.22         # via vng-api-common, zds-schema
+unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.1           # via requests
-vng-api-common[notifications]==0.35.10
-zds-schema==0.21.5
+vng-api-common[notifications]==0.37.3

@@ -1,18 +1,28 @@
-{% extends "master.html" %}
+{% extends "vng_api_common/index.html" %}
 
+{% block extra_docs %}
 
-{% block content %}
-<article class="index">
+  {% include "vng_api_common/includes/kanalen_card.html" %}
 
-    <a href="{% url 'schema-redoc' version=1 %}" class="link-block">API spec</a>
+{% endblock %}
 
-    <a href="{% url 'vng_api_common:scopes' %}" class="link-block">API scopes</a>
+{% block extra_content %}
+  <h2>Extra</h2>
 
-    <a href="{% url 'notifications:kanalen' %}" class="link-block">Notificatie-kanalen</a>
+  <div class="row justify-content-md-center">
 
-    <a href="{% url 'admin:index' %}" class="link-block">admin</a>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><i class="fab fa-python"></i> Code documentatie</h5>
+          <p class="card-text">Python code documentatie van dit component.</p>
+          <a href="_docs/index.html" class="btn btn-primary">Code documentatie</a>
+        </div>
+      </div>
 
-    <a href="_docs/index.html" class="link-block">docs</a>
+    </div>
 
-</article>
+  </div>
+  <p></p>
+
 {% endblock %}
