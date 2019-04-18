@@ -2,6 +2,16 @@
 Wijzigingen
 ===========
 
+0.11.0 (2019-04-18)
+===================
+
+Added filtering to ``EnkelvoudingInformatieObject`` resource
+
+* Filter on ``bronorganisatie`` (RSIN)
+* Filter on ``identificatie``
+
+Both are exact matches.
+
 0.10.0 (2019-04-16)
 ===================
 
