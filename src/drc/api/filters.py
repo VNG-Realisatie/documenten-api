@@ -1,6 +1,17 @@
 from vng_api_common.filtersets import FilterSet
 
-from drc.datamodel.models import Gebruiksrechten, ObjectInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+)
+
+
+class EnkelvoudigInformatieObjectFilter(FilterSet):
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = (
+            'identificatie',
+            'bronorganisatie'
+        )
 
 
 class ObjectInformatieObjectFilter(FilterSet):

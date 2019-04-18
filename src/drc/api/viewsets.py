@@ -7,7 +7,10 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
-from .filters import GebruiksrechtenFilter, ObjectInformatieObjectFilter
+from .filters import (
+    EnkelvoudigInformatieObjectFilter, GebruiksrechtenFilter,
+    ObjectInformatieObjectFilter
+)
 from .kanalen import KANAAL_DOCUMENTEN
 from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from .serializers import (
@@ -69,6 +72,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     """
     queryset = EnkelvoudigInformatieObject.objects.all()
     serializer_class = EnkelvoudigInformatieObjectSerializer
+    filterset_class = EnkelvoudigInformatieObjectFilter
     lookup_field = 'uuid'
     permission_classes = (ActionScopesRequired, )
     required_scopes = {

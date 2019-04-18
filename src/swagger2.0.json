@@ -37,7 +37,22 @@
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
                 "description": "Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).\n\nDe objecten bevatten metadata over de documenten en de downloadlink naar\nde binary data.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "identificatie",
+                        "in": "query",
+                        "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "bronorganisatie",
+                        "in": "query",
+                        "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -46,6 +61,20 @@
                             "items": {
                                 "$ref": "#/definitions/EnkelvoudigInformatieObject"
                             }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         },
                         "headers": {
                             "API-version": {
@@ -3798,6 +3827,87 @@
                 }
             }
         },
+        "FieldValidationError": {
+            "required": [
+                "name",
+                "code",
+                "reason"
+            ],
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "description": "Naam van het veld met ongeldige gegevens",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "title": "Reason",
+                    "description": "Uitleg wat er precies fout is met de gegevens",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "ValidatieFout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance",
+                "invalid-params"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "invalid-params": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FieldValidationError"
+                    }
+                }
+            }
+        },
         "EnkelvoudigInformatieObjectData": {
             "required": [
                 "bronorganisatie",
@@ -4434,87 +4544,6 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
-                }
-            }
-        },
-        "FieldValidationError": {
-            "required": [
-                "name",
-                "code",
-                "reason"
-            ],
-            "type": "object",
-            "properties": {
-                "name": {
-                    "title": "Name",
-                    "description": "Naam van het veld met ongeldige gegevens",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "reason": {
-                    "title": "Reason",
-                    "description": "Uitleg wat er precies fout is met de gegevens",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
-        "ValidatieFout": {
-            "required": [
-                "code",
-                "title",
-                "status",
-                "detail",
-                "instance",
-                "invalid-params"
-            ],
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "Type",
-                    "description": "URI referentie naar het type fout, bedoeld voor developers",
-                    "type": "string"
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "title": {
-                    "title": "Title",
-                    "description": "Generieke titel voor het type fout",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "status": {
-                    "title": "Status",
-                    "description": "De HTTP status code",
-                    "type": "integer"
-                },
-                "detail": {
-                    "title": "Detail",
-                    "description": "Extra informatie bij de fout, indien beschikbaar",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "instance": {
-                    "title": "Instance",
-                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "invalid-params": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/FieldValidationError"
-                    }
                 }
             }
         },

@@ -223,3 +223,15 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             "waarde": "27c3a009a3cbba674d0b3e836f2d4685",
             "datum": date(2018, 12, 13),
         })
+
+    def test_filter_by_identification(self):
+        EnkelvoudigInformatieObjectFactory.create(identificatie='foo')
+        EnkelvoudigInformatieObjectFactory.create(identificatie='bar')
+
+        response = self.client.get(self.list_url, {'identificatie': 'foo'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(response_data[0]['identificatie'], 'foo')
