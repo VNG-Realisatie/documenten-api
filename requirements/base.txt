@@ -13,7 +13,7 @@ coreapi==2.3.3            # via drf-yasg, openapi-codec
 coreschema==0.0.4         # via coreapi, drf-yasg
 django-appconf==1.0.2     # via django-axes
 django-axes==4.4.0
-django-choices==1.6.0
+django-choices==1.7.0
 django-cors-middleware==1.3.1
 django-extra-fields==1.0.0
 django-filter==2.0.0
