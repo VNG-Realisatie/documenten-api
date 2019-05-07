@@ -30,6 +30,23 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | indicatieGebruiksrecht | Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag &#39;null&#39; zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource. | boolean | nee | C​R​U​D |
 | informatieobjecttype | URL naar de INFORMATIEOBJECTTYPE in het ZTC. | string | ja | C​R​U​D |
 
+## AuditTrail
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/audittrail)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| uuid | Unieke resource identifier (UUID4) | string | nee | C​R​U​D |
+| bron |  | string | ja | C​R​U​D |
+| actie |  | string | ja | C​R​U​D |
+| actieWeergave |  | string | nee | C​R​U​D |
+| resultaat |  | integer | ja | C​R​U​D |
+| hoofdObject |  | string | ja | C​R​U​D |
+| resource |  | string | ja | C​R​U​D |
+| resourceUrl |  | string | ja | C​R​U​D |
+| aanmaakdatum |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| wijzigingen |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+
 ## Gebruiksrechten
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/gebruiksrechten)

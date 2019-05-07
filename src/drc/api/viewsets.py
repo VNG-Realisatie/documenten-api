@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from vng_api_common.audittrails.viewsets import (
+    AuditTrailViewset, AuditTrailViewsetMixin
+)
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -6,6 +9,7 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
+from .audits import AUDIT_DRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
     EnkelvoudigInformatieObjectFilter, GebruiksrechtenFilter,
@@ -28,6 +32,7 @@ from .serializers import (
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
                                          ListFilterByAuthorizationsMixin,
+                                         AuditTrailViewsetMixin,
                                          viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
@@ -92,9 +97,11 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
+    audit = AUDIT_DRC
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
+                                    AuditTrailViewsetMixin,
                                     CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     viewsets.ModelViewSet):
@@ -168,10 +175,12 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
-
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = 'informatieobject'
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              ListFilterByAuthorizationsMixin,
+                             AuditTrailViewsetMixin,
                              viewsets.ModelViewSet):
     """
     list:
@@ -218,3 +227,18 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = 'informatieobject'
+
+
+class EnkelvoudigInformatieObjectAuditTrailViewset(AuditTrailViewset):
+    """
+    Opvragen van Audit trails horend bij een EnkelvoudigInformatieObject.
+
+    list:
+    Geef een lijst van AUDITTRAILS die horen bij het huidige EnkelvoudigInformatieObject.
+
+    retrieve:
+    Haal de details van een AUDITTRAIL op.
+    """
+    main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'

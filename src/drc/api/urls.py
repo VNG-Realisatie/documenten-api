@@ -2,15 +2,19 @@ from django.conf.urls import url
 from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
+from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
 from .viewsets import (
+    EnkelvoudigInformatieObjectAuditTrailViewset,
     EnkelvoudigInformatieObjectViewSet, GebruiksrechtenViewSet,
     ObjectInformatieObjectViewSet
 )
 
-router = DefaultRouter(trailing_slash=False)
-router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet)
+router = routers.DefaultRouter()
+router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet, [
+    routers.nested('audittrail', EnkelvoudigInformatieObjectAuditTrailViewset),
+])
 router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
 
