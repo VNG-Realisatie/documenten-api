@@ -9,16 +9,23 @@ from django.urls import reverse, reverse_lazy
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.tests.auth import JWTAuthMixin
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
+from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_BIJWERKEN
+
+INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+
 
 @freeze_time('2018-06-27')
 @override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class EnkelvoudigInformatieObjectAPITests(APITestCase):
+class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
+    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create(self):
@@ -34,7 +41,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': 'openbaar',
         }
 
@@ -59,10 +66,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
         self.assertEqual(stored_object.link, 'http://een.link')
         self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
-        self.assertEqual(
-            stored_object.informatieobjecttype,
-            'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
-        )
+        self.assertEqual(stored_object.informatieobjecttype, INFORMATIEOBJECTTYPE)
         self.assertEqual(stored_object.vertrouwelijkheidaanduiding, 'openbaar')
 
         expected_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
@@ -93,7 +97,9 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.json(), expected_response)
 
     def test_read(self):
-        test_object = EnkelvoudigInformatieObjectFactory.create()
+        test_object = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
 
         # Retrieve from the API
         detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
@@ -134,7 +140,7 @@ class EnkelvoudigInformatieObjectAPITests(APITestCase):
                 'waarde': '',
                 'datum': None,
             },
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+            'informatieobjecttype': INFORMATIEOBJECTTYPE
         }
         self.assertEqual(response.json(), expected)
 

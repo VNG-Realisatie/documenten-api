@@ -1,19 +1,30 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import get_validation_errors
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
 )
 
 from .utils import reverse
+from ..scopes import (
+    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN
+)
+
+INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 
 
-class GebruiksrechtenTests(APITestCase):
+class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     def test_create(self):
         url = reverse('gebruiksrechten-list')
-        eio = EnkelvoudigInformatieObjectFactory.create(creatiedatum='2018-12-24')
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            creatiedatum='2018-12-24',
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
 
         eio_detail = self.client.get(eio_url)
@@ -37,7 +48,9 @@ class GebruiksrechtenTests(APITestCase):
         If gebruiksrechten exist, you cannot change the indicatieGebruiksrechten
         anymore.
         """
-        gebruiksrechten = GebruiksrechtenFactory.create()
+        gebruiksrechten = GebruiksrechtenFactory.create(
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         url = reverse(
             'enkelvoudiginformatieobject-detail',
             kwargs={'uuid': gebruiksrechten.informatieobject.uuid}
@@ -56,7 +69,9 @@ class GebruiksrechtenTests(APITestCase):
         Assert that it's not possible to set the indication to true if there are
         no gebruiksrechten.
         """
-        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
 
         response = self.client.patch(url, {'indicatieGebruiksrecht': True})
@@ -66,7 +81,12 @@ class GebruiksrechtenTests(APITestCase):
         self.assertEqual(error['code'], 'missing-gebruiksrechten')
 
     def test_delete_gebruiksrechten(self):
-        gebruiksrechten = GebruiksrechtenFactory.create()
+        self.autorisatie.scopes += [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
+        self.autorisatie.save()
+
+        gebruiksrechten = GebruiksrechtenFactory.create(
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         url = reverse(
             'gebruiksrechten-detail',
             kwargs={'uuid': gebruiksrechten.uuid}

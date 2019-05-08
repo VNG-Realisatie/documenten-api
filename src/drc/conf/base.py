@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'vng_api_common',  # before drf_yasg to override the management command
     'vng_api_common.authorizations',
     'vng_api_common.notifications',
+    'vng_api_common.authorizations',
     'drf_yasg',
     'rest_framework',
     'rest_framework_filters',

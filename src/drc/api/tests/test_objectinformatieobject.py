@@ -10,7 +10,7 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ObjectTypes
-from vng_api_common.tests import get_validation_errors
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 from vng_api_common.validators import IsImmutableValidator
 
 from drc.datamodel.constants import RelatieAarden
@@ -22,8 +22,14 @@ from drc.datamodel.tests.factories import (
 )
 from drc.sync.signals import SyncError
 
+from ..scopes import (
+    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN
+)
+
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'
+INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 
 
 def dt_to_api(dt: datetime):
@@ -34,9 +40,12 @@ def dt_to_api(dt: datetime):
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class ObjectInformatieObjectAPITests(APITestCase):
+class ObjectInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('objectinformatieobject-list', kwargs={'version': '1'})
+
+    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     def setUp(self):
         super().setUp()
@@ -51,7 +60,9 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_create(self):
-        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': enkelvoudig_informatie.uuid,
@@ -92,7 +103,9 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.json(), expected_response)
 
     def test_create_besluitinformatieobject(self):
-        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': enkelvoudig_informatie.uuid,
@@ -131,7 +144,9 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
     @freeze_time('2018-09-20 12:00:00')
     def test_registratiedatum_ignored(self):
-        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': enkelvoudig_informatie.uuid,
@@ -158,7 +173,10 @@ class ObjectInformatieObjectAPITests(APITestCase):
         """
         Test the (informatieobject, object) unique together validation.
         """
-        oio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        oio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': oio.informatieobject.uuid,
@@ -168,6 +186,7 @@ class ObjectInformatieObjectAPITests(APITestCase):
             'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
             'object': oio.object,
             'objectType': ObjectTypes.zaak,
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
         }
 
         # Send to the API
@@ -178,7 +197,10 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.assertEqual(error['code'], 'unique')
 
     def test_read_besluit(self):
-        zio = ObjectInformatieObjectFactory.create(is_besluit=True)
+        zio = ObjectInformatieObjectFactory.create(
+            is_besluit=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         # Retrieve from the API
 
         zio_detail_url = reverse('objectinformatieobject-detail', kwargs={
@@ -209,8 +231,13 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_update_besluit(self):
-        eo = EnkelvoudigInformatieObjectFactory.create()
-        zio = ObjectInformatieObjectFactory.create(is_besluit=True)
+        eo = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+        zio = ObjectInformatieObjectFactory.create(
+            is_besluit=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
 
         eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
@@ -235,7 +262,10 @@ class ObjectInformatieObjectAPITests(APITestCase):
                 self.assertEqual(error['code'], IsImmutableValidator.code)
 
     def test_read_zaak(self):
-        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        zio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         # Retrieve from the API
 
         zio_detail_url = reverse('objectinformatieobject-detail', kwargs={
@@ -266,7 +296,10 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_filter(self):
-        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        zio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': zio.informatieobject.uuid,
@@ -280,8 +313,13 @@ class ObjectInformatieObjectAPITests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_update_zaak(self):
-        eo = EnkelvoudigInformatieObjectFactory.create()
-        zio = ObjectInformatieObjectFactory.create(is_zaak=True)
+        eo = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
+        zio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
 
         eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
@@ -308,7 +346,9 @@ class ObjectInformatieObjectAPITests(APITestCase):
     def test_sync_create_fails(self):
         self.mocked_sync_create.side_effect = SyncError("Sync failed")
 
-        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create()
+        enkelvoudig_informatie = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'version': '1',
             'uuid': enkelvoudig_informatie.uuid,
@@ -331,7 +371,12 @@ class ObjectInformatieObjectAPITests(APITestCase):
 
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_delete(self):
-        document = EnkelvoudigInformatieObjectFactory.create()
+        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
+        self.autorisatie.save()
+
+        document = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         oio = ObjectInformatieObjectFactory.create(
             informatieobject=document,
             object=ZAAK,

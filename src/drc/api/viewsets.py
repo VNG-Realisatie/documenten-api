@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
-from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
@@ -12,7 +11,14 @@ from .filters import (
     ObjectInformatieObjectFilter
 )
 from .kanalen import KANAAL_DOCUMENTEN
-from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+from .permissions import (
+    InformationObjectAuthScopesRequired,
+    InformationObjectRelatedAuthScopesRequired
+)
+from .scopes import (
+    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN
+)
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
     ObjectInformatieObjectSerializer
@@ -74,9 +80,14 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     serializer_class = EnkelvoudigInformatieObjectSerializer
     filterset_class = EnkelvoudigInformatieObjectFilter
     lookup_field = 'uuid'
-    permission_classes = (ActionScopesRequired, )
+    permission_classes = (InformationObjectAuthScopesRequired, )
     required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_BIJWERKEN,
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
 
@@ -145,6 +156,15 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_DOCUMENTEN
     notifications_main_resource_key = 'informatieobject'
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
 
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
@@ -185,3 +205,12 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_DOCUMENTEN
     notifications_main_resource_key = 'informatieobject'
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
