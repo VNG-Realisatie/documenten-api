@@ -1012,13 +1012,6 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "scopes.documenten.verwijderen"
-                        ]
-                    }
                 ]
             },
             "parameters": [

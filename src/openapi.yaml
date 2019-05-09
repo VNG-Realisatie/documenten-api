@@ -908,9 +908,6 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
-      security:
-      - JWT-Claims:
-        - scopes.documenten.verwijderen
     parameters:
     - name: uuid
       in: path
