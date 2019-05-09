@@ -3446,7 +3446,7 @@ components:
       - status
       - detail
       - instance
-      - invalid-params
+      - invalidParams
       type: object
       properties:
         type:
@@ -3478,7 +3478,7 @@ components:
             Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
           type: string
           minLength: 1
-        invalid-params:
+        invalidParams:
           type: array
           items:
             $ref: '#/components/schemas/FieldValidationError'
