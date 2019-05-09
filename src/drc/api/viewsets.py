@@ -6,6 +6,7 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
+from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
     EnkelvoudigInformatieObjectFilter, GebruiksrechtenFilter,
     ObjectInformatieObjectFilter
@@ -26,6 +27,7 @@ from .serializers import (
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
+                                         ListFilterByAuthorizationsMixin,
                                          viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
@@ -94,6 +96,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
                                     CheckQueryParamsMixin,
+                                    ListFilterByAuthorizationsMixin,
                                     viewsets.ModelViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
@@ -168,6 +171,7 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
 
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
+                             ListFilterByAuthorizationsMixin,
                              viewsets.ModelViewSet):
     """
     list:
