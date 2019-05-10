@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailViewset, AuditTrailViewsetMixin
+    AuditTrailViewSet, AuditTrailViewsetMixin
 )
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.viewsets import CheckQueryParamsMixin
@@ -231,7 +231,7 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     audittrail_main_resource_key = 'informatieobject'
 
 
-class EnkelvoudigInformatieObjectAuditTrailViewset(AuditTrailViewset):
+class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     """
     Opvragen van Audit trails horend bij een EnkelvoudigInformatieObject.
 

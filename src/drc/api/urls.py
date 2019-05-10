@@ -6,14 +6,14 @@ from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
 from .viewsets import (
-    EnkelvoudigInformatieObjectAuditTrailViewset,
+    EnkelvoudigInformatieObjectAuditTrailViewSet,
     EnkelvoudigInformatieObjectViewSet, GebruiksrechtenViewSet,
     ObjectInformatieObjectViewSet
 )
 
 router = routers.DefaultRouter()
 router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet, [
-    routers.nested('audittrail', EnkelvoudigInformatieObjectAuditTrailViewset),
+    routers.nested('audittrail', EnkelvoudigInformatieObjectAuditTrailViewSet),
 ])
 router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
