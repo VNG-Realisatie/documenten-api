@@ -6,11 +6,11 @@ from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
 )
 
+from .utils import reverse
 from ..scopes import (
     SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     SCOPE_DOCUMENTEN_BIJWERKEN
 )
-from .utils import reverse
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 

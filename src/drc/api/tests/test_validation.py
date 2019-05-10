@@ -10,8 +10,8 @@ from vng_api_common.validators import URLValidator
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_BIJWERKEN
 from .utils import reverse, reverse_lazy
+from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_BIJWERKEN
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 

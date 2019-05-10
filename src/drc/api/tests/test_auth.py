@@ -10,16 +10,12 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
-from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
     ObjectInformatieObjectFactory
 )
 
-from ..scopes import (
-    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-    SCOPE_DOCUMENTEN_BIJWERKEN
-)
+from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN
 
 
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
@@ -63,7 +59,7 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
     informatieobjecttype = 'https://informatieobjecttype.nl/ok'
     max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
 
-    def test_zaak_list(self):
+    def test_io_list(self):
         """
         Assert you can only list INFORMATIEOBJECTen of the informatieobjecttypes and vertrouwelijkheidaanduiding
         of your authorization
@@ -96,7 +92,7 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         self.assertEqual(results[0]['informatieobjecttype'], 'https://informatieobjecttype.nl/ok')
         self.assertEqual(results[0]['vertrouwelijkheidaanduiding'], VertrouwelijkheidsAanduiding.openbaar)
 
-    def test_zaak_retreive(self):
+    def test_io_retreive(self):
         """
         Assert you can only read INFORMATIEOBJECTen of the informatieobjecttype and vertrouwelijkheidaanduiding
         of your authorization
@@ -185,7 +181,7 @@ class GebruiksrechtenReadTests(JWTAuthMixin, APITestCase):
             f"http://testserver{reverse(gebruiksrechten1)}"
         )
 
-    def test_create_zaakobject_limited_to_authorized_zaken(self):
+    def test_create_gebruiksrechten_limited_to_authorized_zaken(self):
         url = reverse('gebruiksrechten-list')
         eio1 = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype='https://informatieobjecttype.nl/not_ok',
@@ -198,7 +194,7 @@ class GebruiksrechtenReadTests(JWTAuthMixin, APITestCase):
 
         for eio in [eio1, eio2]:
             with self.subTest(
-                zaaktype=eio.informatieobjecttype,
+                informatieobjecttype=eio.informatieobjecttype,
                 vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
             ):
                 response = self.client.post(url, {
@@ -260,7 +256,7 @@ class OioReadTests(JWTAuthMixin, APITestCase):
             f"http://testserver{reverse(oio1)}"
         )
 
-    def test_detail_zaakinformatieobject_limited_to_authorized_zaken(self):
+    def test_detail_oio_limited_to_authorized_zaken(self):
         # must show up
         oio1 = ObjectInformatieObjectFactory.create(
             informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
