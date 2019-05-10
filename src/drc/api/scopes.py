@@ -31,3 +31,10 @@ SCOPE_DOCUMENTEN_BIJWERKEN = Scope(
 * attributen van een document te wijzingen
 """
 )
+
+SCOPE_DOCUMENTEN_AANMAKEN = Scope(
+    'documenten.aanmaken',
+    description="""
+**Laat toe om**:
+
+* documenten aan te maken
