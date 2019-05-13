@@ -17,8 +17,8 @@ from .permissions import (
     InformationObjectRelatedAuthScopesRequired
 )
 from .scopes import (
-    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-    SCOPE_DOCUMENTEN_BIJWERKEN
+    SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,

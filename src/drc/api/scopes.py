@@ -38,3 +38,5 @@ SCOPE_DOCUMENTEN_AANMAKEN = Scope(
 **Laat toe om**:
 
 * documenten aan te maken
+"""
+)
