@@ -13,6 +13,7 @@ from vng_api_common.validators import alphanumeric_excluding_diacritic
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
 )
+from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
 
 
@@ -115,6 +116,8 @@ class InformatieObject(models.Model):
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
     )
 
+    objects = InformatieobjectQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'informatieobject'
         verbose_name_plural = 'informatieobject'
@@ -200,6 +203,8 @@ class Gebruiksrechten(models.Model):
         help_text=_("Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn.")
     )
 
+    objects = InformatieobjectRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("gebruiksrecht informatieobject")
         verbose_name_plural = _("gebruiksrechten informatieobject")
@@ -266,6 +271,8 @@ class ObjectInformatieObject(models.Model):
                   "Geldige waardes zijn datumtijden gelegen op of voor de "
                   "huidige datum en tijd."
     )
+
+    objects = InformatieobjectRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Zaakinformatieobject'

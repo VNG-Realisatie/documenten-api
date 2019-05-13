@@ -11,12 +11,18 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
+from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
+INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
-class US39TestCase(APITestCase):
+
+class US39TestCase(JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_enkelvoudiginformatieobject(self):
@@ -33,7 +39,7 @@ class US39TestCase(APITestCase):
             'formaat': 'text/plain',
             'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
 

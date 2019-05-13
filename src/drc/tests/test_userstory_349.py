@@ -7,7 +7,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.models import (
@@ -18,12 +18,14 @@ from drc.datamodel.tests.factories import (
     ObjectInformatieObjectFactory
 )
 
+INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US349TestCase(JWTScopesMixin, APITestCase):
+class US349TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
-    zaaktypes = ['*']
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     def setUp(self):
         super().setUp()
@@ -40,7 +42,7 @@ class US349TestCase(JWTScopesMixin, APITestCase):
         """
         Deleting a EnkelvoudigInformatieObject causes all related objects to be deleted as well.
         """
-        informatieobject = EnkelvoudigInformatieObjectFactory.create()
+        informatieobject = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
 
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
         ObjectInformatieObjectFactory.create(informatieobject=informatieobject, is_zaak=True)
