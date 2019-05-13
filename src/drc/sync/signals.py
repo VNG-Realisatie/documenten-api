@@ -6,6 +6,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
+from vng_api_common.models import APICredential
 from zds_client import Client, extract_params, get_operation_url
 
 from drc.datamodel.models import ObjectInformatieObject
@@ -33,6 +34,7 @@ def sync(relation: ObjectInformatieObject, operation: str):
     # figure out which remote resource we need to interact with
     resource = f"{relation.object_type}informatieobject"
     client = Client.from_url(relation.object)
+    client.auth = APICredential.get_auth(relation.object)
 
     try:
         pattern = get_operation_url(client.schema, f'{resource}_{operation}', pattern_only=True)
