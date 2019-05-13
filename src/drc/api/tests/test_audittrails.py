@@ -11,9 +11,8 @@ from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
 
-from drc.api.serializers import EnkelvoudigInformatieObjectSerializer
 from drc.datamodel.models import EnkelvoudigInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
