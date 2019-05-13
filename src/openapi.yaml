@@ -200,6 +200,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     post:
       operationId: enkelvoudiginformatieobject_create
       description: 'Registreer een ENKELVOUDIG INFORMATIEOBJECT.
@@ -336,6 +339,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.aanmaken
       requestBody:
         $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
     parameters: []
@@ -471,6 +477,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     put:
       operationId: enkelvoudiginformatieobject_update
       description: 'Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource
@@ -622,6 +631,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
     patch:
@@ -775,6 +787,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
     delete:
@@ -908,6 +923,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.verwijderen
     parameters:
     - name: uuid
       in: path
@@ -1116,6 +1134,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     post:
       operationId: gebruiksrechten_create
       description: "Voeg gebruiksrechten toe voor een informatieobject.\n\n**Opmerkingen**\n\
@@ -1249,6 +1270,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.aanmaken
       requestBody:
         $ref: '#/components/requestBodies/Gebruiksrechten'
     parameters: []
@@ -1379,6 +1403,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     put:
       operationId: gebruiksrechten_update
       description: Werk een gebruiksrecht van een informatieobject bij.
@@ -1517,6 +1544,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/Gebruiksrechten'
     patch:
@@ -1657,6 +1687,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/Gebruiksrechten'
     delete:
@@ -1784,6 +1817,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.verwijderen
     parameters:
     - name: uuid
       in: path
@@ -1940,6 +1976,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     post:
       operationId: objectinformatieobject_create
       description: "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee\
@@ -2081,6 +2120,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.aanmaken
       requestBody:
         $ref: '#/components/requestBodies/ObjectInformatieObject'
     parameters: []
@@ -2214,6 +2256,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
     put:
       operationId: objectinformatieobject_update
       description: 'Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
@@ -2364,6 +2409,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/ObjectInformatieObject'
     patch:
@@ -2516,6 +2564,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/ObjectInformatieObject'
     delete:
@@ -2640,6 +2691,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.verwijderen
     parameters:
     - name: uuid
       in: path
