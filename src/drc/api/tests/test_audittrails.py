@@ -1,6 +1,5 @@
 import uuid
 from base64 import b64encode
-from unittest.mock import patch
 from freezegun import freeze_time
 from datetime import datetime
 
@@ -10,6 +9,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import reverse, reverse_lazy
+from .mixins import ObjectInformatieObjectSyncMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject, Gebruiksrechten
@@ -20,22 +20,11 @@ ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class AuditTrailTests(APITestCase):
+class AuditTrailTests(ObjectInformatieObjectSyncMixin, APITestCase):
 
     informatieobject_list_url = reverse_lazy(EnkelvoudigInformatieObject)
     objectinformatieobject_list_url = reverse_lazy(ObjectInformatieObject)
     gebruiksrechten_list_url = reverse_lazy(Gebruiksrechten)
-
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
 
     def _create_enkelvoudiginformatieobject(self):
         content = {
