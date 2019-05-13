@@ -67,7 +67,7 @@ class AuditTrailTests(APITestCase):
 
         # Verify that the audittrail for the EnkelvoudigInformatieObject creation contains the correct
         # information
-        informatieobject_create_audittrail = audittrails.first()
+        informatieobject_create_audittrail = audittrails.get()
         self.assertEqual(informatieobject_create_audittrail.bron, 'DRC')
         self.assertEqual(informatieobject_create_audittrail.actie, 'create')
         self.assertEqual(informatieobject_create_audittrail.resultaat, 201)
@@ -92,7 +92,7 @@ class AuditTrailTests(APITestCase):
 
         # Verify that the audittrail for the ObjectInformatieObject creation
         # contains the correct information
-        objectinformatieobject_create_audittrail = audittrails.first()
+        objectinformatieobject_create_audittrail = audittrails.get()
         self.assertEqual(objectinformatieobject_create_audittrail.bron, 'DRC')
         self.assertEqual(objectinformatieobject_create_audittrail.actie, 'create')
         self.assertEqual(objectinformatieobject_create_audittrail.resultaat, 201)
@@ -116,7 +116,7 @@ class AuditTrailTests(APITestCase):
 
         # Verify that the audittrail for the Gebruiksrechten creation
         # contains the correct information
-        gebruiksrechten_create_audittrail = audittrails.first()
+        gebruiksrechten_create_audittrail = audittrails.get()
         self.assertEqual(gebruiksrechten_create_audittrail.bron, 'DRC')
         self.assertEqual(gebruiksrechten_create_audittrail.actie, 'create')
         self.assertEqual(gebruiksrechten_create_audittrail.resultaat, 201)
