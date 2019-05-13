@@ -12,7 +12,6 @@ from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 from vng_api_common.validators import IsImmutableValidator
 
-from .mixins import ObjectInformatieObjectSyncMixin
 from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, ObjectInformatieObject
@@ -21,6 +20,8 @@ from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
 from drc.sync.signals import SyncError
+
+from .mixins import ObjectInformatieObjectSyncMixin
 
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'

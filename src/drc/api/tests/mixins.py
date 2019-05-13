@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+
 class ObjectInformatieObjectSyncMixin:
 
     def setUp(self):

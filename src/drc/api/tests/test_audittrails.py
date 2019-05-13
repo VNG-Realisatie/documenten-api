@@ -1,20 +1,21 @@
 import uuid
 from base64 import b64encode
-from freezegun import freeze_time
 from datetime import datetime
 
 from django.test import override_settings
 
+from freezegun import freeze_time
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import reverse, reverse_lazy
-from .mixins import ObjectInformatieObjectSyncMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, ObjectInformatieObject, Gebruiksrechten
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
+
+from .mixins import ObjectInformatieObjectSyncMixin
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
