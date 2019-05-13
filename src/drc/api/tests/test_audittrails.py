@@ -37,7 +37,7 @@ class AuditTrailTests(APITestCase):
         self.mocked_sync_delete = patcher_sync_delete.start()
         self.addCleanup(patcher_sync_delete.stop)
 
-    def create_enkelvoudiginformatieobject(self):
+    def _create_enkelvoudiginformatieobject(self):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -59,7 +59,7 @@ class AuditTrailTests(APITestCase):
         return response.data
 
     def test_create_enkelvoudiginformatieobject_audittrail(self):
-        informatieobject_data = self.create_enkelvoudiginformatieobject()
+        informatieobject_data = self._create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
@@ -138,7 +138,7 @@ class AuditTrailTests(APITestCase):
         self.assertEqual(gebruiksrechten_delete_audittrail.nieuw, None)
 
     def test_update_enkelvoudiginformatieobject_audittrail(self):
-        informatieobject_data = self.create_enkelvoudiginformatieobject()
+        informatieobject_data = self._create_enkelvoudiginformatieobject()
 
         informatieobject_url = informatieobject_data['url']
 
@@ -173,7 +173,7 @@ class AuditTrailTests(APITestCase):
         self.assertEqual(informatieobject_update_audittrail.nieuw, informatieobject_response)
 
     def test_partial_update_enkelvoudiginformatieobject_audittrail(self):
-        informatieobject_data = self.create_enkelvoudiginformatieobject()
+        informatieobject_data = self._create_enkelvoudiginformatieobject()
 
         informatieobject_url = informatieobject_data['url']
 
