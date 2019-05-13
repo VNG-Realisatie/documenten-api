@@ -14,7 +14,7 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, TypeCheckMixin, reverse
 from zds_client.tests.mocks import mock_client
 
-from drc.api.scopes import SCOPE_DOCUMENTEN_BIJWERKEN
+from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
@@ -25,7 +25,7 @@ INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobj
 )
 class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN]
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @tag('mock_client')

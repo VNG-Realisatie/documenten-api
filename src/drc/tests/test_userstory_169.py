@@ -18,14 +18,14 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url
 )
 
-from drc.api.scopes import SCOPE_DOCUMENTEN_BIJWERKEN
+from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
 class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN]
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')

@@ -10,15 +10,13 @@ from vng_api_common.validators import URLValidator
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_BIJWERKEN
 from .utils import reverse, reverse_lazy
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 
 
 class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN]
-    informatieobjecttype = INFORMATIEOBJECTTYPE
+    heeft_alle_autorisaties = True
 
     def assertGegevensGroepRequired(self, url: str, field: str, base_body: dict, cases: tuple):
         for key, code in cases:
@@ -129,8 +127,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
 class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
     url = reverse_lazy('enkelvoudiginformatieobject-list')
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN]
-    informatieobjecttype = INFORMATIEOBJECTTYPE
+    heeft_alle_autorisaties = True
 
     def test_ontvangen_informatieobjecten(self):
         """
@@ -208,7 +205,7 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
     Test that incorrect filter usage results in HTTP 400.
     """
-    scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
+    heeft_alle_autorisaties = True
 
     def test_oio_invalid_filters(self):
         url = reverse('objectinformatieobject-list')

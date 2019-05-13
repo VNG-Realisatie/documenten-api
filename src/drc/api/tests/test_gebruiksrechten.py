@@ -6,18 +6,13 @@ from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
 )
 
-from ..scopes import (
-    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-    SCOPE_DOCUMENTEN_BIJWERKEN
-)
 from .utils import reverse
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 
 
 class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
-    informatieobjecttype = INFORMATIEOBJECTTYPE
+    heeft_alle_autorisaties = True
 
     def test_create(self):
         url = reverse('gebruiksrechten-list')
@@ -81,9 +76,6 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'missing-gebruiksrechten')
 
     def test_delete_gebruiksrechten(self):
-        self.autorisatie.scopes += [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
-        self.autorisatie.save()
-
         gebruiksrechten = GebruiksrechtenFactory.create(
             informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
         )

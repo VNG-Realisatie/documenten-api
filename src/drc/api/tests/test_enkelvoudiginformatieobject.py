@@ -14,8 +14,6 @@ from vng_api_common.tests.auth import JWTAuthMixin
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_BIJWERKEN
-
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
@@ -24,8 +22,7 @@ INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobj
 class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
-    informatieobjecttype = INFORMATIEOBJECTTYPE
+    heeft_alle_autorisaties = True
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create(self):

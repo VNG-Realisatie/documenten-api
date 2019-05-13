@@ -22,11 +22,6 @@ from drc.datamodel.tests.factories import (
 )
 from drc.sync.signals import SyncError
 
-from ..scopes import (
-    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-    SCOPE_DOCUMENTEN_BIJWERKEN
-)
-
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
@@ -44,8 +39,7 @@ class ObjectInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('objectinformatieobject-list', kwargs={'version': '1'})
 
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN]
-    informatieobjecttype = INFORMATIEOBJECTTYPE
+    heeft_alle_autorisaties = True
 
     def setUp(self):
         super().setUp()
@@ -371,9 +365,6 @@ class ObjectInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_delete(self):
-        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
-        self.autorisatie.save()
-
         document = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )

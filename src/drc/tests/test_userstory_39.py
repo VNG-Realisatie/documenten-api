@@ -13,7 +13,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
-from drc.api.scopes import SCOPE_DOCUMENTEN_BIJWERKEN
+from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
@@ -21,7 +21,7 @@ INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobj
 
 class US39TestCase(JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_DOCUMENTEN_BIJWERKEN]
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
