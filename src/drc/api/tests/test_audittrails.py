@@ -61,7 +61,7 @@ class AuditTrailTests(APITestCase):
         informatieobject_data = self.create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 1)
 
         # Verify that the audittrail for the EnkelvoudigInformatieObject creation contains the correct
@@ -90,7 +90,7 @@ class AuditTrailTests(APITestCase):
         objectinformatieobject_response = self.client.post(self.objectinformatieobject_list_url, content).data
 
         informatieobject_url = objectinformatieobject_response['informatieobject']
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 1)
 
         # Verify that the audittrail for the ObjectInformatieObject creation
@@ -118,7 +118,7 @@ class AuditTrailTests(APITestCase):
         gebruiksrechten_response = self.client.post(self.gebruiksrechten_list_url, content).data
 
         informatieobject_url = gebruiksrechten_response['informatieobject']
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 1)
 
         # Verify that the audittrail for the Gebruiksrechten creation
@@ -132,7 +132,7 @@ class AuditTrailTests(APITestCase):
 
         delete_response = self.client.delete(gebruiksrechten_response['url'])
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Gebruiksrechten deletion
@@ -167,7 +167,7 @@ class AuditTrailTests(APITestCase):
 
         informatieobject_response = self.client.put(informatieobject_url, content).data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the EnkelvoudigInformatieObject update
@@ -186,7 +186,7 @@ class AuditTrailTests(APITestCase):
 
         informatieobject_response = self.client.patch(informatieobject_url, {'titel': 'changed'}).data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=informatieobject_url)
+        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the EnkelvoudigInformatieObject
