@@ -5,13 +5,15 @@ from freezegun import freeze_time
 from datetime import datetime
 
 from django.test import override_settings
-from django.urls import reverse, reverse_lazy
 
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
+from vng_api_common.tests import reverse, reverse_lazy
 
-from drc.datamodel.models import EnkelvoudigInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, ObjectInformatieObject, Gebruiksrechten
+)
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
@@ -20,10 +22,9 @@ ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class AuditTrailTests(APITestCase):
 
-    version_kwargs = {'version': '1'}
-    informatieobject_list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs=version_kwargs)
-    objectinformatieobject_list_url = reverse_lazy('objectinformatieobject-list', kwargs=version_kwargs)
-    gebruiksrechten_list_url = reverse_lazy('gebruiksrechten-list', kwargs=version_kwargs)
+    informatieobject_list_url = reverse_lazy(EnkelvoudigInformatieObject)
+    objectinformatieobject_list_url = reverse_lazy(ObjectInformatieObject)
+    gebruiksrechten_list_url = reverse_lazy(Gebruiksrechten)
 
     def setUp(self):
         super().setUp()
@@ -75,13 +76,9 @@ class AuditTrailTests(APITestCase):
 
     def test_create_objectinformatieobject_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
-        informatieobject_uri = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': '1',
-            'uuid': informatieobject.uuid,
-        })
 
         content = {
-            'informatieobject': informatieobject_uri,
+            'informatieobject': reverse(informatieobject),
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
         }
@@ -104,13 +101,9 @@ class AuditTrailTests(APITestCase):
 
     def test_create_and_delete_gebruiksrechten_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
-        informatieobject_uri = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': '1',
-            'uuid': informatieobject.uuid,
-        })
 
         content = {
-            'informatieobject': informatieobject_uri,
+            'informatieobject': reverse(informatieobject),
             'startdatum': datetime.now(),
             'omschrijvingVoorwaarden': 'test'
         }
