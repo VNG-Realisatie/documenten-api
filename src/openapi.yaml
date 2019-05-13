@@ -4469,7 +4469,7 @@ components:
           maxLength: 50
           minLength: 1
         actieWeergave:
-          title: ActieWeergave
+          title: Actie weergave
           type: string
           maxLength: 200
         resultaat:
@@ -4478,7 +4478,7 @@ components:
           maximum: 2147483647
           minimum: -2147483648
         hoofdObject:
-          title: HoofdObject
+          title: Hoofd object
           type: string
           format: uri
           maxLength: 1000
@@ -4489,7 +4489,7 @@ components:
           maxLength: 50
           minLength: 1
         resourceUrl:
-          title: ResourceUrl
+          title: Resource url
           type: string
           format: uri
           maxLength: 1000
