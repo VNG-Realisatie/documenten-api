@@ -8,7 +8,7 @@ from freezegun import freeze_time
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
-from vng_api_common.tests import reverse, reverse_lazy
+from vng_api_common.tests import JWTAuthMixin, reverse, reverse_lazy
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -21,11 +21,13 @@ ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class AuditTrailTests(ObjectInformatieObjectSyncMixin, APITestCase):
+class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     informatieobject_list_url = reverse_lazy(EnkelvoudigInformatieObject)
     objectinformatieobject_list_url = reverse_lazy(ObjectInformatieObject)
     gebruiksrechten_list_url = reverse_lazy(Gebruiksrechten)
+
+    heeft_alle_autorisaties = True
 
     def _create_enkelvoudiginformatieobject(self):
         content = {
