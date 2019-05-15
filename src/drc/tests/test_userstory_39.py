@@ -1,7 +1,9 @@
 """
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
+
 import base64
+import tempfile
 from datetime import date
 from urllib.parse import urlparse
 
@@ -13,12 +15,16 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
-from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
+from drc.api.scopes import (
+    SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN
+)
 from drc.datamodel.models import EnkelvoudigInformatieObject
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
+@override_settings(PRIVATE_STORAGE_ROOT=tempfile.mkdtemp())
 class US39TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
@@ -55,5 +61,39 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         # should be a URL
         download_url = urlparse(response.data['inhoud'])
-        self.assertTrue(download_url.path.startswith(settings.MEDIA_URL))
+        self.assertTrue(download_url.path.startswith('/private-media/'))
         self.assertTrue(download_url.path.endswith('.bin'))
+
+    def test_read_file_success(self):
+        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
+        self.autorisatie.save()
+
+        test_object = EnkelvoudigInformatieObjectFactory.create()
+        detail_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=test_object.uuid)
+
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_file = self.client.get(response.data['inhoud'])
+
+        self.assertEqual(response_file.status_code, status.HTTP_200_OK)
+        self.assertEqual(list(response_file.streaming_content)[0].decode("utf-8"), 'some data')
+
+    def test_read_file_incorrect_scope(self):
+        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
+        self.autorisatie.save()
+
+        test_object = EnkelvoudigInformatieObjectFactory.create()
+        detail_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=test_object.uuid)
+
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
+        self.autorisatie.save()
+
+        response_file = self.client.get(response.data['inhoud'])
+
+        self.assertEqual(response_file.status_code, status.HTTP_403_FORBIDDEN)

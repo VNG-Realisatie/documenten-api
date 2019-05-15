@@ -24,6 +24,7 @@ src/drc/static/css/screen.css
 local.py
 /env/
 /media/
+/private-media/
 /static/
 /mail/
 /log/*.log*
