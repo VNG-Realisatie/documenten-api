@@ -3,6 +3,7 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
 )
 from rest_framework.decorators import action
+from sendfile import sendfile
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -29,7 +30,6 @@ from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
     ObjectInformatieObjectSerializer
 )
-from sendfile import sendfile
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
