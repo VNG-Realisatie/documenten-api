@@ -156,6 +156,20 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         instance.ondertekening = validated_data.pop('ondertekening', None)
         return super().update(instance, validated_data)
 
+    def _replace_file_url(self, output: dict) -> None:
+        if 'inhoud' in output:
+            output['inhoud'] = f"{output['url']}/download"
+
+    def to_representation(self, instance):
+        # replace inhound url
+        results = super().to_representation(instance)
+        if isinstance(results, list):
+            for result in results:
+                self._replace_file_url(result)
+        else:
+            self._replace_file_url(results)
+        return results
+
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     aard_relatie_weergave = serializers.ChoiceField(

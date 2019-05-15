@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
 )
+from rest_framework.decorators import action
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -28,6 +29,7 @@ from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
     ObjectInformatieObjectSerializer
 )
+from sendfile import sendfile
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
@@ -95,9 +97,15 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
+
+    @action(methods=['get'], detail=True)
+    def download(self, request, *args, **kwargs):
+        eio = self.get_object()
+        return sendfile(request, eio.inhoud.path, attachment=True)
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,

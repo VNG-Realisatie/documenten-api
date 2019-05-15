@@ -1388,6 +1388,42 @@
                 }
             ]
         },
+        "/enkelvoudiginformatieobjecten/{uuid}/download": {
+            "get": {
+                "operationId": "enkelvoudiginformatieobject_download",
+                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
+        },
         "/gebruiksrechten": {
             "get": {
                 "operationId": "gebruiksrechten_list",

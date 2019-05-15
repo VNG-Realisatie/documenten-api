@@ -4,7 +4,7 @@ import uuid as _uuid
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
-from private_storage.fields import PrivateFileField
+from privates.fields import PrivateMediaFileField
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
@@ -162,8 +162,8 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
     # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
-    inhoud = PrivateFileField(upload_to='uploads/%Y/%m/')
     link = models.URLField(
         max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '

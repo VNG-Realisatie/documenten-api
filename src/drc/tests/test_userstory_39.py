@@ -1,13 +1,11 @@
 """
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
-
 import base64
 import tempfile
 from datetime import date
 from urllib.parse import urlparse
 
-from django.conf import settings
 from django.test import override_settings
 
 from rest_framework import status
@@ -52,48 +50,47 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        data = response.json()
-        self.assertIn('identificatie', data)
 
         eio = EnkelvoudigInformatieObject.objects.get()
+
         self.assertEqual(eio.identificatie, 'AMS20180701001')
         self.assertEqual(eio.creatiedatum, date(2018, 7, 1))
 
-        # should be a URL
         download_url = urlparse(response.data['inhoud'])
-        self.assertTrue(download_url.path.startswith('/private-media/'))
-        self.assertTrue(download_url.path.endswith('.bin'))
 
-    def test_read_file_success(self):
+        self.assertTrue(
+            download_url.path,
+            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
+        )
+
+    def test_read_detail_file(self):
         self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
         self.autorisatie.save()
 
-        test_object = EnkelvoudigInformatieObjectFactory.create()
-        detail_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=test_object.uuid)
+        eio = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
+        file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
 
-        response = self.client.get(detail_url)
+        response = self.client.get(file_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content.decode("utf-8"), 'some data')
 
-        response_file = self.client.get(response.data['inhoud'])
-
-        self.assertEqual(response_file.status_code, status.HTTP_200_OK)
-        self.assertEqual(list(response_file.streaming_content)[0].decode("utf-8"), 'some data')
-
-    def test_read_file_incorrect_scope(self):
+    def test_list_file(self):
         self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
         self.autorisatie.save()
 
-        test_object = EnkelvoudigInformatieObjectFactory.create()
-        detail_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=test_object.uuid)
+        eio = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
+        list_url = get_operation_url('enkelvoudiginformatieobject_list')
 
-        response = self.client.get(detail_url)
+        response = self.client.get(list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.autorisatie.scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
-        self.autorisatie.save()
+        download_url = urlparse(response.data[0]['inhoud'])
 
-        response_file = self.client.get(response.data['inhoud'])
+        self.assertEqual(
+            download_url.path,
+            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
+        )
 
-        self.assertEqual(response_file.status_code, status.HTTP_403_FORBIDDEN)
+

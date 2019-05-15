@@ -9,7 +9,8 @@ from django.urls import reverse, reverse_lazy
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests.auth import JWTAuthMixin
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
+
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -70,11 +71,12 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'version': '1',
             'uuid': stored_object.uuid,
         })
+        expected_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=stored_object.uuid)
 
         expected_response = content.copy()
         expected_response.update({
             'url': f"http://testserver{expected_url}",
-            'inhoud': f"http://testserver{stored_object.inhoud.url}",
+            'inhoud': f"http://testserver{expected_file_url}",
             'vertrouwelijkheidaanduiding': 'openbaar',
             'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
@@ -109,6 +111,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         # Test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=test_object.uuid)
         expected = {
             'url': f'http://testserver{detail_url}',
             'identificatie': test_object.identificatie,
@@ -120,7 +123,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'formaat': 'some formaat',
             'taal': 'dut',
             'bestandsnaam': '',
-            'inhoud': f'http://testserver{test_object.inhoud.url}',
+            'inhoud': f'http://testserver{file_url}',
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',
