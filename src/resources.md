@@ -38,6 +38,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | --- | --- | --- | --- | --- |
 | uuid | Unieke resource identifier (UUID4) | string | nee | C​R​U​D |
 | bron |  | string | ja | C​R​U​D |
+| applicatieId | Unieke identificatie van de applicatie, binnen de organisatie | string | nee | C​R​U​D |
+| applicatieWeergave | Vriendelijke naam van de applicatie | string | nee | C​R​U​D |
 | actie |  | string | ja | C​R​U​D |
 | actieWeergave |  | string | nee | C​R​U​D |
 | resultaat |  | integer | ja | C​R​U​D |
