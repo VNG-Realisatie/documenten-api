@@ -5010,6 +5010,18 @@
                     "maxLength": 50,
                     "minLength": 1
                 },
+                "applicatieId": {
+                    "title": "Applicatie id",
+                    "description": "Unieke identificatie van de applicatie, binnen de organisatie",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "applicatieWeergave": {
+                    "title": "Applicatie weergave",
+                    "description": "Vriendelijke naam van de applicatie",
+                    "type": "string",
+                    "maxLength": 200
+                },
                 "actie": {
                     "title": "Actie",
                     "type": "string",
