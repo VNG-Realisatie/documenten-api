@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from unittest.mock import patch
 
 from django.test import override_settings
 from django.urls import reverse, reverse_lazy
@@ -22,6 +21,8 @@ from drc.datamodel.tests.factories import (
 )
 from drc.sync.signals import SyncError
 
+from .mixins import ObjectInformatieObjectSyncMixin
+
 ZAAK = f'http://example.com/zrc/api/v1/zaak/{uuid.uuid4().hex}'
 BESLUIT = f'http://example.com/brc/api/v1/besluit/{uuid.uuid4().hex}'
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
@@ -35,22 +36,11 @@ def dt_to_api(dt: datetime):
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class ObjectInformatieObjectAPITests(JWTAuthMixin, APITestCase):
+class ObjectInformatieObjectAPITests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('objectinformatieobject-list', kwargs={'version': '1'})
 
     heeft_alle_autorisaties = True
-
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
 
     @freeze_time('2018-09-19T12:25:19+0200')
     def test_create(self):
