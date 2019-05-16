@@ -5,7 +5,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.views.generic.base import TemplateView
 
-
 handler500 = 'drc.utils.views.server_error'
 
 urlpatterns = [
