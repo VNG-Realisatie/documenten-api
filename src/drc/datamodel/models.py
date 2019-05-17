@@ -1,6 +1,9 @@
 import uuid as _uuid
+from typing import Union
 
+from django.conf import settings
 from django.db import models, transaction
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import ObjectTypes
@@ -8,7 +11,9 @@ from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
+from vng_api_common.models import APICredential
 from vng_api_common.validators import alphanumeric_excluding_diacritic
+from zds_client.client import ClientError
 
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
@@ -135,6 +140,9 @@ class InformatieObject(models.Model):
         'datum': ondertekening_datum,
     })
 
+    def unique_representation(self):
+        return f"{self.bronorganisatie} - {self.identificatie}"
+
 
 class EnkelvoudigInformatieObject(InformatieObject):
     # TODO: validate mime types
@@ -229,6 +237,9 @@ class Gebruiksrechten(models.Model):
             self.informatieobject.indicatie_gebruiksrecht = None
             self.informatieobject.save()
 
+    def unique_representation(self):
+        return f"({self.informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden}"
+
 
 class ObjectInformatieObject(models.Model):
     """
@@ -295,3 +306,20 @@ class ObjectInformatieObject(models.Model):
             return self.informatieobject.titel
 
         return '(onbekende titel)'
+
+    def unique_representation(self):
+        if not hasattr(self, '__unique_representation'):
+            io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
+            self.__unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
+        return self.__unique_representation
+
+
+def request_object_attribute(url: str, attribute: str, resource: Union[str, None] = None) -> str:
+    Client = import_string(settings.ZDS_CLIENT_CLASS)
+    client = Client.from_url(url)
+    client.auth = APICredential.get_auth(url)
+    try:
+        result = client.retrieve(resource, url=url)[attribute]
+    except (ClientError, KeyError):
+        result = ''
+    return result
