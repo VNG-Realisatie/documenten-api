@@ -1,3 +1,4 @@
+import logging
 import uuid as _uuid
 from typing import Union
 
@@ -20,6 +21,8 @@ from .constants import (
 )
 from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
+
+logger = logging.getLogger(__name__)
 
 
 class InformatieObject(models.Model):
@@ -126,6 +129,7 @@ class InformatieObject(models.Model):
     class Meta:
         verbose_name = 'informatieobject'
         verbose_name_plural = 'informatieobject'
+        unique_together = ('bronorganisatie', 'identificatie')
         abstract = True
 
     def __str__(self) -> str:
@@ -308,10 +312,10 @@ class ObjectInformatieObject(models.Model):
         return '(onbekende titel)'
 
     def unique_representation(self):
-        if not hasattr(self, '__unique_representation'):
+        if not hasattr(self, '_unique_representation'):
             io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
-            self.__unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
-        return self.__unique_representation
+            self._unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
+        return self._unique_representation
 
 
 def request_object_attribute(url: str, attribute: str, resource: Union[str, None] = None) -> str:
@@ -320,6 +324,7 @@ def request_object_attribute(url: str, attribute: str, resource: Union[str, None
     client.auth = APICredential.get_auth(url)
     try:
         result = client.retrieve(resource, url=url)[attribute]
-    except (ClientError, KeyError):
+    except (ClientError, KeyError) as exc:
+        logger.warning("%s was retrieved from %s with the %s: %s", attribute, url, exc.__class__.__name__, exc)
         result = ''
     return result
