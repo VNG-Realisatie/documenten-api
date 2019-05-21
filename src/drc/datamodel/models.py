@@ -13,6 +13,7 @@ from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential
+from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 from zds_client.client import ClientError
 
@@ -316,15 +317,3 @@ class ObjectInformatieObject(models.Model):
             io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
             self._unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
         return self._unique_representation
-
-
-def request_object_attribute(url: str, attribute: str, resource: Union[str, None] = None) -> str:
-    Client = import_string(settings.ZDS_CLIENT_CLASS)
-    client = Client.from_url(url)
-    client.auth = APICredential.get_auth(url)
-    try:
-        result = client.retrieve(resource, url=url)[attribute]
-    except (ClientError, KeyError) as exc:
-        logger.warning("%s was retrieved from %s with the %s: %s", attribute, url, exc.__class__.__name__, exc)
-        result = ''
-    return result
