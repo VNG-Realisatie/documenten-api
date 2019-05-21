@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 
 from vng_api_common.models import APICredential
+from vng_api_common.utils import get_uuid_from_path
 from zds_client import Client, extract_params, get_operation_url
 
 from drc.datamodel.models import ObjectInformatieObject
@@ -19,7 +20,9 @@ class SyncError(Exception):
     pass
 
 
-def sync(relation: ObjectInformatieObject, operation: str):
+def sync_create(relation: ObjectInformatieObject):
+    operation = 'create'
+
     # build the URL of the informatieobject
     path = reverse('enkelvoudiginformatieobject-detail', kwargs={
         'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
@@ -42,38 +45,59 @@ def sync(relation: ObjectInformatieObject, operation: str):
     except ValueError as exc:
         raise SyncError("Could not determine remote operation") from exc
 
-    if operation == 'create':
-        # we enforce in the standard that it's a subresource so that we can do this.
-        # The real resource URL is extracted from the ``openapi.yaml`` based on
-        # the operation
-        params = extract_params(f"{relation.object}/irrelevant", pattern)
-    elif operation == 'delete':
-        # Retrieve the url of the relation between the object and the
-        # InformatieObject that must be deleted
-        response = requests.get(f"{relation.object}/informatieobjecten")
-        for relatie in response.json():
-            if str(relation.informatieobject.uuid) in relatie['informatieobject']:
-                relation_url = relatie['url']
-                break
-        params = extract_params(f"{relation.object}/irrelevant/{relation_url}", pattern)
+    # we enforce in the standard that it's a subresource so that we can do this.
+    # The real resource URL is extracted from the ``openapi.yaml`` based on
+    # the operation
+    params = extract_params(f"{relation.object}/irrelevant", pattern)
 
     try:
         operation_function = getattr(client, operation)
-        if operation == 'create':
-            operation_function(resource, {'informatieobject': informatieobject_url}, **params)
-        elif operation == 'delete':
-            operation_function(resource, **params)
+        operation_function(resource, {'informatieobject': informatieobject_url}, **params)
     except Exception as exc:
         logger.error(f"Could not {operation} remote relation", exc_info=1)
         raise SyncError(f"Could not {operation} remote relation") from exc
 
 
-def sync_create(relation: ObjectInformatieObject):
-    sync(relation, 'create')
-
-
 def sync_delete(relation: ObjectInformatieObject):
-    sync(relation, 'delete')
+    operation = 'delete'
+    # build the URL of the informatieobject
+    path = reverse('enkelvoudiginformatieobject-detail', kwargs={
+        'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
+        'uuid': relation.informatieobject.uuid,
+    })
+    domain = Site.objects.get_current().domain
+    protocol = 'https' if settings.IS_HTTPS else 'http'
+    informatieobject_url = f'{protocol}://{domain}{path}'
+
+    logger.info("Remote object: %s", relation.object)
+    logger.info("Informatieobject: %s", informatieobject_url)
+
+    # figure out which remote resource we need to interact with
+    resource = f"{relation.object_type}informatieobject"
+    client = Client.from_url(relation.object)
+    client.auth = APICredential.get_auth(relation.object)
+
+    try:
+        pattern = get_operation_url(client.schema, f'{resource}_list', pattern_only=True)
+    except ValueError as exc:
+        raise SyncError("Could not determine remote operation") from exc
+
+    # Retrieve the url of the relation between the object and the
+    # InformatieObject that must be deleted
+    params = extract_params(f"{relation.object}/irrelevant", pattern)
+
+    response = client.list(resource, **params)
+    for relatie in response:
+        if str(relation.informatieobject.uuid) == get_uuid_from_path(relatie['informatieobject']):
+            relation_url = relatie['url']
+            break
+
+    try:
+        operation_function = getattr(client, operation)
+        operation_function(resource, url=relation_url)
+    except Exception as exc:
+        logger.error(f"Could not {operation} remote relation", exc_info=1)
+        raise SyncError(f"Could not {operation} remote relation") from exc
 
 
 @receiver([post_save, post_delete], sender=ObjectInformatieObject, dispatch_uid='sync.sync_informatieobject_relation')
