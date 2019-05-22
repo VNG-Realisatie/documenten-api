@@ -1,10 +1,7 @@
 import logging
 import uuid as _uuid
-from typing import Union
 
-from django.conf import settings
 from django.db import models, transaction
-from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import ObjectTypes
@@ -12,10 +9,8 @@ from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from vng_api_common.models import APICredential
 from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
-from zds_client.client import ClientError
 
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
