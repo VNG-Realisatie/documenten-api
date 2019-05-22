@@ -1,18 +1,29 @@
 from rest_framework import viewsets
+from vng_api_common.audittrails.viewsets import (
+    AuditTrailViewSet, AuditTrailViewsetMixin
+)
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
-from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
+from .audits import AUDIT_DRC
+from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
     EnkelvoudigInformatieObjectFilter, GebruiksrechtenFilter,
     ObjectInformatieObjectFilter
 )
 from .kanalen import KANAAL_DOCUMENTEN
-from .scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+from .permissions import (
+    InformationObjectAuthScopesRequired,
+    InformationObjectRelatedAuthScopesRequired
+)
+from .scopes import (
+    SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN
+)
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
     ObjectInformatieObjectSerializer
@@ -20,6 +31,8 @@ from .serializers import (
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
+                                         ListFilterByAuthorizationsMixin,
+                                         AuditTrailViewsetMixin,
                                          viewsets.ModelViewSet):
     """
     Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
@@ -74,15 +87,23 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     serializer_class = EnkelvoudigInformatieObjectSerializer
     filterset_class = EnkelvoudigInformatieObjectFilter
     lookup_field = 'uuid'
-    permission_classes = (ActionScopesRequired, )
+    permission_classes = (InformationObjectAuthScopesRequired, )
     required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_AANMAKEN,
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
+    audit = AUDIT_DRC
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
+                                    AuditTrailViewsetMixin,
                                     CheckQueryParamsMixin,
+                                    ListFilterByAuthorizationsMixin,
                                     viewsets.ModelViewSet):
     """
     Beheer relatie tussen InformatieObject en OBJECT.
@@ -145,9 +166,21 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_DOCUMENTEN
     notifications_main_resource_key = 'informatieobject'
-
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_AANMAKEN,
+        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = 'informatieobject'
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
+                             ListFilterByAuthorizationsMixin,
+                             AuditTrailViewsetMixin,
                              viewsets.ModelViewSet):
     """
     list:
@@ -185,3 +218,27 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_DOCUMENTEN
     notifications_main_resource_key = 'informatieobject'
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'create': SCOPE_DOCUMENTEN_AANMAKEN,
+        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = 'informatieobject'
+
+
+class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
+    """
+    Opvragen van Audit trails horend bij een EnkelvoudigInformatieObject.
+
+    list:
+    Geef een lijst van AUDITTRAILS die horen bij het huidige EnkelvoudigInformatieObject.
+
+    retrieve:
+    Haal de details van een AUDITTRAIL op.
+    """
+    main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'

@@ -2,6 +2,22 @@
 Wijzigingen
 ===========
 
+0.12.0 (2019-05-22)
+===================
+
+Authorizations V2 and audit trail release - breaking changes!
+
+* Authorizations are checked against authorizations component (AC), use the
+  token tool to configure these.
+* Added scopes for actions/resources that were not protected yet
+* Renamed scopes for consistency and brevity, the ``zds.scopes`` prefix is
+  dropped.
+* changed ``invalid-params`` to ``invalidParams`` in validation errors,
+  following KP-API strategy
+* Added audit trails on documents (``informatieobject``)
+* Added unique-representation for resources
+* Bumped dependency versions to latest security releases
+
 0.11.0 (2019-04-18)
 ===================
 

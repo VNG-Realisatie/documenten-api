@@ -200,6 +200,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -366,9 +373,337 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
+        },
+        "/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail": {
+            "get": {
+                "operationId": "audittrail_list",
+                "description": "Geef een lijst van AUDITTRAILS die horen bij het huidige EnkelvoudigInformatieObject.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AuditTrail"
+                            }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "enkelvoudiginformatieobject_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                }
+            ]
+        },
+        "/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail/{uuid}": {
+            "get": {
+                "operationId": "audittrail_read",
+                "description": "Haal de details van een AUDITTRAIL op.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/AuditTrail"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "enkelvoudiginformatieobject_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                },
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
         },
         "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
@@ -519,6 +854,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "put": {
@@ -692,6 +1034,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "patch": {
@@ -865,6 +1214,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "delete": {
@@ -1016,7 +1372,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "scopes.documenten.verwijderen"
+                            "documenten.verwijderen"
                         ]
                     }
                 ]
@@ -1249,6 +1605,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -1415,6 +1778,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -1568,6 +1938,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "put": {
@@ -1741,6 +2118,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "patch": {
@@ -1914,6 +2298,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "delete": {
@@ -2061,6 +2452,13 @@
                 },
                 "tags": [
                     "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.verwijderen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -2243,6 +2641,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -2409,6 +2814,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -2562,6 +2974,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
                 ]
             },
             "put": {
@@ -2735,6 +3154,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "patch": {
@@ -2908,6 +3334,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
                 ]
             },
             "delete": {
@@ -3055,6 +3488,13 @@
                 },
                 "tags": [
                     "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.verwijderen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -3862,7 +4302,7 @@
                 "status",
                 "detail",
                 "instance",
-                "invalid-params"
+                "invalidParams"
             ],
             "type": "object",
             "properties": {
@@ -3900,7 +4340,7 @@
                     "type": "string",
                     "minLength": 1
                 },
-                "invalid-params": {
+                "invalidParams": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/FieldValidationError"
@@ -4544,6 +4984,91 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                }
+            }
+        },
+        "AuditTrail": {
+            "required": [
+                "bron",
+                "actie",
+                "resultaat",
+                "hoofdObject",
+                "resource",
+                "resourceUrl"
+            ],
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "bron": {
+                    "title": "Bron",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "applicatieId": {
+                    "title": "Applicatie id",
+                    "description": "Unieke identificatie van de applicatie, binnen de organisatie",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "applicatieWeergave": {
+                    "title": "Applicatie weergave",
+                    "description": "Vriendelijke naam van de applicatie",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "actie": {
+                    "title": "Actie",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "actieWeergave": {
+                    "title": "Actie weergave",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "resultaat": {
+                    "title": "Resultaat",
+                    "type": "integer",
+                    "maximum": 2147483647,
+                    "minimum": -2147483648
+                },
+                "hoofdObject": {
+                    "title": "Hoofd object",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "resource": {
+                    "title": "Resource",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "resourceUrl": {
+                    "title": "Resource url",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "aanmaakdatum": {
+                    "title": "Aanmaakdatum",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "wijzigingen": {
+                    "title": "Wijzigingen",
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },

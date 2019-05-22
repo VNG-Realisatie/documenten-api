@@ -14,10 +14,19 @@ from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import TypeCheckMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTAuthMixin, TypeCheckMixin, get_operation_url
+)
+
+from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
+
+INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
-class US169Tests(TypeCheckMixin, APITestCase):
+class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_upload_image(self):
@@ -38,7 +47,7 @@ class US169Tests(TypeCheckMixin, APITestCase):
             'titel': 'bijlage.jpg',
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'auteur': 'John Doe',
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
         }
 
         response = self.client.post(url, data)

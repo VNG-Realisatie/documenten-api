@@ -4,7 +4,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import get_validation_errors
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 from vng_api_common.validators import URLValidator
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
@@ -12,8 +12,11 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse, reverse_lazy
 
+INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
 
-class EnkelvoudigInformatieObjectTests(APITestCase):
+
+class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
 
     def assertGegevensGroepRequired(self, url: str, field: str, base_body: dict, cases: tuple):
         for key, code in cases:
@@ -40,7 +43,7 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
         url = reverse('enkelvoudiginformatieobject-list')
 
         response = self.client.post(url, {
-            'informatieobjecttype': 'https://example.com/informatieobjecttype/foo',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
         })
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -121,9 +124,10 @@ class EnkelvoudigInformatieObjectTests(APITestCase):
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class InformatieObjectStatusTests(APITestCase):
+class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
     url = reverse_lazy('enkelvoudiginformatieobject-list')
+    heeft_alle_autorisaties = True
 
     def test_ontvangen_informatieobjecten(self):
         """
@@ -141,7 +145,7 @@ class InformatieObjectStatusTests(APITestCase):
             'auteur': 'dummy',
             'taal': 'dut',
             'inhoud': 'aGVsbG8gd29ybGQ=',
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'ontvangstdatum': '2018-12-24',
         }
 
@@ -178,7 +182,10 @@ class InformatieObjectStatusTests(APITestCase):
         Assert that setting the ontvangstdatum later, after an 'invalid' status
         has been set, is not possible.
         """
-        eio = EnkelvoudigInformatieObjectFactory.create(ontvangstdatum=None)
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            ontvangstdatum=None,
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
 
         for invalid_status in (Statussen.in_bewerking, Statussen.ter_vaststelling):
@@ -194,10 +201,11 @@ class InformatieObjectStatusTests(APITestCase):
                 self.assertEqual(error['code'], 'invalid_for_received')
 
 
-class FilterValidationTests(APITestCase):
+class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
     Test that incorrect filter usage results in HTTP 400.
     """
+    heeft_alle_autorisaties = True
 
     def test_oio_invalid_filters(self):
         url = reverse('objectinformatieobject-list')

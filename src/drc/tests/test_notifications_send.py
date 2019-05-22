@@ -7,11 +7,16 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
+from drc.api.scopes import (
+    SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+)
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
+
+INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
 @freeze_time("2012-01-14")
@@ -19,7 +24,10 @@ from drc.datamodel.tests.factories import (
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     NOTIFICATIONS_DISABLED=False
 )
-class SendNotifTestCase(JWTScopesMixin, APITestCase):
+class SendNotifTestCase(JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
+    informatieobjecttype = INFORMATIEOBJECTTYPE
 
     def setUp(self):
         super().setUp()
@@ -48,7 +56,7 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
             'formaat': 'text/plain',
             'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
-            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
 
@@ -80,7 +88,9 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
         Deleting a EnkelvoudigInformatieObject causes all related objects to be deleted as well.
         """
         client = mock_client.return_value
-        io = EnkelvoudigInformatieObjectFactory.create()
+        io = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         io_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=io.uuid)
         oio = ObjectInformatieObjectFactory.create(informatieobject=io, is_zaak=True)
         oio_delete_url = get_operation_url('objectinformatieobject_delete', uuid=oio.uuid)

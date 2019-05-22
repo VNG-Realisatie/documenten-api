@@ -1,6 +1,10 @@
+import logging
 import uuid as _uuid
+from typing import Union
 
+from django.conf import settings
 from django.db import models, transaction
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import ObjectTypes
@@ -8,12 +12,18 @@ from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
+from vng_api_common.models import APICredential
+from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
+from zds_client.client import ClientError
 
 from .constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
 )
+from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
+
+logger = logging.getLogger(__name__)
 
 
 class InformatieObject(models.Model):
@@ -115,9 +125,12 @@ class InformatieObject(models.Model):
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
     )
 
+    objects = InformatieobjectQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'informatieobject'
         verbose_name_plural = 'informatieobject'
+        unique_together = ('bronorganisatie', 'identificatie')
         abstract = True
 
     def __str__(self) -> str:
@@ -131,6 +144,9 @@ class InformatieObject(models.Model):
         'soort': ondertekening_soort,
         'datum': ondertekening_datum,
     })
+
+    def unique_representation(self):
+        return f"{self.bronorganisatie} - {self.identificatie}"
 
 
 class EnkelvoudigInformatieObject(InformatieObject):
@@ -200,6 +216,8 @@ class Gebruiksrechten(models.Model):
         help_text=_("Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn.")
     )
 
+    objects = InformatieobjectRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("gebruiksrecht informatieobject")
         verbose_name_plural = _("gebruiksrechten informatieobject")
@@ -223,6 +241,9 @@ class Gebruiksrechten(models.Model):
         if not other_gebruiksrechten.exists():
             self.informatieobject.indicatie_gebruiksrecht = None
             self.informatieobject.save()
+
+    def unique_representation(self):
+        return f"({self.informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden}"
 
 
 class ObjectInformatieObject(models.Model):
@@ -267,6 +288,8 @@ class ObjectInformatieObject(models.Model):
                   "huidige datum en tijd."
     )
 
+    objects = InformatieobjectRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'Zaakinformatieobject'
         verbose_name_plural = 'Zaakinformatieobjecten'
@@ -288,3 +311,9 @@ class ObjectInformatieObject(models.Model):
             return self.informatieobject.titel
 
         return '(onbekende titel)'
+
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
+            self._unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
+        return self._unique_representation
