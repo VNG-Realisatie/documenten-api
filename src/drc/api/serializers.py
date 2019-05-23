@@ -202,7 +202,9 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         if not hasattr(self, 'initial_data'):
             return
 
-        object_type = self.initial_data.get('object_type')
+        # Use the instance from args in case of a partial update where no
+        # value is given for objectType
+        object_type = self.initial_data.get('object_type') or args[0].object_type
 
         if object_type == ObjectTypes.besluit:
             del self.fields['titel']
