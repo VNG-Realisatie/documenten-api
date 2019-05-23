@@ -29,7 +29,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     heeft_alle_autorisaties = True
 
-    def _create_enkelvoudiginformatieobject(self):
+    def _create_enkelvoudiginformatieobject(self, **HEADERS):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -46,7 +46,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
             'vertrouwelijkheidaanduiding': 'openbaar',
         }
 
-        response = self.client.post(self.informatieobject_list_url, content)
+        response = self.client.post(self.informatieobject_list_url, content, **HEADERS)
 
         return response.data
 
@@ -208,3 +208,13 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
         # Verify that the user representation stored in the AuditTrail matches
         # the user representation in the JWT token for the request
         self.assertEqual(audittrail.gebruikers_weergave, self.user_representation)
+
+    def test_audittrail_toelichting(self):
+        toelichting = 'blaaaa'
+        object_response = self._create_enkelvoudiginformatieobject(HTTP_X_AUDIT_TOELICHTING=toelichting)
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=object_response['url']).get()
+
+        # Verify that the toelichting stored in the AuditTrail matches
+        # the X-Audit-Toelichting header in the HTTP request
+        self.assertEqual(audittrail.toelichting, toelichting)
