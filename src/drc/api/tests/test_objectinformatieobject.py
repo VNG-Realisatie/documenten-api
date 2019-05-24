@@ -206,10 +206,7 @@ class ObjectInformatieObjectAPITests(ObjectInformatieObjectSyncMixin, JWTAuthMix
             'informatieobject': f'http://testserver{eo_detail_url}',
             'object': zio.object,
             'objectType': ObjectTypes.besluit,
-            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast],
-            'titel': '',
-            'beschrijving': '',
-            'registratiedatum': dt_to_api(zio.registratiedatum),
+            'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.legt_vast]
         }
 
         self.assertEqual(response.json(), expected)
@@ -379,3 +376,36 @@ class ObjectInformatieObjectAPITests(ObjectInformatieObjectSyncMixin, JWTAuthMix
         # Relation is gone, document still exists.
         self.assertFalse(ObjectInformatieObject.objects.exists())
         self.assertTrue(EnkelvoudigInformatieObject.objects.exists())
+
+    def test_besluitinformatieobject_partial_update_irrelevant_fields_validation(self):
+        eo = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+        bio = ObjectInformatieObjectFactory.create(
+            is_besluit=True,
+            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
+
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': eo.uuid,
+        })
+        bio_detail_url = reverse('objectinformatieobject-detail', kwargs={
+            'version': '1',
+            'uuid': bio.uuid,
+        })
+
+        # Attempt to do a partial update with fields that should be ignored for
+        # `ObjectInformatieObjecten` with object_type `besluit`
+        response = self.client.patch(bio_detail_url, {
+            'titel': 'some title',
+            'beschrijving': 'some description'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verify that the fields are indeed ignored and do not appear
+        # in the response
+        self.assertNotIn('titel', response.data)
+        self.assertNotIn('beschrijving', response.data)
+        self.assertNotIn('registratiedatum', response.data)
