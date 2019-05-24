@@ -11,6 +11,7 @@ from rest_framework import serializers
 from rest_framework.settings import api_settings
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.models import APICredential
+from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
 from vng_api_common.serializers import GegevensGroepSerializer
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
@@ -157,12 +158,22 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         return super().update(instance, validated_data)
 
 
-class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+class ObjectInformatieObjectSerializer(PolymorphicSerializer):
+    discriminator = Discriminator(
+        discriminator_field='object_type',
+        mapping={
+            ObjectTypes.zaak: (
+                'titel',
+                'beschrijving',
+                'registratiedatum'
+            )
+        }
+    )
+
     aard_relatie_weergave = serializers.ChoiceField(
         source='get_aard_relatie_display', read_only=True,
         choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
     )
-
     # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
     # bij zaak.zaaktype
     class Meta:
@@ -173,9 +184,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'object',
             'object_type',
             'aard_relatie_weergave',
-            'titel',
-            'beschrijving',
-            'registratiedatum',
         )
         extra_kwargs = {
             'url': {
@@ -201,13 +209,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
         if not hasattr(self, 'initial_data'):
             return
-
-        object_type = self.initial_data.get('object_type')
-
-        if object_type == ObjectTypes.besluit:
-            del self.fields['titel']
-            del self.fields['beschrijving']
-            del self.fields['registratiedatum']
 
     def save(self, **kwargs):
         # can't slap a transaction atomic on this, since ZRC/BRC query for the
