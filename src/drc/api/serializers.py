@@ -22,10 +22,12 @@ from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
-from drc.sync.signals import SyncError
 
 from .auth import get_zrc_auth, get_ztc_auth
-from .validators import StatusValidator
+from .validators import (
+    InformatieObjectUniqueValidator, StatusValidator,
+    ZaakInformatieObjectValidator
+)
 
 
 class AnyFileType:
@@ -278,11 +280,6 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    aard_relatie_weergave = serializers.ChoiceField(
-        source='get_aard_relatie_display', read_only=True,
-        choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
-    )
-
     # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
     # bij zaak.zaaktype
     class Meta:
@@ -292,10 +289,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'informatieobject',
             'object',
             'object_type',
-            'aard_relatie_weergave',
-            'titel',
-            'beschrijving',
-            'registratiedatum',
         )
         extra_kwargs = {
             'url': {
@@ -303,7 +296,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'informatieobject': {
                 'lookup_field': 'uuid',
-                'validators': [IsImmutableValidator()],
             },
             'object': {
                 'validators': [
@@ -315,34 +307,13 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()]
             }
         }
+        validators = [ZaakInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if not hasattr(self, 'initial_data'):
             return
-
-        object_type = self.initial_data.get('object_type')
-
-        if object_type == ObjectTypes.besluit:
-            del self.fields['titel']
-            del self.fields['beschrijving']
-            del self.fields['registratiedatum']
-
-    def save(self, **kwargs):
-        # can't slap a transaction atomic on this, since ZRC/BRC query for the
-        # relation!
-        try:
-            return super().save(**kwargs)
-        except SyncError as sync_error:
-            # delete the object again
-            ObjectInformatieObject.objects.filter(
-                informatieobject=self.validated_data['informatieobject'],
-                object=self.validated_data['object']
-            )._raw_delete('default')
-            raise serializers.ValidationError({
-                api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
-            }) from sync_error
 
 
 class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
