@@ -260,28 +260,6 @@ class ObjectInformatieObject(models.Model):
         "objecttype", max_length=100,
         choices=ObjectTypes.choices
     )
-    aard_relatie = models.CharField(
-        "aard relatie", max_length=20,
-        choices=RelatieAarden.choices
-    )
-
-    # relatiegegevens
-    titel = models.CharField(
-        "titel", max_length=200, blank=True,
-        help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
-    )
-    beschrijving = models.TextField(
-        "beschrijving", blank=True,
-        help_text="Een op het object gerichte beschrijving van de inhoud van"
-                  "het INFORMATIEOBJECT."
-    )
-    registratiedatum = models.DateTimeField(
-        "registratiedatum", auto_now_add=True,
-        help_text="De datum waarop de behandelende organisatie het "
-                  "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
-                  "Geldige waardes zijn datumtijden gelegen op of voor de "
-                  "huidige datum en tijd."
-    )
 
     objects = InformatieobjectRelatedQuerySet.as_manager()
 
@@ -293,16 +271,8 @@ class ObjectInformatieObject(models.Model):
     def __str__(self):
         return self.get_title()
 
-    def save(self, *args, **kwargs):
-        # override to set aard_relatie
-        self.aard_relatie = RelatieAarden.from_object_type(self.object_type)
-        super().save(*args, **kwargs)
-
     def get_title(self) -> str:
-        if self.titel:
-            return self.titel
-
-        if self.informatieobject_id:
+        if self.informatieobject:
             return self.informatieobject.titel
 
         return '(onbekende titel)'

@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'drc.accounts',
     'drc.api',
     'drc.datamodel',
-    'drc.sync',
     'drc.utils',
 ]
 

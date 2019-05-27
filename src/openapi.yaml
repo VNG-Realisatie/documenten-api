@@ -2098,11 +2098,7 @@ paths:
   /objectinformatieobjecten:
     get:
       operationId: objectinformatieobject_list
-      description: 'Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere
-        OBJECTen.
-
-
-        Deze lijst kan gefilterd wordt met querystringparameters.'
+      description: Geef een lijst van relaties tussen OBJECTen en INFORMATIEOBJECTen.
       parameters:
       - name: object
         in: query
@@ -2248,17 +2244,7 @@ paths:
         - documenten.lezen
     post:
       operationId: objectinformatieobject_create
-      description: "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee\
-        \ types van\nrelaties met andere objecten gerealiseerd:\n\n* INFORMATIEOBJECT\
-        \ behoort bij [OBJECT] en\n* INFORMATIEOBJECT is vastlegging van [OBJECT].\n\
-        \n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- geldigheid\
-        \ object URL\n- de combinatie informatieobject en object moet uniek zijn\n\
-        \n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet.\
-        \ De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken\
-        \ wordt ook in de bron van het OBJECT de gespiegelde\n  relatie aangemaakt,\
-        \ echter zonder de relatie-informatie.\n- Titel, beschrijving en registratiedatum\
-        \ zijn enkel relevant als het om een\n  object van het type ZAAK gaat (aard\
-        \ relatie \"hoort bij\")."
+      description: ''
       responses:
         '201':
           description: ''
@@ -2391,15 +2377,17 @@ paths:
       - JWT-Claims:
         - documenten.aanmaken
       requestBody:
-        $ref: '#/components/requestBodies/ObjectInformatieObject'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInformatieObject'
+        required: true
     parameters: []
   /objectinformatieobjecten/{uuid}:
     get:
       operationId: objectinformatieobject_read
-      description: 'Geef de details van een relatie tussen een INFORMATIEOBJECT en
-        een ander
-
-        OBJECT.'
+      description: Geef een informatieobject terug wat gekoppeld is aan het huidige
+        object
       responses:
         '200':
           description: ''
@@ -2526,319 +2514,9 @@ paths:
       security:
       - JWT-Claims:
         - documenten.lezen
-    put:
-      operationId: objectinformatieobject_update
-      description: 'Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-
-        van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-
-        **Er wordt gevalideerd op**
-
-        - informatieobject URL, object URL en objectType mogen niet veranderen
-
-
-        Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-
-        object van het type ZAAK gaat (aard relatie "hoort bij").'
-      responses:
-        '200':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectInformatieObject'
-        '400':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ValidatieFout'
-        '401':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '403':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '404':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '406':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '409':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '410':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '415':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '429':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '500':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-      tags:
-      - objectinformatieobjecten
-      security:
-      - JWT-Claims:
-        - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/ObjectInformatieObject'
-    patch:
-      operationId: objectinformatieobject_partial_update
-      description: 'Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-
-        van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-
-        **Er wordt gevalideerd op**
-
-        - informatieobject URL, object URL en objectType mogen niet veranderen
-
-
-        Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-
-        object van het type ZAAK gaat (aard relatie "hoort bij").'
-      responses:
-        '200':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectInformatieObject'
-        '400':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ValidatieFout'
-        '401':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '403':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '404':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '406':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '409':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '410':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '415':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '429':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-        '500':
-          description: ''
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Fout'
-      tags:
-      - objectinformatieobjecten
-      security:
-      - JWT-Claims:
-        - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/ObjectInformatieObject'
     delete:
       operationId: objectinformatieobject_delete
-      description: Verwijdert de relatie tussen OBJECT en INFORMATIEOBJECT.
+      description: Verwijder een relatie tussen een object en een informatieobject
       responses:
         '204':
           description: ''
@@ -2973,12 +2651,6 @@ servers:
 - url: /api/v1
 components:
   requestBodies:
-    ObjectInformatieObject:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ObjectInformatieObject'
-      required: true
     EnkelvoudigInformatieObjectData:
       content:
         application/json:
@@ -4653,29 +4325,3 @@ components:
           enum:
           - besluit
           - zaak
-        aardRelatieWeergave:
-          title: Aard relatie weergave
-          type: string
-          enum:
-          - 'Hoort bij, omgekeerd: kent'
-          - 'Legt vast, omgekeerd: kan vastgelegd zijn als'
-          readOnly: true
-        titel:
-          title: Titel
-          description: De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend
-            is.
-          type: string
-          maxLength: 200
-        beschrijving:
-          title: Beschrijving
-          description: Een op het object gerichte beschrijving van de inhoud vanhet
-            INFORMATIEOBJECT.
-          type: string
-        registratiedatum:
-          title: Registratiedatum
-          description: De datum waarop de behandelende organisatie het INFORMATIEOBJECT
-            heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen
-            op of voor de huidige datum en tijd.
-          type: string
-          format: date-time
-          readOnly: true
