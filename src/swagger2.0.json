@@ -36,8 +36,7 @@
         "/enkelvoudiginformatieobjecten": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
-                "summary": "Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).",
-                "description": "De objecten bevatten metadata over de documenten en de downloadlink naar\nde binary data.",
+                "description": "Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).\n\nDe objecten bevatten metadata over de documenten en de downloadlink naar\nde binary data.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -212,8 +211,7 @@
             },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
-                "summary": "Registreer een ENKELVOUDIG INFORMATIEOBJECT.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL",
+                "description": "Registreer een ENKELVOUDIG INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -710,8 +708,7 @@
         "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
-                "summary": "Geef de details van een ENKELVOUDIG INFORMATIEOBJECT.",
-                "description": "Het object bevat metadata over het informatieobject en de downloadlink naar\nde binary data.",
+                "description": "Geef de details van een ENKELVOUDIG INFORMATIEOBJECT.\n\nHet object bevat metadata over het informatieobject en de downloadlink naar\nde binary data.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -868,8 +865,7 @@
             },
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
-                "summary": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource mee\nte sturen.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource mee\nte sturen.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1049,8 +1045,7 @@
             },
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
-                "summary": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door enkel de gewijzigde velden\nmee te sturen.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Werk een ENKELVOUDIG INFORMATIEOBJECT bij door enkel de gewijzigde velden\nmee te sturen.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1230,8 +1225,7 @@
             },
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
-                "summary": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde\nresources binnen deze API.",
-                "description": "**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
+                "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde\nresources binnen deze API.\n\n**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -1527,9 +1521,6 @@
                         }
                     }
                 },
-                "produces": [
-                    "application/octet-stream"
-                ],
                 "tags": [
                     "enkelvoudiginformatieobjecten"
                 ],
@@ -1552,11 +1543,128 @@
                 }
             ]
         },
+        "/enkelvoudiginformatieobjecten/{uuid}/lock": {
+            "post": {
+                "operationId": "enkelvoudiginformatieobject_lock",
+                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "URL waar de resource leeft."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lock"
+                        ]
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
+        },
+        "/enkelvoudiginformatieobjecten/{uuid}/unlock": {
+            "post": {
+                "operationId": "enkelvoudiginformatieobject_unlock",
+                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "URL waar de resource leeft."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lock"
+                        ]
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
+        },
         "/gebruiksrechten": {
             "get": {
                 "operationId": "gebruiksrechten_list",
-                "summary": "Geef een lijst van gebruiksrechten horend bij informatieobjecten.",
-                "description": "Er kan gefiltered worden met querystringparameters.",
+                "description": "Geef een lijst van gebruiksrechten horend bij informatieobjecten.\n\nEr kan gefiltered worden met querystringparameters.",
                 "parameters": [
                     {
                         "name": "informatieobject",
@@ -1781,8 +1889,7 @@
             },
             "post": {
                 "operationId": "gebruiksrechten_create",
-                "summary": "Voeg gebruiksrechten toe voor een informatieobject.",
-                "description": "**Opmerkingen**\n- Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.",
+                "description": "Voeg gebruiksrechten toe voor een informatieobject.\n\n**Opmerkingen**\n- Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2475,8 +2582,7 @@
             },
             "delete": {
                 "operationId": "gebruiksrechten_delete",
-                "summary": "Verwijder een gebruiksrecht van een informatieobject.",
-                "description": "**Opmerkingen**\n- Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n  gezet.",
+                "description": "Verwijder een gebruiksrecht van een informatieobject.\n\n**Opmerkingen**\n- Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n  gezet.",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -2642,8 +2748,7 @@
         "/objectinformatieobjecten": {
             "get": {
                 "operationId": "objectinformatieobject_list",
-                "summary": "Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.",
-                "description": "Deze lijst kan gefilterd wordt met querystringparameters.",
+                "description": "Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.\n\nDeze lijst kan gefilterd wordt met querystringparameters.",
                 "parameters": [
                     {
                         "name": "object",
@@ -2820,8 +2925,7 @@
             },
             "post": {
                 "operationId": "objectinformatieobject_create",
-                "summary": "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van\nrelaties met andere objecten gerealiseerd:",
-                "description": "* INFORMATIEOBJECT behoort bij [OBJECT] en\n* INFORMATIEOBJECT is vastlegging van [OBJECT].\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de combinatie informatieobject en object moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\n  relatie aangemaakt, echter zonder de relatie-informatie.\n- Titel, beschrijving en registratiedatum zijn enkel relevant als het om een\n  object van het type ZAAK gaat (aard relatie \"hoort bij\").",
+                "description": "Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n* INFORMATIEOBJECT behoort bij [OBJECT] en\n* INFORMATIEOBJECT is vastlegging van [OBJECT].\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- geldigheid object URL\n- de combinatie informatieobject en object moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde\n  relatie aangemaakt, echter zonder de relatie-informatie.\n- Titel, beschrijving en registratiedatum zijn enkel relevant als het om een\n  object van het type ZAAK gaat (aard relatie \"hoort bij\").",
                 "parameters": [
                     {
                         "name": "data",
@@ -4361,21 +4465,18 @@
                     "title": "Ontvangstdatum",
                     "description": "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
                     "type": "string",
-                    "format": "date",
-                    "x-nullable": true
+                    "format": "date"
                 },
                 "verzenddatum": {
                     "title": "Verzenddatum",
                     "description": "De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
                     "type": "string",
-                    "format": "date",
-                    "x-nullable": true
+                    "format": "date"
                 },
                 "indicatieGebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
                     "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
-                    "type": "boolean",
-                    "x-nullable": true
+                    "type": "boolean"
                 },
                 "ondertekening": {
                     "$ref": "#/definitions/Ondertekening"
@@ -4390,6 +4491,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock",
+                    "type": "string",
+                    "maxLength": 100
                 }
             }
         },
@@ -5130,21 +5237,18 @@
                     "title": "Ontvangstdatum",
                     "description": "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
                     "type": "string",
-                    "format": "date",
-                    "x-nullable": true
+                    "format": "date"
                 },
                 "verzenddatum": {
                     "title": "Verzenddatum",
                     "description": "De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
                     "type": "string",
-                    "format": "date",
-                    "x-nullable": true
+                    "format": "date"
                 },
                 "indicatie_gebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
                     "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
-                    "type": "boolean",
-                    "x-nullable": true
+                    "type": "boolean"
                 },
                 "ondertekening": {
                     "$ref": "#/definitions/Ondertekening"
@@ -5159,6 +5263,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock",
+                    "type": "string",
+                    "maxLength": 100
                 }
             }
         },
@@ -5322,8 +5432,7 @@
                     "title": "Startdatum",
                     "description": "Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn.",
                     "type": "string",
-                    "format": "date-time",
-                    "x-nullable": true
+                    "format": "date-time"
                 },
                 "omschrijvingVoorwaarden": {
                     "title": "Omschrijving voorwaarden",

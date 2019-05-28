@@ -166,9 +166,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             if not self.instance.lock:
                 raise serializers.ValidationError(
                     _("Unlocked document can't be modified"),
-                    code='modify-unlocked'
+                    code='unlocked'
                 )
-            if valid_attrs['lock'] != self.instance.lock:
+            lock = valid_attrs.get('lock', '')
+            if lock != self.instance.lock:
                 raise serializers.ValidationError(
                     _("Lock id is not correct"),
                     code='incorrect-lock-id'
@@ -241,12 +242,7 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
-        lock = valid_attrs.get('lock', None)
-        if not lock:
-            raise serializers.ValidationError(
-                _("The document can't be unlocked without lock key"),
-                code='non-existing-lock'
-            )
+        lock = valid_attrs.get('lock', '')
         if lock != self.instance.lock:
             raise serializers.ValidationError(
                 _("Lock id is not correct"),
@@ -257,7 +253,6 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         self.instance.lock = ''
         self.instance.save()
-
         return self.instance
 
 
