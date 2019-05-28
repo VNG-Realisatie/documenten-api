@@ -21,17 +21,6 @@ from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class InformatieObjectScopeForbiddenTests(AuthCheckMixin, APITestCase):
 
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
-
     def test_cannot_create_io_without_correct_scope(self):
         url = reverse('enkelvoudiginformatieobject-list')
         self.assertForbidden(url, method='post')
@@ -211,17 +200,6 @@ class OioReadTests(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
     informatieobjecttype = 'https://informatieobjecttype.nl/ok'
     max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
-
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
 
     def test_list_oio_limited_to_authorized_zaken(self):
         url = reverse('objectinformatieobject-list')
