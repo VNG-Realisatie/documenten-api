@@ -3,13 +3,13 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from sendfile import sendfile
+from rest_framework.response import Response
 from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
 )
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
-from rest_framework.response import Response
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -28,14 +28,15 @@ from .permissions import (
 )
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_LOCK
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
-    ObjectInformatieObjectSerializer, LockEnkelvoudigInformatieObjectSerializer,
+    LockEnkelvoudigInformatieObjectSerializer,
+    ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
-from rest_framework.decorators import action
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,

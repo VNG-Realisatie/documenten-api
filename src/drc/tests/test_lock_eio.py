@@ -6,7 +6,9 @@ from django.test import override_settings
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import get_operation_url, JWTAuthMixin, get_validation_errors
+from vng_api_common.tests import (
+    JWTAuthMixin, get_operation_url, get_validation_errors
+)
 
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
@@ -113,4 +115,3 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'incorrect-lock-id')
-
