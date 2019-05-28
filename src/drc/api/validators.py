@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
@@ -8,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 import requests
 from rest_framework import serializers
 from vng_api_common.models import APICredential
+from vng_api_common.tests.urls import reverse
 
 from drc.datamodel.validators import validate_status
 
@@ -43,6 +45,15 @@ class ZaakInformatieObjectValidator:
         object_url = context['object']
         informatieobject_uuid = str(context['informatieobject'].uuid)
 
+        # Construct the url for the informatieobject
+        path = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
+            'uuid': informatieobject_uuid,
+        })
+        domain = Site.objects.get_current().domain
+        protocol = 'https' if settings.IS_HTTPS else 'http'
+        informatieobject_url = f'{protocol}://{domain}{path}'
+
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
         client = Client.from_url(object_url)
@@ -50,6 +61,7 @@ class ZaakInformatieObjectValidator:
         try:
             zios_for_zaak = client.list('zaakinformatieobject', query_params={
                 'zaak': object_url,
+                'informatieobject': informatieobject_url
             })
             zios = [zio for zio in zios_for_zaak if informatieobject_uuid in zio['informatieobject']]
 
