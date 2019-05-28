@@ -14,7 +14,6 @@ from vng_api_common.models import APICredential
 from vng_api_common.serializers import GegevensGroepSerializer
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )

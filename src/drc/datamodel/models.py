@@ -12,9 +12,7 @@ from vng_api_common.fields import (
 from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import (
-    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
-)
+from .constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
 
