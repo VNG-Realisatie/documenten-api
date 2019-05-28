@@ -12,21 +12,16 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 from .utils import reverse
 
 ZAAK = 'https://zrc.nl/api/v1/zaken/1234'
-
-ZAAK_RESPONSE = {
-    ZAAK: {
-        'url': ZAAK
-    }
-}
+BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
 
 @override_settings(
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='vng_api_common.mocks.ZaakInformatieObjectClient'
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.RemoteInformatieObjectMockClient'
 )
 class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_create(self):
+    def test_create_with_objecttype_zaak(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
         eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'uuid': eio.uuid,
@@ -34,7 +29,6 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
         url = reverse('objectinformatieobject-list')
 
-        # with mock_client(ZAAK_RESPONSE):
         response = self.client.post(url, {
             'object': ZAAK,
             'informatieobject': f'http://testserver{eio_url}',
@@ -45,6 +39,25 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
         zio = eio.objectinformatieobject_set.get()
         self.assertEqual(zio.object, ZAAK)
+
+    def test_create_with_objecttype_besluit(self):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid,
+        })
+
+        url = reverse('objectinformatieobject-list')
+
+        response = self.client.post(url, {
+            'object': BESLUIT,
+            'informatieobject': f'http://testserver{eio_url}',
+            'objectType': 'besluit'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        bio = eio.objectinformatieobject_set.get()
+        self.assertEqual(bio.object, BESLUIT)
 
     @skip('HTTP DELETE is currently not supported')
     def test_delete(self):
