@@ -1,6 +1,8 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+import uuid
+
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
@@ -113,7 +115,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'indicatie_gebruiksrecht',
             'ondertekening',
             'integriteit',
-            'informatieobjecttype'  # van-relatie
+            'informatieobjecttype',  # van-relatie
+            'lock'
         )
         extra_kwargs = {
             'url': {
@@ -121,6 +124,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             },
             'informatieobjecttype': {
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
+            },
+            'lock':  {
+                'write_only': True,
             }
         }
         validators = [StatusValidator()]
@@ -153,6 +159,22 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             )
         return indicatie
 
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        if self.instance:
+            if not self.instance.lock:
+                raise serializers.ValidationError(
+                    _("Unlocked document can't be modified"),
+                    code='modify-unlocked'
+                )
+            if valid_attrs['lock'] != self.instance.lock:
+                raise serializers.ValidationError(
+                    _("Lock id is not correct"),
+                    code='incorrect-lock-id'
+                )
+        return valid_attrs
+
     def create(self, validated_data):
         """
         Handle nested writes.
@@ -177,6 +199,66 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         instance.integriteit = validated_data.pop('integriteit', None)
         instance.ondertekening = validated_data.pop('ondertekening', None)
         return super().update(instance, validated_data)
+
+
+class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the lock action of EnkelvoudigInformatieObject model
+    """
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = ('lock', )
+        extra_kwargs = {
+            'lock': {
+                'read_only': True,
+            }
+        }
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        if self.instance.lock:
+            raise serializers.ValidationError(
+                _("The document is already locked"),
+                code='existing-lock'
+            )
+        return valid_attrs
+
+    def save(self, **kwargs):
+        self.instance.lock = uuid.uuid4().hex
+        self.instance.save()
+
+        return self.instance
+
+
+class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the lock action of EnkelvoudigInformatieObject model
+    """
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = ('lock', )
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+        lock = valid_attrs.get('lock', None)
+        if not lock:
+            raise serializers.ValidationError(
+                _("The document can't be unlocked without lock key"),
+                code='non-existing-lock'
+            )
+        if lock != self.instance.lock:
+            raise serializers.ValidationError(
+                _("Lock id is not correct"),
+                code='incorrect-lock-id'
+            )
+        return valid_attrs
+
+    def save(self, **kwargs):
+        self.instance.lock = ''
+        self.instance.save()
+
+        return self.instance
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):

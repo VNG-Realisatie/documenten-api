@@ -9,6 +9,7 @@ from vng_api_common.audittrails.viewsets import (
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
+from rest_framework.response import Response
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -27,12 +28,14 @@ from .permissions import (
 )
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
-    ObjectInformatieObjectSerializer
+    ObjectInformatieObjectSerializer, LockEnkelvoudigInformatieObjectSerializer,
+    UnlockEnkelvoudigInformatieObjectSerializer
 )
+from rest_framework.decorators import action
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
@@ -101,6 +104,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'lock': SCOPE_DOCUMENTEN_LOCK,
+        'unlock': SCOPE_DOCUMENTEN_LOCK
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -135,6 +140,22 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             attachment=True,
             mimetype='application/octet-stream'
         )
+
+    @action(detail=True, methods=['post'])
+    def lock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        lock_serializer.is_valid(raise_exception=True)
+        lock_serializer.save()
+        return Response(lock_serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def unlock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        unlock_serializer.is_valid(raise_exception=True)
+        unlock_serializer.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
@@ -214,6 +235,7 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     }
     audit = AUDIT_DRC
     audittrail_main_resource_key = 'informatieobject'
+
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              ListFilterByAuthorizationsMixin,

@@ -121,6 +121,11 @@ class InformatieObject(models.Model):
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
     )
 
+    lock = models.CharField(
+        default='', blank=True, max_length=100,
+        help_text=_('Hash string, which represents id of the lock')
+    )
+
     objects = InformatieobjectQuerySet.as_manager()
 
     class Meta:
