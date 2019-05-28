@@ -12,6 +12,7 @@ from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
 from vng_api_common.serializers import FoutSerializer
+from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -207,6 +208,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
 class ObjectInformatieObjectViewSet(NotificationCreateMixin,
                                     AuditTrailCreateMixin,
                                     AuditTrailDestroyMixin,
+                                    CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     mixins.CreateModelMixin,
                                     mixins.DestroyModelMixin,
