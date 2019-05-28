@@ -24,8 +24,8 @@ from drc.datamodel.models import (
 
 from .auth import get_zrc_auth, get_ztc_auth
 from .validators import (
-    InformatieObjectUniqueValidator, StatusValidator,
-    ZaakInformatieObjectValidator
+    InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
+    StatusValidator
 )
 
 
@@ -306,7 +306,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()]
             }
         }
-        validators = [ZaakInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
+        validators = [ObjectInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

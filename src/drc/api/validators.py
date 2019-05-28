@@ -34,16 +34,17 @@ class StatusValidator:
             raise serializers.ValidationError(exc.error_dict)
 
 
-class ZaakInformatieObjectValidator:
+class ObjectInformatieObjectValidator:
     """
     Validate that the INFORMATIEOBJECT is already linked to the ZAAK in the ZRC.
     """
-    message = _('Het informatieobject is in het ZRC nog niet gerelateerd aan deze zaak.')
+    message = _('Het informatieobject is in het {component} nog niet gerelateerd aan deze zaak.')
     code = 'inconsistent-relation'
 
     def __call__(self, context: OrderedDict):
         object_url = context['object']
         informatieobject_uuid = str(context['informatieobject'].uuid)
+        object_type = context['object_type']
 
         # Construct the url for the informatieobject
         path = reverse('enkelvoudiginformatieobject-detail', kwargs={
@@ -59,11 +60,16 @@ class ZaakInformatieObjectValidator:
         client = Client.from_url(object_url)
         client.auth = APICredential.get_auth(object_url)
         try:
-            zios_for_zaak = client.list('zaakinformatieobject', query_params={
-                'zaak': object_url,
+            if object_type == 'zaak':
+                resource = 'zaakinformatieobject'
+                component = 'ZRC'
+            elif object_type == 'besluit':
+                resource = 'besluitinformatieobject'
+                component = 'DRC'
+            oios = client.list(resource, query_params={
+                object_type: object_url,
                 'informatieobject': informatieobject_url
             })
-            zios = [zio for zio in zios_for_zaak if informatieobject_uuid in zio['informatieobject']]
 
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
@@ -71,8 +77,11 @@ class ZaakInformatieObjectValidator:
                 code='relation-validation-error'
             ) from exc
 
-        if len(zios) == 0:
-            raise serializers.ValidationError(self.message, code=self.code)
+        if len(oios) == 0:
+            raise serializers.ValidationError(
+                self.message.format(component=component),
+                code=self.code
+            )
 
 class InformatieObjectUniqueValidator:
     """
