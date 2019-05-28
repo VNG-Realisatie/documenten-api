@@ -131,8 +131,12 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     def test_update_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
-
         informatieobject_url = informatieobject_data['url']
+
+        #lock for update
+        eio = EnkelvoudigInformatieObject.objects.get()
+        eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
+        eio.save()
 
         content = {
             'identificatie': uuid.uuid4().hex,
@@ -148,6 +152,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'vertrouwelijkheidaanduiding': 'openbaar',
+            'lock': '0f60f6d2d2714c809ed762372f5a363a'
         }
 
         informatieobject_response = self.client.put(informatieobject_url, content).data
@@ -166,10 +171,18 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     def test_partial_update_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
-
         informatieobject_url = informatieobject_data['url']
 
-        informatieobject_response = self.client.patch(informatieobject_url, {'titel': 'changed'}).data
+        #lock for update
+        eio = EnkelvoudigInformatieObject.objects.get()
+        eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
+        eio.save()
+
+        informatieobject_response = self.client.patch(
+            informatieobject_url,
+            {'titel': 'changed',
+             'lock': '0f60f6d2d2714c809ed762372f5a363a'}
+        ).data
 
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
