@@ -1,4 +1,5 @@
 import base64
+from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -28,17 +29,6 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
-
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
 
     @patch('zds_client.Client.from_url')
     def test_send_notif_create_enkelvoudiginformatieobject(self, mock_client):
@@ -82,6 +72,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @skip('HTTP DELETE is currently not supported')
     @patch('zds_client.Client.from_url')
     def test_send_notif_delete_objectinformatieobject(self, mock_client):
         """

@@ -15,13 +15,11 @@ from drc.datamodel.models import (
 )
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from .mixins import ObjectInformatieObjectSyncMixin
-
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
+class AuditTrailTests(JWTAuthMixin, APITestCase):
 
     informatieobject_list_url = reverse_lazy(EnkelvoudigInformatieObject)
     objectinformatieobject_list_url = reverse_lazy(ObjectInformatieObject)
@@ -66,6 +64,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.ZaakInformatieObjectClient')
     def test_create_objectinformatieobject_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
