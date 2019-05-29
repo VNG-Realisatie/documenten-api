@@ -29,7 +29,7 @@ from .permissions import (
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
-    SCOPE_DOCUMENTEN_LOCK
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
@@ -106,7 +106,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
         'lock': SCOPE_DOCUMENTEN_LOCK,
-        'unlock': SCOPE_DOCUMENTEN_LOCK
+        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -153,7 +153,17 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @action(detail=True, methods=['post'])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
+        # check if it's a force unlock by administrator
+        force_unlock = False
+        if self.request.jwt_auth.has_auth(
+            scopes=SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+            informatieobjecttype=eio.informatieobjecttype,
+            vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
+        ):
+            force_unlock = True
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        unlock_serializer.context['force_unlock'] = force_unlock
+
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
         return Response(status=status.HTTP_200_OK)

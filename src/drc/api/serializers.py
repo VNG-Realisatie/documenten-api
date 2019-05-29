@@ -239,9 +239,19 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = ('lock', )
+        extra_kwargs = {
+            'lock': {
+                'required': False,
+            }
+        }
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
+        force_unlock = self.context.get('force_unlock', False)
+
+        if force_unlock:
+            return valid_attrs
+
         lock = valid_attrs.get('lock', '')
         if lock != self.instance.lock:
             raise serializers.ValidationError(
