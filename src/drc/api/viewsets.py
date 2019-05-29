@@ -142,6 +142,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             mimetype='application/octet-stream'
         )
 
+    @swagger_auto_schema(request_body=LockEnkelvoudigInformatieObjectSerializer,
+                         responses={200: LockEnkelvoudigInformatieObjectSerializer})
     @action(detail=True, methods=['post'])
     def lock(self, request, *args, **kwargs):
         eio = self.get_object()
@@ -150,6 +152,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         lock_serializer.save()
         return Response(lock_serializer.data)
 
+    @swagger_auto_schema(request_body=UnlockEnkelvoudigInformatieObjectSerializer,
+                         responses={200: UnlockEnkelvoudigInformatieObjectSerializer})
     @action(detail=True, methods=['post'])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()

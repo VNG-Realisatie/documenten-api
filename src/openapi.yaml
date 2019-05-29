@@ -1333,7 +1333,7 @@ paths:
       operationId: enkelvoudiginformatieobject_lock
       description: Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
       responses:
-        '201':
+        '200':
           description: ''
           headers:
             API-version:
@@ -1341,22 +1341,21 @@ paths:
                 type: string
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
-            Location:
-              schema:
-                type: string
-                format: uri
-              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObjectData'
+                $ref: '#/components/schemas/LockEnkelvoudigInformatieObject'
       tags:
       - enkelvoudiginformatieobjecten
       security:
       - JWT-Claims:
         - documenten.lock
       requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockEnkelvoudigInformatieObject'
+        required: true
     parameters:
     - name: uuid
       in: path
@@ -1370,7 +1369,7 @@ paths:
       operationId: enkelvoudiginformatieobject_unlock
       description: Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
       responses:
-        '201':
+        '200':
           description: ''
           headers:
             API-version:
@@ -1378,22 +1377,21 @@ paths:
                 type: string
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
-            Location:
-              schema:
-                type: string
-                format: uri
-              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObjectData'
+                $ref: '#/components/schemas/UnlockEnkelvoudigInformatieObject'
       tags:
       - enkelvoudiginformatieobjecten
       security:
       - JWT-Claims:
-        - documenten.lock
+        - (documenten.lock | documenten.geforceerd-unlock)
       requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnlockEnkelvoudigInformatieObject'
+        required: true
     parameters:
     - name: uuid
       in: path
@@ -4800,6 +4798,23 @@ components:
           readOnly: true
         wijzigingen:
           $ref: '#/components/schemas/Wijzgingen'
+    LockEnkelvoudigInformatieObject:
+      type: object
+      properties:
+        lock:
+          title: Lock
+          description: Hash string, which represents id of the lock
+          type: string
+          readOnly: true
+          minLength: 1
+    UnlockEnkelvoudigInformatieObject:
+      type: object
+      properties:
+        lock:
+          title: Lock
+          description: Hash string, which represents id of the lock
+          type: string
+          maxLength: 100
     Gebruiksrechten:
       required:
       - informatieobject

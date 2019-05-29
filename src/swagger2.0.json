@@ -1553,15 +1553,15 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/LockEnkelvoudigInformatieObject"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/LockEnkelvoudigInformatieObject"
                         },
                         "headers": {
                             "API-version": {
@@ -1569,13 +1569,6 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
-                            },
-                            "Location": {
-                                "schema": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "description": "URL waar de resource leeft."
                             }
                         }
                     }
@@ -1612,15 +1605,15 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/UnlockEnkelvoudigInformatieObject"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/UnlockEnkelvoudigInformatieObject"
                         },
                         "headers": {
                             "API-version": {
@@ -1628,13 +1621,6 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
-                            },
-                            "Location": {
-                                "schema": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "description": "URL waar de resource leeft."
                             }
                         }
                     }
@@ -1645,7 +1631,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "documenten.lock"
+                            "(documenten.lock | documenten.geforceerd-unlock)"
                         ]
                     }
                 ]
@@ -5400,6 +5386,29 @@
                 },
                 "wijzigingen": {
                     "$ref": "#/definitions/Wijzgingen"
+                }
+            }
+        },
+        "LockEnkelvoudigInformatieObject": {
+            "type": "object",
+            "properties": {
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
+                }
+            }
+        },
+        "UnlockEnkelvoudigInformatieObject": {
+            "type": "object",
+            "properties": {
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock",
+                    "type": "string",
+                    "maxLength": 100
                 }
             }
         },
