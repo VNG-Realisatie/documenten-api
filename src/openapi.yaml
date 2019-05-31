@@ -211,6 +211,27 @@ paths:
         **Er wordt gevalideerd op**
 
         - geldigheid informatieobjecttype URL'
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '201':
           description: ''
@@ -462,6 +483,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - audittrails.lezen
     parameters:
     - name: enkelvoudiginformatieobject_uuid
       in: path
@@ -597,6 +621,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - audittrails.lezen
     parameters:
     - name: enkelvoudiginformatieobject_uuid
       in: path
@@ -763,6 +790,27 @@ paths:
         *TODO*
 
         - valideer immutable attributes'
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: ''
@@ -919,6 +967,27 @@ paths:
         *TODO*
 
         - valideer immutable attributes'
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: ''
@@ -1071,6 +1140,27 @@ paths:
         - `ObjectInformatieObject` - alle relaties van het informatieobject
 
         - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject'
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '204':
           description: ''
@@ -1211,7 +1301,7 @@ paths:
       parameters:
       - name: informatieobject
         in: query
-        description: URL to the related resource
+        description: URL naar de/het gerelateerde informatieobject
         required: false
         schema:
           type: string
@@ -1409,6 +1499,27 @@ paths:
       description: "Voeg gebruiksrechten toe voor een informatieobject.\n\n**Opmerkingen**\n\
         - Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht`\
         \ op het informatieobject op `true` gezet wordt."
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '201':
           description: ''
@@ -1676,6 +1787,27 @@ paths:
     put:
       operationId: gebruiksrechten_update
       description: Werk een gebruiksrecht van een informatieobject bij.
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: ''
@@ -1819,6 +1951,27 @@ paths:
     patch:
       operationId: gebruiksrechten_partial_update
       description: Werk een gebruiksrecht van een informatieobject bij.
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: ''
@@ -1965,6 +2118,27 @@ paths:
         - Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n\
         \  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n\
         \  gezet."
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '204':
           description: ''
@@ -2109,7 +2283,7 @@ paths:
           format: uri
       - name: informatieobject
         in: query
-        description: URL to the related resource
+        description: URL naar de/het gerelateerde informatieobject
         required: false
         schema:
           type: string
@@ -2245,6 +2419,27 @@ paths:
     post:
       operationId: objectinformatieobject_create
       description: ''
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '201':
           description: ''
@@ -2517,6 +2712,27 @@ paths:
     delete:
       operationId: objectinformatieobject_delete
       description: Verwijder een relatie tussen een object en een informatieobject
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '204':
           description: ''

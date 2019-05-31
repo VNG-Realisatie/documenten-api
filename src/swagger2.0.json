@@ -220,6 +220,27 @@
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -522,6 +543,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "audittrails.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -684,6 +712,13 @@
                 },
                 "tags": [
                     "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "audittrails.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -874,6 +909,27 @@
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1054,6 +1110,27 @@
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1226,7 +1303,29 @@
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
                 "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde\nresources binnen deze API.\n\n**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
@@ -1396,7 +1495,7 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL naar de/het gerelateerde informatieobject",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1625,6 +1724,27 @@
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1958,6 +2078,27 @@
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -2138,6 +2279,27 @@
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -2310,7 +2472,29 @@
             "delete": {
                 "operationId": "gebruiksrechten_delete",
                 "description": "Verwijder een gebruiksrecht van een informatieobject.\n\n**Opmerkingen**\n- Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n  gezet.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
@@ -2488,7 +2672,7 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL naar de/het gerelateerde informatieobject",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2661,6 +2845,27 @@
                         "schema": {
                             "$ref": "#/definitions/ObjectInformatieObject"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -2986,7 +3191,29 @@
             "delete": {
                 "operationId": "objectinformatieobject_delete",
                 "description": "Verwijder een relatie tussen een object en een informatieobject",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
