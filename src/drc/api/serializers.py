@@ -234,7 +234,7 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
 class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     """
-    Serializer for the lock action of EnkelvoudigInformatieObject model
+    Serializer for the unlock action of EnkelvoudigInformatieObject model
     """
     class Meta:
         model = EnkelvoudigInformatieObject
