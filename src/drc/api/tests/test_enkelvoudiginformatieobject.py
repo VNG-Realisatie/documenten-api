@@ -1,4 +1,3 @@
-import tempfile
 import uuid
 from base64 import b64encode
 from datetime import date
@@ -7,6 +6,7 @@ from django.test import override_settings
 from django.urls import reverse, reverse_lazy
 
 from freezegun import freeze_time
+from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
@@ -18,7 +18,7 @@ INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobj
 
 
 @freeze_time('2018-06-27')
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+@temp_private_root()
 class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
     list_url = reverse_lazy('enkelvoudiginformatieobject-list', kwargs={'version': '1'})

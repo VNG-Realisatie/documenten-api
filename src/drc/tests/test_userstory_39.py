@@ -2,12 +2,12 @@
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
 import base64
-import tempfile
 from datetime import date
 from urllib.parse import urlparse
 
 from django.test import override_settings
 
+from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -22,7 +22,7 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
-@override_settings(PRIVATE_STORAGE_ROOT=tempfile.mkdtemp())
+@temp_private_root()
 class US39TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
