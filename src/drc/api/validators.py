@@ -10,6 +10,7 @@ import requests
 from rest_framework import serializers
 from vng_api_common.models import APICredential
 from vng_api_common.tests.urls import reverse
+from zds_client import ClientError
 
 from drc.datamodel.validators import validate_status
 
@@ -36,9 +37,9 @@ class StatusValidator:
 
 class ObjectInformatieObjectValidator:
     """
-    Validate that the INFORMATIEOBJECT is already linked to the ZAAK in the ZRC.
+    Validate that the INFORMATIEOBJECT is already linked to the OBJECT in the remote component.
     """
-    message = _('Het informatieobject is in het {component} nog niet gerelateerd aan deze zaak.')
+    message = _('Het informatieobject is in het {component} nog niet gerelateerd aan het object.')
     code = 'inconsistent-relation'
 
     def __call__(self, context: OrderedDict):
@@ -65,13 +66,13 @@ class ObjectInformatieObjectValidator:
                 component = 'ZRC'
             elif object_type == 'besluit':
                 resource = 'besluitinformatieobject'
-                component = 'DRC'
+                component = 'BRC'
             oios = client.list(resource, query_params={
                 object_type: object_url,
                 'informatieobject': informatieobject_url
             })
 
-        except requests.HTTPError as exc:
+        except ClientError as exc:
             raise serializers.ValidationError(
                 exc.args[0],
                 code='relation-validation-error'
@@ -99,15 +100,14 @@ class InformatieObjectUniqueValidator:
         object_url = context['object']
         informatieobject = context['informatieobject']
 
-        # dynamic so that it can be mocked in tests easily
-        Client = import_string(settings.ZDS_CLIENT_CLASS)
-        client = Client.from_url(object_url)
-
         oios = informatieobject.objectinformatieobject_set.filter(object=object_url)
 
         if oios:
             raise serializers.ValidationError(
                 self.message.format(
-                    field_names=(self.remote_resource_field, self.field)),
-                    code=self.code
+                    field_names=(
+                        self.remote_resource_field,
+                        self.field
+                    )),
+                code=self.code
             )

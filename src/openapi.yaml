@@ -2916,7 +2916,7 @@ paths:
         - documenten.lezen
     delete:
       operationId: objectinformatieobject_delete
-      description: Verwijder een relatie tussen een object en een informatieobject
+      description: Verwijder een relatie tussen een object en een informatieobject.
       responses:
         '204':
           description: ''

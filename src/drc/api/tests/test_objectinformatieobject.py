@@ -4,12 +4,14 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin
+from vng_api_common.constants import ObjectTypes
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from zds_client.tests.mocks import mock_client
 
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
-
-from .utils import reverse
+from drc.datamodel.models import ObjectInformatieObject
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
+)
 
 ZAAK = 'https://zrc.nl/api/v1/zaken/1234'
 BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
@@ -21,15 +23,13 @@ BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
 class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
+    list_url = reverse(ObjectInformatieObject)
+
     def test_create_with_objecttype_zaak(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
-        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'uuid': eio.uuid,
-        })
+        eio_url = reverse(eio)
 
-        url = reverse('objectinformatieobject-list')
-
-        response = self.client.post(url, {
+        response = self.client.post(self.list_url, {
             'object': ZAAK,
             'informatieobject': f'http://testserver{eio_url}',
             'objectType': 'zaak'
@@ -42,13 +42,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
     def test_create_with_objecttype_besluit(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
-        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'uuid': eio.uuid,
-        })
+        eio_url = reverse(eio)
 
-        url = reverse('objectinformatieobject-list')
-
-        response = self.client.post(url, {
+        response = self.client.post(self.list_url, {
             'object': BESLUIT,
             'informatieobject': f'http://testserver{eio_url}',
             'objectType': 'besluit'
@@ -59,16 +55,47 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         bio = eio.objectinformatieobject_set.get()
         self.assertEqual(bio.object, BESLUIT)
 
-    @skip('HTTP DELETE is currently not supported')
     def test_delete(self):
         oio = ObjectInformatieObjectFactory.create()
-        object = oio.object
-        url = reverse('objectinformatieobject-detail', kwargs={
-            'zaak_uuid': object.uuid,
-            'uuid': oio.uuid
-        })
+        url = reverse(oio)
 
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(zaak.objectinformatieobject_set.exists())
+        self.assertFalse(ObjectInformatieObject.objects.exists())
+
+    def test_duplicate_object(self):
+        """
+        Test the (informatieobject, object) unique together validation.
+        """
+        oio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+        )
+        enkelvoudig_informatie_url = reverse(oio.informatieobject)
+
+        content = {
+            'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
+            'object': oio.object,
+            'objectType': ObjectTypes.zaak,
+        }
+
+        # Send to the API
+        response = self.client.post(self.list_url, content)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'unique')
+
+    def test_filter(self):
+        oio = ObjectInformatieObjectFactory.create(
+            is_zaak=True,
+        )
+        eo_detail_url = reverse(oio.informatieobject)
+
+        response = self.client.get(self.list_url, {
+            'informatieobject': f'http://testserver{eo_detail_url}',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['informatieobject'], f'http://testserver{eo_detail_url}')

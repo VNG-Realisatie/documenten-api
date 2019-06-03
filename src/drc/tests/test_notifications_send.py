@@ -71,38 +71,3 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                 }
             }
         )
-
-    @skip('HTTP DELETE is currently not supported')
-    @patch('zds_client.Client.from_url')
-    def test_send_notif_delete_objectinformatieobject(self, mock_client):
-        """
-        Deleting a EnkelvoudigInformatieObject causes all related objects to be deleted as well.
-        """
-        client = mock_client.return_value
-        io = EnkelvoudigInformatieObjectFactory.create(
-            informatieobjecttype=INFORMATIEOBJECTTYPE
-        )
-        io_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=io.uuid)
-        oio = ObjectInformatieObjectFactory.create(informatieobject=io, is_zaak=True)
-        oio_delete_url = get_operation_url('objectinformatieobject_delete', uuid=oio.uuid)
-
-        response = self.client.delete(oio_delete_url)
-
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
-
-        client.create.assert_called_once_with(
-            'notificaties',
-            {
-                'kanaal': 'documenten',
-                'hoofdObject': f'http://testserver{io_url}',
-                'resource': 'objectinformatieobject',
-                'resourceUrl': f'http://testserver{oio_delete_url}',
-                'actie': 'destroy',
-                'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': {
-                    'bronorganisatie': io.bronorganisatie,
-                    'informatieobjecttype': io.informatieobjecttype,
-                    'vertrouwelijkheidaanduiding': io.vertrouwelijkheidaanduiding,
-                }
-            }
-        )

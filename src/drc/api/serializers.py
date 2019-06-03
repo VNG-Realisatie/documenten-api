@@ -279,8 +279,6 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
-    # bij zaak.zaaktype
     class Meta:
         model = ObjectInformatieObject
         fields = (
@@ -295,6 +293,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'informatieobject': {
                 'lookup_field': 'uuid',
+                'validators': [IsImmutableValidator()],
             },
             'object': {
                 'validators': [

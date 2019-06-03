@@ -236,7 +236,9 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
     Geef een informatieobject terug wat gekoppeld is aan het huidige object
 
     destroy:
-    Verwijder een relatie tussen een object en een informatieobject
+    Verwijder een relatie tussen een object en een informatieobject.
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken, dit moet
+    gedaan worden door het ZRC/BRC
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
