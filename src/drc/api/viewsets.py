@@ -1,10 +1,13 @@
-from rest_framework import viewsets
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
 )
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
@@ -102,10 +105,36 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
 
+    @swagger_auto_schema(
+        method='get',
+        # see https://swagger.io/docs/specification/2-0/describing-responses/ and
+        # https://swagger.io/docs/specification/2-0/mime-types/
+        # OAS 3 has a better mechanism: https://swagger.io/docs/specification/describing-responses/
+        produces=["application/octet-stream"],
+        responses={
+            status.HTTP_200_OK: openapi.Response(
+                "De binaire bestandsinhoud",
+                schema=openapi.Schema(type=openapi.TYPE_FILE)
+            ),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
     @action(methods=['get'], detail=True)
     def download(self, request, *args, **kwargs):
         eio = self.get_object()
-        return sendfile(request, eio.inhoud.path, attachment=True)
+        return sendfile(
+            request,
+            eio.inhoud.path,
+            attachment=True,
+            mimetype='application/octet-stream'
+        )
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
