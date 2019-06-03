@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from privates.admin import PrivateMediaMixin
+
 from .models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
@@ -11,9 +13,10 @@ class GebruiksrechtenInline(admin.TabularInline):
 
 
 @admin.register(EnkelvoudigInformatieObject)
-class EnkelvoudigInformatieObjectAdmin(admin.ModelAdmin):
+class EnkelvoudigInformatieObjectAdmin(PrivateMediaMixin, admin.ModelAdmin):
     list_display = ['__str__']
     inlines = [GebruiksrechtenInline]
+    private_media_fields = ('inhoud', )
 
 
 @admin.register(ObjectInformatieObject)

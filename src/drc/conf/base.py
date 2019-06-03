@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework_filters',
     'django_markup',
     'solo',
+    'privates',
 
     # Project applications.
     'drc.accounts',
@@ -357,3 +358,10 @@ IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 # settings for sending notifications
 NOTIFICATIONS_KANAAL = 'documenten'
+
+# settings for private media files
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private-media')
+PRIVATE_MEDIA_URL = '/private-media/'
+SENDFILE_BACKEND = 'sendfile.backends.simple'
+SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
+SENDFILE_URL = PRIVATE_MEDIA_URL

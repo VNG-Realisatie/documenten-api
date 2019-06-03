@@ -7,7 +7,9 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
+from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from rest_framework.settings import api_settings
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.models import APICredential
@@ -32,8 +34,28 @@ class AnyFileType:
 class AnyBase64File(Base64FileField):
     ALLOWED_TYPES = AnyFileType()
 
+    def __init__(self, view_name: str = None, *args, **kwargs):
+        self.view_name = view_name
+        super().__init__(*args, **kwargs)
+
     def get_file_extension(self, filename, decoded_file):
         return "bin"
+
+    def to_representation(self, file):
+        is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
+
+        if not is_private_storage or self.represent_in_base64:
+            return super().to_representation(file)
+
+        assert self.view_name, "You must pass the `view_name` kwarg for private media fields"
+
+        model_instance = file.instance
+        request = self.context.get('request')
+
+        url_field = self.parent.fields["url"]
+        lookup_field = url_field.lookup_field
+        kwargs = {lookup_field: getattr(model_instance, lookup_field)}
+        return reverse(self.view_name, kwargs=kwargs, request=request)
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
@@ -52,7 +74,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     """
     Serializer for the EnkelvoudigInformatieObject model
     """
-    inhoud = AnyBase64File()
+    inhoud = AnyBase64File(view_name="enkelvoudiginformatieobject-download")
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True,
         min_value=0
