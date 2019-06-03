@@ -6,8 +6,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
   web:
     volumes:
-      - media:/app/media
+      - private_media:/app/private-media
+  nginx:
+    volumes:
+      - private_media:/private-media
+      - nginx_logs:/var/log/nginx
 
 volumes:
   postgres_data:
-  media:
+  private_media:
+  nginx_logs:
