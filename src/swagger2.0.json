@@ -1736,11 +1736,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/UnlockEnkelvoudigInformatieObject"
-                        },
+                    "204": {
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {

@@ -2,8 +2,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from sendfile import sendfile
 from rest_framework.response import Response
+from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
 )
@@ -168,7 +168,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @swagger_auto_schema(
         request_body=UnlockEnkelvoudigInformatieObjectSerializer,
         responses={
-            status.HTTP_200_OK: UnlockEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_204_NO_CONTENT: openapi.Response("No content"),
             status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
             status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
             status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),

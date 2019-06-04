@@ -252,6 +252,7 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'lock': {
                 'required': False,
+                'write_only': True,
             }
         }
 
