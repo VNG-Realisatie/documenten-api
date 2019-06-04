@@ -142,8 +142,21 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             mimetype='application/octet-stream'
         )
 
-    @swagger_auto_schema(request_body=LockEnkelvoudigInformatieObjectSerializer,
-                         responses={200: LockEnkelvoudigInformatieObjectSerializer})
+    @swagger_auto_schema(
+        request_body=LockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_200_OK: LockEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
     @action(detail=True, methods=['post'])
     def lock(self, request, *args, **kwargs):
         eio = self.get_object()
@@ -152,8 +165,21 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         lock_serializer.save()
         return Response(lock_serializer.data)
 
-    @swagger_auto_schema(request_body=UnlockEnkelvoudigInformatieObjectSerializer,
-                         responses={200: UnlockEnkelvoudigInformatieObjectSerializer})
+    @swagger_auto_schema(
+        request_body=UnlockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_200_OK: UnlockEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
     @action(detail=True, methods=['post'])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
@@ -165,12 +191,15 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
         ):
             force_unlock = True
-        unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
-        unlock_serializer.context['force_unlock'] = force_unlock
 
+        unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
+            eio,
+            data=request.data,
+            context={'force_unlock': force_unlock}
+        )
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,

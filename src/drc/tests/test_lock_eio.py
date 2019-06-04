@@ -1,9 +1,9 @@
 import tempfile
 import uuid
+from base64 import b64encode
 
 from django.test import override_settings
 
-from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import (
@@ -96,6 +96,32 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'incorrect-lock-id')
 
+    def test_create_fail_lock(self):
+        url = get_operation_url('enkelvoudiginformatieobject_create')
+        data = {
+            'identificatie': uuid.uuid4().hex,
+            'bronorganisatie': '159351741',
+            'creatiedatum': '2018-06-27',
+            'titel': 'detailed summary',
+            'auteur': 'test_auteur',
+            'formaat': 'txt',
+            'taal': 'eng',
+            'bestandsnaam': 'dummy.txt',
+            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'link': 'http://een.link',
+            'beschrijving': 'test_beschrijving',
+            'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
+            'vertrouwelijkheidaanduiding': 'openbaar',
+            'lock': uuid.uuid4().hex
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'lock-in-create')
+
 
 class EioUnlockAPITests(JWTAuthMixin, APITestCase):
 
@@ -112,7 +138,7 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
 
         response = self.client.post(url, {'lock': lock})
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
 
         eio.refresh_from_db()
 
@@ -144,7 +170,7 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
 
         response = self.client.post(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
 
         eio.refresh_from_db()
 

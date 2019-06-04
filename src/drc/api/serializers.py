@@ -127,6 +127,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             },
             'lock':  {
                 'write_only': True,
+                'help_text': _("Lock must be provided during updating the document (PATCH, PUT), "
+                               "not while creating it")
             }
         }
         validators = [StatusValidator()]
@@ -162,17 +164,25 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
 
+        lock = valid_attrs.get('lock', '')
+        # update
         if self.instance:
             if not self.instance.lock:
                 raise serializers.ValidationError(
                     _("Unlocked document can't be modified"),
                     code='unlocked'
                 )
-            lock = valid_attrs.get('lock', '')
             if lock != self.instance.lock:
                 raise serializers.ValidationError(
                     _("Lock id is not correct"),
                     code='incorrect-lock-id'
+                )
+        # create
+        else:
+            if lock:
+                raise serializers.ValidationError(
+                    _("A locked document can't be created"),
+                    code='lock-in-create'
                 )
         return valid_attrs
 
