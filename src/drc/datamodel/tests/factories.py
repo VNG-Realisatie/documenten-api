@@ -7,8 +7,6 @@ import factory
 import factory.fuzzy
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
-from ..constants import RelatieAarden
-
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     identificatie = uuid.uuid4().hex
@@ -30,7 +28,6 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
     object = factory.Faker('url')
-    aard_relatie = factory.fuzzy.FuzzyChoice(RelatieAarden.values)
 
     class Meta:
         model = 'datamodel.ObjectInformatieObject'
@@ -39,13 +36,9 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
         is_zaak = factory.Trait(
             object_type=ObjectTypes.zaak,
             object=factory.Sequence(lambda n: f'https://zrc.nl/api/v1/zaken/{n}'),
-            registratiedatum=factory.Faker('past_datetime', tzinfo=timezone.utc),
-            aard_relatie=RelatieAarden.hoort_bij
         )
         is_besluit = factory.Trait(
             object_type=ObjectTypes.besluit,
-            object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}'),
-            aard_relatie=RelatieAarden.legt_vast
         )
 
 

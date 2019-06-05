@@ -1,13 +1,16 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailViewSet, AuditTrailViewsetMixin
+    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
+    AuditTrailViewsetMixin
 )
-from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.notifications.viewsets import (
+    NotificationCreateMixin, NotificationViewSetMixin
+)
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -202,65 +205,40 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
-                                    AuditTrailViewsetMixin,
+class ObjectInformatieObjectViewSet(NotificationCreateMixin,
+                                    AuditTrailCreateMixin,
+                                    AuditTrailDestroyMixin,
                                     CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
-                                    viewsets.ModelViewSet):
+                                    mixins.CreateModelMixin,
+                                    mixins.DestroyModelMixin,
+                                    viewsets.ReadOnlyModelViewSet):
     """
-    Beheer relatie tussen InformatieObject en OBJECT.
+    Opvragen en bewerken van Object-Informatieobject relaties.
 
     create:
-    Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van
-    relaties met andere objecten gerealiseerd:
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
 
-    * INFORMATIEOBJECT behoort bij [OBJECT] en
-    * INFORMATIEOBJECT is vastlegging van [OBJECT].
+    ZRC en BRC gebruiken deze endpoint bij het synchroniseren van relaties.
+
+    Registreer welk(e) INFORMATIEOBJECT(en) een OBJECT kent.
 
     **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
-    - geldigheid object URL
-    - de combinatie informatieobject en object moet uniek zijn
-
-    **Opmerkingen**
-    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
-      wordt ook door het systeem gezet.
-    - Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
-      relatie aangemaakt, echter zonder de relatie-informatie.
-    - Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-      object van het type ZAAK gaat (aard relatie "hoort bij").
+    - uniek zijn van relatie OBJECT-INFORMATIEOBJECT
+    - bestaan van relatie OBJECT-INFORMATIEOBJECT in het ZRC of DRC (waar het
+      object leeft)
 
     list:
-    Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.
-
-    Deze lijst kan gefilterd wordt met querystringparameters.
+    Geef een lijst van relaties tussen OBJECTen en INFORMATIEOBJECTen.
 
     retrieve:
-    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ander
-    OBJECT.
-
-    update:
-    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL, object URL en objectType mogen niet veranderen
-
-    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-    object van het type ZAAK gaat (aard relatie "hoort bij").
-
-    partial_update:
-    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL, object URL en objectType mogen niet veranderen
-
-    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-    object van het type ZAAK gaat (aard relatie "hoort bij").
+    Geef een informatieobject terug wat gekoppeld is aan het huidige object
 
     destroy:
-    Verwijdert de relatie tussen OBJECT en INFORMATIEOBJECT.
+    Verwijder een relatie tussen een object en een informatieobject.
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken, dit moet
+    gedaan worden door het ZRC/BRC
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer

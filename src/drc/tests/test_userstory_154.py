@@ -24,13 +24,6 @@ class US154Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
     scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
-    def setUp(self):
-        super().setUp()
-
-        patcher = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher.start()
-        self.addCleanup(patcher.stop)
-
     def test_informatieobjecttype_filter(self):
         zaak_url = 'http://www.example.com/zrc/api/v1/zaken/1'
 

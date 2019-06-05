@@ -1,4 +1,5 @@
 import base64
+from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -28,17 +29,6 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
-
-    def setUp(self):
-        super().setUp()
-
-        patcher_sync_create = patch('drc.sync.signals.sync_create')
-        self.mocked_sync_create = patcher_sync_create.start()
-        self.addCleanup(patcher_sync_create.stop)
-
-        patcher_sync_delete = patch('drc.sync.signals.sync_delete')
-        self.mocked_sync_delete = patcher_sync_delete.start()
-        self.addCleanup(patcher_sync_delete.stop)
 
     @patch('zds_client.Client.from_url')
     def test_send_notif_create_enkelvoudiginformatieobject(self, mock_client):
@@ -78,40 +68,6 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                     'bronorganisatie': '159351741',
                     'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
                     'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
-                }
-            }
-        )
-
-    @patch('zds_client.Client.from_url')
-    def test_send_notif_delete_objectinformatieobject(self, mock_client):
-        """
-        Deleting a EnkelvoudigInformatieObject causes all related objects to be deleted as well.
-        """
-        client = mock_client.return_value
-        io = EnkelvoudigInformatieObjectFactory.create(
-            informatieobjecttype=INFORMATIEOBJECTTYPE
-        )
-        io_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=io.uuid)
-        oio = ObjectInformatieObjectFactory.create(informatieobject=io, is_zaak=True)
-        oio_delete_url = get_operation_url('objectinformatieobject_delete', uuid=oio.uuid)
-
-        response = self.client.delete(oio_delete_url)
-
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
-
-        client.create.assert_called_once_with(
-            'notificaties',
-            {
-                'kanaal': 'documenten',
-                'hoofdObject': f'http://testserver{io_url}',
-                'resource': 'objectinformatieobject',
-                'resourceUrl': f'http://testserver{oio_delete_url}',
-                'actie': 'destroy',
-                'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': {
-                    'bronorganisatie': io.bronorganisatie,
-                    'informatieobjecttype': io.informatieobjecttype,
-                    'vertrouwelijkheidaanduiding': io.vertrouwelijkheidaanduiding,
                 }
             }
         )

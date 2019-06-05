@@ -31,8 +31,6 @@ class EnkelvoudigInformatieObjectAdmin(PrivateMediaMixin, admin.ModelAdmin):
 
 @admin.register(ObjectInformatieObject)
 class ObjectInformatieObjectAdmin(admin.ModelAdmin):
-    list_display = ['informatieobject', 'object', '__str__', 'registratiedatum']
+    list_display = ['informatieobject', 'object', '__str__']
     list_select_related = ('informatieobject',)
-    list_filter = ('registratiedatum',)
-    date_hierarchy = 'registratiedatum'
-    search_fields = ('titel', 'beschrijving', 'informatieobject__titel', 'object')
+    search_fields = ('informatieobject__titel', 'object')
