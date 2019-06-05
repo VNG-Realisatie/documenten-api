@@ -9,7 +9,7 @@ Sphinx
 sphinx-rtd-theme
 markdown
 
-Django==2.0.13
+Django
 django-axes
 django-choices
 django-cors-middleware
