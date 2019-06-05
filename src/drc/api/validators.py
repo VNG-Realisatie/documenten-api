@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-import requests
 from rest_framework import serializers
 from vng_api_common.models import APICredential
 from vng_api_common.tests.urls import reverse
@@ -84,6 +83,7 @@ class ObjectInformatieObjectValidator:
                 code=self.code
             )
 
+
 class InformatieObjectUniqueValidator:
     """
     Validate that the relation between the object and informatieobject does not
@@ -103,11 +103,8 @@ class InformatieObjectUniqueValidator:
         oios = informatieobject.objectinformatieobject_set.filter(object=object_url)
 
         if oios:
+            field_names = (self.remote_resource_field, self.field)
             raise serializers.ValidationError(
-                self.message.format(
-                    field_names=(
-                        self.remote_resource_field,
-                        self.field
-                    )),
+                detail=self.message.format(field_names=field_names),
                 code=self.code
             )
