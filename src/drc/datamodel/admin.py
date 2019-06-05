@@ -12,11 +12,21 @@ class GebruiksrechtenInline(admin.TabularInline):
     extra = 1
 
 
+def unlock(modeladmin, request, queryset):
+    queryset.update(lock='')
+
+
 @admin.register(EnkelvoudigInformatieObject)
 class EnkelvoudigInformatieObjectAdmin(PrivateMediaMixin, admin.ModelAdmin):
-    list_display = ['__str__']
+    list_display = ['__str__', 'get_not_lock_display']
     inlines = [GebruiksrechtenInline]
-    private_media_fields = ('inhoud', )
+    private_media_fields = ('inhoud',)
+    actions = [unlock]
+
+    def get_not_lock_display(self, obj) -> bool:
+        return not bool(obj.lock)
+    get_not_lock_display.short_description = 'free to change'
+    get_not_lock_display.boolean = True
 
 
 @admin.register(ObjectInformatieObject)

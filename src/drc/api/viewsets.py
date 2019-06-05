@@ -2,6 +2,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet, AuditTrailViewsetMixin
@@ -27,11 +28,14 @@ from .permissions import (
 )
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
-    ObjectInformatieObjectSerializer
+    LockEnkelvoudigInformatieObjectSerializer,
+    ObjectInformatieObjectSerializer,
+    UnlockEnkelvoudigInformatieObjectSerializer
 )
 
 
@@ -101,6 +105,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'lock': SCOPE_DOCUMENTEN_LOCK,
+        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -135,6 +141,65 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             attachment=True,
             mimetype='application/octet-stream'
         )
+
+    @swagger_auto_schema(
+        request_body=LockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_200_OK: LockEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
+    @action(detail=True, methods=['post'])
+    def lock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        lock_serializer.is_valid(raise_exception=True)
+        lock_serializer.save()
+        return Response(lock_serializer.data)
+
+    @swagger_auto_schema(
+        request_body=UnlockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_204_NO_CONTENT: openapi.Response("No content"),
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
+    @action(detail=True, methods=['post'])
+    def unlock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        # check if it's a force unlock by administrator
+        force_unlock = False
+        if self.request.jwt_auth.has_auth(
+            scopes=SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+            informatieobjecttype=eio.informatieobjecttype,
+            vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
+        ):
+            force_unlock = True
+
+        unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
+            eio,
+            data=request.data,
+            context={'force_unlock': force_unlock}
+        )
+        unlock_serializer.is_valid(raise_exception=True)
+        unlock_serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
@@ -214,6 +279,7 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     }
     audit = AUDIT_DRC
     audittrail_main_resource_key = 'informatieobject'
+
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              ListFilterByAuthorizationsMixin,

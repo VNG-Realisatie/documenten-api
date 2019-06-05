@@ -40,3 +40,22 @@ SCOPE_DOCUMENTEN_AANMAKEN = Scope(
 * documenten aan te maken
 """
 )
+
+SCOPE_DOCUMENTEN_LOCK = Scope(
+    'documenten.lock',
+    description="""
+**Allows**:
+
+* to lock documents
+* to unlock documents
+"""
+)
+
+SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK = Scope(
+    'documenten.geforceerd-unlock',
+    description="""
+**Allows**:
+
+* to unlock documents without lock key
+"""
+)
