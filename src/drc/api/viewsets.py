@@ -1,8 +1,17 @@
-from rest_framework import viewsets
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailViewSet, AuditTrailViewsetMixin
+    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
+    AuditTrailViewsetMixin
 )
-from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.notifications.viewsets import (
+    NotificationCreateMixin, NotificationViewSetMixin
+)
+from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
@@ -22,11 +31,14 @@ from .permissions import (
 )
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
-    ObjectInformatieObjectSerializer
+    LockEnkelvoudigInformatieObjectSerializer,
+    ObjectInformatieObjectSerializer,
+    UnlockEnkelvoudigInformatieObjectSerializer
 )
 
 
@@ -95,70 +107,138 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        'lock': SCOPE_DOCUMENTEN_LOCK,
+        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
 
+    @swagger_auto_schema(
+        method='get',
+        # see https://swagger.io/docs/specification/2-0/describing-responses/ and
+        # https://swagger.io/docs/specification/2-0/mime-types/
+        # OAS 3 has a better mechanism: https://swagger.io/docs/specification/describing-responses/
+        produces=["application/octet-stream"],
+        responses={
+            status.HTTP_200_OK: openapi.Response(
+                "De binaire bestandsinhoud",
+                schema=openapi.Schema(type=openapi.TYPE_FILE)
+            ),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
+    @action(methods=['get'], detail=True)
+    def download(self, request, *args, **kwargs):
+        eio = self.get_object()
+        return sendfile(
+            request,
+            eio.inhoud.path,
+            attachment=True,
+            mimetype='application/octet-stream'
+        )
 
-class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
-                                    AuditTrailViewsetMixin,
+    @swagger_auto_schema(
+        request_body=LockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_200_OK: LockEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
+    @action(detail=True, methods=['post'])
+    def lock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        lock_serializer.is_valid(raise_exception=True)
+        lock_serializer.save()
+        return Response(lock_serializer.data)
+
+    @swagger_auto_schema(
+        request_body=UnlockEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_204_NO_CONTENT: openapi.Response("No content"),
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
+    @action(detail=True, methods=['post'])
+    def unlock(self, request, *args, **kwargs):
+        eio = self.get_object()
+        # check if it's a force unlock by administrator
+        force_unlock = False
+        if self.request.jwt_auth.has_auth(
+            scopes=SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+            informatieobjecttype=eio.informatieobjecttype,
+            vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
+        ):
+            force_unlock = True
+
+        unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
+            eio,
+            data=request.data,
+            context={'force_unlock': force_unlock}
+        )
+        unlock_serializer.is_valid(raise_exception=True)
+        unlock_serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ObjectInformatieObjectViewSet(NotificationCreateMixin,
+                                    AuditTrailCreateMixin,
+                                    AuditTrailDestroyMixin,
                                     CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
-                                    viewsets.ModelViewSet):
+                                    mixins.CreateModelMixin,
+                                    mixins.DestroyModelMixin,
+                                    viewsets.ReadOnlyModelViewSet):
     """
-    Beheer relatie tussen InformatieObject en OBJECT.
+    Opvragen en bewerken van Object-Informatieobject relaties.
 
     create:
-    Registreer een INFORMATIEOBJECT bij een OBJECT. Er worden twee types van
-    relaties met andere objecten gerealiseerd:
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
 
-    * INFORMATIEOBJECT behoort bij [OBJECT] en
-    * INFORMATIEOBJECT is vastlegging van [OBJECT].
+    ZRC en BRC gebruiken deze endpoint bij het synchroniseren van relaties.
+
+    Registreer welk(e) INFORMATIEOBJECT(en) een OBJECT kent.
 
     **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
-    - geldigheid object URL
-    - de combinatie informatieobject en object moet uniek zijn
-
-    **Opmerkingen**
-    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
-      wordt ook door het systeem gezet.
-    - Bij het aanmaken wordt ook in de bron van het OBJECT de gespiegelde
-      relatie aangemaakt, echter zonder de relatie-informatie.
-    - Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-      object van het type ZAAK gaat (aard relatie "hoort bij").
+    - uniek zijn van relatie OBJECT-INFORMATIEOBJECT
+    - bestaan van relatie OBJECT-INFORMATIEOBJECT in het ZRC of DRC (waar het
+      object leeft)
 
     list:
-    Geef een lijst van relaties tussen INFORMATIEOBJECTen en andere OBJECTen.
-
-    Deze lijst kan gefilterd wordt met querystringparameters.
+    Geef een lijst van relaties tussen OBJECTen en INFORMATIEOBJECTen.
 
     retrieve:
-    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ander
-    OBJECT.
-
-    update:
-    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL, object URL en objectType mogen niet veranderen
-
-    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-    object van het type ZAAK gaat (aard relatie "hoort bij").
-
-    partial_update:
-    Update een INFORMATIEOBJECT bij een OBJECT. Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL, object URL en objectType mogen niet veranderen
-
-    Titel, beschrijving en registratiedatum zijn enkel relevant als het om een
-    object van het type ZAAK gaat (aard relatie "hoort bij").
+    Geef een informatieobject terug wat gekoppeld is aan het huidige object
 
     destroy:
-    Verwijdert de relatie tussen OBJECT en INFORMATIEOBJECT.
+    Verwijder een relatie tussen een object en een informatieobject.
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken, dit moet
+    gedaan worden door het ZRC/BRC
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
@@ -177,6 +257,7 @@ class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
     }
     audit = AUDIT_DRC
     audittrail_main_resource_key = 'informatieobject'
+
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              ListFilterByAuthorizationsMixin,

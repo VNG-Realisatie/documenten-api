@@ -1,6 +1,15 @@
+from collections import OrderedDict
+
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
+from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
+from vng_api_common.models import APICredential
+from vng_api_common.tests.urls import reverse
+from zds_client import ClientError
 
 from drc.datamodel.validators import validate_status
 
@@ -23,3 +32,79 @@ class StatusValidator:
             )
         except ValidationError as exc:
             raise serializers.ValidationError(exc.error_dict)
+
+
+class ObjectInformatieObjectValidator:
+    """
+    Validate that the INFORMATIEOBJECT is already linked to the OBJECT in the remote component.
+    """
+    message = _('Het informatieobject is in het {component} nog niet gerelateerd aan het object.')
+    code = 'inconsistent-relation'
+
+    def __call__(self, context: OrderedDict):
+        object_url = context['object']
+        informatieobject_uuid = str(context['informatieobject'].uuid)
+        object_type = context['object_type']
+
+        # Construct the url for the informatieobject
+        path = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
+            'uuid': informatieobject_uuid,
+        })
+        domain = Site.objects.get_current().domain
+        protocol = 'https' if settings.IS_HTTPS else 'http'
+        informatieobject_url = f'{protocol}://{domain}{path}'
+
+        # dynamic so that it can be mocked in tests easily
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(object_url)
+        client.auth = APICredential.get_auth(object_url)
+        try:
+            if object_type == 'zaak':
+                resource = 'zaakinformatieobject'
+                component = 'ZRC'
+            elif object_type == 'besluit':
+                resource = 'besluitinformatieobject'
+                component = 'BRC'
+            oios = client.list(resource, query_params={
+                object_type: object_url,
+                'informatieobject': informatieobject_url
+            })
+
+        except ClientError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-validation-error'
+            ) from exc
+
+        if len(oios) == 0:
+            raise serializers.ValidationError(
+                self.message.format(component=component),
+                code=self.code
+            )
+
+
+class InformatieObjectUniqueValidator:
+    """
+    Validate that the relation between the object and informatieobject does not
+    exist yet in the DRC
+    """
+    message = _('The fields {field_names} must make a unique set.')
+    code = 'unique'
+
+    def __init__(self, remote_resource_field, field: str):
+        self.remote_resource_field = remote_resource_field
+        self.field = field
+
+    def __call__(self, context: OrderedDict):
+        object_url = context['object']
+        informatieobject = context['informatieobject']
+
+        oios = informatieobject.objectinformatieobject_set.filter(object=object_url)
+
+        if oios:
+            field_names = (self.remote_resource_field, self.field)
+            raise serializers.ValidationError(
+                detail=self.message.format(field_names=field_names),
+                code=self.code
+            )

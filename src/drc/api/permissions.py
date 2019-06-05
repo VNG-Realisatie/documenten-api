@@ -2,6 +2,8 @@ from vng_api_common.permissions import (
     MainObjAuthScopesRequired, RelatedObjAuthScopesRequired
 )
 
+from .scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN
+
 
 class InformationObjectAuthScopesRequired(MainObjAuthScopesRequired):
     """

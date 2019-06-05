@@ -1,0 +1,325 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-05 10:43+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/drc/accounts/models.py:14
+msgid "username"
+msgstr ""
+
+#: src/drc/accounts/models.py:15
+msgid "Required. 150 characters or fewer."
+msgstr ""
+
+#: src/drc/accounts/models.py:17
+msgid "A user with that username already exists."
+msgstr ""
+
+#: src/drc/accounts/models.py:20
+msgid "first name"
+msgstr ""
+
+#: src/drc/accounts/models.py:21
+msgid "last name"
+msgstr ""
+
+#: src/drc/accounts/models.py:22
+msgid "email address"
+msgstr ""
+
+#: src/drc/accounts/models.py:24
+msgid "staff status"
+msgstr ""
+
+#: src/drc/accounts/models.py:25
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: src/drc/accounts/models.py:28
+msgid "active"
+msgstr ""
+
+#: src/drc/accounts/models.py:30
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: src/drc/accounts/models.py:34
+msgid "date joined"
+msgstr ""
+
+#: src/drc/accounts/models.py:42
+msgid "user"
+msgstr ""
+
+#: src/drc/accounts/models.py:43
+msgid "users"
+msgstr ""
+
+#: src/drc/api/serializers.py:86
+msgid "integriteit"
+msgstr ""
+
+#: src/drc/api/serializers.py:87
+msgid ""
+"Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal "
+"bestand."
+msgstr ""
+
+#: src/drc/api/serializers.py:91
+msgid "ondertekening"
+msgstr ""
+
+#: src/drc/api/serializers.py:92
+msgid ""
+"Aanduiding van de rechtskracht van een informatieobject. Mag niet van een "
+"waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter "
+"vaststelling' heeft."
+msgstr ""
+
+#: src/drc/api/serializers.py:131
+msgid ""
+"Lock must be provided during updating the document (PATCH, PUT), not while "
+"creating it"
+msgstr ""
+"Tijdens het updaten van een document (PATCH, PUT) moet het `lock` veld "
+"opgegeven worden. Bij het aanmaken (POST) mag het geen waarde hebben."
+
+#: src/drc/api/serializers.py:152
+msgid ""
+"De indicatie kan niet weggehaald worden of ongespecifieerd zijn als er "
+"Gebruiksrechten gedefinieerd zijn."
+msgstr ""
+
+#: src/drc/api/serializers.py:159
+msgid ""
+"De indicatie moet op 'ja' gezet worden door `gebruiksrechten` aan te maken, "
+"dit kan niet direct op deze resource."
+msgstr ""
+
+#: src/drc/api/serializers.py:173
+msgid "Unlocked document can't be modified"
+msgstr "Een unlocked document mag niet bewerkt worden"
+
+#: src/drc/api/serializers.py:178 src/drc/api/serializers.py:270
+msgid "Lock id is not correct"
+msgstr "Incorrect lock ID"
+
+#: src/drc/api/serializers.py:185
+msgid "A locked document can't be created"
+msgstr "Je mag een document niet locken tijdens het aanmaken"
+
+#: src/drc/api/serializers.py:234
+msgid "The document is already locked"
+msgstr "Het document is al gelockt"
+
+#: src/drc/api/validators.py:41
+#, python-brace-format
+msgid ""
+"Het informatieobject is in het {component} nog niet gerelateerd aan het "
+"object."
+msgstr ""
+
+#: src/drc/api/validators.py:92
+#, python-brace-format
+msgid "The fields {field_names} must make a unique set."
+msgstr "De velden {field_names} moeten uniek voorkomen."
+
+#: src/drc/datamodel/constants.py:8
+msgid "Aan het informatieobject wordt nog gewerkt."
+msgstr ""
+
+#: src/drc/datamodel/constants.py:9
+msgid "Informatieobject gereed maar moet nog vastgesteld worden."
+msgstr ""
+
+#: src/drc/datamodel/constants.py:10
+msgid ""
+"Informatieobject door bevoegd iets of iemand vastgesteld dan wel ontvangen."
+msgstr ""
+
+#: src/drc/datamodel/constants.py:12
+msgid ""
+"Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-"
+"element."
+msgstr ""
+
+#: src/drc/datamodel/constants.py:37
+msgid "Analoog"
+msgstr ""
+
+#: src/drc/datamodel/constants.py:38
+msgid "Digitaal"
+msgstr ""
+
+#: src/drc/datamodel/constants.py:39
+msgid "PKI"
+msgstr ""
+
+#: src/drc/datamodel/models.py:62
+msgid "status"
+msgstr ""
+
+#: src/drc/datamodel/models.py:63
+msgid ""
+"Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden 'in "
+"bewerking' en 'ter vaststelling' komen niet voor als het attribuut "
+"`ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in "
+"'gearchiveerd' impliceert dat het informatieobject een duurzaam, niet-"
+"wijzigbaar Formaat dient te hebben."
+msgstr ""
+
+#: src/drc/datamodel/models.py:75
+msgid "ontvangstdatum"
+msgstr ""
+
+#: src/drc/datamodel/models.py:76
+msgid ""
+"De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren "
+"voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) "
+"ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die "
+"van of naar andere personen ontvangen of verzonden zijn waarbij die personen "
+"niet deel uit maken van de behandeling van de zaak waarin het document een "
+"rol speelt."
+msgstr ""
+
+#: src/drc/datamodel/models.py:85
+msgid "verzenddatum"
+msgstr ""
+
+#: src/drc/datamodel/models.py:86
+msgid ""
+"De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het "
+"INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande "
+"INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en "
+"uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die "
+"van of naar andere personen ontvangen of verzonden zijn waarbij die personen "
+"niet deel uit maken van de behandeling van de zaak waarin het document een "
+"rol speelt."
+msgstr ""
+
+#: src/drc/datamodel/models.py:96
+msgid "indicatie gebruiksrecht"
+msgstr ""
+
+#: src/drc/datamodel/models.py:97
+msgid ""
+"Indicatie of er beperkingen gelden aangaande het gebruik van het "
+"informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te "
+"geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan "
+"kan je de gebruiksrechten die van toepassing zijn raadplegen via de "
+"`Gebruiksrechten` resource."
+msgstr ""
+
+#: src/drc/datamodel/models.py:109
+msgid "ondertekeningsoort"
+msgstr ""
+
+#: src/drc/datamodel/models.py:111
+msgid "Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT"
+msgstr ""
+
+#: src/drc/datamodel/models.py:114
+msgid "ondertekeningdatum"
+msgstr ""
+
+#: src/drc/datamodel/models.py:115
+msgid ""
+"De datum waarop de ondertekening van het INFORMATIEOBJECT heeft "
+"plaatsgevonden."
+msgstr ""
+
+#: src/drc/datamodel/models.py:124
+msgid "Hash string, which represents id of the lock"
+msgstr "Hash string, wordt gebruikt als ID voor de lock"
+
+#: src/drc/datamodel/models.py:164
+msgid "bestandsnaam"
+msgstr ""
+
+#: src/drc/datamodel/models.py:165
+msgid ""
+"De naam van het fysieke bestand waarin de inhoud van het informatieobject is "
+"vastgelegd, inclusief extensie."
+msgstr ""
+
+#: src/drc/datamodel/models.py:178
+msgid "integriteit algoritme"
+msgstr ""
+
+#: src/drc/datamodel/models.py:180
+msgid "Aanduiding van algoritme, gebruikt om de checksum te maken."
+msgstr ""
+
+#: src/drc/datamodel/models.py:183
+msgid "integriteit waarde"
+msgstr ""
+
+#: src/drc/datamodel/models.py:184
+msgid "De waarde van de checksum."
+msgstr ""
+
+#: src/drc/datamodel/models.py:187
+msgid "integriteit datum"
+msgstr ""
+
+#: src/drc/datamodel/models.py:188
+msgid "Datum waarop de checksum is gemaakt."
+msgstr ""
+
+#: src/drc/datamodel/models.py:205
+msgid "omschrijving voorwaarden"
+msgstr ""
+
+#: src/drc/datamodel/models.py:206
+msgid ""
+"Omschrijving van de van toepassing zijnde voorwaarden aan het gebruik anders "
+"dan raadpleging"
+msgstr ""
+
+#: src/drc/datamodel/models.py:210 src/drc/datamodel/models.py:215
+msgid "startdatum"
+msgstr ""
+
+#: src/drc/datamodel/models.py:211
+msgid ""
+"Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing "
+"zijn. Doorgaans is de datum van creatie van het informatieobject de "
+"startdatum."
+msgstr ""
+
+#: src/drc/datamodel/models.py:216
+msgid ""
+"Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing "
+"zijn."
+msgstr ""
+
+#: src/drc/datamodel/models.py:222
+msgid "gebruiksrecht informatieobject"
+msgstr ""
+
+#: src/drc/datamodel/models.py:223
+msgid "gebruiksrechten informatieobject"
+msgstr ""
+
+#: src/drc/datamodel/validators.py:33
+#, python-brace-format
+msgid ""
+"De statuswaarden `{values}` zijn niet van toepassing op ontvangen documenten."
+msgstr ""

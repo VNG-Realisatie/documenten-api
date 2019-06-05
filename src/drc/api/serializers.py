@@ -1,27 +1,32 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+import uuid
+
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
+from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from rest_framework.settings import api_settings
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import GegevensGroepSerializer
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import RelatieAarden
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
-from drc.sync.signals import SyncError
 
 from .auth import get_zrc_auth, get_ztc_auth
-from .validators import StatusValidator
+from .validators import (
+    InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
+    StatusValidator
+)
 
 
 class AnyFileType:
@@ -32,8 +37,28 @@ class AnyFileType:
 class AnyBase64File(Base64FileField):
     ALLOWED_TYPES = AnyFileType()
 
+    def __init__(self, view_name: str = None, *args, **kwargs):
+        self.view_name = view_name
+        super().__init__(*args, **kwargs)
+
     def get_file_extension(self, filename, decoded_file):
         return "bin"
+
+    def to_representation(self, file):
+        is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
+
+        if not is_private_storage or self.represent_in_base64:
+            return super().to_representation(file)
+
+        assert self.view_name, "You must pass the `view_name` kwarg for private media fields"
+
+        model_instance = file.instance
+        request = self.context.get('request')
+
+        url_field = self.parent.fields["url"]
+        lookup_field = url_field.lookup_field
+        kwargs = {lookup_field: getattr(model_instance, lookup_field)}
+        return reverse(self.view_name, kwargs=kwargs, request=request)
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
@@ -52,7 +77,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     """
     Serializer for the EnkelvoudigInformatieObject model
     """
-    inhoud = AnyBase64File()
+    inhoud = AnyBase64File(view_name="enkelvoudiginformatieobject-download")
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True,
         min_value=0
@@ -91,7 +116,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'indicatie_gebruiksrecht',
             'ondertekening',
             'integriteit',
-            'informatieobjecttype'  # van-relatie
+            'informatieobjecttype',  # van-relatie
+            'lock'
         )
         extra_kwargs = {
             'url': {
@@ -99,6 +125,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             },
             'informatieobjecttype': {
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
+            },
+            'lock':  {
+                'write_only': True,
+                'help_text': _("Lock must be provided during updating the document (PATCH, PUT), "
+                               "not while creating it")
             }
         }
         validators = [StatusValidator()]
@@ -131,6 +162,31 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             )
         return indicatie
 
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        lock = valid_attrs.get('lock', '')
+        # update
+        if self.instance:
+            if not self.instance.lock:
+                raise serializers.ValidationError(
+                    _("Unlocked document can't be modified"),
+                    code='unlocked'
+                )
+            if lock != self.instance.lock:
+                raise serializers.ValidationError(
+                    _("Lock id is not correct"),
+                    code='incorrect-lock-id'
+                )
+        # create
+        else:
+            if lock:
+                raise serializers.ValidationError(
+                    _("A locked document can't be created"),
+                    code='lock-in-create'
+                )
+        return valid_attrs
+
     def create(self, validated_data):
         """
         Handle nested writes.
@@ -157,14 +213,72 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         return super().update(instance, validated_data)
 
 
-class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    aard_relatie_weergave = serializers.ChoiceField(
-        source='get_aard_relatie_display', read_only=True,
-        choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
-    )
+class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the lock action of EnkelvoudigInformatieObject model
+    """
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = ('lock', )
+        extra_kwargs = {
+            'lock': {
+                'read_only': True,
+            }
+        }
 
-    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
-    # bij zaak.zaaktype
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        if self.instance.lock:
+            raise serializers.ValidationError(
+                _("The document is already locked"),
+                code='existing-lock'
+            )
+        return valid_attrs
+
+    def save(self, **kwargs):
+        self.instance.lock = uuid.uuid4().hex
+        self.instance.save()
+
+        return self.instance
+
+
+class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the unlock action of EnkelvoudigInformatieObject model
+    """
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = ('lock', )
+        extra_kwargs = {
+            'lock': {
+                'required': False,
+                'write_only': True,
+            }
+        }
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+        force_unlock = self.context.get('force_unlock', False)
+
+        if force_unlock:
+            return valid_attrs
+
+        lock = valid_attrs.get('lock', '')
+        if lock != self.instance.lock:
+            raise serializers.ValidationError(
+                _("Lock id is not correct"),
+                code='incorrect-lock-id'
+            )
+        return valid_attrs
+
+    def save(self, **kwargs):
+        self.instance.lock = ''
+        self.instance.save()
+        return self.instance
+
+
+class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ObjectInformatieObject
         fields = (
@@ -172,10 +286,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'informatieobject',
             'object',
             'object_type',
-            'aard_relatie_weergave',
-            'titel',
-            'beschrijving',
-            'registratiedatum',
         )
         extra_kwargs = {
             'url': {
@@ -195,34 +305,13 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()]
             }
         }
+        validators = [ObjectInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if not hasattr(self, 'initial_data'):
             return
-
-        object_type = self.initial_data.get('object_type')
-
-        if object_type == ObjectTypes.besluit:
-            del self.fields['titel']
-            del self.fields['beschrijving']
-            del self.fields['registratiedatum']
-
-    def save(self, **kwargs):
-        # can't slap a transaction atomic on this, since ZRC/BRC query for the
-        # relation!
-        try:
-            return super().save(**kwargs)
-        except SyncError as sync_error:
-            # delete the object again
-            ObjectInformatieObject.objects.filter(
-                informatieobject=self.validated_data['informatieobject'],
-                object=self.validated_data['object']
-            )._raw_delete('default')
-            raise serializers.ValidationError({
-                api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
-            }) from sync_error
 
 
 class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):

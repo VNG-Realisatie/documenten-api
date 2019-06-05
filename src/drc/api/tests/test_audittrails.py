@@ -15,13 +15,11 @@ from drc.datamodel.models import (
 )
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from .mixins import ObjectInformatieObjectSyncMixin
-
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
+class AuditTrailTests(JWTAuthMixin, APITestCase):
 
     informatieobject_list_url = reverse_lazy(EnkelvoudigInformatieObject)
     objectinformatieobject_list_url = reverse_lazy(ObjectInformatieObject)
@@ -29,7 +27,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     heeft_alle_autorisaties = True
 
-    def _create_enkelvoudiginformatieobject(self):
+    def _create_enkelvoudiginformatieobject(self, **HEADERS):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -46,7 +44,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
             'vertrouwelijkheidaanduiding': 'openbaar',
         }
 
-        response = self.client.post(self.informatieobject_list_url, content)
+        response = self.client.post(self.informatieobject_list_url, content, **HEADERS)
 
         return response.data
 
@@ -66,6 +64,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.RemoteInformatieObjectMockClient')
     def test_create_objectinformatieobject_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
@@ -131,8 +130,12 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     def test_update_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
-
         informatieobject_url = informatieobject_data['url']
+
+        #lock for update
+        eio = EnkelvoudigInformatieObject.objects.get()
+        eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
+        eio.save()
 
         content = {
             'identificatie': uuid.uuid4().hex,
@@ -148,6 +151,7 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'vertrouwelijkheidaanduiding': 'openbaar',
+            'lock': '0f60f6d2d2714c809ed762372f5a363a'
         }
 
         informatieobject_response = self.client.put(informatieobject_url, content).data
@@ -166,10 +170,18 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 
     def test_partial_update_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
-
         informatieobject_url = informatieobject_data['url']
 
-        informatieobject_response = self.client.patch(informatieobject_url, {'titel': 'changed'}).data
+        #lock for update
+        eio = EnkelvoudigInformatieObject.objects.get()
+        eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
+        eio.save()
+
+        informatieobject_response = self.client.patch(
+            informatieobject_url,
+            {'titel': 'changed',
+             'lock': '0f60f6d2d2714c809ed762372f5a363a'}
+        ).data
 
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
@@ -208,3 +220,13 @@ class AuditTrailTests(ObjectInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
         # Verify that the user representation stored in the AuditTrail matches
         # the user representation in the JWT token for the request
         self.assertEqual(audittrail.gebruikers_weergave, self.user_representation)
+
+    def test_audittrail_toelichting(self):
+        toelichting = 'blaaaa'
+        object_response = self._create_enkelvoudiginformatieobject(HTTP_X_AUDIT_TOELICHTING=toelichting)
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=object_response['url']).get()
+
+        # Verify that the toelichting stored in the AuditTrail matches
+        # the X-Audit-Toelichting header in the HTTP request
+        self.assertEqual(audittrail.toelichting, toelichting)

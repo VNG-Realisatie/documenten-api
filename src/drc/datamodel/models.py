@@ -4,6 +4,7 @@ import uuid as _uuid
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
+from privates.fields import PrivateMediaFileField
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
@@ -12,9 +13,7 @@ from vng_api_common.fields import (
 from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import (
-    ChecksumAlgoritmes, OndertekeningSoorten, RelatieAarden, Statussen
-)
+from .constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
 
@@ -120,6 +119,11 @@ class InformatieObject(models.Model):
         help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'
     )
 
+    lock = models.CharField(
+        default='', blank=True, max_length=100,
+        help_text=_('Hash string, which represents id of the lock')
+    )
+
     objects = InformatieobjectQuerySet.as_manager()
 
     class Meta:
@@ -161,7 +165,8 @@ class EnkelvoudigInformatieObject(InformatieObject):
         help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
-    inhoud = models.FileField(upload_to='uploads/%Y/%m/')
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
+    # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
     link = models.URLField(
         max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '
@@ -260,28 +265,6 @@ class ObjectInformatieObject(models.Model):
         "objecttype", max_length=100,
         choices=ObjectTypes.choices
     )
-    aard_relatie = models.CharField(
-        "aard relatie", max_length=20,
-        choices=RelatieAarden.choices
-    )
-
-    # relatiegegevens
-    titel = models.CharField(
-        "titel", max_length=200, blank=True,
-        help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
-    )
-    beschrijving = models.TextField(
-        "beschrijving", blank=True,
-        help_text="Een op het object gerichte beschrijving van de inhoud van"
-                  "het INFORMATIEOBJECT."
-    )
-    registratiedatum = models.DateTimeField(
-        "registratiedatum", auto_now_add=True,
-        help_text="De datum waarop de behandelende organisatie het "
-                  "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
-                  "Geldige waardes zijn datumtijden gelegen op of voor de "
-                  "huidige datum en tijd."
-    )
 
     objects = InformatieobjectRelatedQuerySet.as_manager()
 
@@ -293,16 +276,8 @@ class ObjectInformatieObject(models.Model):
     def __str__(self):
         return self.get_title()
 
-    def save(self, *args, **kwargs):
-        # override to set aard_relatie
-        self.aard_relatie = RelatieAarden.from_object_type(self.object_type)
-        super().save(*args, **kwargs)
-
     def get_title(self) -> str:
-        if self.titel:
-            return self.titel
-
-        if self.informatieobject_id:
+        if self.informatieobject:
             return self.informatieobject.titel
 
         return '(onbekende titel)'
