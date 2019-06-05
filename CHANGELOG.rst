@@ -2,6 +2,32 @@
 Wijzigingen
 ===========
 
+0.13.0 (2019-06-05)
+===================
+
+First release towards a release candidate
+
+* added ``download`` operation/endpoint to the API spec
+* added authorization to the download of actual binary files
+  (``EnkelvoudigInformatieObject.inhoud``)
+* 🔒 replaced the file storage with private media storage
+* Added locking and unlocking of documents
+* Added unlock-override mechanism for administrators
+* Updated to latest Django 2.2 (LTS)
+
+Breaking changes
+----------------
+
+* ``ObjectInformatieObject`` is no longer the primary relation, it is now
+  created by ZRC/BRC instead of directly by consumers
+* ``ObjectInformatieObject`` no longer contains the relation information
+  specific to the ``objectType``
+* 🐋 Added nginx to the stack to facilitate sendfile download acceleration.
+  Existing deployments directly connecting to uwsgi need to put nginx in front
+* ``EnkelvoudingInformatieObject`` can no longer be updated (``patch``,
+  ``put``) without providing a lock ID, requiring you to lock it *before*
+  updating
+
 0.12.1 (2019-05-22)
 ===================
 
