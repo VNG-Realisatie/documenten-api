@@ -93,6 +93,15 @@ all settings.
 
     $ docker exec -it drc /app/src/manage.py createsuperuser
 
+Loading initial data
+--------------------
+
+The container will load any fixtures it can find at startup time. The default
+location is ``/app/fixtures``, so you can mount a volume containing JSON
+fixtures to populate your database initially.
+
+You can override this location through the ``FIXTURES_DIR`` environment
+variable. Only ``*.json`` files are considered.
 
 .. _Github: https://github.com/VNG-realisatie/gemma-documentregistratiecomponent
 .. _Docker: https://docs.docker.com/install/
