@@ -5,6 +5,7 @@ from datetime import datetime
 from django.test import override_settings
 
 from freezegun import freeze_time
+from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
@@ -230,3 +231,14 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the toelichting stored in the AuditTrail matches
         # the X-Audit-Toelichting header in the HTTP request
         self.assertEqual(audittrail.toelichting, toelichting)
+
+    def test_read_audittrail(self):
+        self._create_enkelvoudiginformatieobject()
+
+        eio = EnkelvoudigInformatieObject.objects.get()
+        audittrails = AuditTrail.objects.get()
+        audittrails_url = reverse(audittrails, kwargs={'enkelvoudiginformatieobject_uuid': eio.uuid})
+
+        response_audittrails = self.client.get(audittrails_url)
+
+        self.assertEqual(response_audittrails.status_code, status.HTTP_200_OK)
