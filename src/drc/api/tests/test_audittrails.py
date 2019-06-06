@@ -5,10 +5,12 @@ from datetime import datetime
 from django.test import override_settings
 
 from freezegun import freeze_time
+from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import JWTAuthMixin, reverse, reverse_lazy
+from vng_api_common.utils import get_uuid_from_path
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
@@ -64,7 +66,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
-    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.RemoteInformatieObjectMockClient')
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
     def test_create_objectinformatieobject_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
@@ -230,3 +232,26 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the toelichting stored in the AuditTrail matches
         # the X-Audit-Toelichting header in the HTTP request
         self.assertEqual(audittrail.toelichting, toelichting)
+
+    def test_read_audittrail(self):
+        self._create_enkelvoudiginformatieobject()
+
+        eio = EnkelvoudigInformatieObject.objects.get()
+        audittrails = AuditTrail.objects.get()
+        audittrails_url = reverse(audittrails, kwargs={'enkelvoudiginformatieobject_uuid': eio.uuid})
+
+        response_audittrails = self.client.get(audittrails_url)
+
+        self.assertEqual(response_audittrails.status_code, status.HTTP_200_OK)
+
+    def test_audittrail_resource_weergave(self):
+        eio_response = self._create_enkelvoudiginformatieobject()
+
+        eio_uuid = get_uuid_from_path(eio_response['url'])
+        eio_unique_representation = EnkelvoudigInformatieObject.objects.get(uuid=eio_uuid).unique_representation()
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=eio_response['url']).get()
+
+        # Verify that the resource weergave stored in the AuditTrail matches
+        # the unique representation as defined in the Zaak model
+        self.assertIn(audittrail.resource_weergave, eio_unique_representation)
