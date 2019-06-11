@@ -20,3 +20,7 @@ class InformationObjectRelatedAuthScopesRequired(RelatedObjAuthScopesRequired):
     """
     permission_fields = ('informatieobjecttype', 'vertrouwelijkheidaanduiding')
     obj_path = 'informatieobject'
+
+    # Define the property of the ForeignKey of which the permission fields will
+    # be checked
+    obj_property = 'latest_version'

@@ -19,7 +19,8 @@ from vng_api_common.serializers import GegevensGroepSerializer
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
+    Gebruiksrechten, ObjectInformatieObject
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -58,7 +59,15 @@ class AnyBase64File(Base64FileField):
         url_field = self.parent.fields["url"]
         lookup_field = url_field.lookup_field
         kwargs = {lookup_field: getattr(model_instance, lookup_field)}
-        return reverse(self.view_name, kwargs=kwargs, request=request)
+        url = reverse(self.view_name, kwargs=kwargs, request=request)
+
+        # Retrieve the correct version to construct the download url that
+        # points to the content of that version
+        if hasattr(self.parent.instance, 'versie'):
+            versie = self.parent.instance.versie
+        else:
+            versie = self.parent.instance.get(uuid=kwargs['uuid']).versie
+        return f'{url}/download?versie={versie}'
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
@@ -73,11 +82,34 @@ class OndertekeningSerializer(GegevensGroepSerializer):
         gegevensgroep = 'ondertekening'
 
 
+class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.HyperlinkedRelatedField):
+    """
+    Custom field to construct the url for models that have a ForeignKey to
+    `EnkelvoudigInformatieObject`
+
+    Needed because the canonical `EnkelvoudigInformatieObjectCanonical` no longer stores
+    the uuid, but the `EnkelvoudigInformatieObject`s related to it do
+    store the uuid
+    """
+    def get_url(self, obj, view_name, view_args, view_kwargs):
+        obj_latest_version = obj.latest_version
+        return super().get_url(obj_latest_version, view_name, view_args, view_kwargs)
+
+    def get_object(self, view_name, view_args, view_kwargs):
+        lookup_value = view_kwargs[self.lookup_url_kwarg]
+        lookup_kwargs = {self.lookup_field: lookup_value}
+        return self.get_queryset().filter(**lookup_kwargs).order_by('-versie').first().canonical
+
+
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the EnkelvoudigInformatieObject model
     """
-    inhoud = AnyBase64File(view_name="enkelvoudiginformatieobject-download")
+    url = serializers.HyperlinkedIdentityField(
+        view_name='enkelvoudiginformatieobject-detail',
+        lookup_field='uuid'
+    )
+    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-detail')
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True,
         min_value=0
@@ -92,6 +124,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         help_text=_("Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde "
                     "zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.")
     )
+
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -117,20 +150,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'ondertekening',
             'integriteit',
             'informatieobjecttype',  # van-relatie
-            'lock'
         )
         extra_kwargs = {
-            'url': {
-                'lookup_field': 'uuid',
-            },
             'informatieobjecttype': {
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             },
-            'lock':  {
-                'write_only': True,
-                'help_text': _("Lock must be provided during updating the document (PATCH, PUT), "
-                               "not while creating it")
-            }
         }
         validators = [StatusValidator()]
 
@@ -147,14 +171,14 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         return self._informatieobjecttype
 
     def validate_indicatie_gebruiksrecht(self, indicatie):
-        if self.instance and not indicatie and self.instance.gebruiksrechten_set.exists():
+        if self.instance and not indicatie and self.instance.canonical.gebruiksrechten_set.exists():
             raise serializers.ValidationError(
                 _("De indicatie kan niet weggehaald worden of ongespecifieerd "
                   "zijn als er Gebruiksrechten gedefinieerd zijn."),
                 code='existing-gebruiksrechten'
             )
         # create: not self.instance or update: usage_rights exists
-        elif indicatie and (not self.instance or not self.instance.gebruiksrechten_set.exists()):
+        elif indicatie and (not self.instance or not self.instance.canonical.gebruiksrechten_set.exists()):
             raise serializers.ValidationError(
                 _("De indicatie moet op 'ja' gezet worden door `gebruiksrechten` "
                   "aan te maken, dit kan niet direct op deze resource."),
@@ -164,16 +188,15 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
-
-        lock = valid_attrs.get('lock', '')
+        lock = self.context['request'].data.get('lock', '')
         # update
         if self.instance:
-            if not self.instance.lock:
+            if not self.instance.canonical.lock:
                 raise serializers.ValidationError(
                     _("Unlocked document can't be modified"),
                     code='unlocked'
                 )
-            if lock != self.instance.lock:
+            if lock != self.instance.canonical.lock:
                 raise serializers.ValidationError(
                     _("Lock id is not correct"),
                     code='incorrect-lock-id'
@@ -198,6 +221,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             informatieobjecttype = self._get_informatieobjecttype(validated_data['informatieobjecttype'])
             validated_data['vertrouwelijkheidaanduiding'] = informatieobjecttype['vertrouwelijkheidaanduiding']
 
+        canonical = EnkelvoudigInformatieObjectCanonical.objects.create()
+        validated_data['canonical'] = canonical
+
         eio = super().create(validated_data)
         eio.integriteit = integriteit
         eio.ondertekening = ondertekening
@@ -206,19 +232,31 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
     def update(self, instance, validated_data):
         """
-        Handle nested writes.
+        Instead of updating an existing EnkelvoudigInformatieObject,
+        create a new EnkelvoudigInformatieObject with the same
+        EnkelvoudigInformatieObjectCanonical
         """
         instance.integriteit = validated_data.pop('integriteit', None)
         instance.ondertekening = validated_data.pop('ondertekening', None)
-        return super().update(instance, validated_data)
+
+        validated_data_field_names = validated_data.keys()
+        for field in instance._meta.get_fields():
+            if field.name not in validated_data_field_names:
+                validated_data[field.name] = getattr(instance, field.name)
+
+        validated_data['pk'] = None
+        validated_data['versie'] += 1
+
+        return super().create(validated_data)
 
 
 class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     """
-    Serializer for the lock action of EnkelvoudigInformatieObject model
+    Serializer for the lock action of EnkelvoudigInformatieObjectCanonical
+    model
     """
     class Meta:
-        model = EnkelvoudigInformatieObject
+        model = EnkelvoudigInformatieObjectCanonical
         fields = ('lock', )
         extra_kwargs = {
             'lock': {
@@ -228,7 +266,6 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
-
         if self.instance.lock:
             raise serializers.ValidationError(
                 _("The document is already locked"),
@@ -245,10 +282,11 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
 class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     """
-    Serializer for the unlock action of EnkelvoudigInformatieObject model
+    Serializer for the unlock action of EnkelvoudigInformatieObjectCanonical
+    model
     """
     class Meta:
-        model = EnkelvoudigInformatieObject
+        model = EnkelvoudigInformatieObjectCanonical
         fields = ('lock', )
         extra_kwargs = {
             'lock': {
@@ -279,6 +317,12 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 
 
 class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+    informatieobject = EnkelvoudigInformatieObjectHyperlinkedRelatedField(
+        view_name='enkelvoudiginformatieobject-detail',
+        lookup_field='uuid',
+        queryset=EnkelvoudigInformatieObject.objects,
+    )
+
     class Meta:
         model = ObjectInformatieObject
         fields = (
@@ -292,7 +336,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
             'informatieobject': {
-                'lookup_field': 'uuid',
                 'validators': [IsImmutableValidator()],
             },
             'object': {
@@ -315,6 +358,12 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
+    informatieobject = EnkelvoudigInformatieObjectHyperlinkedRelatedField(
+        view_name='enkelvoudiginformatieobject-detail',
+        lookup_field='uuid',
+        queryset=EnkelvoudigInformatieObject.objects,
+    )
+
     class Meta:
         model = Gebruiksrechten
         fields = (
@@ -329,7 +378,6 @@ class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
             'informatieobject': {
-                'lookup_field': 'uuid',
                 'validators': [IsImmutableValidator()],
             },
         }

@@ -1,4 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import get_list_or_404, get_object_or_404
+from django.utils import dateparse, timezone
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -18,7 +20,8 @@ from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
+    Gebruiksrechten, ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC
@@ -129,6 +132,50 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
 
         super().perform_destroy(instance)
 
+    def get_queryset(self):
+        """
+        Retrieve the latest version of each EnkelvoudigInformatieObject
+        """
+        qs = super().get_queryset()
+        return qs.order_by('canonical', '-versie').distinct('canonical')
+
+    def get_object(self):
+        if 'versie' in self.request.query_params:
+            qs = super().get_queryset()
+            obj = get_object_or_404(
+                qs,
+                uuid=self.kwargs['uuid'],
+                versie=self.request.query_params['versie'],
+            )
+        elif 'registratieOp' in self.request.query_params:
+            qs = super().get_queryset()
+            registratie_op = timezone.make_aware(dateparse.parse_datetime(self.request.query_params['registratieOp']))
+            filtered = qs.filter(
+                uuid=self.kwargs['uuid'],
+                begin_registratie__lte=registratie_op,
+            ).order_by('-begin_registratie')
+            if filtered:
+                obj = filtered.first()
+            else:
+                raise Http404
+        else:
+            qs = self.filter_queryset(self.get_queryset())
+            obj = get_object_or_404(qs, uuid=self.kwargs['uuid'])
+
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete the canonical EnkelvoudigInformatieObject, which cascade deletes
+        all the EnkelvoudigInformatieObjects associated with it
+        """
+        canonical = self.get_object().canonical
+        super().destroy(request, *args, **kwargs)
+
+        self.perform_destroy(canonical)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @swagger_auto_schema(
         method='get',
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
@@ -178,7 +225,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @action(detail=True, methods=['post'])
     def lock(self, request, *args, **kwargs):
         eio = self.get_object()
-        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        canonical = eio.canonical
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(canonical, data=request.data)
         lock_serializer.is_valid(raise_exception=True)
         lock_serializer.save()
         return Response(lock_serializer.data)
@@ -201,6 +249,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @action(detail=True, methods=['post'])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
+        canonical = eio.canonical
         # check if it's a force unlock by administrator
         force_unlock = False
         if self.request.jwt_auth.has_auth(
@@ -211,7 +260,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             force_unlock = True
 
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
-            eio,
+            canonical,
             data=request.data,
             context={'force_unlock': force_unlock}
         )
@@ -220,9 +269,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ObjectInformatieObjectViewSet(NotificationCreateMixin,
-                                    AuditTrailCreateMixin,
-                                    AuditTrailDestroyMixin,
+class ObjectInformatieObjectViewSet(NotificationViewSetMixin,
+                                    AuditTrailViewsetMixin,
                                     CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     mixins.CreateModelMixin,

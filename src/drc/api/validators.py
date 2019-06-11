@@ -46,7 +46,7 @@ class ObjectInformatieObjectValidator:
 
     def __call__(self, context: OrderedDict):
         object_url = context['object']
-        informatieobject_uuid = str(context['informatieobject'].uuid)
+        informatieobject_uuid = str(context['informatieobject'].latest_version.uuid)
         object_type = context['object_type']
 
         informatieobject_url = get_absolute_url(
