@@ -211,21 +211,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -787,21 +785,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -962,21 +958,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -1122,32 +1116,26 @@ paths:
         $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectData'
     delete:
       operationId: enkelvoudiginformatieobject_delete
-      summary: 'Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde
+      description: 'Delete the canonical EnkelvoudigInformatieObject, which cascade
+        deletes
 
-        resources binnen deze API.'
-      description: '**Gerelateerde resources**
-
-        - `ObjectInformatieObject` - alle relaties van het informatieobject
-
-        - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject'
+        all the EnkelvoudigInformatieObjects associated with it'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -1700,7 +1688,7 @@ paths:
       parameters:
       - name: informatieobject
         in: query
-        description: URL naar de/het gerelateerde informatieobject
+        description: URL to the related informatieobject
         required: false
         schema:
           type: string
@@ -1902,21 +1890,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -2190,21 +2176,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -2354,21 +2338,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -2521,21 +2503,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -2683,7 +2663,7 @@ paths:
           format: uri
       - name: informatieobject
         in: query
-        description: URL naar de/het gerelateerde informatieobject
+        description: URL to the related informatieobject
         required: false
         schema:
           type: string
@@ -2822,21 +2802,19 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -2972,11 +2950,7 @@ paths:
       - JWT-Claims:
         - documenten.aanmaken
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ObjectInformatieObject'
-        required: true
+        $ref: '#/components/requestBodies/ObjectInformatieObject'
     parameters: []
   /objectinformatieobjecten/{uuid}:
     get:
@@ -3109,27 +3083,187 @@ paths:
       security:
       - JWT-Claims:
         - documenten.lezen
+    put:
+      operationId: objectinformatieobject_update
+      description: Opvragen en bewerken van Object-Informatieobject relaties.
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Application that performs request
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identifier of the user that performs request
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Explanation why the request is done
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectInformatieObject'
+        '400':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - objectinformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
+      requestBody:
+        $ref: '#/components/requestBodies/ObjectInformatieObject'
     delete:
       operationId: objectinformatieobject_delete
       description: Verwijder een relatie tussen een object en een informatieobject.
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Application that performs request
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the user that performs request
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        description: Explanation why the request is done
         required: false
         schema:
           type: string
@@ -3267,6 +3401,12 @@ servers:
 - url: /api/v1
 components:
   requestBodies:
+    ObjectInformatieObject:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObjectInformatieObject'
+      required: true
     EnkelvoudigInformatieObjectData:
       content:
         application/json:
@@ -3991,13 +4131,6 @@ components:
           format: uri
           maxLength: 200
           minLength: 1
-        lock:
-          title: Lock
-          description: Tijdens het updaten van een document (PATCH, PUT) moet het
-            `lock` veld opgegeven worden. Bij het aanmaken (POST) mag het geen waarde
-            hebben.
-          type: string
-          maxLength: 100
     Fout:
       required:
       - code
@@ -4744,13 +4877,6 @@ components:
           format: uri
           maxLength: 200
           minLength: 1
-        lock:
-          title: Lock
-          description: Tijdens het updaten van een document (PATCH, PUT) moet het
-            `lock` veld opgegeven worden. Bij het aanmaken (POST) mag het geen waarde
-            hebben.
-          type: string
-          maxLength: 100
     Wijzgingen:
       title: Wijzigingen
       type: object

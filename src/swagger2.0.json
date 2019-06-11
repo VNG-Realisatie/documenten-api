@@ -226,21 +226,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -917,21 +917,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -1119,21 +1119,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -1307,27 +1307,26 @@
             },
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
-                "summary": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde\nresources binnen deze API.",
-                "description": "**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
+                "description": "Delete the canonical EnkelvoudigInformatieObject, which cascade deletes\nall the EnkelvoudigInformatieObjects associated with it",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -2013,7 +2012,7 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "URL to the related informatieobject",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2247,21 +2246,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -2601,21 +2600,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -2802,21 +2801,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -2996,21 +2995,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -3192,7 +3191,7 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "URL to the related informatieobject",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3369,21 +3368,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -3708,6 +3707,207 @@
                     }
                 ]
             },
+            "put": {
+                "operationId": "objectinformatieobject_update",
+                "description": "Opvragen en bewerken van Object-Informatieobject relaties.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ObjectInformatieObject"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
+                ]
+            },
             "delete": {
                 "operationId": "objectinformatieobject_delete",
                 "description": "Verwijder een relatie tussen een object en een informatieobject.",
@@ -3715,21 +3915,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Application that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the user that performs request",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "description": "Explanation why the request is done",
                         "required": false,
                         "type": "string"
                     }
@@ -4608,12 +4808,6 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
-                },
-                "lock": {
-                    "title": "Lock",
-                    "description": "Tijdens het updaten van een document (PATCH, PUT) moet het `lock` veld opgegeven worden. Bij het aanmaken (POST) mag het geen waarde hebben.",
-                    "type": "string",
-                    "maxLength": 100
                 }
             }
         },
@@ -5383,12 +5577,6 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
-                },
-                "lock": {
-                    "title": "Lock",
-                    "description": "Tijdens het updaten van een document (PATCH, PUT) moet het `lock` veld opgegeven worden. Bij het aanmaken (POST) mag het geen waarde hebben.",
-                    "type": "string",
-                    "maxLength": 100
                 }
             }
         },
