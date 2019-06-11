@@ -81,7 +81,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         expected_response = content.copy()
         expected_response.update({
             'url': f"http://testserver{expected_url}",
-            'inhoud': f"http://testserver{expected_file_url}",
+            'inhoud': f"http://testserver{expected_file_url}?versie=1",
             'vertrouwelijkheidaanduiding': 'openbaar',
             'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
@@ -98,7 +98,13 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'indicatieGebruiksrecht': None,
             'status': '',
         })
-        self.assertEqual(response.json(), expected_response)
+
+        response_data = response.json()
+        self.assertEqual(sorted(response_data.keys()), sorted(expected_response.keys()))
+
+        for key in response_data.keys():
+            with self.subTest(field=key):
+                self.assertEqual(response_data[key], expected_response[key])
 
     def test_read(self):
         test_object = EnkelvoudigInformatieObjectFactory.create(
@@ -128,7 +134,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'formaat': 'some formaat',
             'taal': 'dut',
             'bestandsnaam': '',
-            'inhoud': f'http://testserver{file_url}',
+            'inhoud': f'http://testserver{file_url}?versie=1',
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',
@@ -147,7 +153,12 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
             'informatieobjecttype': INFORMATIEOBJECTTYPE
         }
-        self.assertEqual(response.json(), expected)
+        response_data = response.json()
+        self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))
+
+        for key in response_data.keys():
+            with self.subTest(field=key):
+                self.assertEqual(response_data[key], expected[key])
 
     def test_bestandsomvang(self):
         """

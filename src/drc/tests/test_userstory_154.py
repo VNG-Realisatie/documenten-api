@@ -31,12 +31,12 @@ class US154Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
             2,
             is_zaak=True,
             object=zaak_url,
-            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         ObjectInformatieObjectFactory.create(
             is_zaak=True,
             object='http://www.example.com/zrc/api/v1/zaken/2',
-            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
 
         url = get_operation_url('objectinformatieobject_list')

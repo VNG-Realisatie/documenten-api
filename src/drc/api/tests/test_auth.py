@@ -31,7 +31,9 @@ class InformatieObjectScopeForbiddenTests(AuthCheckMixin, APITestCase):
         oio = ObjectInformatieObjectFactory.create(is_besluit=True)
         urls = [
             reverse('enkelvoudiginformatieobject-list'),
-            reverse(eio),
+            reverse('enkelvoudiginformatieobject-detail', kwargs={
+                'uuid': eio.uuid
+            }),
             reverse('gebruiksrechten-list'),
             reverse(gebruiksrechten),
             reverse('objectinformatieobject-list'),
@@ -81,7 +83,7 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         self.assertEqual(results[0]['informatieobjecttype'], 'https://informatieobjecttype.nl/ok')
         self.assertEqual(results[0]['vertrouwelijkheidaanduiding'], VertrouwelijkheidsAanduiding.openbaar)
 
-    def test_io_retreive(self):
+    def test_io_retrieve(self):
         """
         Assert you can only read INFORMATIEOBJECTen of the informatieobjecttype and vertrouwelijkheidaanduiding
         of your authorization
@@ -94,8 +96,12 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
             informatieobjecttype='https://informatieobjecttype.nl/ok',
             vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.zeer_geheim
         )
-        url1 = reverse(eio1)
-        url2 = reverse(eio2)
+        url1 = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio1.uuid
+        })
+        url2 = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio2.uuid
+        })
 
         response1 = self.client.get(url1)
         response2 = self.client.get(url2)
@@ -146,18 +152,18 @@ class GebruiksrechtenReadTests(JWTAuthMixin, APITestCase):
         url = reverse('gebruiksrechten-list')
         # must show up
         gebruiksrechten1 = GebruiksrechtenFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
         )
         # must not show up
         GebruiksrechtenFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
         )
         # must not show up
         GebruiksrechtenFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
         )
 
         response = self.client.get(url)
@@ -187,7 +193,9 @@ class GebruiksrechtenReadTests(JWTAuthMixin, APITestCase):
                 vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
             ):
                 response = self.client.post(url, {
-                    'informatieobject': reverse(eio),
+                    'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={
+                        'uuid': eio.uuid
+                    }),
                     'startdatum': '2018-12-24T00:00:00Z',
                     'omschrijvingVoorwaarden': 'Een hele set onredelijke voorwaarden',
                 })
@@ -205,20 +213,20 @@ class OioReadTests(JWTAuthMixin, APITestCase):
         url = reverse('objectinformatieobject-list')
         # must show up
         oio1 = ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
             is_zaak=True
         )
         # must not show up
         ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
             is_zaak=True
         )
         # must not show up
         ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
             is_zaak=True
         )
 
@@ -237,26 +245,26 @@ class OioReadTests(JWTAuthMixin, APITestCase):
     def test_detail_oio_limited_to_authorized_zaken(self):
         # must show up
         oio1 = ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
             is_zaak=True
         )
         # must not show up
         oio2 = ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
             is_zaak=True
         )
         # must not show up
         oio3 = ObjectInformatieObjectFactory.create(
-            informatieobject__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
-            informatieobject__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+            informatieobject__latest_version__informatieobjecttype='https://informatieobjecttype.nl/not_ok',
+            informatieobject__latest_version__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
             is_zaak=True
         )
 
         with self.subTest(
-            informatieobjecttype=oio1.informatieobject.informatieobjecttype,
-            vertrouwelijkheidaanduiding=oio1.informatieobject.vertrouwelijkheidaanduiding
+            informatieobjecttype=oio1.informatieobject.latest_version.informatieobjecttype,
+            vertrouwelijkheidaanduiding=oio1.informatieobject.latest_version.vertrouwelijkheidaanduiding
         ):
             url = reverse(oio1)
 
@@ -267,8 +275,8 @@ class OioReadTests(JWTAuthMixin, APITestCase):
         # not allowed to see these
         for oio in (oio2, oio3):
             with self.subTest(
-                informatieobjecttype=oio.informatieobject.informatieobjecttype,
-                vertrouwelijkheidaanduiding=oio.informatieobject.vertrouwelijkheidaanduiding
+                informatieobjecttype=oio.informatieobject.latest_version.informatieobjecttype,
+                vertrouwelijkheidaanduiding=oio.informatieobject.latest_version.vertrouwelijkheidaanduiding
             ):
                 url = reverse(oio)
 

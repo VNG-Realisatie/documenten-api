@@ -10,7 +10,9 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
+    EnkelvoudigInformatieObjectCanonicalFactory,
+    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
+    ObjectInformatieObjectFactory
 )
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
@@ -26,13 +28,15 @@ class US349TestCase(JWTAuthMixin, APITestCase):
         """
         Deleting a EnkelvoudigInformatieObject causes all related objects to be deleted as well.
         """
-        informatieobject = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
+        informatieobject = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
 
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
 
         informatieobject_delete_url = get_operation_url(
             'enkelvoudiginformatieobject_delete',
-            uuid=informatieobject.uuid
+            uuid=informatieobject.latest_version.uuid
         )
 
         response = self.client.delete(informatieobject_delete_url)
