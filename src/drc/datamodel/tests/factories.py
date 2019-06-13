@@ -39,6 +39,7 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
         )
         is_besluit = factory.Trait(
             object_type=ObjectTypes.besluit,
+            object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}')
         )
 
 

@@ -18,7 +18,7 @@ BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
 
 @override_settings(
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='vng_api_common.mocks.RemoteInformatieObjectMockClient'
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
 class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
@@ -56,7 +56,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(bio.object, BESLUIT)
 
     def test_delete(self):
-        oio = ObjectInformatieObjectFactory.create()
+        oio = ObjectInformatieObjectFactory.create(
+            is_zaak=True
+        )
         url = reverse(oio)
 
         response = self.client.delete(url)

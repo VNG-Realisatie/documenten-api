@@ -88,7 +88,7 @@ SESSION_COOKIE_HTTPONLY = getenv('SESSION_COOKIE_HTTPONLY', False)
 CSRF_COOKIE_SECURE = getenv('CSRF_COOKIE_SECURE', False)
 
 # requires an nginx container running in front
-SENDFILE_BACKEND = 'sendfile.backends.nginx'
+SENDFILE_BACKEND = getenv('SENDFILE_BACKEND', 'sendfile.backends.nginx')
 
 #
 # Custom settings
