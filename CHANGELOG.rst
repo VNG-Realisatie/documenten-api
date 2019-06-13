@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.13.2 (2019-06-13)
+===================
+
+Small QoL fixes
+
+* Added audit-trail related tests
+* Added ability to load fixtures during startup
+* Make sendfile backend configurable through envvar
+
 0.13.1 (2019-06-05)
 ===================
 
