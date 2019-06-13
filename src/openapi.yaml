@@ -4772,6 +4772,7 @@ components:
       - hoofdObject
       - resource
       - resourceUrl
+      - resourceWeergave
       - wijzigingen
       type: object
       properties:
@@ -4889,6 +4890,12 @@ components:
           title: Toelichting
           description: Toelichting waarom de handeling is uitgevoerd
           type: string
+        resourceWeergave:
+          title: Resource weergave
+          description: Vriendelijke identificatie van het object
+          type: string
+          maxLength: 200
+          minLength: 1
         aanmaakdatum:
           title: Aanmaakdatum
           description: De datum waarop de handeling is gedaan

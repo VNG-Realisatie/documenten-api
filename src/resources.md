@@ -70,6 +70,7 @@ De mapping van waarden naar weergave is als volgt:
 | resource | Het type resource waarop de actie gebeurde | string | ja | C​R​U​D |
 | resourceUrl | De URL naar het object | string | ja | C​R​U​D |
 | toelichting | Toelichting waarom de handeling is uitgevoerd | string | nee | C​R​U​D |
+| resourceWeergave | Vriendelijke identificatie van het object | string | ja | C​R​U​D |
 | aanmaakdatum | De datum waarop de handeling is gedaan | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## Gebruiksrechten
