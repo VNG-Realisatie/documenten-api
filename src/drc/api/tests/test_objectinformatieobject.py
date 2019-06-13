@@ -1,12 +1,9 @@
-from unittest import skip
-
 from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
-from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
@@ -15,6 +12,7 @@ from drc.datamodel.tests.factories import (
 
 ZAAK = 'https://zrc.nl/api/v1/zaken/1234'
 BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
+
 
 @override_settings(
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
@@ -101,3 +99,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['informatieobject'], f'http://testserver{eo_detail_url}')
+
+    def test_destroy_oio_remote_gone(self):
+        raise NotImplementedError
+
+    def test_destroy_oio_remote_still_present(self):
+        raise NotImplementedError

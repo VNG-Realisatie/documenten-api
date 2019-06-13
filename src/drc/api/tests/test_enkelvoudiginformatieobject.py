@@ -3,16 +3,20 @@ from base64 import b64encode
 from datetime import date
 
 from django.test import override_settings
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 
 from freezegun import freeze_time
 from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTAuthMixin, get_operation_url, get_validation_errors, reverse
+)
 
 from drc.datamodel.models import EnkelvoudigInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
+)
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
@@ -240,3 +244,28 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]['identificatie'], 'foo')
+
+    def test_destroy_no_relations_allowed(self):
+        """
+        Assert that destroying is possible when there are no relations.
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        url = reverse(eio)
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_destroy_with_relations_not_allowed(self):
+        """
+        Assert that destroying is not possible when there are relations.
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        ObjectInformatieObjectFactory.create(informatieobject=eio)
+        url = reverse(eio)
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "pending-relations")
