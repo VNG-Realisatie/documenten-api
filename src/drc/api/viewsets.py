@@ -1,8 +1,11 @@
+from django.utils.translation import ugettext_lazy as _
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
@@ -113,6 +116,17 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
+
+    def perform_destroy(self, instance):
+        if instance.objectinformatieobject_set.exists():
+            raise serializers.ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: _(
+                    "All relations to the document must be destroyed before destroying the document"
+                )},
+                code="pending-relations"
+            )
+
+        super().perform_destroy(instance)
 
     @swagger_auto_schema(
         method='get',
