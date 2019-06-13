@@ -24,3 +24,15 @@ class InformationObjectRelatedAuthScopesRequired(RelatedObjAuthScopesRequired):
     # Define the property of the ForeignKey of which the permission fields will
     # be checked
     obj_property = 'latest_version'
+
+    def _get_obj_from_path(self, obj):
+        if not isinstance(self.obj_path, str):
+            raise TypeError("'obj_path' must be a python dotted path to the main object FK")
+
+        bits = self.obj_path.split('.')
+        for bit in bits:
+            obj = getattr(obj, bit)
+
+        if self.obj_property:
+            obj = getattr(obj, self.obj_property)
+        return obj
