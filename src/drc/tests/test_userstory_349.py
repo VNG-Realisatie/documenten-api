@@ -1,8 +1,6 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
-from unittest.mock import patch
-
 from django.test import override_settings
 
 from rest_framework import status
@@ -10,12 +8,9 @@ from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
-)
+from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
-    ObjectInformatieObjectFactory
+    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
 )
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
@@ -34,7 +29,6 @@ class US349TestCase(JWTAuthMixin, APITestCase):
         informatieobject = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
 
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
-        ObjectInformatieObjectFactory.create(informatieobject=informatieobject, is_zaak=True)
 
         informatieobject_delete_url = get_operation_url(
             'enkelvoudiginformatieobject_delete',
@@ -47,4 +41,3 @@ class US349TestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(EnkelvoudigInformatieObject.objects.all().count(), 0)
 
         self.assertFalse(Gebruiksrechten.objects.all().exists())
-        self.assertFalse(ObjectInformatieObject.objects.all().exists())

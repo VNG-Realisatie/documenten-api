@@ -11,7 +11,10 @@ from vng_api_common.models import APICredential
 from vng_api_common.tests.urls import reverse
 from zds_client import ClientError
 
+from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.validators import validate_status
+
+from .utils import get_absolute_url
 
 
 class StatusValidator:
@@ -46,14 +49,10 @@ class ObjectInformatieObjectValidator:
         informatieobject_uuid = str(context['informatieobject'].uuid)
         object_type = context['object_type']
 
-        # Construct the url for the informatieobject
-        path = reverse('enkelvoudiginformatieobject-detail', kwargs={
-            'version': settings.REST_FRAMEWORK['DEFAULT_VERSION'],
-            'uuid': informatieobject_uuid,
-        })
-        domain = Site.objects.get_current().domain
-        protocol = 'https' if settings.IS_HTTPS else 'http'
-        informatieobject_url = f'{protocol}://{domain}{path}'
+        informatieobject_url = get_absolute_url(
+            'enkelvoudiginformatieobject-detail',
+            uuid=informatieobject_uuid
+        )
 
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
@@ -82,6 +81,39 @@ class ObjectInformatieObjectValidator:
                 self.message.format(component=component),
                 code=self.code
             )
+
+
+class RemoteRelationValidator:
+    message = _("The canonical remote relation still exists, this relation cannot be deleted.")
+    code = "remote-relation-exists"
+
+    def __call__(self, object_informatie_object: ObjectInformatieObject):
+        object_url = object_informatie_object.object
+
+        informatieobject_url = get_absolute_url(
+            'enkelvoudiginformatieobject-detail',
+            uuid=object_informatie_object.informatieobject.uuid
+        )
+
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(object_url)
+        client.auth = APICredential.get_auth(object_url)
+
+        resource = f"{object_informatie_object.object_type}informatieobject"
+
+        try:
+            relations = client.list(resource, query_params={
+                object_informatie_object.object_type: object_url,
+                'informatieobject': informatieobject_url,
+            })
+        except ClientError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-lookup-error'
+            ) from exc
+
+        if len(relations) >= 1:
+            raise serializers.ValidationError(self.message, code=self.code)
 
 
 class InformatieObjectUniqueValidator:
