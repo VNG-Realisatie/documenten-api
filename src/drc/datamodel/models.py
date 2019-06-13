@@ -10,6 +10,7 @@ from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
+from vng_api_common.models import APIMixin
 from vng_api_common.utils import request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
@@ -148,7 +149,7 @@ class InformatieObject(models.Model):
         return f"{self.bronorganisatie} - {self.identificatie}"
 
 
-class EnkelvoudigInformatieObject(InformatieObject):
+class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     # TODO: validate mime types
     formaat = models.CharField(
         max_length=255, blank=True,
@@ -246,7 +247,7 @@ class Gebruiksrechten(models.Model):
         return f"({self.informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden}"
 
 
-class ObjectInformatieObject(models.Model):
+class ObjectInformatieObject(APIMixin, models.Model):
     """
     Modelleer een INFORMATIEOBJECT horend bij een OBJECT.
 

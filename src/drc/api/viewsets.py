@@ -43,6 +43,7 @@ from .serializers import (
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
+from .validators import RemoteRelationValidator
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
@@ -271,6 +272,19 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
     }
     audit = AUDIT_DRC
     audittrail_main_resource_key = 'informatieobject'
+
+    def perform_destroy(self, instance):
+        # destroy is only allowed if the remote relation does no longer exist, so check for that
+        validator = RemoteRelationValidator()
+
+        try:
+            validator(instance)
+        except serializers.ValidationError as exc:
+            raise serializers.ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: exc
+            }, code=exc.detail[0].code)
+        else:
+            super().perform_destroy(instance)
 
 
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
