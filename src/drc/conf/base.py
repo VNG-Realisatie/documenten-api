@@ -4,6 +4,7 @@ import os
 from django.urls import reverse_lazy
 
 from .api import *  # noqa
+from .plugins import PLUGIN_INSTALLED_APPS
 
 SITE_ID = int(os.getenv('SITE_ID', 1))
 
@@ -71,7 +72,7 @@ INSTALLED_APPS = [
     'drc.api',
     'drc.datamodel',
     'drc.utils',
-]
+] + PLUGIN_INSTALLED_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

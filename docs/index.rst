@@ -37,6 +37,7 @@ Contents
     contents/installation
     contents/configuration
     contents/usage
+    contents/plugins
     source/drc
     contents/copyright
     contents/changelog
