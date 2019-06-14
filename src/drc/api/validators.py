@@ -92,7 +92,7 @@ class RemoteRelationValidator:
 
         informatieobject_url = get_absolute_url(
             'enkelvoudiginformatieobject-detail',
-            uuid=object_informatie_object.informatieobject.uuid
+            uuid=object_informatie_object.informatieobject.latest_version.uuid
         )
 
         Client = import_string(settings.ZDS_CLIENT_CLASS)

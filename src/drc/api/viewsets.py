@@ -1,8 +1,8 @@
-from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.http.response import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.utils import dateparse, timezone
+from django.utils.translation import ugettext_lazy as _
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -143,9 +143,9 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
 
-<<<<<<< HEAD
+    @transaction.atomic
     def perform_destroy(self, instance):
-        if instance.objectinformatieobject_set.exists():
+        if instance.canonical.objectinformatieobject_set.exists():
             raise serializers.ValidationError({
                 api_settings.NON_FIELD_ERRORS_KEY: _(
                     "All relations to the document must be destroyed before destroying the document"
@@ -153,8 +153,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
                 code="pending-relations"
             )
 
-        super().perform_destroy(instance)
-=======
+        super().perform_destroy(instance.canonical)
 
     @property
     def filterset_class(self):
@@ -172,7 +171,6 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         if self.action == 'update' or self.action == 'partial_update':
             return EnkelvoudigInformatieObjectWithLockSerializer
         return EnkelvoudigInformatieObjectSerializer
->>>>>>> PR feedback
 
     def get_queryset(self):
         """
@@ -189,19 +187,6 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
-
-
-    @transaction.atomic
-    def destroy(self, request, *args, **kwargs):
-        """
-        Verwijder een ENKELVOUDIGINFORMATIEOBJECTCANONICAL en daarmee alle
-        ENKELVOUDIGINFORMATIEOBJECT versies die ermee verbonden zijn
-        """
-        canonical = self.get_object().canonical
-        response = super().destroy(request, *args, **kwargs)
-
-        self.perform_destroy(canonical)
-        return response
 
     @swagger_auto_schema(
         method='get',

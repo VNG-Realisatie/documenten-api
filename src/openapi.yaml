@@ -1138,10 +1138,17 @@ paths:
         $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
     delete:
       operationId: enkelvoudiginformatieobject_delete
-      description: 'Verwijder een ENKELVOUDIGINFORMATIEOBJECTCANONICAL en daarmee
-        alle
+      description: 'Verwijdert een ENKELVOUDIG INFORMATIEOBJECT en alle bijbehorende
+        versies,
 
-        ENKELVOUDIGINFORMATIEOBJECT versies die ermee verbonden zijn'
+        samen met alle gerelateerde resources binnen deze API.
+
+
+        **Gerelateerde resources**
+
+        - `ObjectInformatieObject` - alle relaties van het informatieobject
+
+        - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header

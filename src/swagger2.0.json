@@ -1320,7 +1320,7 @@
             },
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
-                "description": "Verwijder een ENKELVOUDIGINFORMATIEOBJECTCANONICAL en daarmee alle\nENKELVOUDIGINFORMATIEOBJECT versies die ermee verbonden zijn",
+                "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API.\n\n**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",

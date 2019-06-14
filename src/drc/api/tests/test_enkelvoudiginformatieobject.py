@@ -15,7 +15,9 @@ from vng_api_common.tests import (
 )
 from vng_api_common.tests.auth import JWTAuthMixin
 
-from drc.datamodel.models import EnkelvoudigInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical
+)
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
@@ -274,7 +276,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         Assert that destroying is not possible when there are relations.
         """
         eio = EnkelvoudigInformatieObjectFactory.create()
-        ObjectInformatieObjectFactory.create(informatieobject=eio)
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical)
         url = reverse(eio)
 
         response = self.client.delete(url)
@@ -372,6 +374,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.delete(eio_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(EnkelvoudigInformatieObjectCanonical.objects.exists())
         self.assertFalse(EnkelvoudigInformatieObject.objects.exists())
 
     def test_eio_detail_retrieves_latest_version(self):
