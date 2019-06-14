@@ -488,7 +488,10 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_eio_download_content_filter_by_version(self):
-        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving='beschrijving1')
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving='beschrijving1',
+            inhoud__data=b'inhoud1'
+        )
 
         eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
             'uuid': eio.uuid,
@@ -500,7 +503,30 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
             'lock': lock
         })
 
-        response = self.client.get(eio_url, {'versie': '2'})
+        response = self.client.get(eio_url, {'versie': '1'})
 
         response = self.client.get(response.data['inhoud'])
-        self.assertEqual(response._container[0], b'inhoud2')
+        self.assertEqual(response._container[0], b'inhoud1')
+
+    def test_eio_download_content_filter_by_registratie(self):
+        with freeze_time('2019-01-01 12:00:00'):
+            eio = EnkelvoudigInformatieObjectFactory.create(
+                beschrijving='beschrijving1',
+                inhoud__data=b'inhoud1'
+            )
+
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid,
+        })
+        lock = self.client.post(f'{eio_url}/lock').data['lock']
+        with freeze_time('2019-01-01 13:00:00'):
+            self.client.patch(eio_url, {
+                'inhoud': b64encode(b'inhoud2'),
+                'beschrijving': 'beschrijving2',
+                'lock': lock
+            })
+
+        response = self.client.get(eio_url, {'registratieOp': '2019-01-01T12:00:00'})
+
+        response = self.client.get(response.data['inhoud'])
+        self.assertEqual(response._container[0], b'inhoud1')
