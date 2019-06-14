@@ -99,7 +99,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'incorrect-lock-id')
 
-    def test_create_fail_lock(self):
+    def test_create_ignores_lock(self):
         url = get_operation_url('enkelvoudiginformatieobject_create')
         data = {
             'identificatie': uuid.uuid4().hex,
@@ -120,10 +120,8 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
-
-        error = get_validation_errors(response, 'nonFieldErrors')
-        self.assertEqual(error['code'], 'lock-in-create')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+        self.assertNotIn('lock', response.data)
 
 
 class EioUnlockAPITests(JWTAuthMixin, APITestCase):
