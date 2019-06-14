@@ -164,7 +164,10 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     `EnkelvoudigInformatieObjectCanonical` can exist with multiple different
     `EnkelvoudigInformatieObject`s, which can be retrieved by filtering
     """
-    canonical = models.ForeignKey(EnkelvoudigInformatieObjectCanonical, on_delete=models.CASCADE)
+    canonical = models.ForeignKey(
+        EnkelvoudigInformatieObjectCanonical,
+        on_delete=models.CASCADE,
+    )
     uuid = models.UUIDField(
         default=_uuid.uuid4,
         help_text='Unieke resource identifier (UUID4)'
@@ -227,7 +230,9 @@ class Gebruiksrechten(models.Model):
         unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
-    informatieobject = models.ForeignKey('EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE)
+    informatieobject = models.ForeignKey(
+        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE,
+    )
     omschrijving_voorwaarden = models.TextField(
         _("omschrijving voorwaarden"),
         help_text=_("Omschrijving van de van toepassing zijnde voorwaarden aan "
@@ -288,7 +293,7 @@ class ObjectInformatieObject(APIMixin, models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     informatieobject = models.ForeignKey(
-        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE
+        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE,
     )
     object = models.URLField(help_text="URL naar het gerelateerde OBJECT.")
     object_type = models.CharField(

@@ -4,7 +4,9 @@ Serializers of the Document Registratie Component REST API
 import uuid
 
 from django.conf import settings
+from django.db import transaction
 from django.utils.encoding import force_text
+from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -67,7 +69,8 @@ class AnyBase64File(Base64FileField):
             versie = self.parent.instance.versie
         else:
             versie = self.parent.instance.get(uuid=kwargs['uuid']).versie
-        return f'{url}/download?versie={versie}'
+        query_string = urlencode({'versie': versie})
+        return f'{url}?{query_string}'
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
@@ -98,7 +101,10 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
     def get_object(self, view_name, view_args, view_kwargs):
         lookup_value = view_kwargs[self.lookup_url_kwarg]
         lookup_kwargs = {self.lookup_field: lookup_value}
-        return self.get_queryset().filter(**lookup_kwargs).order_by('-versie').first().canonical
+        try:
+            return self.get_queryset().filter(**lookup_kwargs).order_by('-versie').first().canonical
+        except (TypeError, AttributeError) as exc:
+            self.fail('does_not_exist')
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -109,7 +115,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid'
     )
-    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-detail')
+    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download')
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True,
         min_value=0
@@ -149,7 +155,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'indicatie_gebruiksrecht',
             'ondertekening',
             'integriteit',
-            'informatieobjecttype',  # van-relatie
+            'informatieobjecttype'  # van-relatie,
         )
         extra_kwargs = {
             'informatieobjecttype': {
@@ -186,30 +192,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             )
         return indicatie
 
-    def validate(self, attrs):
-        valid_attrs = super().validate(attrs)
-        lock = self.context['request'].data.get('lock', '')
-        # update
-        if self.instance:
-            if not self.instance.canonical.lock:
-                raise serializers.ValidationError(
-                    _("Unlocked document can't be modified"),
-                    code='unlocked'
-                )
-            if lock != self.instance.canonical.lock:
-                raise serializers.ValidationError(
-                    _("Lock id is not correct"),
-                    code='incorrect-lock-id'
-                )
-        # create
-        else:
-            if lock:
-                raise serializers.ValidationError(
-                    _("A locked document can't be created"),
-                    code='lock-in-create'
-                )
-        return valid_attrs
-
+    @transaction.atomic
     def create(self, validated_data):
         """
         Handle nested writes.
@@ -247,7 +230,54 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         validated_data['pk'] = None
         validated_data['versie'] += 1
 
+        # Remove the lock from the data from which a new
+        # EnkelvoudigInformatieObject will be created, because lock is not a
+        # part of that model
+        validated_data.pop('lock')
+
         return super().create(validated_data)
+
+
+class EnkelvoudigInformatieObjectWithLockSerializer(EnkelvoudigInformatieObjectSerializer):
+    """
+    This serializer class is used by EnkelvoudigInformatieObjectViewSet for
+    update and partial_update operations
+    """
+    lock = serializers.CharField(
+        write_only=True,
+        help_text=_("Lock must be provided during updating the document (PATCH, PUT), "
+                    "not while creating it"),
+    )
+
+
+    class Meta(EnkelvoudigInformatieObjectSerializer.Meta):
+        # Use the same fields as the parent class and add the lock to it
+        fields = EnkelvoudigInformatieObjectSerializer.Meta.fields + ('lock',)
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        if not self.instance.canonical.lock:
+            raise serializers.ValidationError(
+                _("Unlocked document can't be modified"),
+                code='unlocked'
+            )
+
+        try:
+            lock = valid_attrs['lock']
+        except KeyError:
+            raise serializers.ValidationError(
+                _("Lock id must be provided"),
+                code='missing-lock-id'
+            )
+
+        # update
+        if lock != self.instance.canonical.lock:
+            raise serializers.ValidationError(
+                _("Lock id is not correct"),
+                code='incorrect-lock-id'
+            )
+        return valid_attrs
 
 
 class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):

@@ -1,8 +1,9 @@
+from urllib.parse import urlparse
+
 from vng_api_common.permissions import (
     MainObjAuthScopesRequired, RelatedObjAuthScopesRequired
 )
-
-from .scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN
+from vng_api_common.utils import get_resource_for_path
 
 
 class InformationObjectAuthScopesRequired(MainObjAuthScopesRequired):
@@ -19,20 +20,14 @@ class InformationObjectRelatedAuthScopesRequired(RelatedObjAuthScopesRequired):
     of related informatieobject and check that they are present in the AC for this client
     """
     permission_fields = ('informatieobjecttype', 'vertrouwelijkheidaanduiding')
-    obj_path = 'informatieobject'
+    obj_path = 'informatieobject.latest_version'
 
-    # Define the property of the ForeignKey of which the permission fields will
-    # be checked
-    obj_property = 'latest_version'
-
-    def _get_obj_from_path(self, obj):
-        if not isinstance(self.obj_path, str):
-            raise TypeError("'obj_path' must be a python dotted path to the main object FK")
-
-        bits = self.obj_path.split('.')
-        for bit in bits:
-            obj = getattr(obj, bit)
-
-        if self.obj_property:
-            obj = getattr(obj, self.obj_property)
-        return obj
+    def _get_obj(self, view, request):
+        """
+        Overridden to ensure that the correct key is used to retrieve the url
+        from the request data
+        """
+        main_obj_path = request.data.get(self.obj_path.split('.')[0], None)
+        main_obj_url = urlparse(main_obj_path).path
+        main_obj = get_resource_for_path(main_obj_url)
+        return main_obj
