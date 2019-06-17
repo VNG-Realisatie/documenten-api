@@ -168,16 +168,9 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
-        if self.action == 'update' or self.action == 'partial_update':
+        if self.action in ['update', 'partial_update']:
             return EnkelvoudigInformatieObjectWithLockSerializer
         return EnkelvoudigInformatieObjectSerializer
-
-    def get_queryset(self):
-        """
-        Haal de meest recente versie van elk `EnkelvoudigInformatieObject` op
-        """
-        qs = super().get_queryset()
-        return qs.order_by('canonical', '-versie').distinct('canonical')
 
     @swagger_auto_schema(
         manual_parameters=[

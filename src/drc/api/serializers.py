@@ -5,7 +5,6 @@ import uuid
 
 from django.conf import settings
 from django.db import transaction
-from django.utils.encoding import force_text
 from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
@@ -14,8 +13,6 @@ from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from rest_framework.settings import api_settings
-from vng_api_common.constants import ObjectTypes
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import GegevensGroepSerializer
 from vng_api_common.validators import IsImmutableValidator, URLValidator
@@ -94,16 +91,17 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
     the uuid, but the `EnkelvoudigInformatieObject`s related to it do
     store the uuid
     """
-    def get_url(self, obj, view_name, view_args, view_kwargs):
+
+    def get_url(self, obj, view_name, request, format):
         obj_latest_version = obj.latest_version
-        return super().get_url(obj_latest_version, view_name, view_args, view_kwargs)
+        return super().get_url(obj_latest_version, view_name, request, format)
 
     def get_object(self, view_name, view_args, view_kwargs):
         lookup_value = view_kwargs[self.lookup_url_kwarg]
         lookup_kwargs = {self.lookup_field: lookup_value}
         try:
             return self.get_queryset().filter(**lookup_kwargs).order_by('-versie').first().canonical
-        except (TypeError, AttributeError) as exc:
+        except (TypeError, AttributeError):
             self.fail('does_not_exist')
 
 
