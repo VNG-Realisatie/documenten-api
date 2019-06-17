@@ -14,7 +14,7 @@ from .viewsets import (
 router = routers.DefaultRouter()
 router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectViewSet, [
     routers.nested('audittrail', EnkelvoudigInformatieObjectAuditTrailViewSet),
-])
+], basename='enkelvoudiginformatieobject')
 router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
 

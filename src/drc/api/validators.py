@@ -46,7 +46,7 @@ class ObjectInformatieObjectValidator:
 
     def __call__(self, context: OrderedDict):
         object_url = context['object']
-        informatieobject_uuid = str(context['informatieobject'].uuid)
+        informatieobject_uuid = str(context['informatieobject'].latest_version.uuid)
         object_type = context['object_type']
 
         informatieobject_url = get_absolute_url(
@@ -92,7 +92,7 @@ class RemoteRelationValidator:
 
         informatieobject_url = get_absolute_url(
             'enkelvoudiginformatieobject-detail',
-            uuid=object_informatie_object.informatieobject.uuid
+            uuid=object_informatie_object.informatieobject.latest_version.uuid
         )
 
         Client = import_string(settings.ZDS_CLIENT_CLASS)

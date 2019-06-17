@@ -5,10 +5,26 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
+from vng_api_common.constants import (
+    ObjectTypes, RelatieAarden, VertrouwelijkheidsAanduiding
+)
+
+from drc.datamodel.models import EnkelvoudigInformatieObject
+
+
+class EnkelvoudigInformatieObjectCanonicalFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'datamodel.EnkelvoudigInformatieObjectCanonical'
+
+    latest_version = factory.RelatedFactory(
+        'drc.datamodel.tests.factories.EnkelvoudigInformatieObjectFactory',
+        'canonical'
+    )
+
 
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
+    canonical = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     identificatie = uuid.uuid4().hex
     bronorganisatie = factory.Faker('ssn', locale='nl_NL')
     creatiedatum = datetime.date(2018, 6, 27)
@@ -26,7 +42,7 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
 
 class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
-    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     object = factory.Faker('url')
 
     class Meta:
@@ -44,7 +60,7 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
 
 
 class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
-    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectFactory)
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     omschrijving_voorwaarden = factory.Faker('paragraph')
 
     class Meta:
@@ -53,6 +69,6 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
     @factory.lazy_attribute
     def startdatum(self):
         return datetime.datetime.combine(
-            self.informatieobject.creatiedatum,
+            self.informatieobject.latest_version.creatiedatum,
             datetime.time(0, 0)
         ).replace(tzinfo=timezone.utc)

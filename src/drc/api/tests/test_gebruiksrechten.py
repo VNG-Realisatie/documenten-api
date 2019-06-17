@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 
 from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectCanonicalFactory,
     EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory
 )
 
@@ -16,11 +17,11 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
     def test_create(self):
         url = reverse('gebruiksrechten-list')
-        eio = EnkelvoudigInformatieObjectFactory.create(
-            creatiedatum='2018-12-24',
-            informatieobjecttype=INFORMATIEOBJECTTYPE
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum='2018-12-24',
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
-        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.latest_version.uuid})
 
         eio_detail = self.client.get(eio_url)
 
@@ -44,11 +45,11 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
         anymore.
         """
         gebruiksrechten = GebruiksrechtenFactory.create(
-            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         url = reverse(
             'enkelvoudiginformatieobject-detail',
-            kwargs={'uuid': gebruiksrechten.informatieobject.uuid}
+            kwargs={'uuid': gebruiksrechten.informatieobject.latest_version.uuid}
         )
 
         for invalid_value in (None, False):
@@ -77,7 +78,7 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
     def test_delete_gebruiksrechten(self):
         gebruiksrechten = GebruiksrechtenFactory.create(
-            informatieobject__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         url = reverse(
             'gebruiksrechten-detail',
@@ -85,7 +86,7 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
         )
         eio_url = reverse(
             'enkelvoudiginformatieobject-detail',
-            kwargs={'uuid': gebruiksrechten.informatieobject.uuid}
+            kwargs={'uuid': gebruiksrechten.informatieobject.latest_version.uuid}
         )
 
         eio_data = self.client.get(eio_url).json()

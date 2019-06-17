@@ -1,3 +1,7 @@
+from django.db import transaction
+from django.http.response import Http404
+from django.shortcuts import get_list_or_404, get_object_or_404
+from django.utils import dateparse, timezone
 from django.utils.translation import ugettext_lazy as _
 
 from drf_yasg import openapi
@@ -11,20 +15,24 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.filters import Backend
 from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin, NotificationViewSetMixin
+    NotificationCreateMixin, NotificationDestroyMixin,
+    NotificationViewSetMixin
 )
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
+    Gebruiksrechten, ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
-    EnkelvoudigInformatieObjectFilter, GebruiksrechtenFilter,
+    EnkelvoudigInformatieObjectDetailFilter,
+    EnkelvoudigInformatieObjectListFilter, GebruiksrechtenFilter,
     ObjectInformatieObjectFilter
 )
 from .kanalen import KANAAL_DOCUMENTEN
@@ -38,12 +46,27 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
-    EnkelvoudigInformatieObjectSerializer, GebruiksrechtenSerializer,
+    EnkelvoudigInformatieObjectSerializer,
+    EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
+
+# Openapi query parameters for version querying
+VERSIE_QUERY_PARAM = openapi.Parameter(
+    'versie',
+    openapi.IN_QUERY,
+    description='Het versienummer van het `EnkelvoudigInformatieObject` dat opgehaald moet worden',
+    type=openapi.TYPE_INTEGER
+)
+REGISTRATIE_QUERY_PARAM = openapi.Parameter(
+    'registratieOp',
+    openapi.IN_QUERY,
+    description='Een datumtijd in ISO8601 formaat, de `EnkelvoudigInformatieObject` versie die qua begin_registratie het kortst hiervoor zit wordt opgehaald',
+    type=openapi.TYPE_STRING
+)
 
 
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
@@ -60,20 +83,24 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     - geldigheid informatieobjecttype URL
 
     list:
-    Geef een lijst van ENKELVOUDIGe INFORMATIEOBJECTen (=documenten).
+    Geef een lijst van de laatste versies van ENKELVOUDIGe INFORMATIEOBJECTen
+    (=documenten).
+
 
     De objecten bevatten metadata over de documenten en de downloadlink naar
     de binary data.
 
     retrieve:
-    Geef de details van een ENKELVOUDIG INFORMATIEOBJECT.
+    Geef de details van de laatste versie ENKELVOUDIG INFORMATIEOBJECT.
 
     Het object bevat metadata over het informatieobject en de downloadlink naar
     de binary data.
 
+    Er kan gefiltered worden met querystringparameters.
+
     update:
-    Werk een ENKELVOUDIG INFORMATIEOBJECT bij door de volledige resource mee
-    te sturen.
+    Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door de
+    volledige resource mee te sturen.
 
     **Er wordt gevalideerd op**
     - geldigheid informatieobjecttype URL
@@ -82,8 +109,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     - valideer immutable attributes
 
     partial_update:
-    Werk een ENKELVOUDIG INFORMATIEOBJECT bij door enkel de gewijzigde velden
-    mee te sturen.
+    Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door enkel
+    de gewijzigde velden mee te sturen.
 
     **Er wordt gevalideerd op**
     - geldigheid informatieobjecttype URL
@@ -92,16 +119,14 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     - valideer immutable attributes
 
     destroy:
-    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT, samen met alle gerelateerde
-    resources binnen deze API.
+    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT en alle bijbehorende versies,
+    samen met alle gerelateerde resources binnen deze API.
 
     **Gerelateerde resources**
     - `ObjectInformatieObject` - alle relaties van het informatieobject
     - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject
     """
-    queryset = EnkelvoudigInformatieObject.objects.all()
-    serializer_class = EnkelvoudigInformatieObjectSerializer
-    filterset_class = EnkelvoudigInformatieObjectFilter
+    queryset = EnkelvoudigInformatieObject.objects.order_by('canonical', '-versie').distinct('canonical')
     lookup_field = 'uuid'
     permission_classes = (InformationObjectAuthScopesRequired, )
     required_scopes = {
@@ -118,8 +143,9 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
 
+    @transaction.atomic
     def perform_destroy(self, instance):
-        if instance.objectinformatieobject_set.exists():
+        if instance.canonical.objectinformatieobject_set.exists():
             raise serializers.ValidationError({
                 api_settings.NON_FIELD_ERRORS_KEY: _(
                     "All relations to the document must be destroyed before destroying the document"
@@ -127,7 +153,33 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
                 code="pending-relations"
             )
 
-        super().perform_destroy(instance)
+        super().perform_destroy(instance.canonical)
+
+    @property
+    def filterset_class(self):
+        """
+        To support filtering by versie and registratieOp for detail view
+        """
+        if self.detail:
+            return EnkelvoudigInformatieObjectDetailFilter
+        return EnkelvoudigInformatieObjectListFilter
+
+    def get_serializer_class(self):
+        """
+        To validate that a lock id is sent only with PUT and PATCH operations
+        """
+        if self.action in ['update', 'partial_update']:
+            return EnkelvoudigInformatieObjectWithLockSerializer
+        return EnkelvoudigInformatieObjectSerializer
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            VERSIE_QUERY_PARAM,
+            REGISTRATIE_QUERY_PARAM
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
         method='get',
@@ -148,9 +200,13 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
             status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
             status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
-        }
+        },
+        manual_parameters=[
+            VERSIE_QUERY_PARAM,
+            REGISTRATIE_QUERY_PARAM
+        ]
     )
-    @action(methods=['get'], detail=True)
+    @action(methods=['get'], detail=True, name='enkelvoudiginformatieobject_download')
     def download(self, request, *args, **kwargs):
         eio = self.get_object()
         return sendfile(
@@ -178,7 +234,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @action(detail=True, methods=['post'])
     def lock(self, request, *args, **kwargs):
         eio = self.get_object()
-        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(eio, data=request.data)
+        canonical = eio.canonical
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(canonical, data=request.data)
         lock_serializer.is_valid(raise_exception=True)
         lock_serializer.save()
         return Response(lock_serializer.data)
@@ -201,6 +258,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     @action(detail=True, methods=['post'])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
+        canonical = eio.canonical
         # check if it's a force unlock by administrator
         force_unlock = False
         if self.request.jwt_auth.has_auth(
@@ -211,7 +269,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             force_unlock = True
 
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
-            eio,
+            canonical,
             data=request.data,
             context={'force_unlock': force_unlock}
         )
@@ -221,6 +279,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
 
 
 class ObjectInformatieObjectViewSet(NotificationCreateMixin,
+                                    NotificationDestroyMixin,
                                     AuditTrailCreateMixin,
                                     AuditTrailDestroyMixin,
                                     CheckQueryParamsMixin,

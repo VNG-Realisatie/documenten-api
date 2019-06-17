@@ -29,7 +29,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
     def test_create_with_objecttype_zaak(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
-        eio_url = reverse(eio)
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid
+        })
 
         response = self.client.post(self.list_url, {
             'object': ZAAK,
@@ -39,12 +41,14 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        zio = eio.objectinformatieobject_set.get()
+        zio = eio.canonical.objectinformatieobject_set.get()
         self.assertEqual(zio.object, ZAAK)
 
     def test_create_with_objecttype_besluit(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
-        eio_url = reverse(eio)
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid
+        })
 
         response = self.client.post(self.list_url, {
             'object': BESLUIT,
@@ -54,7 +58,7 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        bio = eio.objectinformatieobject_set.get()
+        bio = eio.canonical.objectinformatieobject_set.get()
         self.assertEqual(bio.object, BESLUIT)
 
     def test_duplicate_object(self):
@@ -64,7 +68,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         oio = ObjectInformatieObjectFactory.create(
             is_zaak=True,
         )
-        enkelvoudig_informatie_url = reverse(oio.informatieobject)
+        enkelvoudig_informatie_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': oio.informatieobject.latest_version.uuid
+        })
 
         content = {
             'informatieobject': f'http://testserver{enkelvoudig_informatie_url}',
@@ -83,7 +89,9 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         oio = ObjectInformatieObjectFactory.create(
             is_zaak=True,
         )
-        eo_detail_url = reverse(oio.informatieobject)
+        eo_detail_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': oio.informatieobject.latest_version.uuid
+        })
 
         response = self.client.get(self.list_url, {
             'informatieobject': f'http://testserver{eo_detail_url}',
