@@ -1,5 +1,4 @@
 import base64
-from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings

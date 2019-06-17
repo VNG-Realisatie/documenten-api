@@ -20,6 +20,7 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 
+
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class AuditTrailTests(JWTAuthMixin, APITestCase):
@@ -119,6 +120,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         delete_response = self.client.delete(gebruiksrechten_response['url'])
 
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
 

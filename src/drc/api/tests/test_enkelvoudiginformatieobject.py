@@ -2,9 +2,7 @@ import uuid
 from base64 import b64encode
 from datetime import date
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
-from django.urls import reverse_lazy
 
 from freezegun import freeze_time
 from privates.test import temp_private_root
@@ -13,7 +11,6 @@ from rest_framework.test import APITestCase
 from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors, reverse
 )
-from vng_api_common.tests.auth import JWTAuthMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical

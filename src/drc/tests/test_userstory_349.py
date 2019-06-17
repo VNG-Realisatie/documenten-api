@@ -10,9 +10,7 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectCanonicalFactory,
-    EnkelvoudigInformatieObjectFactory, GebruiksrechtenFactory,
-    ObjectInformatieObjectFactory
+    EnkelvoudigInformatieObjectCanonicalFactory, GebruiksrechtenFactory
 )
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'

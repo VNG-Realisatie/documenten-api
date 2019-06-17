@@ -14,8 +14,7 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectCanonicalFactory,
-    EnkelvoudigInformatieObjectFactory
+    EnkelvoudigInformatieObjectCanonicalFactory
 )
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'

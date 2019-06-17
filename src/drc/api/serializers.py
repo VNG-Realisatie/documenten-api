@@ -129,7 +129,6 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                     "zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.")
     )
 
-
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = (
@@ -246,7 +245,6 @@ class EnkelvoudigInformatieObjectWithLockSerializer(EnkelvoudigInformatieObjectS
         help_text=_("Lock must be provided during updating the document (PATCH, PUT), "
                     "not while creating it"),
     )
-
 
     class Meta(EnkelvoudigInformatieObjectSerializer.Meta):
         # Use the same fields as the parent class and add the lock to it

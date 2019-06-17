@@ -1,8 +1,6 @@
 """
 Guarantee that the proper authorization amchinery is in place.
 """
-from unittest.mock import patch
-
 from django.test import override_settings
 
 from rest_framework import status
