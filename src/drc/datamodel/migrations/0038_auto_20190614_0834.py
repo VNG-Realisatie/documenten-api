@@ -7,19 +7,15 @@ def create_canonicals(apps, schema_editor):
     EnkelvoudigInformatieObject = apps.get_model('datamodel', 'EnkelvoudigInformatieObject')
     EnkelvoudigInformatieObjectCanonical = apps.get_model('datamodel', 'EnkelvoudigInformatieObjectCanonical')
     for eio in EnkelvoudigInformatieObject.objects.all():
-        canonical = EnkelvoudigInformatieObjectCanonical.objects.create()
+        canonical = EnkelvoudigInformatieObjectCanonical.objects.create(id=eio.id)
         eio.canonical = canonical
-        for gebruiksrechten in eio.gebruiksrechten_set.all():
-            gebruiksrechten.canonical = canonical
-            gebruiksrechten.save()
-        for objectinformatieobject in eio.objectinformatieobject_set.all():
-            objectinformatieobject.canonical = canonical
-            objectinformatieobject.save()
         eio.save()
+
+        eio.gebruiksrechten_set.update(canonical=canonical)
+        eio.objectinformatieobject_set.update(canonical=canonical)
 
 
 def remove_canonicals(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model('datamodel', 'EnkelvoudigInformatieObject')
     EnkelvoudigInformatieObjectCanonical = apps.get_model('datamodel', 'EnkelvoudigInformatieObjectCanonical')
     for eio_canonical in EnkelvoudigInformatieObjectCanonical.objects.all():
         related_eios = eio_canonical.enkelvoudiginformatieobject_set.all().order_by('-versie')
@@ -27,14 +23,17 @@ def remove_canonicals(apps, schema_editor):
         for eio in related_eios:
             eio.canonical = None
             eio.save()
+
         for gebruiksrechten in eio_canonical.gebruiksrechten_set.all():
             gebruiksrechten.canonical = None
             gebruiksrechten.informatieobject = latest
             gebruiksrechten.save()
+
         for objectinformatieobject in eio_canonical.objectinformatieobject_set.all():
             objectinformatieobject.canonical = None
             objectinformatieobject.informatieobject = latest
             objectinformatieobject.save()
+
 
 class Migration(migrations.Migration):
 
