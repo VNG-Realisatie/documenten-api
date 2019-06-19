@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-05 10:43+0000\n"
+"POT-Creation-Date: 2019-06-17 10:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,28 +72,40 @@ msgstr ""
 msgid "users"
 msgstr ""
 
-#: src/drc/api/serializers.py:86
+#: src/drc/api/serializers.py:122
 msgid "integriteit"
 msgstr ""
 
-#: src/drc/api/serializers.py:87
+#: src/drc/api/serializers.py:123
 msgid ""
 "Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal "
 "bestand."
 msgstr ""
 
-#: src/drc/api/serializers.py:91
+#: src/drc/api/serializers.py:127
 msgid "ondertekening"
 msgstr ""
 
-#: src/drc/api/serializers.py:92
+#: src/drc/api/serializers.py:128
 msgid ""
 "Aanduiding van de rechtskracht van een informatieobject. Mag niet van een "
 "waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter "
 "vaststelling' heeft."
 msgstr ""
 
-#: src/drc/api/serializers.py:131
+#: src/drc/api/serializers.py:179
+msgid ""
+"De indicatie kan niet weggehaald worden of ongespecifieerd zijn als er "
+"Gebruiksrechten gedefinieerd zijn."
+msgstr ""
+
+#: src/drc/api/serializers.py:186
+msgid ""
+"De indicatie moet op 'ja' gezet worden door `gebruiksrechten` aan te maken, "
+"dit kan niet direct op deze resource."
+msgstr ""
+
+#: src/drc/api/serializers.py:245
 msgid ""
 "Lock must be provided during updating the document (PATCH, PUT), not while "
 "creating it"
@@ -101,45 +113,47 @@ msgstr ""
 "Tijdens het updaten van een document (PATCH, PUT) moet het `lock` veld "
 "opgegeven worden. Bij het aanmaken (POST) mag het geen waarde hebben."
 
-#: src/drc/api/serializers.py:152
-msgid ""
-"De indicatie kan niet weggehaald worden of ongespecifieerd zijn als er "
-"Gebruiksrechten gedefinieerd zijn."
-msgstr ""
-
-#: src/drc/api/serializers.py:159
-msgid ""
-"De indicatie moet op 'ja' gezet worden door `gebruiksrechten` aan te maken, "
-"dit kan niet direct op deze resource."
-msgstr ""
-
-#: src/drc/api/serializers.py:173
+#: src/drc/api/serializers.py:258
 msgid "Unlocked document can't be modified"
 msgstr "Een unlocked document mag niet bewerkt worden"
 
-#: src/drc/api/serializers.py:178 src/drc/api/serializers.py:270
+#: src/drc/api/serializers.py:266
+msgid "Lock id must be provided"
+msgstr "Het lock-id moet meegegeven worden"
+
+#: src/drc/api/serializers.py:273 src/drc/api/serializers.py:334
 msgid "Lock id is not correct"
 msgstr "Incorrect lock ID"
 
-#: src/drc/api/serializers.py:185
-msgid "A locked document can't be created"
-msgstr "Je mag een document niet locken tijdens het aanmaken"
-
-#: src/drc/api/serializers.py:234
+#: src/drc/api/serializers.py:297
 msgid "The document is already locked"
 msgstr "Het document is al gelockt"
 
-#: src/drc/api/validators.py:41
+#: src/drc/api/validators.py:44
 #, python-brace-format
 msgid ""
 "Het informatieobject is in het {component} nog niet gerelateerd aan het "
 "object."
 msgstr ""
 
-#: src/drc/api/validators.py:92
+#: src/drc/api/validators.py:87
+msgid ""
+"The canonical remote relation still exists, this relation cannot be deleted."
+msgstr ""
+"De remote relatie bestaat nog, deze relatie kan niet verwijderd worden."
+
+#: src/drc/api/validators.py:124
 #, python-brace-format
 msgid "The fields {field_names} must make a unique set."
 msgstr "De velden {field_names} moeten uniek voorkomen."
+
+#: src/drc/api/viewsets.py:151
+msgid ""
+"All relations to the document must be destroyed before destroying the "
+"document"
+msgstr ""
+"Alle relaties naar het document moeten eerst vernietigd worden voor het "
+"document zelf vernietigd kan worden."
 
 #: src/drc/datamodel/constants.py:8
 msgid "Aan het informatieobject wordt nog gewerkt."
@@ -172,11 +186,11 @@ msgstr ""
 msgid "PKI"
 msgstr ""
 
-#: src/drc/datamodel/models.py:62
+#: src/drc/datamodel/models.py:59
 msgid "status"
 msgstr ""
 
-#: src/drc/datamodel/models.py:63
+#: src/drc/datamodel/models.py:60
 msgid ""
 "Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden 'in "
 "bewerking' en 'ter vaststelling' komen niet voor als het attribuut "
@@ -185,11 +199,11 @@ msgid ""
 "wijzigbaar Formaat dient te hebben."
 msgstr ""
 
-#: src/drc/datamodel/models.py:75
+#: src/drc/datamodel/models.py:72
 msgid "ontvangstdatum"
 msgstr ""
 
-#: src/drc/datamodel/models.py:76
+#: src/drc/datamodel/models.py:73
 msgid ""
 "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren "
 "voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) "
@@ -199,11 +213,11 @@ msgid ""
 "rol speelt."
 msgstr ""
 
-#: src/drc/datamodel/models.py:85
+#: src/drc/datamodel/models.py:82
 msgid "verzenddatum"
 msgstr ""
 
-#: src/drc/datamodel/models.py:86
+#: src/drc/datamodel/models.py:83
 msgid ""
 "De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het "
 "INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande "
@@ -214,11 +228,11 @@ msgid ""
 "rol speelt."
 msgstr ""
 
-#: src/drc/datamodel/models.py:96
+#: src/drc/datamodel/models.py:93
 msgid "indicatie gebruiksrecht"
 msgstr ""
 
-#: src/drc/datamodel/models.py:97
+#: src/drc/datamodel/models.py:94
 msgid ""
 "Indicatie of er beperkingen gelden aangaande het gebruik van het "
 "informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te "
@@ -227,94 +241,94 @@ msgid ""
 "`Gebruiksrechten` resource."
 msgstr ""
 
-#: src/drc/datamodel/models.py:109
+#: src/drc/datamodel/models.py:106
 msgid "ondertekeningsoort"
 msgstr ""
 
-#: src/drc/datamodel/models.py:111
+#: src/drc/datamodel/models.py:108
 msgid "Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT"
 msgstr ""
 
-#: src/drc/datamodel/models.py:114
+#: src/drc/datamodel/models.py:111
 msgid "ondertekeningdatum"
 msgstr ""
 
-#: src/drc/datamodel/models.py:115
+#: src/drc/datamodel/models.py:112
 msgid ""
 "De datum waarop de ondertekening van het INFORMATIEOBJECT heeft "
 "plaatsgevonden."
 msgstr ""
 
-#: src/drc/datamodel/models.py:124
+#: src/drc/datamodel/models.py:149
 msgid "Hash string, which represents id of the lock"
 msgstr "Hash string, wordt gebruikt als ID voor de lock"
 
-#: src/drc/datamodel/models.py:164
+#: src/drc/datamodel/models.py:188
 msgid "bestandsnaam"
 msgstr ""
 
-#: src/drc/datamodel/models.py:165
+#: src/drc/datamodel/models.py:189
 msgid ""
 "De naam van het fysieke bestand waarin de inhoud van het informatieobject is "
 "vastgelegd, inclusief extensie."
 msgstr ""
 
-#: src/drc/datamodel/models.py:178
+#: src/drc/datamodel/models.py:202
 msgid "integriteit algoritme"
 msgstr ""
 
-#: src/drc/datamodel/models.py:180
+#: src/drc/datamodel/models.py:204
 msgid "Aanduiding van algoritme, gebruikt om de checksum te maken."
 msgstr ""
 
-#: src/drc/datamodel/models.py:183
+#: src/drc/datamodel/models.py:207
 msgid "integriteit waarde"
 msgstr ""
 
-#: src/drc/datamodel/models.py:184
+#: src/drc/datamodel/models.py:208
 msgid "De waarde van de checksum."
 msgstr ""
 
-#: src/drc/datamodel/models.py:187
+#: src/drc/datamodel/models.py:211
 msgid "integriteit datum"
 msgstr ""
 
-#: src/drc/datamodel/models.py:188
+#: src/drc/datamodel/models.py:212
 msgid "Datum waarop de checksum is gemaakt."
 msgstr ""
 
-#: src/drc/datamodel/models.py:205
+#: src/drc/datamodel/models.py:237
 msgid "omschrijving voorwaarden"
 msgstr ""
 
-#: src/drc/datamodel/models.py:206
+#: src/drc/datamodel/models.py:238
 msgid ""
 "Omschrijving van de van toepassing zijnde voorwaarden aan het gebruik anders "
 "dan raadpleging"
 msgstr ""
 
-#: src/drc/datamodel/models.py:210 src/drc/datamodel/models.py:215
+#: src/drc/datamodel/models.py:242 src/drc/datamodel/models.py:247
 msgid "startdatum"
 msgstr ""
 
-#: src/drc/datamodel/models.py:211
+#: src/drc/datamodel/models.py:243
 msgid ""
 "Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing "
 "zijn. Doorgaans is de datum van creatie van het informatieobject de "
 "startdatum."
 msgstr ""
 
-#: src/drc/datamodel/models.py:216
+#: src/drc/datamodel/models.py:248
 msgid ""
 "Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing "
 "zijn."
 msgstr ""
 
-#: src/drc/datamodel/models.py:222
+#: src/drc/datamodel/models.py:254
 msgid "gebruiksrecht informatieobject"
 msgstr ""
 
-#: src/drc/datamodel/models.py:223
+#: src/drc/datamodel/models.py:255
 msgid "gebruiksrechten informatieobject"
 msgstr ""
 
@@ -323,3 +337,6 @@ msgstr ""
 msgid ""
 "De statuswaarden `{values}` zijn niet van toepassing op ontvangen documenten."
 msgstr ""
+
+#~ msgid "A locked document can't be created"
+#~ msgstr "Je mag een document niet locken tijdens het aanmaken"

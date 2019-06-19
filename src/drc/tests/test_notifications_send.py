@@ -1,5 +1,4 @@
 import base64
-from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -12,9 +11,6 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-)
-from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
 )
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'

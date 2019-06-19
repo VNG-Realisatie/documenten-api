@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from django.test import override_settings
 
 from rest_framework.test import APITestCase
@@ -29,8 +27,8 @@ class UniqueRepresentationTestCase(APITestCase):
 
     def test_gebruiksrechten(self):
         gebruiksrechten = GebruiksrechtenFactory(
-            informatieobject__bronorganisatie=730924658,
-            informatieobject__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
+            informatieobject__latest_version__bronorganisatie=730924658,
+            informatieobject__latest_version__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
             omschrijving_voorwaarden="some conditions"
         )
 
@@ -41,8 +39,8 @@ class UniqueRepresentationTestCase(APITestCase):
 
     def test_oio(self):
         oio = ObjectInformatieObjectFactory(
-            informatieobject__bronorganisatie=730924658,
-            informatieobject__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
+            informatieobject__latest_version__bronorganisatie=730924658,
+            informatieobject__latest_version__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
             is_zaak=True
         )
         responses = {

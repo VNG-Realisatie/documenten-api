@@ -17,7 +17,10 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN
 )
 from drc.datamodel.models import EnkelvoudigInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectCanonicalFactory,
+    EnkelvoudigInformatieObjectFactory
+)
 
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
@@ -79,7 +82,9 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]
         self.autorisatie.save()
 
-        eio = EnkelvoudigInformatieObjectFactory.create(informatieobjecttype=INFORMATIEOBJECTTYPE)
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
         list_url = get_operation_url('enkelvoudiginformatieobject_list')
 
         response = self.client.get(list_url)
@@ -90,5 +95,5 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(
             download_url.path,
-            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
+            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.latest_version.uuid)
         )

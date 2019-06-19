@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import models
 from django.db.models import Case, IntegerField, Value, When
 
@@ -38,13 +39,9 @@ class AuthorizationsFilterMixin:
         # keep a list of allowed informatieobjecttypen
         informatieobjecttypen = []
 
-        prefix = (
-            "" if not self.authorizations_lookup else f"{self.authorizations_lookup}__"
-        )
-
         # annotate the queryset so we can map a string value to a logical number
         order_case = VertrouwelijkheidsAanduiding.get_order_expression(
-            f"{prefix}vertrouwelijkheidaanduiding"
+            "vertrouwelijkheidaanduiding"
         )
 
         # build the case/when to map the max_vertrouwelijkheidaanduiding based
@@ -64,26 +61,34 @@ class AuthorizationsFilterMixin:
             )
             vertrouwelijkheidaanduiding_whens.append(
                 When(
-                    **{f"{prefix}informatieobjecttype": authorization.informatieobjecttype},
+                    **{"informatieobjecttype": authorization.informatieobjecttype},
                     then=Value(choice_item.order),
                 )
             )
 
         # apply the order annnotation so we can filter later
-        annotations = {f"{prefix}_va_order": order_case}
+        annotations = {"_va_order": order_case}
         # filtering:
         # * only allow the white-listed informatieobjecttypen, explicitly
         # * apply the filtering to limit cases within case-types to the maximal
         #   confidentiality level
         filters = {
-            f"{prefix}informatieobjecttype__in": informatieobjecttypen,
-            f"{prefix}_va_order__lte": Case(
+            "informatieobjecttype__in": informatieobjecttypen,
+            "_va_order__lte": Case(
                 *vertrouwelijkheidaanduiding_whens, output_field=IntegerField()
             ),
         }
-
+        if self.authorizations_lookup:
+            # If the current queryset is not an InformatieObjectQuerySet, first
+            # retrieve the canonical IDs of EnkelvoudigInformatieObjects
+            # for which the user is authorized and then return the objects
+            # related to those EnkelvoudigInformatieObjectCanonicals
+            model = apps.get_model('datamodel', 'EnkelvoudigInformatieObject')
+            filtered = model.objects.annotate(**annotations).filter(**filters).values('canonical')
+            queryset = self.filter(informatieobject__in=filtered)
         # bring it all together now to build the resulting queryset
-        queryset = self.annotate(**annotations).filter(**filters)
+        else:
+            queryset = self.annotate(**annotations).filter(**filters)
         return queryset
 
 

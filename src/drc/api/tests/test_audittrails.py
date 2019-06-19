@@ -13,11 +13,13 @@ from vng_api_common.tests import JWTAuthMixin, reverse, reverse_lazy
 from vng_api_common.utils import get_uuid_from_path
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
+    Gebruiksrechten, ObjectInformatieObject
 )
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
+
 
 @freeze_time('2019-01-01')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -71,7 +73,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
         content = {
-            'informatieobject': reverse(informatieobject),
+            'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': informatieobject.uuid}),
             'object': ZAAK,
             'objectType': ObjectTypes.zaak,
         }
@@ -96,7 +98,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
         content = {
-            'informatieobject': reverse(informatieobject),
+            'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': informatieobject.uuid}),
             'startdatum': datetime.now(),
             'omschrijvingVoorwaarden': 'test'
         }
@@ -118,6 +120,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         delete_response = self.client.delete(gebruiksrechten_response['url'])
 
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
 
@@ -134,8 +137,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 
-        #lock for update
-        eio = EnkelvoudigInformatieObject.objects.get()
+        # lock for update
+        eio = EnkelvoudigInformatieObjectCanonical.objects.get()
         eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
         eio.save()
 
@@ -174,8 +177,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 
-        #lock for update
-        eio = EnkelvoudigInformatieObject.objects.get()
+        # lock for update
+        eio = EnkelvoudigInformatieObjectCanonical.objects.get()
         eio.lock = '0f60f6d2d2714c809ed762372f5a363a'
         eio.save()
 

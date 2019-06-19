@@ -2,6 +2,29 @@
 Wijzigingen
 ===========
 
+0.14.0 (2019-06-18)
+===================
+
+Second release towards release candidate
+
+* Added support for a minimal plugin system
+* Added versioning of ``EnkelvoudigInformatieObject``:
+    * endpoints support ``versie`` and ``registratieOp`` querystring params
+      (mutually exclusive)
+    * if not provided, the most recent version is returned
+* Update (API schema) translations
+
+Breaking changes
+----------------
+
+* ``EnkelvoudigInformatieObject`` can no longer be deleted if there are still
+  related ``ObjectInformatieObject`` instances.
+* ``ObjectInformatieObject`` can no longer be deleted if the remote, canonical
+  relation still exists. This means that you need to destroy
+  ``ZaakInformatieObject``/``BesluitInformatieObject`` first, which triggers
+  the destruction of ``ObjectInformatieObject`` and then finally you can destroy
+  the ``EnkelvoudigInformatieObject``. Requires ZRC >= 0.17.0 and BRC >= 0.11.3
+
 0.13.2 (2019-06-13)
 ===================
 

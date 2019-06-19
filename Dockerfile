@@ -58,6 +58,7 @@ COPY ./bin/runtests.sh /runtests.sh
 COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
 COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
 COPY ./src /app/src
+COPY ./bin/reset_sequences.sql /app/bin/
 RUN mkdir /app/log && rm /app/src/drc/conf/test.py
 CMD ["/runtests.sh"]
 
@@ -95,6 +96,7 @@ COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
 COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
 COPY ./src /app/src
 COPY ./docs /app/docs
+COPY ./bin/reset_sequences.sql ./bin/
 
 ENV DJANGO_SETTINGS_MODULE=drc.conf.docker
 
