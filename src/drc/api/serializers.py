@@ -128,6 +128,13 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         help_text=_("Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde "
                     "zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.")
     )
+    locked = serializers.BooleanField(
+        label=_("locked"), read_only=True, source='canonical.lock',
+        help_text=_(
+            "Geeft aan of het document gelocked is. Alleen als een document gelocked is, "
+            "mogen er aanpassingen gemaakt worden."
+        )
+    )
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -152,7 +159,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'indicatie_gebruiksrecht',
             'ondertekening',
             'integriteit',
-            'informatieobjecttype'  # van-relatie,
+            'informatieobjecttype',  # van-relatie,
+            'locked',
         )
         extra_kwargs = {
             'informatieobjecttype': {

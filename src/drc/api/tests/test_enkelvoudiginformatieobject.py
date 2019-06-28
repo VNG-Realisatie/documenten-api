@@ -96,6 +96,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
             'indicatieGebruiksrecht': None,
             'status': '',
+            'locked': False,
         })
 
         response_data = response.json()
@@ -150,7 +151,8 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
                 'waarde': '',
                 'datum': None,
             },
-            'informatieobjecttype': INFORMATIEOBJECTTYPE
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
+            'locked': False,
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))
