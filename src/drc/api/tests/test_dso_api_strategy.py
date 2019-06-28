@@ -1,5 +1,6 @@
 from django.test import override_settings
 
+import yaml
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from . import views
@@ -8,7 +9,7 @@ from .utils import reverse
 
 class DSOApiStrategyTests(APITestCase):
 
-    def test_api_19_documentation_version(self):
+    def test_api_19_documentation_version_json(self):
         url = reverse('schema-json', kwargs={'format': '.json'})
 
         response = self.client.get(url)
@@ -17,12 +18,18 @@ class DSOApiStrategyTests(APITestCase):
 
         doc = response.json()
 
-        if 'swagger' in doc:
-            self.assertGreaterEqual(doc['swagger'], '2.0')
-        elif 'openapi' in doc:
-            self.assertGreaterEqual(doc['openapi'], '3.0.0')
-        else:
-            self.fail('Unknown documentation version')
+        self.assertGreaterEqual(doc['openapi'], '3.0.0')
+
+    def test_api_19_documentation_version_yaml(self):
+        url = reverse('schema-json', kwargs={'format': '.yaml'})
+
+        response = self.client.get(url)
+
+        self.assertIn('application/yaml', response['Content-Type'])
+
+        doc = yaml.safe_load(response.content)
+
+        self.assertGreaterEqual(doc['openapi'], '3.0.0')
 
     @override_settings(ROOT_URLCONF='drc.api.tests.test_urls')
     def test_api_24_version_header(self):

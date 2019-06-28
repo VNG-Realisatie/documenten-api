@@ -170,6 +170,12 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_update_audittrail.bron, 'DRC')
         self.assertEqual(informatieobject_update_audittrail.actie, 'update')
         self.assertEqual(informatieobject_update_audittrail.resultaat, 200)
+
+        # locked is False upon InformatieObject creation, but the
+        # InformatieObject must be locked before updating is possible, so
+        # locked will be True in the version before changes as shown
+        # in the audittrail
+        informatieobject_data['locked'] = True
         self.assertEqual(informatieobject_update_audittrail.oud, informatieobject_data)
         self.assertEqual(informatieobject_update_audittrail.nieuw, informatieobject_response)
 
@@ -197,6 +203,12 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_partial_update_audittrail.bron, 'DRC')
         self.assertEqual(informatieobject_partial_update_audittrail.actie, 'partial_update')
         self.assertEqual(informatieobject_partial_update_audittrail.resultaat, 200)
+
+        # locked is False upon InformatieObject creation, but the
+        # InformatieObject must be locked before updating is possible, so
+        # locked will be True in the version before changes as shown
+        # in the audittrail
+        informatieobject_data['locked'] = True
         self.assertEqual(informatieobject_partial_update_audittrail.oud, informatieobject_data)
         self.assertEqual(informatieobject_partial_update_audittrail.nieuw, informatieobject_response)
 

@@ -2,6 +2,16 @@
 Wijzigingen
 ===========
 
+0.15.0 (2019-06-28)
+===================
+
+Small feature release
+
+* Added ``EnkelvoudigInformatieObject.locked`` to indicate if an EIO is locked
+  or not. This boolean is consumed by ZRC validation.
+* Adapted tests for explicit OAS 3.x checks so that no OAS 2.x is served
+  anymore
+
 0.14.0 (2019-06-18)
 ===================
 

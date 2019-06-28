@@ -4633,6 +4633,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "locked": {
+                    "title": "locked",
+                    "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
+                    "type": "boolean",
+                    "readOnly": true
                 }
             }
         },
@@ -5402,6 +5408,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "locked": {
+                    "title": "locked",
+                    "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
+                    "type": "boolean",
+                    "readOnly": true
                 }
             }
         },
@@ -6184,6 +6196,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "locked": {
+                    "title": "locked",
+                    "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
+                    "type": "boolean",
+                    "readOnly": true
                 },
                 "lock": {
                     "title": "Lock",
