@@ -1738,11 +1738,10 @@ paths:
       parameters:
       - name: informatieobject
         in: query
-        description: URL naar de/het gerelateerde informatieobject
+        description: ''
         required: false
         schema:
           type: string
-          format: uri
       - name: startdatum__lt
         in: query
         description: Begindatum van de periode waarin de gebruiksrechtvoorwaarden
@@ -2721,11 +2720,10 @@ paths:
           format: uri
       - name: informatieobject
         in: query
-        description: URL naar de/het gerelateerde informatieobject
+        description: ''
         required: false
         schema:
           type: string
-          format: uri
       responses:
         '200':
           description: ''
@@ -3407,7 +3405,6 @@ components:
             het INFORMATIEOBJECT.
           type: string
           maxLength: 40
-          minLength: 1
         bronorganisatie:
           title: Bronorganisatie
           description: "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
@@ -4160,7 +4157,6 @@ components:
             het INFORMATIEOBJECT.
           type: string
           maxLength: 40
-          minLength: 1
         bronorganisatie:
           title: Bronorganisatie
           description: "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
@@ -4963,7 +4959,6 @@ components:
             het INFORMATIEOBJECT.
           type: string
           maxLength: 40
-          minLength: 1
         bronorganisatie:
           title: Bronorganisatie
           description: "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
