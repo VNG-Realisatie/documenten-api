@@ -149,6 +149,9 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         help_text=_('Hash string, which represents id of the lock')
     )
 
+    def __str__(self):
+        return str(self.latest_version)
+
     @property
     def latest_version(self):
         versies = self.enkelvoudiginformatieobject_set.order_by('-versie')
