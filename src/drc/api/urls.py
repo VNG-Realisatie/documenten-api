@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from django.urls import include, path
 
-from rest_framework.routers import DefaultRouter
 from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
@@ -36,5 +35,6 @@ urlpatterns = [
 
         # should not be picked up by drf-yasg
         path('', include('vng_api_common.api.urls')),
+        path('', include('vng_api_common.notifications.api.urls')),
     ])),
 ]
