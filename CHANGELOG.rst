@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.15.2 (2019-07-02)
+===================
+
+Added a data migration to handle the flattened ZTC urls.
+
 0.15.1 (2019-07-01)
 ===================
 
