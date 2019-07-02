@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.15.3 (2019-07-02)
+===================
+
+Bugfixes
+
+* Enabled /api/v1/callbacks webhook endpoint
+* Fixed SSL detection behind reverse proxy, causing ZaakinformatieObject
+  create to fail because of bad resource URLs
+
 0.15.2 (2019-07-02)
 ===================
 
