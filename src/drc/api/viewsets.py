@@ -8,6 +8,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
@@ -128,6 +129,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     """
     queryset = EnkelvoudigInformatieObject.objects.order_by('canonical', '-versie').distinct('canonical')
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
     permission_classes = (InformationObjectAuthScopesRequired, )
     required_scopes = {
         'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,

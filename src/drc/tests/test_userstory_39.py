@@ -91,7 +91,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        download_url = urlparse(response.data[0]['inhoud'])
+        data = response.data['results']
+        download_url = urlparse(data[0]['inhoud'])
 
         self.assertEqual(
             download_url.path,

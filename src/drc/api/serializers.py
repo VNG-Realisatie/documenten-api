@@ -62,10 +62,15 @@ class AnyBase64File(Base64FileField):
 
         # Retrieve the correct version to construct the download url that
         # points to the content of that version
-        if hasattr(self.parent.instance, 'versie'):
-            versie = self.parent.instance.versie
+        instance = self.parent.instance
+        # in case of pagination instance can be a list object
+        if isinstance(instance, list):
+            instance = instance[0]
+
+        if hasattr(instance, 'versie'):
+            versie = instance.versie
         else:
-            versie = self.parent.instance.get(uuid=kwargs['uuid']).versie
+            versie = instance.get(uuid=kwargs['uuid']).versie
         query_string = urlencode({'versie': versie})
         return f'{url}?{query_string}'
 

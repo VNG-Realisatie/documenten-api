@@ -254,7 +254,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         response = self.client.get(self.list_url, {'identificatie': 'foo'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()['results']
 
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]['identificatie'], 'foo')
@@ -418,7 +418,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
         response = self.client.get(reverse(EnkelvoudigInformatieObject))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_data = response.data
+        response_data = response.data['results']
         self.assertEqual(len(response_data), 2)
 
         self.assertEqual(response_data[0]['beschrijving'], 'object1 versie2')
