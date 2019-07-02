@@ -354,6 +354,7 @@ if SENTRY_DSN:
 #
 # SSL or not?
 #
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 # settings for sending notifications
