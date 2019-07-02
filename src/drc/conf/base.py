@@ -76,6 +76,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'drc.utils.middleware.LogHeadersMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -256,6 +257,14 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 10,  # 10 MB
             'backupCount': 10
         },
+        'requests': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'requests.log'),
+            'formatter': 'timestamped',
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 10
+        }
     },
     'loggers': {
         '': {
@@ -267,6 +276,11 @@ LOGGING = {
             'handlers': ['project'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'drc.utils.middleware': {
+            'handlers': ['requests'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
         'django.request': {
             'handlers': ['django'],
