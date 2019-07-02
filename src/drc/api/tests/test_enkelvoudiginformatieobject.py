@@ -254,7 +254,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         response = self.client.get(self.list_url, {'identificatie': 'foo'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()['results']
 
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]['identificatie'], 'foo')
@@ -418,7 +418,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
         response = self.client.get(reverse(EnkelvoudigInformatieObject))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_data = response.data
+        response_data = response.data['results']
         self.assertEqual(len(response_data), 2)
 
         self.assertEqual(response_data[0]['beschrijving'], 'object1 versie2')
@@ -532,3 +532,36 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.get(response.data['inhoud'])
         self.assertEqual(response._container[0], b'inhoud1')
+
+
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+class EnkelvoudigInformatieObjectPaginationAPITests(JWTAuthMixin, APITestCase):
+    list_url = reverse(EnkelvoudigInformatieObject)
+    heeft_alle_autorisaties = True
+
+    def test_pagination_default(self):
+        """
+        Deleting a Besluit causes all related objects to be deleted as well.
+        """
+        EnkelvoudigInformatieObjectFactory.create_batch(2)
+
+        response = self.client.get(self.list_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_data = response.json()
+        self.assertEqual(response_data['count'], 2)
+        self.assertIsNone(response_data['previous'])
+        self.assertIsNone(response_data['next'])
+
+    def test_pagination_page_param(self):
+        EnkelvoudigInformatieObjectFactory.create_batch(2)
+
+        response = self.client.get(self.list_url, {'page': 1})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_data = response.json()
+        self.assertEqual(response_data['count'], 2)
+        self.assertIsNone(response_data['previous'])
+        self.assertIsNone(response_data['next'])

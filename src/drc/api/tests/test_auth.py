@@ -75,7 +75,7 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        results = response.data
+        results = response.data['results']
 
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['informatieobjecttype'], 'https://informatieobjecttype.nl/ok')
