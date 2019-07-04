@@ -208,6 +208,8 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
+    bestandsomvang = models.IntegerField()
+
     inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
     # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
     link = models.URLField(
@@ -356,3 +358,27 @@ class ObjectInformatieObject(APIMixin, models.Model):
             io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
             self._unique_representation = f"({self.informatieobject.latest_version.unique_representation()}) - {io_id}"
         return self._unique_representation
+
+
+class PartUpload(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=_uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    informatieobject = models.ForeignKey(
+        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='parts'
+    )
+    part_number = models.PositiveIntegerField(
+        help_text=_("A sequence number of file part within document")
+    )
+    chunk_size = models.PositiveIntegerField(
+        help_text=_("The size of a chunk in bytes")
+    )
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', null=True)
+
+    class Meta:
+        unique_together = ('informatieobject', 'part_number')
+
+    def unique_representation(self):
+        informatieobject = self.informatieobject.latest_version
+        return f"({informatieobject.unique_representation()}) - {self.part_number}"
