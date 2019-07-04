@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+from rest_framework.parsers import FileUploadParser
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
@@ -15,13 +16,14 @@ from vng_api_common.audittrails.viewsets import (
 )
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationDestroyMixin,
-    NotificationViewSetMixin
+    NotificationViewSetMixin, NotificationUpdateMixin
 )
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject,
+    Gebruiksrechten, ObjectInformatieObject, PartUpload
 )
 
 from .audits import AUDIT_DRC
@@ -46,7 +48,7 @@ from .serializers import (
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
-    UnlockEnkelvoudigInformatieObjectSerializer
+    UnlockEnkelvoudigInformatieObjectSerializer, PartUploadSerializer
 )
 from .validators import RemoteRelationValidator
 
@@ -460,3 +462,56 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     Een specifieke audit trail regel opvragen.
     """
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
+
+
+class PartUploadViewSet(NotificationUpdateMixin,
+                        viewsets.ModelViewSet):
+    """
+    list:
+    Geef een lijst van gebruiksrechten horend bij informatieobjecten.
+
+    Er kan gefiltered worden met querystringparameters.
+
+    retrieve:
+    Haal de details op van een gebruiksrecht van een informatieobject.
+
+    create:
+    Voeg gebruiksrechten toe voor een informatieobject.
+
+    **Opmerkingen**
+    - Het toevoegen van gebruiksrechten zorgt ervoor dat de
+      `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
+
+    update:
+    Werk een gebruiksrecht van een informatieobject bij.
+
+    partial_update:
+    Werk een gebruiksrecht van een informatieobject bij.
+
+    destroy:
+    Verwijder een gebruiksrecht van een informatieobject.
+
+    **Opmerkingen**
+    - Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,
+      dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`
+      gezet.
+    """
+    queryset = PartUpload.objects.all()
+    serializer_class = PartUploadSerializer
+    lookup_field = 'uuid'
+    parser_classes = (FileUploadParser,)
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = 'informatieobject'
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = 'informatieobject'
+
+    def update(self, request, *args, **kwargs):
+        file = request.FILES.get('file')
+        if 'inhoud' not in request.data:
+            request.data['inhoud'] = file
+
+        return super().update(request, *args, **kwargs)

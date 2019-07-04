@@ -3,6 +3,7 @@ Serializers of the Document Registratie Component REST API
 """
 import uuid
 from humanize import naturalsize
+import math
 
 from django.conf import settings
 from django.db import transaction
@@ -27,7 +28,7 @@ from drc.datamodel.constants import (
 )
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject
+    Gebruiksrechten, ObjectInformatieObject, PartUpload
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -130,6 +131,36 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
             self.fail('does_not_exist')
 
 
+class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PartUpload
+        fields = (
+            'url',
+            'part_number',
+            'chunk_size',
+            'inhoud'
+        )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'part_number': {
+                'read_only': True,
+            },
+            'chunk_size': {
+                'read_only': True,
+            },
+            # 'inhoud': {
+            #     'write_only': True,
+            # },
+        }
+
+    def update(self, instance, validated_data):
+        res = super().update(instance, validated_data)
+        # TODO check all part objects - if all of them uploaded
+        return res
+
+
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the EnkelvoudigInformatieObject model
@@ -139,13 +170,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         lookup_field='uuid'
     )
     inhoud = AnyBase64File(
-        view_name='enkelvoudiginformatieobject-download',
+        view_name='enkelvoudiginformatieobject-download', read_only=True,
         help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes "
                     f"(or {naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)})")
-    )
-    bestandsomvang = serializers.IntegerField(
-        source='inhoud.size', read_only=True, min_value=0,
-        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
     )
     integriteit = IntegriteitSerializer(
         label=_("integriteit"), allow_null=True, required=False,
@@ -164,6 +191,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "mogen er aanpassingen gemaakt worden."
         )
     )
+    parts = PartUploadSerializer(many=True, read_only=True, source='canonical.parts')
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -192,6 +220,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'integriteit',
             'informatieobjecttype',  # van-relatie,
             'locked',
+            'parts',
         )
         extra_kwargs = {
             'informatieobjecttype': {
@@ -263,6 +292,19 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.integriteit = integriteit
         eio.ondertekening = ondertekening
         eio.save()
+
+        # create urls for chunks
+        full_size = validated_data['bestandsomvang']
+        parts = math.ceil(full_size/settings.CHUNK_SIZE)
+
+        for i in range(parts):
+            chunk_size = min(settings.CHUNK_SIZE, full_size)
+            PartUpload.objects.create(
+                informatieobject=canonical,
+                chunk_size=chunk_size,
+                part_number=i + 1
+            )
+            full_size -= chunk_size
         return eio
 
     def update(self, instance, validated_data):
@@ -467,3 +509,4 @@ class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()],
             },
         }
+
