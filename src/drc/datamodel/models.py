@@ -167,6 +167,11 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         versies = self.enkelvoudiginformatieobject_set.order_by('-versie')
         return versies.first()
 
+    @property
+    def complete_upload(self) -> bool:
+        empty_parts = self.parts.filter(inhoud='')
+        return empty_parts.count() == 0
+
 
 class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     """
@@ -208,10 +213,13 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
-    bestandsomvang = models.IntegerField()
+    bestandsomvang = models.PositiveIntegerField(
+        _("bestandsnaam"),
+        help_text=_("The size of the whole file in bytes")
+    )
 
     inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
-    # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
+
     link = models.URLField(
         max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '
@@ -374,7 +382,7 @@ class PartUpload(models.Model):
     chunk_size = models.PositiveIntegerField(
         help_text=_("The size of a chunk in bytes")
     )
-    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', null=True)
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', blank=True)
 
     class Meta:
         unique_together = ('informatieobject', 'part_number')
@@ -382,3 +390,7 @@ class PartUpload(models.Model):
     def unique_representation(self):
         informatieobject = self.informatieobject.latest_version
         return f"({informatieobject.unique_representation()}) - {self.part_number}"
+
+    @property
+    def complete(self) -> bool:
+        return bool(self.inhoud.name)

@@ -138,7 +138,8 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'part_number',
             'chunk_size',
-            'inhoud'
+            'inhoud',
+            'complete'
         )
         extra_kwargs = {
             'url': {
@@ -150,6 +151,9 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
             'chunk_size': {
                 'read_only': True,
             },
+            'complete':{
+                'read_only': True,
+            }
             # 'inhoud': {
             #     'write_only': True,
             # },
@@ -157,6 +161,8 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
 
     def update(self, instance, validated_data):
         res = super().update(instance, validated_data)
+
+
         # TODO check all part objects - if all of them uploaded
         return res
 
