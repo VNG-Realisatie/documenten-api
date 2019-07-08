@@ -2067,10 +2067,9 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "",
                         "required": false,
-                        "type": "string",
-                        "format": "uri"
+                        "type": "string"
                     },
                     {
                         "name": "startdatum__lt",
@@ -3246,10 +3245,9 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "",
                         "required": false,
-                        "type": "string",
-                        "format": "uri"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -4044,8 +4042,7 @@
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
@@ -4820,8 +4817,7 @@
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
@@ -5608,8 +5604,7 @@
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",

@@ -11,7 +11,9 @@ from vng_api_common.fields import (
     LanguageField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APIMixin
-from vng_api_common.utils import request_object_attribute
+from vng_api_common.utils import (
+    generate_unique_identification, request_object_attribute
+)
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
@@ -23,8 +25,10 @@ logger = logging.getLogger(__name__)
 
 class InformatieObject(models.Model):
     identificatie = models.CharField(
-        max_length=40, validators=[alphanumeric_excluding_diacritic],
-        default=_uuid.uuid4,
+        max_length=40,
+        validators=[alphanumeric_excluding_diacritic],
+        blank=True,
+        default="",
         help_text='Een binnen een gegeven context ondubbelzinnige referentie '
                   'naar het INFORMATIEOBJECT.'
     )
@@ -118,6 +122,8 @@ class InformatieObject(models.Model):
 
     objects = InformatieobjectQuerySet.as_manager()
 
+    IDENTIFICATIE_PREFIX = "DOCUMENT"
+
     class Meta:
         verbose_name = 'informatieobject'
         verbose_name_plural = 'informatieobject'
@@ -126,6 +132,11 @@ class InformatieObject(models.Model):
 
     def __str__(self) -> str:
         return self.identificatie
+
+    def save(self, *args, **kwargs):
+        if not self.identificatie:
+            self.identificatie = generate_unique_identification(self, "creatiedatum")
+        super().save(*args, **kwargs)
 
     def clean(self):
         super().clean()
