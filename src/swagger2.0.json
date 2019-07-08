@@ -4603,6 +4603,7 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Download URL van de binaire inhoud.",
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
@@ -5378,6 +5379,7 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
                     "format": "bytes"
                 },
@@ -6165,6 +6167,7 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
                     "format": "bytes"
                 },
