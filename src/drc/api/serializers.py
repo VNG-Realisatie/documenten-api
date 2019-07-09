@@ -4,18 +4,22 @@ Serializers of the Document Registratie Component REST API
 import uuid
 from humanize import naturalsize
 import math
+import os.path
+from datetime import datetime
 
 from django.conf import settings
 from django.db import transaction
 from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.base import File
 
 from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
+from rest_framework.fields import FileField
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import (
     GegevensGroepSerializer, add_choice_values_help_text
@@ -36,27 +40,18 @@ from .validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     StatusValidator
 )
+from .utils import merge_files, create_filename
 
 
-class AnyFileType:
-    def __contains__(self, item):
-        return True
-
-
-class AnyBase64File(Base64FileField):
-    ALLOWED_TYPES = AnyFileType()
-
+class ViewFileFile(FileField):
     def __init__(self, view_name: str = None, *args, **kwargs):
         self.view_name = view_name
         super().__init__(*args, **kwargs)
 
-    def get_file_extension(self, filename, decoded_file):
-        return "bin"
-
     def to_representation(self, file):
         is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
 
-        if not is_private_storage or self.represent_in_base64:
+        if not is_private_storage:
             return super().to_representation(file)
 
         assert self.view_name, "You must pass the `view_name` kwarg for private media fields"
@@ -151,20 +146,13 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
             'chunk_size': {
                 'read_only': True,
             },
-            'complete':{
+            'complete': {
                 'read_only': True,
             }
             # 'inhoud': {
             #     'write_only': True,
             # },
         }
-
-    def update(self, instance, validated_data):
-        res = super().update(instance, validated_data)
-
-
-        # TODO check all part objects - if all of them uploaded
-        return res
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -175,7 +163,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid'
     )
-    inhoud = AnyBase64File(
+    inhoud = ViewFileFile(
         view_name='enkelvoudiginformatieobject-download', read_only=True,
         help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes "
                     f"(or {naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)})")
@@ -197,7 +185,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "mogen er aanpassingen gemaakt worden."
         )
     )
-    parts = PartUploadSerializer(many=True, read_only=True, source='canonical.parts')
+    parts = PartUploadSerializer(source='canonical.parts', many=True, read_only=True)
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -442,6 +430,47 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         self.instance.lock = ''
         self.instance.save()
+        return self.instance
+
+
+class CompleteEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
+    """
+    Serializer for complete action of EnkelvoudigInformatieObject model
+    """
+    url = serializers.HyperlinkedIdentityField(
+        view_name='enkelvoudiginformatieobject-detail',
+        lookup_field='uuid'
+    )
+    inhoud = ViewFileFile(view_name='enkelvoudiginformatieobject-download', read_only=True)
+
+    class Meta:
+        model = EnkelvoudigInformatieObject
+        fields = ('url', 'inhoud', )
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+        if not self.instance.canonical.complete_upload:
+            raise serializers.ValidationError(
+                _("Upload of part files is not complete"),
+                code='incomplete-upload'
+            )
+        return valid_attrs
+
+    def save(self, **kwargs):
+        parts = self.instance.canonical.parts.order_by('part_number')
+        part_files = [p.inhoud.file for p in parts]
+
+        # merge files
+        file_name = create_filename(self.instance.bestandsnaam)
+        file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, datetime.now().strftime('uploads/%Y/%m/full/'))
+        file_path = merge_files(part_files, file_dir, file_name)
+
+        # save full file to the instance FileField
+        with open(file_path) as file_obj:
+            self.instance.inhoud.save(file_name, File(file_obj))
+
+        #  TODO delete part files
+
         return self.instance
 
 

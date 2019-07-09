@@ -48,7 +48,8 @@ from .serializers import (
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
-    UnlockEnkelvoudigInformatieObjectSerializer, PartUploadSerializer
+    UnlockEnkelvoudigInformatieObjectSerializer, PartUploadSerializer,
+    CompleteEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
 
@@ -166,7 +167,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
         'lock': SCOPE_DOCUMENTEN_LOCK,
-        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
+        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+        'complete': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -304,6 +306,16 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['put'])
+    def complete(self, request, *args, **kwargs):
+        eio = self.get_object()
+        complete_serializer = CompleteEnkelvoudigInformatieObjectSerializer(
+            eio, data=request.data, context={'request': request}
+        )
+        complete_serializer.is_valid(raise_exception=True)
+        complete_serializer.save()
+        return Response(complete_serializer.data)
 
 
 class ObjectInformatieObjectViewSet(NotificationCreateMixin,

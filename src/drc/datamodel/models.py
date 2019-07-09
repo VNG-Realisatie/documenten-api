@@ -388,8 +388,7 @@ class PartUpload(models.Model):
         unique_together = ('informatieobject', 'part_number')
 
     def unique_representation(self):
-        informatieobject = self.informatieobject.latest_version
-        return f"({informatieobject.unique_representation()}) - {self.part_number}"
+        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.part_number}"
 
     @property
     def complete(self) -> bool:
