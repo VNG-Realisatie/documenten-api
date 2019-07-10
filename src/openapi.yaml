@@ -250,7 +250,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObjectData'
+                $ref: '#/components/schemas/EnkelvoudigInformatieObject'
         '400':
           description: Bad request
           headers:
@@ -368,7 +368,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EnkelvoudigInformatieObjectData'
+              $ref: '#/components/schemas/EnkelvoudigInformatieObject'
         required: true
     parameters: []
   /enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail:
@@ -835,7 +835,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLockData'
+                $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLock'
         '400':
           description: Bad request
           headers:
@@ -962,7 +962,7 @@ paths:
       - JWT-Claims:
         - documenten.bijwerken
       requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
+        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLock'
     patch:
       operationId: enkelvoudiginformatieobject_partial_update
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
@@ -1002,7 +1002,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLockData'
+                $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLock'
         '400':
           description: Bad request
           headers:
@@ -1129,7 +1129,7 @@ paths:
       - JWT-Claims:
         - documenten.bijwerken
       requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
+        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLock'
     delete:
       operationId: enkelvoudiginformatieobject_delete
       summary: Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
@@ -1289,6 +1289,150 @@ paths:
       security:
       - JWT-Claims:
         - documenten.verwijderen
+    parameters:
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
+  /enkelvoudiginformatieobjecten/{uuid}/complete:
+    put:
+      operationId: enkelvoudiginformatieobject_complete
+      description: Opvragen en bewerken van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten).
+      responses:
+        '200':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteEnkelvoudigInformatieObject'
+        '400':
+          description: Bad request
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '401':
+          description: Unauthorized
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: Forbidden
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: Not found
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: Not acceptable
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: Gone
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: Unsupported media type
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: Throttled
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: Internal server error
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - enkelvoudiginformatieobjecten
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteEnkelvoudigInformatieObject'
+        required: true
     parameters:
     - name: uuid
       in: path
@@ -3326,15 +3470,316 @@ paths:
       schema:
         type: string
         format: uuid
+  /partuploads/{uuid}:
+    put:
+      operationId: partupload_update
+      description: Upload a file object
+      responses:
+        '200':
+          description: OK
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartUpload'
+        '400':
+          description: Bad request
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: Unauthorized
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: Forbidden
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: Not found
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: Not acceptable
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: Conflict
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: Gone
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: Unsupported media type
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: Too many requests
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: Internal server error
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - partuploads
+      security:
+      - JWT-Claims:
+        - documenten.bijwerken
+      requestBody:
+        $ref: '#/components/requestBodies/partupload_update'
+    patch:
+      operationId: partupload_partial_update
+      description: ''
+      responses:
+        '200':
+          description: OK
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartUpload'
+        '400':
+          description: Bad request
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: Unauthorized
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: Forbidden
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: Not found
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: Not acceptable
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: Conflict
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: Gone
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: Unsupported media type
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: Too many requests
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: Internal server error
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - partuploads
+      requestBody:
+        $ref: '#/components/requestBodies/partupload_update'
+    parameters:
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
 servers:
 - url: /api/v1
 components:
   requestBodies:
-    EnkelvoudigInformatieObjectWithLockData:
+    partupload_update:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              inhoud:
+                type: string
+                format: binary
+    EnkelvoudigInformatieObjectWithLock:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLockData'
+            $ref: '#/components/schemas/EnkelvoudigInformatieObjectWithLock'
       required: true
     Gebruiksrechten:
       content:
@@ -3451,6 +3896,37 @@ components:
           description: Datum waarop de checksum is gemaakt.
           type: string
           format: date
+    PartUpload:
+      type: object
+      properties:
+        url:
+          title: Url
+          description: URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          type: string
+          format: uri
+          readOnly: true
+          maxLength: 1000
+          minLength: 1
+        partNumber:
+          title: Part number
+          description: A sequence number of file part within document
+          type: integer
+          readOnly: true
+        chunkSize:
+          title: Chunk size
+          description: The size of a chunk in bytes
+          type: integer
+          readOnly: true
+        inhoud:
+          title: Inhoud
+          type: string
+          readOnly: true
+          format: uri
+        complete:
+          title: Complete
+          type: boolean
+          readOnly: true
     EnkelvoudigInformatieObject:
       required:
       - bronorganisatie
@@ -3458,6 +3934,7 @@ components:
       - titel
       - auteur
       - taal
+      - bestandsomvang
       - informatieobjecttype
       type: object
       properties:
@@ -3599,15 +4076,14 @@ components:
           maxLength: 255
         inhoud:
           title: Inhoud
-          description: Download URL van de binaire inhoud.
           type: string
+          readOnly: true
           format: uri
-          readOnly: true
         bestandsomvang:
-          title: Bestandsomvang
-          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
+          title: Bestandsnaam
+          description: The size of the whole file in bytes
           type: integer
-          readOnly: true
+          maximum: 2147483647
           minimum: 0
         link:
           title: Link
@@ -3670,6 +4146,11 @@ components:
           description: Geeft aan of het document gelocked is. Alleen als een document
             gelocked is, mogen er aanpassingen gemaakt worden.
           type: boolean
+          readOnly: true
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartUpload'
           readOnly: true
     Fout:
       required:
@@ -3774,226 +4255,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FieldValidationError'
-    EnkelvoudigInformatieObjectData:
-      required:
-      - bronorganisatie
-      - creatiedatum
-      - titel
-      - auteur
-      - taal
-      - inhoud
-      - informatieobjecttype
-      type: object
-      properties:
-        url:
-          title: Url
-          description: URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          type: string
-          format: uri
-          readOnly: true
-          maxLength: 1000
-          minLength: 1
-        identificatie:
-          title: Identificatie
-          description: Een binnen een gegeven context ondubbelzinnige referentie naar
-            het INFORMATIEOBJECT.
-          type: string
-          maxLength: 40
-        bronorganisatie:
-          title: Bronorganisatie
-          description: "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
-            \ die het informatieobject heeft gecre\xEBerd of heeft ontvangen en als\
-            \ eerste in een samenwerkingsketen heeft vastgelegd."
-          type: string
-          maxLength: 9
-          minLength: 1
-        creatiedatum:
-          title: Creatiedatum
-          description: Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.
-          type: string
-          format: date
-        titel:
-          title: Titel
-          description: De naam waaronder het INFORMATIEOBJECT formeel bekend is.
-          type: string
-          maxLength: 200
-          minLength: 1
-        vertrouwelijkheidaanduiding:
-          title: Vertrouwelijkheidaanduiding
-          description: 'Aanduiding van de mate waarin het INFORMATIEOBJECT voor de
-            openbaarheid bestemd is.
-
-
-            Uitleg bij mogelijke waarden:
-
-
-            * `openbaar` - Openbaar
-
-            * `beperkt_openbaar` - Beperkt openbaar
-
-            * `intern` - Intern
-
-            * `zaakvertrouwelijk` - Zaakvertrouwelijk
-
-            * `vertrouwelijk` - Vertrouwelijk
-
-            * `confidentieel` - Confidentieel
-
-            * `geheim` - Geheim
-
-            * `zeer_geheim` - Zeer geheim'
-          type: string
-          enum:
-          - openbaar
-          - beperkt_openbaar
-          - intern
-          - zaakvertrouwelijk
-          - vertrouwelijk
-          - confidentieel
-          - geheim
-          - zeer_geheim
-        auteur:
-          title: Auteur
-          description: "De persoon of organisatie die in de eerste plaats verantwoordelijk\
-            \ is voor het cre\xEBren van de inhoud van het INFORMATIEOBJECT."
-          type: string
-          maxLength: 200
-          minLength: 1
-        status:
-          title: Status
-          description: 'Aanduiding van de stand van zaken van een INFORMATIEOBJECT.
-            De waarden ''in bewerking'' en ''ter vaststelling'' komen niet voor als
-            het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van
-            de Status in ''gearchiveerd'' impliceert dat het informatieobject een
-            duurzaam, niet-wijzigbaar Formaat dient te hebben.
-
-
-            Uitleg bij mogelijke waarden:
-
-
-            * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
-
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
-
-            * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
-            vastgesteld dan wel ontvangen.
-
-            * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
-            gemaakt; een gearchiveerd informatie-element.'
-          type: string
-          enum:
-          - in_bewerking
-          - ter_vaststelling
-          - definitief
-          - gearchiveerd
-        formaat:
-          title: Formaat
-          description: 'Het "Media Type" (voorheen "MIME type") voor de wijze waaropde
-            inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand.
-            Voorbeeld: `application/msword`. Zie: https://www.iana.org/assignments/media-types/media-types.xhtml'
-          type: string
-          maxLength: 255
-        taal:
-          title: Taal
-          description: 'Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT
-            is vastgelegd. Voorbeeld: `nld`. Zie: https://www.iso.org/standard/4767.html'
-          type: string
-          maxLength: 3
-          minLength: 3
-        versie:
-          title: Versie
-          description: Het (automatische) versienummer van het INFORMATIEOBJECT. Deze
-            begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.
-          type: integer
-          readOnly: true
-        beginRegistratie:
-          title: Begin registratie
-          description: Een datumtijd in ISO8601 formaat waarop deze versie van het
-            INFORMATIEOBJECT is aangemaakt of gewijzigd.
-          type: string
-          format: date-time
-          readOnly: true
-        bestandsnaam:
-          title: Bestandsnaam
-          description: De naam van het fysieke bestand waarin de inhoud van het informatieobject
-            is vastgelegd, inclusief extensie.
-          type: string
-          maxLength: 255
-        inhoud:
-          title: Inhoud
-          description: "Binaire inhoud, in base64 ge\xEBncodeerd."
-          type: string
-          format: bytes
-        bestandsomvang:
-          title: Bestandsomvang
-          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
-          type: integer
-          readOnly: true
-          minimum: 0
-        link:
-          title: Link
-          description: De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen
-            is.
-          type: string
-          format: uri
-          maxLength: 200
-        beschrijving:
-          title: Beschrijving
-          description: Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.
-          type: string
-          maxLength: 1000
-        ontvangstdatum:
-          title: Ontvangstdatum
-          description: De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht
-            te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende
-            organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden
-            aan documenten die van of naar andere personen ontvangen of verzonden
-            zijn waarbij die personen niet deel uit maken van de behandeling van de
-            zaak waarin het document een rol speelt.
-          type: string
-          format: date
-          nullable: true
-        verzenddatum:
-          title: Verzenddatum
-          description: De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze
-            op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als
-            uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk
-            inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan
-            documenten die van of naar andere personen ontvangen of verzonden zijn
-            waarbij die personen niet deel uit maken van de behandeling van de zaak
-            waarin het document een rol speelt.
-          type: string
-          format: date
-          nullable: true
-        indicatieGebruiksrecht:
-          title: Indicatie gebruiksrecht
-          description: Indicatie of er beperkingen gelden aangaande het gebruik van
-            het informatieobject anders dan raadpleging. Dit veld mag `null` zijn
-            om aan te geven dat de indicatie nog niet bekend is. Als de indicatie
-            gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen
-            via de GEBRUIKSRECHTen resource.
-          type: boolean
-          nullable: true
-        ondertekening:
-          $ref: '#/components/schemas/Ondertekening'
-        integriteit:
-          $ref: '#/components/schemas/Integriteit'
-        informatieobjecttype:
-          title: Informatieobjecttype
-          description: URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi
-            API).
-          type: string
-          format: uri
-          maxLength: 200
-          minLength: 1
-        locked:
-          title: locked
-          description: Geeft aan of het document gelocked is. Alleen als een document
-            gelocked is, mogen er aanpassingen gemaakt worden.
-          type: boolean
-          readOnly: true
     Wijzgingen:
       title: Wijzigingen
       type: object
@@ -4147,14 +4408,14 @@ components:
           readOnly: true
         wijzigingen:
           $ref: '#/components/schemas/Wijzgingen'
-    EnkelvoudigInformatieObjectWithLockData:
+    EnkelvoudigInformatieObjectWithLock:
       required:
       - bronorganisatie
       - creatiedatum
       - titel
       - auteur
       - taal
-      - inhoud
+      - bestandsomvang
       - informatieobjecttype
       - lock
       type: object
@@ -4297,14 +4558,14 @@ components:
           maxLength: 255
         inhoud:
           title: Inhoud
-          description: "Binaire inhoud, in base64 ge\xEBncodeerd."
           type: string
-          format: bytes
-        bestandsomvang:
-          title: Bestandsomvang
-          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
-          type: integer
           readOnly: true
+          format: uri
+        bestandsomvang:
+          title: Bestandsnaam
+          description: The size of the whole file in bytes
+          type: integer
+          maximum: 2147483647
           minimum: 0
         link:
           title: Link
@@ -4368,6 +4629,11 @@ components:
             gelocked is, mogen er aanpassingen gemaakt worden.
           type: boolean
           readOnly: true
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartUpload'
+          readOnly: true
         lock:
           title: Lock
           description: Tijdens het updaten van een document (PATCH, PUT) moet het
@@ -4375,6 +4641,23 @@ components:
             hebben.
           type: string
           minLength: 1
+    CompleteEnkelvoudigInformatieObject:
+      type: object
+      properties:
+        url:
+          title: Url
+          description: URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          type: string
+          format: uri
+          readOnly: true
+          maxLength: 1000
+          minLength: 1
+        inhoud:
+          title: Inhoud
+          type: string
+          readOnly: true
+          format: uri
     LockEnkelvoudigInformatieObject:
       type: object
       properties:

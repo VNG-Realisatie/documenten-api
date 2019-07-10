@@ -494,7 +494,7 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
 class PartUploadViewSet(NotificationUpdateMixin,
                         # AuditTrailViewSet,
                         mixins.UpdateModelMixin,
-                        viewsets.ReadOnlyModelViewSet):
+                        viewsets.GenericViewSet):
     """
     update:
     Upload a file object
