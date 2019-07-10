@@ -109,7 +109,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
-            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 100,
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',

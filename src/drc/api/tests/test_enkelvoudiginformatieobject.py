@@ -14,7 +14,7 @@ from vng_api_common.tests import (
 )
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical, PartUpload
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
@@ -41,7 +41,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
-            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 100,
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
@@ -68,7 +68,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(stored_object.versie, 1)
         self.assertAlmostEqual(stored_object.begin_registratie, timezone.now())
         self.assertEqual(stored_object.bestandsnaam, 'dummy.txt')
-        self.assertEqual(stored_object.inhoud.read(), b'some file content')
+        self.assertEqual(stored_object.bestandsomvang, 100)
         self.assertEqual(stored_object.link, 'http://een.link')
         self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
         self.assertEqual(stored_object.informatieobjecttype, INFORMATIEOBJECTTYPE)
@@ -79,6 +79,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'uuid': stored_object.uuid,
         })
         expected_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=stored_object.uuid)
+        expected_part_url = get_operation_url('partupload_read', uuid=PartUpload.objects.get().uuid)
 
         expected_response = content.copy()
         expected_response.update({
@@ -87,7 +88,6 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'versie': 1,
             'beginRegistratie': stored_object.begin_registratie.isoformat().replace('+00:00', 'Z'),
             'vertrouwelijkheidaanduiding': 'openbaar',
-            'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
                 'algoritme': '',
                 'waarde': '',
@@ -102,6 +102,15 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'indicatieGebruiksrecht': None,
             'status': '',
             'locked': False,
+            'parts': [
+                {
+                    'url': f'http://testserver{expected_part_url}',
+                    'chunkSize': 100,
+                    'complete': False,
+                    'partNumber': 1,
+
+                }
+            ],
         })
 
         response_data = response.json()
@@ -160,6 +169,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'locked': False,
+            'parts': []
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))
@@ -203,7 +213,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
             'vertrouwelijkheidaanduiding': 'openbaar',
-            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 100,
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': None,
         }
@@ -234,7 +244,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
             'vertrouwelijkheidaanduiding': 'openbaar',
-            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 100,
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': {
                 "algoritme": "md5",
