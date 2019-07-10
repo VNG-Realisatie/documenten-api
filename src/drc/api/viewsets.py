@@ -8,11 +8,11 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
-    AuditTrailViewsetMixin
+    AuditTrailViewsetMixin,
 )
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationDestroyMixin,
@@ -307,6 +307,21 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         unlock_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @swagger_auto_schema(
+        request_body=CompleteEnkelvoudigInformatieObjectSerializer,
+        responses={
+            status.HTTP_200_OK: CompleteEnkelvoudigInformatieObjectSerializer,
+            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
+            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
+            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+        }
+    )
     @action(detail=True, methods=['put'])
     def complete(self, request, *args, **kwargs):
         eio = self.get_object()
@@ -477,41 +492,17 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
 
 
 class PartUploadViewSet(NotificationUpdateMixin,
-                        viewsets.ModelViewSet):
+                        # AuditTrailViewSet,
+                        mixins.UpdateModelMixin,
+                        viewsets.ReadOnlyModelViewSet):
     """
-    list:
-    Geef een lijst van gebruiksrechten horend bij informatieobjecten.
-
-    Er kan gefiltered worden met querystringparameters.
-
-    retrieve:
-    Haal de details op van een gebruiksrecht van een informatieobject.
-
-    create:
-    Voeg gebruiksrechten toe voor een informatieobject.
-
-    **Opmerkingen**
-    - Het toevoegen van gebruiksrechten zorgt ervoor dat de
-      `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
-
     update:
-    Werk een gebruiksrecht van een informatieobject bij.
-
-    partial_update:
-    Werk een gebruiksrecht van een informatieobject bij.
-
-    destroy:
-    Verwijder een gebruiksrecht van een informatieobject.
-
-    **Opmerkingen**
-    - Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,
-      dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`
-      gezet.
+    Upload a file object
     """
     queryset = PartUpload.objects.all()
     serializer_class = PartUploadSerializer
     lookup_field = 'uuid'
-    parser_classes = (FileUploadParser,)
+    parser_classes = (MultiPartParser, FormParser)
     notifications_kanaal = KANAAL_DOCUMENTEN
     notifications_main_resource_key = 'informatieobject'
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
@@ -520,10 +511,3 @@ class PartUploadViewSet(NotificationUpdateMixin,
     }
     audit = AUDIT_DRC
     audittrail_main_resource_key = 'informatieobject'
-
-    def update(self, request, *args, **kwargs):
-        file = request.FILES.get('file')
-        if 'inhoud' not in request.data:
-            request.data['inhoud'] = file
-
-        return super().update(request, *args, **kwargs)

@@ -148,11 +148,25 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
             },
             'complete': {
                 'read_only': True,
-            }
-            # 'inhoud': {
-            #     'write_only': True,
-            # },
+            },
+            'inhoud': {
+                'write_only': True,
+            },
         }
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        inhoud = valid_attrs.get('inhoud')
+        if inhoud:
+            if inhoud.size != self.instance.chunk_size:
+                raise serializers.ValidationError(
+                    _("The size of upload file should be equal chunkSize field"),
+                    code='file-size'
+                )
+
+        return valid_attrs
+
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -449,11 +463,19 @@ class CompleteEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer)
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
+
+        if not self.instance.canonical.lock:
+            raise serializers.ValidationError(
+                _("Unlocked document can't be marked as competed"),
+                code='unlocked'
+            )
+
         if not self.instance.canonical.complete_upload:
             raise serializers.ValidationError(
                 _("Upload of part files is not complete"),
                 code='incomplete-upload'
             )
+
         return valid_attrs
 
     def save(self, **kwargs):
@@ -469,7 +491,10 @@ class CompleteEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer)
         with open(file_path) as file_obj:
             self.instance.inhoud.save(file_name, File(file_obj))
 
-        #  TODO delete part files
+        # delete part files
+        for part in parts:
+            part.inhoud.delete()
+            part.delete()
 
         return self.instance
 
