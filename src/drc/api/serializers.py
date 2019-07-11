@@ -15,6 +15,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import GegevensGroepSerializer
+from vng_api_common.utils import get_help_text
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
 from drc.datamodel.models import (
@@ -120,8 +121,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     )
     inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download')
     bestandsomvang = serializers.IntegerField(
-        source='inhoud.size', read_only=True,
-        min_value=0
+        source='inhoud.size', read_only=True, min_value=0,
+        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
     )
     integriteit = IntegriteitSerializer(
         label=_("integriteit"), allow_null=True, required=False,
@@ -360,6 +361,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid',
         queryset=EnkelvoudigInformatieObject.objects,
+        help_text=get_help_text('datamodel.ObjectInformatieObject', 'informatieobject'),
     )
 
     class Meta:
@@ -401,6 +403,7 @@ class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid',
         queryset=EnkelvoudigInformatieObject.objects,
+        help_text=get_help_text('datamodel.Gebruiksrechten', 'informatieobject'),
     )
 
     class Meta:
