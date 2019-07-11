@@ -2,6 +2,24 @@
 Wijzigingen
 ===========
 
+0.16.0 (2019-07-11)
+===================
+
+Updates towards release candidate
+
+* Use human readable auto-generated document identifications
+* Improved admin usability
+* Improved documentation of ``EnkelvoudigInformatieObject.inhoud`` attribute
+* Build ``develop`` docker images for test environment
+* Documented ``EnkelvoudigInformatieObject.formaat`` - needs to be a MIME-type
+* Improved OAS consistency
+* Added management command to migrate to new domains
+
+Breaking changes
+----------------
+
+* Added pagination to ``EnkelvoudigInformatieObject`` list endpoint
+
 0.15.4 (2019-07-02)
 ===================
 
