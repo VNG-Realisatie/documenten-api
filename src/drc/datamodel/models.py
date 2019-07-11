@@ -190,8 +190,9 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     # TODO: validate mime types
     formaat = models.CharField(
         max_length=255, blank=True,
-        help_text='De code voor de wijze waarop de inhoud van het ENKELVOUDIG '
-                  'INFORMATIEOBJECT is vastgelegd in een computerbestand.'
+        help_text='Het "Media Type" (voorheen "MIME type") voor de wijze waarop'
+                  'de inhoud van het INFORMATIEOBJECT is vastgelegd in een '
+                  'computerbestand. Voorbeeld: `application/msword`.'
     )
     taal = LanguageField(
         help_text='Een taal van de intellectuele inhoud van het ENKELVOUDIG '
