@@ -2,37 +2,54 @@ from django.conf import settings
 
 from drf_yasg import openapi
 
-description = """Een API om een documentregistratiecomponent te benaderen.
+from .kanalen import KANAAL_DOCUMENTEN
 
-Een informatieobject is een digitaal document voorzien van meta-gegevens.
-Informatieobjecten kunnen aan andere objecten zoals zaken en besluiten worden
-gerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.
-Gebruiksrechten leggen voorwaarden op aan het gebruik van het informatieobject
-(buiten raadpleging). Deze gebruiksrechten worden niet door de API gevalideerd
+description = f"""Een API om een documentregistratiecomponent (DRC) te benaderen.
+
+In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een 
+INFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens. 
+INFORMATIEOBJECTen kunnen aan andere objecten zoals zaken en besluiten worden 
+gerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben. 
+
+GEBRUIKSRECHTEN leggen voorwaarden op aan het gebruik van het INFORMATIEOBJECT
+(buiten raadpleging). Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd
 of gehandhaafd.
 
-De typering van informatieobjecten is in de zaaktypecatalogus (ZTC)
-ondergebracht in de vorm van informatieobjecttypen.
+De typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in
+de vorm van INFORMATIEOBJECTTYPEn.
+
+**Afhankelijkheden**
+
+Deze API is afhankelijk van:
+
+* Catalogi API
+* Notificaties API
+* Autorisaties API *(optioneel)*
+* Zaken API *(optioneel)*
 
 **Autorisatie**
 
-Deze API vereist nog geen autorisatie. Je mag wel JWT-tokens gegenereerd door
-de [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken - deze worden
-voor nu genegeerd.
+Deze API vereist autorisatie. Je kan de
+[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te
+genereren.
+
+**Notificaties**
+
+Deze API publiceert notificaties op het kanaal `{KANAAL_DOCUMENTEN.label}`.
 
 **Handige links**
 
-* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)
-* ["Papieren" standaard](https://ref.tst.vng.cloud/standaard/)
+* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
+* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
 """
 
 info = openapi.Info(
-    title="Documentregistratiecomponent (drc) API",
+    title=f"{settings.PROJECT_NAME} API",
     default_version=settings.API_VERSION,
     description=description,
     contact=openapi.Contact(
-        email="support@maykinmedia.nl",
-        url="https://github.com/VNG-Realisatie/gemma-zaken"
+        email="standaarden.ondersteuning@vng.nl",
+        url="https://zaakgerichtwerken.vng.cloud"
     ),
     license=openapi.License(
         name="EUPL 1.2",

@@ -28,7 +28,7 @@ djangorestframework-filters==0.10.2
 djangorestframework==3.9.4
 docutils==0.14            # via sphinx
 drf-nested-routers==0.90.2  # via vng-api-common
-drf-yasg==1.15.0
+drf-yasg==1.16.0
 first==2.0.1              # via pip-tools
 gemma-zds-client==0.11.0  # via vng-api-common
 idna==2.7                 # via requests
@@ -64,4 +64,4 @@ sqlparse==0.3.0           # via django
 unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.3           # via requests
-vng-api-common==0.55.0
+vng-api-common==0.58.1

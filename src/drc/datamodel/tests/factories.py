@@ -5,11 +5,7 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from vng_api_common.constants import (
-    ObjectTypes, RelatieAarden, VertrouwelijkheidsAanduiding
-)
-
-from drc.datamodel.models import EnkelvoudigInformatieObject
+from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
 
 class EnkelvoudigInformatieObjectCanonicalFactory(factory.django.DjangoModelFactory):
@@ -20,7 +16,6 @@ class EnkelvoudigInformatieObjectCanonicalFactory(factory.django.DjangoModelFact
         'drc.datamodel.tests.factories.EnkelvoudigInformatieObjectFactory',
         'canonical'
     )
-
 
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):

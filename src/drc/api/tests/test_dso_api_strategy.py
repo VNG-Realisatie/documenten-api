@@ -1,4 +1,5 @@
 from django.test import override_settings
+from django.utils.translation import ugettext as _
 
 import yaml
 from rest_framework.test import APIRequestFactory, APITestCase
@@ -150,7 +151,7 @@ class DSOApi50Tests(APITestCase):
             views.GoneView,
             {
                 'code': 'gone',
-                'title': 'The resource is gone',
+                'title': _('The resource is gone'),
                 'status': 410,
                 'detail': 'The resource was destroyed',
             }
@@ -161,7 +162,7 @@ class DSOApi50Tests(APITestCase):
             views.PreconditionFailed,
             {
                 'code': 'precondition_failed',
-                'title': 'Precondition failed',
+                'title': _('Precondition failed'),
                 'status': 412,
                 'detail': "Something about CRS",
             }

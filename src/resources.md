@@ -10,7 +10,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | identificatie | Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT. | string | nee | C​R​U​D |
 | bronorganisatie | Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd. | string | ja | C​R​U​D |
 | creatiedatum | Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT. | string | ja | C​R​U​D |
@@ -18,17 +18,17 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | vertrouwelijkheidaanduiding | Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is. | string | nee | C​R​U​D |
 | auteur | De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het INFORMATIEOBJECT. | string | ja | C​R​U​D |
 | status | Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden &#39;in bewerking&#39; en &#39;ter vaststelling&#39; komen niet voor als het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in &#39;gearchiveerd&#39; impliceert dat het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben. | string | nee | C​R​U​D |
-| formaat | De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand. | string | nee | C​R​U​D |
-| taal | Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B | string | ja | C​R​U​D |
+| formaat | Het &quot;Media Type&quot; (voorheen &quot;MIME type&quot;) voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`. | string | nee | C​R​U​D |
+| taal | Een taal van de intellectuele inhoud van het INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B | string | ja | C​R​U​D |
 | bestandsnaam | De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie. | string | nee | C​R​U​D |
-| inhoud |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| bestandsomvang |  | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
+| inhoud | Download URL van de binaire inhoud. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| bestandsomvang | Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
 | link | De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is. | string | nee | C​R​U​D |
 | beschrijving | Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT. | string | nee | C​R​U​D |
 | ontvangstdatum | De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt. | string | nee | C​R​U​D |
 | verzenddatum | De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt. | string | nee | C​R​U​D |
-| indicatieGebruiksrecht | Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag &#39;null&#39; zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource. | boolean | nee | C​R​U​D |
-| informatieobjecttype | URL naar de INFORMATIEOBJECTTYPE in het ZTC. | string | ja | C​R​U​D |
+| indicatieGebruiksrecht | Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null&#39; zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `GEBRUIKSRECHTEN resource. | boolean | nee | C​R​U​D |
+| informatieobjecttype | URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## AuditTrail
@@ -79,8 +79,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| informatieobject |  | string | ja | C​R​U​D |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| informatieobject | URL-referentie naar het INFORMATIEOBJECT. | string | ja | C​R​U​D |
 | startdatum | Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject de startdatum. | string | ja | C​R​U​D |
 | einddatum | Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. | string | nee | C​R​U​D |
 | omschrijvingVoorwaarden | Omschrijving van de van toepassing zijnde voorwaarden aan het gebruik anders dan raadpleging | string | ja | C​R​U​D |
@@ -91,10 +91,10 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| informatieobject |  | string | ja | C​R​U​D |
-| object | URL naar het gerelateerde OBJECT. | string | ja | C​R​U​D |
-| objectType |  | string | ja | C​R​U​D |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| informatieobject | URL-referentie naar het INFORMATIEOBJECT. | string | ja | C​R​U​D |
+| object | URL-referentie naar het gerelateerde OBJECT (in deze of een andere API). | string | ja | C​R​U​D |
+| objectType | Het type van het gerelateerde OBJECT. | string | ja | C​R​U​D |
 
 
 * Create, Read, Update, Delete

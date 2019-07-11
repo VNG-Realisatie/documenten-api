@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Documentregistratiecomponent (drc) API",
-        "description": "Een API om een documentregistratiecomponent te benaderen.\n\nEen informatieobject is een digitaal document voorzien van meta-gegevens.\nInformatieobjecten kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.\nGebruiksrechten leggen voorwaarden op aan het gebruik van het informatieobject\n(buiten raadpleging). Deze gebruiksrechten worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van informatieobjecten is in de zaaktypecatalogus (ZTC)\nondergebracht in de vorm van informatieobjecttypen.\n\n**Autorisatie**\n\nDeze API vereist nog geen autorisatie. Je mag wel JWT-tokens gegenereerd door\nde [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken - deze worden\nvoor nu genegeerd.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
+        "title": "Documenten API",
+        "description": "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\nIn een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een \nINFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens. \nINFORMATIEOBJECTen kunnen aan andere objecten zoals zaken en besluiten worden \ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben. \n\nGEBRUIKSRECHTEN leggen voorwaarden op aan het gebruik van het INFORMATIEOBJECT\n(buiten raadpleging). Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in\nde vorm van INFORMATIEOBJECTTYPEn.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Autorisaties API *(optioneel)*\n* Zaken API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n**Notificaties**\n\nDeze API publiceert notificaties op het kanaal `documenten`.\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
         "contact": {
-            "url": "https://github.com/VNG-Realisatie/gemma-zaken",
-            "email": "support@maykinmedia.nl"
+            "url": "https://zaakgerichtwerken.vng.cloud",
+            "email": "standaarden.ondersteuning@vng.nl"
         },
         "license": {
             "name": "EUPL 1.2",
@@ -36,8 +36,8 @@
         "/enkelvoudiginformatieobjecten": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
-                "summary": "Geef een lijst van de laatste versies van ENKELVOUDIGe INFORMATIEOBJECTen\n(=documenten).",
-                "description": "De objecten bevatten metadata over de documenten en de downloadlink naar\nde binary data.",
+                "summary": "Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.\n\nDe objecten bevatten metadata over de documenten en de downloadlink\n(`inhoud`) naar de binary data.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -52,15 +52,44 @@
                         "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EnkelvoudigInformatieObject"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -73,7 +102,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -87,7 +116,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -101,7 +130,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -115,7 +144,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -129,7 +158,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -143,7 +172,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -157,7 +186,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -171,7 +200,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -185,7 +214,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -212,8 +241,8 @@
             },
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
-                "summary": "Registreer een ENKELVOUDIG INFORMATIEOBJECT.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL",
+                "summary": "Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid `informatieobjecttype` URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -247,7 +276,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
                         },
@@ -268,7 +297,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -282,7 +311,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -296,7 +325,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -310,7 +339,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -324,7 +353,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -338,7 +367,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -352,7 +381,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -366,7 +395,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -380,7 +409,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -410,11 +439,12 @@
         "/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail": {
             "get": {
                 "operationId": "audittrail_list",
-                "description": "Geef een lijst van AUDITTRAILS die horen bij het huidige EnkelvoudigInformatieObject.",
+                "summary": "Alle audit trail regels behorend bij het INFORMATIEOBJECT.",
+                "description": "Alle audit trail regels behorend bij het INFORMATIEOBJECT.",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -431,7 +461,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -445,7 +475,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -459,7 +489,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -473,7 +503,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -487,7 +517,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -501,7 +531,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -515,7 +545,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -529,7 +559,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -568,11 +598,12 @@
         "/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail/{uuid}": {
             "get": {
                 "operationId": "audittrail_read",
-                "description": "Haal de details van een AUDITTRAIL op.",
+                "summary": "Een specifieke audit trail regel opvragen.",
+                "description": "Een specifieke audit trail regel opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/AuditTrail"
                         },
@@ -586,7 +617,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -600,7 +631,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -614,7 +645,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -628,7 +659,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -642,7 +673,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -656,7 +687,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -670,7 +701,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -684,7 +715,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -698,7 +729,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -745,8 +776,8 @@
         "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
-                "summary": "Geef de details van de laatste versie ENKELVOUDIG INFORMATIEOBJECT.",
-                "description": "Het object bevat metadata over het informatieobject en de downloadlink naar\nde binary data.\n\nEr kan gefiltered worden met querystringparameters.",
+                "summary": "Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.",
+                "description": "Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.\n\nHet object bevat metadata over het document en de downloadlink (`inhoud`)\nnaar de binary data.",
                 "parameters": [
                     {
                         "name": "versie",
@@ -763,7 +794,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObject"
                         },
@@ -777,7 +808,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -791,7 +822,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -805,7 +836,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -819,7 +850,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -833,7 +864,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -847,7 +878,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -861,7 +892,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -875,7 +906,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -889,7 +920,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -916,8 +947,8 @@
             },
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
-                "summary": "Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door de\nvolledige resource mee te sturen.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
+                "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.",
+                "description": "**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -951,7 +982,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectWithLockData"
                         },
@@ -965,7 +996,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -979,7 +1010,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -993,7 +1024,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1007,7 +1038,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1021,7 +1052,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1035,7 +1066,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1049,7 +1080,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1063,7 +1094,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1077,7 +1108,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1091,7 +1122,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1118,8 +1149,8 @@
             },
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
-                "summary": "Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door enkel\nde gewijzigde velden mee te sturen.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid informatieobjecttype URL\n\n*TODO*\n- valideer immutable attributes",
+                "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.",
+                "description": "**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1153,7 +1184,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/EnkelvoudigInformatieObjectWithLockData"
                         },
@@ -1167,7 +1198,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -1181,7 +1212,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1195,7 +1226,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1209,7 +1240,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1223,7 +1254,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1237,7 +1268,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1251,7 +1282,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1265,7 +1296,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1279,7 +1310,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1293,7 +1324,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1320,7 +1351,8 @@
             },
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
-                "description": "Verwijdert een ENKELVOUDIG INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API.\n\n**Gerelateerde resources**\n- `ObjectInformatieObject` - alle relaties van het informatieobject\n- `Gebruiksrechten` - alle gebruiksrechten van het informatieobject",
+                "summary": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.",
+                "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API.\n\n**Gerelateerde resources**\n- OBJECT-INFORMATIEOBJECT\n- GEBRUIKSRECHTen\n- audit trail regels",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -1346,7 +1378,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -1357,7 +1389,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1371,7 +1403,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1385,7 +1417,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1399,7 +1431,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1413,7 +1445,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1427,7 +1459,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1441,7 +1473,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1455,7 +1487,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1469,7 +1501,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1508,7 +1540,8 @@
         "/enkelvoudiginformatieobjecten/{uuid}/download": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_download",
-                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "summary": "Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.",
+                "description": "Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.",
                 "parameters": [
                     {
                         "name": "versie",
@@ -1679,7 +1712,8 @@
         "/enkelvoudiginformatieobjecten/{uuid}/lock": {
             "post": {
                 "operationId": "enkelvoudiginformatieobject_lock",
-                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "summary": "Vergrendel een (ENKELVOUDIG) INFORMATIEOBJECT.",
+                "description": "Voert een \"checkout\" uit waardoor het (ENKELVOUDIG) INFORMATIEOBJECT\nvergrendeld wordt met een `lock` waarde. Alleen met deze waarde kan het\n(ENKELVOUDIG) INFORMATIEOBJECT bijgewerkt (`PUT`, `PATCH`) en weer\nontgrendeld worden.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1857,7 +1891,8 @@
         "/enkelvoudiginformatieobjecten/{uuid}/unlock": {
             "post": {
                 "operationId": "enkelvoudiginformatieobject_unlock",
-                "description": "Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.",
+                "summary": "Ontgrendel een (ENKELVOUDIG) INFORMATIEOBJECT.",
+                "description": "Heft de \"checkout\" op waardoor het (ENKELVOUDIG) INFORMATIEOBJECT\nontgrendeld wordt.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2032,16 +2067,15 @@
         "/gebruiksrechten": {
             "get": {
                 "operationId": "gebruiksrechten_list",
-                "summary": "Geef een lijst van gebruiksrechten horend bij informatieobjecten.",
-                "description": "Er kan gefiltered worden met querystringparameters.",
+                "summary": "Alle GEBRUIKSRECHTen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "URL-referentie naar het INFORMATIEOBJECT.",
                         "required": false,
-                        "type": "string",
-                        "format": "uri"
+                        "type": "string"
                     },
                     {
                         "name": "startdatum__lt",
@@ -2102,7 +2136,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -2119,7 +2153,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2133,7 +2167,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2147,7 +2181,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2161,7 +2195,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2175,7 +2209,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2189,7 +2223,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2203,7 +2237,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2217,7 +2251,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2231,7 +2265,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2258,8 +2292,8 @@
             },
             "post": {
                 "operationId": "gebruiksrechten_create",
-                "summary": "Voeg gebruiksrechten toe voor een informatieobject.",
-                "description": "**Opmerkingen**\n- Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.",
+                "summary": "Maak een GEBRUIKSRECHT aan.",
+                "description": "Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.\n\n**Opmerkingen**\n- Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2293,7 +2327,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         },
@@ -2314,7 +2348,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2328,7 +2362,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2342,7 +2376,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2356,7 +2390,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2370,7 +2404,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2384,7 +2418,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2398,7 +2432,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2412,7 +2446,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2426,7 +2460,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2456,11 +2490,12 @@
         "/gebruiksrechten/{uuid}": {
             "get": {
                 "operationId": "gebruiksrechten_read",
-                "description": "Haal de details op van een gebruiksrecht van een informatieobject.",
+                "summary": "Een specifieke GEBRUIKSRECHT opvragen.",
+                "description": "Een specifieke GEBRUIKSRECHT opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         },
@@ -2474,7 +2509,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2488,7 +2523,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2502,7 +2537,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2516,7 +2551,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2530,7 +2565,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2544,7 +2579,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2558,7 +2593,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2572,7 +2607,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2586,7 +2621,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2613,7 +2648,8 @@
             },
             "put": {
                 "operationId": "gebruiksrechten_update",
-                "description": "Werk een gebruiksrecht van een informatieobject bij.",
+                "summary": "Werk een GEBRUIKSRECHT in zijn geheel bij.",
+                "description": "Werk een GEBRUIKSRECHT in zijn geheel bij.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2647,7 +2683,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         },
@@ -2661,7 +2697,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2675,7 +2711,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2689,7 +2725,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2703,7 +2739,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2717,7 +2753,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2731,7 +2767,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2745,7 +2781,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2759,7 +2795,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2773,7 +2809,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2787,7 +2823,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2814,7 +2850,8 @@
             },
             "patch": {
                 "operationId": "gebruiksrechten_partial_update",
-                "description": "Werk een gebruiksrecht van een informatieobject bij.",
+                "summary": "Werk een GEBRUIKSRECHT relatie deels bij.",
+                "description": "Werk een GEBRUIKSRECHT relatie deels bij.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2848,7 +2885,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Gebruiksrechten"
                         },
@@ -2862,7 +2899,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2876,7 +2913,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2890,7 +2927,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2904,7 +2941,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2918,7 +2955,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2932,7 +2969,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2946,7 +2983,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2960,7 +2997,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2974,7 +3011,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2988,7 +3025,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3015,8 +3052,8 @@
             },
             "delete": {
                 "operationId": "gebruiksrechten_delete",
-                "summary": "Verwijder een gebruiksrecht van een informatieobject.",
-                "description": "**Opmerkingen**\n- Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,\n  dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`\n  gezet.",
+                "summary": "Verwijder een GEBRUIKSRECHT.",
+                "description": "**Opmerkingen**\n- Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd\n  wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op\n  `null` gezet.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -3042,7 +3079,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -3053,7 +3090,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3067,7 +3104,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3081,7 +3118,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3095,7 +3132,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3109,7 +3146,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3123,7 +3160,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3137,7 +3174,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3151,7 +3188,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3165,7 +3202,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3204,12 +3241,13 @@
         "/objectinformatieobjecten": {
             "get": {
                 "operationId": "objectinformatieobject_list",
-                "description": "Geef een lijst van relaties tussen OBJECTen en INFORMATIEOBJECTen.",
+                "summary": "Alle OBJECT-INFORMATIEOBJECT relaties opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "object",
                         "in": "query",
-                        "description": "URL naar het gerelateerde OBJECT.",
+                        "description": "URL-referentie naar het gerelateerde OBJECT (in deze of een andere API).",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3217,15 +3255,14 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde informatieobject",
+                        "description": "URL-referentie naar het INFORMATIEOBJECT.",
                         "required": false,
-                        "type": "string",
-                        "format": "uri"
+                        "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -3242,7 +3279,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3256,7 +3293,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3270,7 +3307,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3284,7 +3321,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3298,7 +3335,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3312,7 +3349,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3326,7 +3363,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3340,7 +3377,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3354,7 +3391,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3381,7 +3418,8 @@
             },
             "post": {
                 "operationId": "objectinformatieobject_create",
-                "description": "",
+                "summary": "Maak een OBJECT-INFORMATIEOBJECT relatie aan.",
+                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nAndere API's, zoals de Zaken API en de Besluiten API, gebruiken dit\nendpoint bij het synchroniseren van relaties.\n\n**Er wordt gevalideerd op**\n- geldigheid `informatieobject` URL\n- de combinatie `informatieobject` en `object` moet uniek zijn\n- bestaan van `object` URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -3415,7 +3453,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/ObjectInformatieObject"
                         },
@@ -3436,7 +3474,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3450,7 +3488,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3464,7 +3502,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3478,7 +3516,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3492,7 +3530,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3506,7 +3544,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3520,7 +3558,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3534,7 +3572,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3548,7 +3586,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3578,11 +3616,12 @@
         "/objectinformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "objectinformatieobject_read",
-                "description": "Geef een informatieobject terug wat gekoppeld is aan het huidige object",
+                "summary": "Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.",
+                "description": "Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ObjectInformatieObject"
                         },
@@ -3596,7 +3635,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3610,7 +3649,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3624,7 +3663,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3638,7 +3677,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3652,7 +3691,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3666,7 +3705,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3680,7 +3719,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3694,7 +3733,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3708,7 +3747,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3735,7 +3774,8 @@
             },
             "delete": {
                 "operationId": "objectinformatieobject_delete",
-                "description": "Verwijder een relatie tussen een object en een informatieobject.",
+                "summary": "Verwijder een OBJECT-INFORMATIEOBJECT relatie.",
+                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nAndere API's, zoals de Zaken API en de Besluiten API, gebruiken dit\nendpoint bij het synchroniseren van relaties.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -3761,7 +3801,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -3772,7 +3812,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3786,7 +3826,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3800,7 +3840,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3814,7 +3854,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3828,7 +3868,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3842,7 +3882,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3856,7 +3896,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3870,7 +3910,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3884,7 +3924,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4007,16 +4047,18 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "identificatie": {
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
@@ -4073,13 +4115,13 @@
                 },
                 "formaat": {
                     "title": "Formaat",
-                    "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
+                    "description": "Het \"Media Type\" (voorheen \"MIME type\") voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`.",
                     "type": "string",
                     "maxLength": 255
                 },
                 "taal": {
                     "title": "Taal",
-                    "description": "Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
+                    "description": "Een taal van de intellectuele inhoud van het INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
                     "type": "string",
                     "enum": [
                         "aar",
@@ -4577,12 +4619,14 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Download URL van de binaire inhoud.",
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
+                    "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
                     "readOnly": true,
                     "minimum": 0
@@ -4616,7 +4660,7 @@
                 },
                 "indicatieGebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
-                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `GEBRUIKSRECHTEN resource.",
                     "type": "boolean",
                     "x-nullable": true
                 },
@@ -4628,7 +4672,7 @@
                 },
                 "informatieobjecttype": {
                     "title": "Informatieobjecttype",
-                    "description": "URL naar de INFORMATIEOBJECTTYPE in het ZTC.",
+                    "description": "URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
@@ -4783,16 +4827,18 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "identificatie": {
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
@@ -4849,13 +4895,13 @@
                 },
                 "formaat": {
                     "title": "Formaat",
-                    "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
+                    "description": "Het \"Media Type\" (voorheen \"MIME type\") voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`.",
                     "type": "string",
                     "maxLength": 255
                 },
                 "taal": {
                     "title": "Taal",
-                    "description": "Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
+                    "description": "Een taal van de intellectuele inhoud van het INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
                     "type": "string",
                     "enum": [
                         "aar",
@@ -5353,11 +5399,13 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
                     "format": "bytes"
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
+                    "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
                     "readOnly": true,
                     "minimum": 0
@@ -5391,7 +5439,7 @@
                 },
                 "indicatie_gebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
-                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `GEBRUIKSRECHTEN resource.",
                     "type": "boolean",
                     "x-nullable": true
                 },
@@ -5403,7 +5451,7 @@
                 },
                 "informatieobjecttype": {
                     "title": "Informatieobjecttype",
-                    "description": "URL naar de INFORMATIEOBJECTTYPE in het ZTC.",
+                    "description": "URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
@@ -5571,16 +5619,18 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "identificatie": {
                     "title": "Identificatie",
                     "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "maxLength": 40
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
@@ -5637,13 +5687,13 @@
                 },
                 "formaat": {
                     "title": "Formaat",
-                    "description": "De code voor de wijze waarop de inhoud van het ENKELVOUDIG INFORMATIEOBJECT is vastgelegd in een computerbestand.",
+                    "description": "Het \"Media Type\" (voorheen \"MIME type\") voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`.",
                     "type": "string",
                     "maxLength": 255
                 },
                 "taal": {
                     "title": "Taal",
-                    "description": "Een taal van de intellectuele inhoud van het ENKELVOUDIG INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
+                    "description": "Een taal van de intellectuele inhoud van het INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B",
                     "type": "string",
                     "enum": [
                         "aar",
@@ -6141,11 +6191,13 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
+                    "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
                     "format": "bytes"
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
+                    "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
                     "readOnly": true,
                     "minimum": 0
@@ -6179,7 +6231,7 @@
                 },
                 "indicatie_gebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
-                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `GEBRUIKSRECHTEN resource.",
                     "type": "boolean",
                     "x-nullable": true
                 },
@@ -6191,7 +6243,7 @@
                 },
                 "informatieobjecttype": {
                     "title": "Informatieobjecttype",
-                    "description": "URL naar de INFORMATIEOBJECTTYPE in het ZTC.",
+                    "description": "URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
@@ -6244,12 +6296,16 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "informatieobject": {
                     "title": "Informatieobject",
+                    "description": "URL-referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
                     "format": "uri"
                 },
@@ -6284,18 +6340,22 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "informatieobject": {
                     "title": "Informatieobject",
+                    "description": "URL-referentie naar het INFORMATIEOBJECT.",
                     "type": "string",
                     "format": "uri"
                 },
                 "object": {
                     "title": "Object",
-                    "description": "URL naar het gerelateerde OBJECT.",
+                    "description": "URL-referentie naar het gerelateerde OBJECT (in deze of een andere API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
@@ -6303,6 +6363,7 @@
                 },
                 "objectType": {
                     "title": "Objecttype",
+                    "description": "Het type van het gerelateerde OBJECT.",
                     "type": "string",
                     "enum": [
                         "besluit",
