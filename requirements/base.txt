@@ -28,7 +28,7 @@ djangorestframework-filters==0.10.2
 djangorestframework==3.9.4
 docutils==0.14            # via sphinx
 drf-nested-routers==0.90.2  # via vng-api-common
-drf-yasg==1.15.0
+drf-yasg==1.16.0
 first==2.0.1              # via pip-tools
 gemma-zds-client==0.11.0  # via vng-api-common
 idna==2.7                 # via requests

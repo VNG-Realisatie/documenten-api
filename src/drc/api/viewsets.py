@@ -75,57 +75,79 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
                                          AuditTrailViewsetMixin,
                                          viewsets.ModelViewSet):
     """
-    Ontsluit ENKELVOUDIG INFORMATIEOBJECTen.
+    Opvragen en bewerken van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten).
 
     create:
-    Registreer een ENKELVOUDIG INFORMATIEOBJECT.
+    Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.
 
     **Er wordt gevalideerd op**
-    - geldigheid informatieobjecttype URL
+    - geldigheid `informatieobjecttype` URL
 
     list:
-    Geef een lijst van de laatste versies van ENKELVOUDIGe INFORMATIEOBJECTen
-    (=documenten).
+    Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.
 
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
-    De objecten bevatten metadata over de documenten en de downloadlink naar
-    de binary data.
+    De objecten bevatten metadata over de documenten en de downloadlink
+    (`inhoud`) naar de binary data.
 
     retrieve:
-    Geef de details van de laatste versie ENKELVOUDIG INFORMATIEOBJECT.
+    Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.
 
-    Het object bevat metadata over het informatieobject en de downloadlink naar
-    de binary data.
+    Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.
 
-    Er kan gefiltered worden met querystringparameters.
+    Het object bevat metadata over het document en de downloadlink (`inhoud`)
+    naar de binary data.
 
     update:
-    Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door de
-    volledige resource mee te sturen.
+    Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid informatieobjecttype URL
+    - correcte `lock` waarde
+    - geldigheid `informatieobjecttype` URL
 
     *TODO*
     - valideer immutable attributes
 
     partial_update:
-    Maak een nieuwe versie van een ENKELVOUDIG INFORMATIEOBJECT aan door enkel
-    de gewijzigde velden mee te sturen.
+    Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid informatieobjecttype URL
+    - correcte `lock` waarde
+    - geldigheid `informatieobjecttype` URL
 
     *TODO*
     - valideer immutable attributes
 
     destroy:
-    Verwijdert een ENKELVOUDIG INFORMATIEOBJECT en alle bijbehorende versies,
+    Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
+
+    Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,
     samen met alle gerelateerde resources binnen deze API.
 
     **Gerelateerde resources**
-    - `ObjectInformatieObject` - alle relaties van het informatieobject
-    - `Gebruiksrechten` - alle gebruiksrechten van het informatieobject
+    - OBJECT-INFORMATIEOBJECT
+    - GEBRUIKSRECHTen
+    - audit trail regels
+
+    download:
+    Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.
+
+    Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.
+
+    lock:
+    Vergrendel een (ENKELVOUDIG) INFORMATIEOBJECT.
+
+    Voert een "checkout" uit waardoor het (ENKELVOUDIG) INFORMATIEOBJECT
+    vergrendeld wordt met een `lock` waarde. Alleen met deze waarde kan het
+    (ENKELVOUDIG) INFORMATIEOBJECT bijgewerkt (`PUT`, `PATCH`) en weer
+    ontgrendeld worden.
+
+    unlock:
+    Ontgrendel een (ENKELVOUDIG) INFORMATIEOBJECT.
+
+    Heft de "checkout" op waardoor het (ENKELVOUDIG) INFORMATIEOBJECT
+    ontgrendeld wordt.
     """
     queryset = EnkelvoudigInformatieObject.objects.order_by('canonical', '-versie').distinct('canonical')
     lookup_field = 'uuid'
@@ -290,31 +312,41 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
                                     mixins.DestroyModelMixin,
                                     viewsets.ReadOnlyModelViewSet):
     """
-    Opvragen en bewerken van Object-Informatieobject relaties.
+    Opvragen en verwijderen van OBJECT-INFORMATIEOBJECT relaties.
+
+    Het betreft een relatie tussen een willekeurig OBJECT, bijvoorbeeld een
+    ZAAK in de Zaken API, en een INFORMATIEOBJECT.
 
     create:
-    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
+    Maak een OBJECT-INFORMATIEOBJECT relatie aan.
 
-    ZRC en BRC gebruiken deze endpoint bij het synchroniseren van relaties.
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
 
-    Registreer welk(e) INFORMATIEOBJECT(en) een OBJECT kent.
+    Andere API's, zoals de Zaken API en de Besluiten API, gebruiken dit
+    endpoint bij het synchroniseren van relaties.
 
     **Er wordt gevalideerd op**
-    - geldigheid informatieobject URL
-    - uniek zijn van relatie OBJECT-INFORMATIEOBJECT
-    - bestaan van relatie OBJECT-INFORMATIEOBJECT in het ZRC of DRC (waar het
-      object leeft)
+    - geldigheid `informatieobject` URL
+    - de combinatie `informatieobject` en `object` moet uniek zijn
+    - bestaan van `object` URL
 
     list:
-    Geef een lijst van relaties tussen OBJECTen en INFORMATIEOBJECTen.
+    Alle OBJECT-INFORMATIEOBJECT relaties opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
     retrieve:
-    Geef een informatieobject terug wat gekoppeld is aan het huidige object
+    Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
+
+    Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
 
     destroy:
-    Verwijder een relatie tussen een object en een informatieobject.
-    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken, dit moet
-    gedaan worden door het ZRC/BRC
+    Verwijder een OBJECT-INFORMATIEOBJECT relatie.
+
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    Andere API's, zoals de Zaken API en de Besluiten API, gebruiken dit
+    endpoint bij het synchroniseren van relaties.
     """
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
@@ -353,34 +385,44 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              AuditTrailViewsetMixin,
                              viewsets.ModelViewSet):
     """
-    list:
-    Geef een lijst van gebruiksrechten horend bij informatieobjecten.
-
-    Er kan gefiltered worden met querystringparameters.
-
-    retrieve:
-    Haal de details op van een gebruiksrecht van een informatieobject.
+    Opvragen en bewerken van GEBRUIKSRECHTen bij een INFORMATIEOBJECT.
 
     create:
-    Voeg gebruiksrechten toe voor een informatieobject.
+    Maak een GEBRUIKSRECHT aan.
+
+    Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.
 
     **Opmerkingen**
     - Het toevoegen van gebruiksrechten zorgt ervoor dat de
       `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
 
+    list:
+    Alle GEBRUIKSRECHTen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
+
+    retrieve:
+    Een specifieke GEBRUIKSRECHT opvragen.
+
+    Een specifieke GEBRUIKSRECHT opvragen.
+
     update:
-    Werk een gebruiksrecht van een informatieobject bij.
+    Werk een GEBRUIKSRECHT in zijn geheel bij.
+
+    Werk een GEBRUIKSRECHT in zijn geheel bij.
 
     partial_update:
-    Werk een gebruiksrecht van een informatieobject bij.
+    Werk een GEBRUIKSRECHT relatie deels bij.
+
+    Werk een GEBRUIKSRECHT relatie deels bij.
 
     destroy:
-    Verwijder een gebruiksrecht van een informatieobject.
+    Verwijder een GEBRUIKSRECHT.
 
     **Opmerkingen**
-    - Indien het laatste gebruiksrecht van een informatieobject verwijderd wordt,
-      dan wordt de `indicatieGebruiksrecht` van het informatieobject op `null`
-      gezet.
+    - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
+      wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
+      `null` gezet.
     """
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer
@@ -403,12 +445,16 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
 
 class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     """
-    Opvragen van Audit trails horend bij een EnkelvoudigInformatieObject.
+    Opvragen van de audit trail regels.
 
     list:
-    Geef een lijst van AUDITTRAILS die horen bij het huidige EnkelvoudigInformatieObject.
+    Alle audit trail regels behorend bij het INFORMATIEOBJECT.
+
+    Alle audit trail regels behorend bij het INFORMATIEOBJECT.
 
     retrieve:
-    Haal de details van een AUDITTRAIL op.
+    Een specifieke audit trail regel opvragen.
+
+    Een specifieke audit trail regel opvragen.
     """
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'

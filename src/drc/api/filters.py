@@ -1,6 +1,7 @@
 from django_filters import rest_framework as filters
 from vng_api_common.filters import URLModelChoiceFilter
 from vng_api_common.filtersets import FilterSet
+from vng_api_common.utils import get_help_text
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
@@ -29,7 +30,8 @@ class EnkelvoudigInformatieObjectDetailFilter(FilterSet):
 class ObjectInformatieObjectFilter(FilterSet):
     informatieobject = URLModelChoiceFilter(
         queryset=EnkelvoudigInformatieObjectCanonical.objects.all(),
-        instance_path='canonical'
+        instance_path='canonical',
+        help_text=get_help_text('datamodel.ObjectInformatieObject', 'informatieobject'),
     )
 
     class Meta:
@@ -43,7 +45,8 @@ class ObjectInformatieObjectFilter(FilterSet):
 class GebruiksrechtenFilter(FilterSet):
     informatieobject = URLModelChoiceFilter(
         queryset=EnkelvoudigInformatieObjectCanonical.objects.all(),
-        instance_path='canonical'
+        instance_path='canonical',
+        help_text=get_help_text('datamodel.Gebruiksrechten', 'informatieobject'),
     )
 
     class Meta:
