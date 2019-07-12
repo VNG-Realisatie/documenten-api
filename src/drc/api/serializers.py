@@ -13,13 +13,17 @@ from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from vng_api_common.constants import VertrouwelijkheidsAanduiding, ObjectTypes
+from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
-from vng_api_common.serializers import GegevensGroepSerializer, add_choice_values_help_text
+from vng_api_common.serializers import (
+    GegevensGroepSerializer, add_choice_values_help_text
+)
 from vng_api_common.utils import get_help_text
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
-from drc.datamodel.constants import Statussen, ChecksumAlgoritmes, OndertekeningSoorten
+from drc.datamodel.constants import (
+    ChecksumAlgoritmes, OndertekeningSoorten, Statussen
+)
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
     Gebruiksrechten, ObjectInformatieObject
