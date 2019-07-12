@@ -197,9 +197,11 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
                   'de inhoud van het INFORMATIEOBJECT is vastgelegd in een '
                   'computerbestand. Voorbeeld: `application/msword`.'
     )
-    taal = LanguageField(
-        help_text='Een taal van de intellectuele inhoud van het '
-                  'INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B'
+    taal = models.CharField(
+        max_length=3,
+        help_text='Een ISO 639-2/B taalcode waarin de inhoud van het '
+                  'INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: '
+                  'https://www.iso.org/standard/4767.html'
     )
 
     bestandsnaam = models.CharField(

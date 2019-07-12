@@ -172,6 +172,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'informatieobjecttype': {
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             },
+            'taal': {
+                'min_length': 3,
+            }
         }
         validators = [StatusValidator()]
 
