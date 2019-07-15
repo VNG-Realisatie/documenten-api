@@ -230,7 +230,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': {
-                "algoritme": "MD5",
+                "algoritme": "md5",
                 "waarde": "27c3a009a3cbba674d0b3e836f2d4685",
                 "datum": "2018-12-13",
             },
@@ -242,7 +242,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         stored_object = EnkelvoudigInformatieObject.objects.get()
         self.assertEqual(stored_object.integriteit, {
-            "algoritme": "MD5",
+            "algoritme": "md5",
             "waarde": "27c3a009a3cbba674d0b3e836f2d4685",
             "datum": date(2018, 12, 13),
         })

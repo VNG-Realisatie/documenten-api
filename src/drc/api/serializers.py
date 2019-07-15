@@ -13,11 +13,17 @@ from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
-from vng_api_common.serializers import GegevensGroepSerializer
+from vng_api_common.serializers import (
+    GegevensGroepSerializer, add_choice_values_help_text
+)
 from vng_api_common.utils import get_help_text
 from vng_api_common.validators import IsImmutableValidator, URLValidator
 
+from drc.datamodel.constants import (
+    ChecksumAlgoritmes, OndertekeningSoorten, Statussen
+)
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
     Gebruiksrechten, ObjectInformatieObject
@@ -81,11 +87,23 @@ class IntegriteitSerializer(GegevensGroepSerializer):
         model = EnkelvoudigInformatieObject
         gegevensgroep = 'integriteit'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(ChecksumAlgoritmes)
+        self.fields['algoritme'].help_text += f"\n\n{value_display_mapping}"
+
 
 class OndertekeningSerializer(GegevensGroepSerializer):
     class Meta:
         model = EnkelvoudigInformatieObject
         gegevensgroep = 'ondertekening'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(OndertekeningSoorten)
+        self.fields['soort'].help_text += f"\n\n{value_display_mapping}"
 
 
 class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.HyperlinkedRelatedField):
@@ -172,8 +190,20 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'informatieobjecttype': {
                 'validators': [URLValidator(get_auth=get_ztc_auth)],
             },
+            'taal': {
+                'min_length': 3,
+            }
         }
         validators = [StatusValidator()]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(VertrouwelijkheidsAanduiding)
+        self.fields['vertrouwelijkheidaanduiding'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(Statussen)
+        self.fields['status'].help_text += f"\n\n{value_display_mapping}"
 
     def _get_informatieobjecttype(self, informatieobjecttype_url: str) -> dict:
         if not hasattr(self, 'informatieobjecttype'):
@@ -393,6 +423,9 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(ObjectTypes)
+        self.fields['object_type'].help_text += f"\n\n{value_display_mapping}"
 
         if not hasattr(self, 'initial_data'):
             return
