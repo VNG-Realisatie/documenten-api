@@ -2,6 +2,16 @@
 Wijzigingen
 ===========
 
+0.17.0 (2019-07-15)
+===================
+
+More updates towards release candidate
+
+* Updated docs
+* Changed ``taal`` attribute into a 3-char string field instead of an enum
+* Turned all enum values into ``snake_case`` for consistency between APIs
+* Bumped to latest vng-api-common
+
 0.16.0 (2019-07-11)
 ===================
 

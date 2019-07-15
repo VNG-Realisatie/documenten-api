@@ -330,8 +330,6 @@ SHOW_ALERT = True
 # Library settings
 #
 
-ADMIN_INDEX_SHOW_REMAINING_APPS = True
-
 # Django-axes
 AXES_LOGIN_FAILURE_LIMIT = 30  # Default: 3
 AXES_LOCK_OUT_AT_FAILURE = True  # Default: True

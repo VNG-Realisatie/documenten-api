@@ -9,7 +9,8 @@ Documentregistratiecomponent
 
 |build-status|
 
-Referentieimplementatie van de documentregistratiecomponent (DRC).
+Referentieimplementatie van de Documenten API als documentregistratiecomponent
+(DRC).
 
 Introduction
 ============
@@ -58,4 +59,4 @@ References
      :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
      :alt: Requirements status
 
-.. _testomgeving: https://ref.tst.vng.cloud/drc/
+.. _testomgeving: https://documenten-api.vng.cloud/

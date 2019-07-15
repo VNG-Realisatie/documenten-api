@@ -7,9 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from privates.fields import PrivateMediaFileField
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.descriptors import GegevensGroepType
-from vng_api_common.fields import (
-    LanguageField, RSINField, VertrouwelijkheidsAanduidingField
-)
+from vng_api_common.fields import RSINField, VertrouwelijkheidsAanduidingField
 from vng_api_common.models import APIMixin
 from vng_api_common.utils import (
     generate_unique_identification, request_object_attribute
@@ -97,9 +95,9 @@ class InformatieObject(models.Model):
         _("indicatie gebruiksrecht"), blank=True, default=None,
         help_text=_("Indicatie of er beperkingen gelden aangaande het gebruik van "
                     "het informatieobject anders dan raadpleging. Dit veld mag "
-                    "`null' zijn om aan te geven dat de indicatie nog niet bekend is. "
+                    "`null` zijn om aan te geven dat de indicatie nog niet bekend is. "
                     "Als de indicatie gezet is, dan kan je de gebruiksrechten die "
-                    "van toepassing zijn raadplegen via de `GEBRUIKSRECHTEN resource.")
+                    "van toepassing zijn raadplegen via de GEBRUIKSRECHTen resource.")
     )
 
     # signing in some sort of way
@@ -195,11 +193,14 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         max_length=255, blank=True,
         help_text='Het "Media Type" (voorheen "MIME type") voor de wijze waarop'
                   'de inhoud van het INFORMATIEOBJECT is vastgelegd in een '
-                  'computerbestand. Voorbeeld: `application/msword`.'
+                  'computerbestand. Voorbeeld: `application/msword`. Zie: '
+                  'https://www.iana.org/assignments/media-types/media-types.xhtml'
     )
-    taal = LanguageField(
-        help_text='Een taal van de intellectuele inhoud van het '
-                  'INFORMATIEOBJECT. De waardes komen uit ISO 639-2/B'
+    taal = models.CharField(
+        max_length=3,
+        help_text='Een ISO 639-2/B taalcode waarin de inhoud van het '
+                  'INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: '
+                  'https://www.iso.org/standard/4767.html'
     )
 
     bestandsnaam = models.CharField(
