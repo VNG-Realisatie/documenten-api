@@ -9,6 +9,7 @@ babel==2.6.0              # via sphinx
 certifi==2018.4.16        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via pip-tools
+colorama==0.4.1           # via sphinx
 coreapi==2.3.3            # via drf-yasg
 coreschema==0.0.4         # via coreapi, drf-yasg
 django-appconf==1.0.2     # via django-axes
@@ -64,4 +65,4 @@ sqlparse==0.3.0           # via django
 unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.3           # via requests
-vng-api-common==0.58.1
+vng-api-common==0.59.0
