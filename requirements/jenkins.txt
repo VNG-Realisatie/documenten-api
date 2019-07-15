@@ -11,7 +11,6 @@ beautifulsoup4==4.6.0     # via webtest
 certifi==2018.4.16
 chardet==3.0.4
 click==6.7
-colorama==0.4.1
 coreapi==2.3.3
 coreschema==0.0.4
 coverage==4.5.1
@@ -83,7 +82,7 @@ text-unidecode==1.2       # via faker
 unidecode==1.0.22
 uritemplate==3.0.0
 urllib3==1.24.3
-vng-api-common==0.59.0
+vng-api-common==0.59.2
 waitress==1.1.0           # via webtest
 webob==1.8.2              # via webtest
 webtest==2.0.30
