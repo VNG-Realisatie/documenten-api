@@ -3479,8 +3479,8 @@ components:
         bronorganisatie:
           title: Bronorganisatie
           description: "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
-            \ die het informatieobject heeft gecre\xEBerd of heeft ontvangen en als\
-            \ eerste in een samenwerkingsketen heeft vastgelegd."
+            \ die het informatieobject heeft gecre\xC3\xABerd of heeft ontvangen en\
+            \ als eerste in een samenwerkingsketen heeft vastgelegd."
           type: string
           maxLength: 9
           minLength: 1
@@ -3585,7 +3585,7 @@ components:
           type: integer
           readOnly: true
         beginRegistratie:
-          title: Begin registratie
+          title: Beginregistratie
           description: Een datumtijd in ISO8601 formaat waarop deze versie van het
             INFORMATIEOBJECT is aangemaakt of gewijzigd.
           type: string
@@ -3645,7 +3645,7 @@ components:
           format: date
           nullable: true
         indicatieGebruiksrecht:
-          title: Indicatie gebruiksrecht
+          title: Indicatiegebruiksrecht
           description: Indicatie of er beperkingen gelden aangaande het gebruik van
             het informatieobject anders dan raadpleging. Dit veld mag `null` zijn
             om aan te geven dat de indicatie nog niet bekend is. Als de indicatie
@@ -3908,8 +3908,8 @@ components:
             begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.
           type: integer
           readOnly: true
-        begin_registratie:
-          title: Begin registratie
+        beginRegistratie:
+          title: Beginregistratie
           description: Een datumtijd in ISO8601 formaat waarop deze versie van het
             INFORMATIEOBJECT is aangemaakt of gewijzigd.
           type: string
@@ -3967,8 +3967,8 @@ components:
           type: string
           format: date
           nullable: true
-        indicatie_gebruiksrecht:
-          title: Indicatie gebruiksrecht
+        indicatieGebruiksrecht:
+          title: Indicatiegebruiksrecht
           description: Indicatie of er beperkingen gelden aangaande het gebruik van
             het informatieobject anders dan raadpleging. Dit veld mag `null` zijn
             om aan te geven dat de indicatie nog niet bekend is. Als de indicatie
@@ -4282,8 +4282,8 @@ components:
             begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.
           type: integer
           readOnly: true
-        begin_registratie:
-          title: Begin registratie
+        beginRegistratie:
+          title: Beginregistratie
           description: Een datumtijd in ISO8601 formaat waarop deze versie van het
             INFORMATIEOBJECT is aangemaakt of gewijzigd.
           type: string
@@ -4341,8 +4341,8 @@ components:
           type: string
           format: date
           nullable: true
-        indicatie_gebruiksrecht:
-          title: Indicatie gebruiksrecht
+        indicatieGebruiksrecht:
+          title: Indicatiegebruiksrecht
           description: Indicatie of er beperkingen gelden aangaande het gebruik van
             het informatieobject anders dan raadpleging. Dit veld mag `null` zijn
             om aan te geven dat de indicatie nog niet bekend is. Als de indicatie

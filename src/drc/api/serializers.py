@@ -160,6 +160,21 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         )
     )
 
+    # TODO: This is a workaround to fix snake_case attributes in the
+    # POST/PUT/PATCH-operations. The GET-operation was already camelCased for
+    # some reason.
+    # See: https://github.com/VNG-Realisatie/gemma-zaken/issues/1196
+    beginRegistratie = serializers.DateTimeField(
+        source='begin_registratie',
+        read_only=True,
+        help_text=get_help_text('datamodel.EnkelvoudigInformatieObject', 'begin_registratie')
+    )
+    indicatieGebruiksrecht = serializers.NullBooleanField(
+        source='indicatie_gebruiksrecht',
+        required=False,
+        help_text=get_help_text('datamodel.EnkelvoudigInformatieObject', 'indicatie_gebruiksrecht')
+    )
+
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = (
@@ -174,7 +189,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'formaat',
             'taal',
             'versie',
-            'begin_registratie',
+            'beginRegistratie',
             'bestandsnaam',
             'inhoud',
             'bestandsomvang',
@@ -182,7 +197,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'beschrijving',
             'ontvangstdatum',
             'verzenddatum',
-            'indicatie_gebruiksrecht',
+            'indicatieGebruiksrecht',
             'ondertekening',
             'integriteit',
             'informatieobjecttype',  # van-relatie,
@@ -198,7 +213,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         }
         read_only_fields = [
             'versie',
-            'begin_registratie',
+            # Defined as manual field due to workaround.
+            # 'begin_registratie',
         ]
         validators = [StatusValidator()]
 
