@@ -132,7 +132,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'auteur': 'some auteur',
             'status': '',
             'formaat': 'some formaat',
-            'taal': 'dut',
+            'taal': 'nld',
             'bestandsnaam': '',
             'inhoud': f'http://testserver{file_url}?versie=1',
             'bestandsomvang': test_object.inhoud.size,
