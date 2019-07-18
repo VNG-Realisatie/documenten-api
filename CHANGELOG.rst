@@ -2,6 +2,18 @@
 Wijzigingen
 ===========
 
+1.0.0-rc1 (2019-07-18)
+======================
+
+Release candidate tag
+
+* Bumped to vng-api-common 1.0.0
+* Bumped version numbers to 1.0.0-rc
+* Changed ``dut`` into ``nld`` for correct language identifier in tests
+* Added ``EnkelvoudigInformatieObject.versie`` and
+  ``EnkelvoudigInformatieObject.beginRegitratie`` attributes
+* Fixed attibutes showing as snake_case in API docs instead of camelCase
+
 0.17.0 (2019-07-15)
 ===================
 
