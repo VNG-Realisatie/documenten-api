@@ -173,6 +173,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'status',
             'formaat',
             'taal',
+            'versie',
+            'begin_registratie',
             'bestandsnaam',
             'inhoud',
             'bestandsomvang',
@@ -192,8 +194,12 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             },
             'taal': {
                 'min_length': 3,
-            }
+            },
         }
+        read_only_fields = [
+            'versie',
+            'begin_registratie',
+        ]
         validators = [StatusValidator()]
 
     def __init__(self, *args, **kwargs):

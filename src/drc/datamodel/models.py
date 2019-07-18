@@ -237,8 +237,16 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         'datum': integriteit_datum,
     })
 
-    versie = models.PositiveIntegerField(default=1)
-    begin_registratie = models.DateTimeField(auto_now=True)
+    versie = models.PositiveIntegerField(
+        default=1,
+        help_text=_('Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het '
+                    'INFORMATIEOBJECT aangemaakt wordt.')
+    )
+    begin_registratie = models.DateTimeField(
+        auto_now=True,
+        help_text=_('Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of '
+                    'gewijzigd.')
+    )
 
     class Meta:
         unique_together = ('uuid', 'versie')
