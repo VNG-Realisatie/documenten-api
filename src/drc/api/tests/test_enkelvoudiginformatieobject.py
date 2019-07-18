@@ -3,6 +3,7 @@ from base64 import b64encode
 from datetime import date
 
 from django.test import override_settings
+from django.utils import timezone
 
 from freezegun import freeze_time
 from privates.test import temp_private_root
@@ -64,6 +65,8 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(stored_object.auteur, 'test_auteur')
         self.assertEqual(stored_object.formaat, 'txt')
         self.assertEqual(stored_object.taal, 'eng')
+        self.assertEqual(stored_object.versie, 1)
+        self.assertAlmostEqual(stored_object.begin_registratie, timezone.now())
         self.assertEqual(stored_object.bestandsnaam, 'dummy.txt')
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
         self.assertEqual(stored_object.link, 'http://een.link')
@@ -81,6 +84,8 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         expected_response.update({
             'url': f"http://testserver{expected_url}",
             'inhoud': f"http://testserver{expected_file_url}?versie=1",
+            'versie': 1,
+            'beginRegistratie': stored_object.begin_registratie.isoformat().replace('+00:00', 'Z'),
             'vertrouwelijkheidaanduiding': 'openbaar',
             'bestandsomvang': stored_object.inhoud.size,
             'integriteit': {
@@ -132,7 +137,9 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'auteur': 'some auteur',
             'status': '',
             'formaat': 'some formaat',
-            'taal': 'dut',
+            'taal': 'nld',
+            'beginRegistratie': test_object.begin_registratie.isoformat().replace('+00:00', 'Z'),
+            'versie': 1,
             'bestandsnaam': '',
             'inhoud': f'http://testserver{file_url}?versie=1',
             'bestandsomvang': test_object.inhoud.size,

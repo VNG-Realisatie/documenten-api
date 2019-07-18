@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.0.0-alpha"
+        "version": "1.0.0-rc1"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -37,7 +37,7 @@
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
                 "summary": "Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.",
-                "description": "Deze lijst kan gefilterd wordt met query-string parameters.\n\nDe objecten bevatten metadata over de documenten en de downloadlink\n(`inhoud`) naar de binary data.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.\n\nDe objecten bevatten metadata over de documenten en de downloadlink\n(`inhoud`) naar de binary data. Alleen de laatste versie van elk\n(ENKELVOUDIG) INFORMATIEOBJECT wordt getoond. Specifieke versies kunnen\nalleen",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -645,7 +645,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -776,19 +776,19 @@
         "/enkelvoudiginformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_read",
-                "summary": "Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.",
-                "description": "Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.\n\nHet object bevat metadata over het document en de downloadlink (`inhoud`)\nnaar de binary data.",
+                "summary": "Een specifiek (ENKELVOUDIG) INFORMATIEOBJECT opvragen.",
+                "description": "Het object bevat metadata over het document en de downloadlink (`inhoud`)\nnaar de binary data. Dit geeft standaard de laatste versie van het\n(ENKELVOUDIG) INFORMATIEOBJECT. Specifieke versies kunnen middels\nquery-string parameters worden opgevraagd.",
                 "parameters": [
                     {
                         "name": "versie",
                         "in": "query",
-                        "description": "Het versienummer van het `EnkelvoudigInformatieObject` dat opgehaald moet worden",
+                        "description": "Het (automatische) versienummer van het INFORMATIEOBJECT.",
                         "type": "integer"
                     },
                     {
                         "name": "registratieOp",
                         "in": "query",
-                        "description": "Een datumtijd in ISO8601 formaat, de `EnkelvoudigInformatieObject` versie die qua begin_registratie het kortst hiervoor zit wordt opgehaald",
+                        "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
                     }
                 ],
@@ -836,7 +836,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -948,7 +948,7 @@
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.",
-                "description": "**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1038,7 +1038,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1150,7 +1150,7 @@
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.",
-                "description": "**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1240,7 +1240,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1417,7 +1417,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1546,13 +1546,13 @@
                     {
                         "name": "versie",
                         "in": "query",
-                        "description": "Het versienummer van het `EnkelvoudigInformatieObject` dat opgehaald moet worden",
+                        "description": "Het (automatische) versienummer van het INFORMATIEOBJECT.",
                         "type": "integer"
                     },
                     {
                         "name": "registratieOp",
                         "in": "query",
-                        "description": "Een datumtijd in ISO8601 formaat, de `EnkelvoudigInformatieObject` versie die qua begin_registratie het kortst hiervoor zit wordt opgehaald",
+                        "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
                     }
                 ],
@@ -2537,7 +2537,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2739,7 +2739,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2941,7 +2941,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3118,7 +3118,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3663,7 +3663,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3840,7 +3840,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not_found",
+                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4125,6 +4125,19 @@
                     "type": "string",
                     "maxLength": 3,
                     "minLength": 3
+                },
+                "versie": {
+                    "title": "Versie",
+                    "description": "Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "beginRegistratie": {
+                    "title": "Begin registratie",
+                    "description": "Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "bestandsnaam": {
                     "title": "Bestandsnaam",
@@ -4421,6 +4434,19 @@
                     "maxLength": 3,
                     "minLength": 3
                 },
+                "versie": {
+                    "title": "Versie",
+                    "description": "Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "beginRegistratie": {
+                    "title": "Begin registratie",
+                    "description": "Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
                 "bestandsnaam": {
                     "title": "Bestandsnaam",
                     "description": "De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie.",
@@ -4467,7 +4493,7 @@
                     "format": "date",
                     "x-nullable": true
                 },
-                "indicatie_gebruiksrecht": {
+                "indicatieGebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
                     "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null` zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de GEBRUIKSRECHTen resource.",
                     "type": "boolean",
@@ -4728,6 +4754,19 @@
                     "maxLength": 3,
                     "minLength": 3
                 },
+                "versie": {
+                    "title": "Versie",
+                    "description": "Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "beginRegistratie": {
+                    "title": "Begin registratie",
+                    "description": "Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
                 "bestandsnaam": {
                     "title": "Bestandsnaam",
                     "description": "De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie.",
@@ -4774,7 +4813,7 @@
                     "format": "date",
                     "x-nullable": true
                 },
-                "indicatie_gebruiksrecht": {
+                "indicatieGebruiksrecht": {
                     "title": "Indicatie gebruiksrecht",
                     "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null` zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de GEBRUIKSRECHTen resource.",
                     "type": "boolean",

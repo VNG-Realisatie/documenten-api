@@ -143,7 +143,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
             'creatiedatum': '2018-12-24',
             'titel': 'dummy',
             'auteur': 'dummy',
-            'taal': 'dut',
+            'taal': 'nld',
             'inhoud': 'aGVsbG8gd29ybGQ=',
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'ontvangstdatum': '2018-12-24',

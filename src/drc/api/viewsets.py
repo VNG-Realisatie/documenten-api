@@ -59,13 +59,14 @@ from .validators import RemoteRelationValidator
 VERSIE_QUERY_PARAM = openapi.Parameter(
     'versie',
     openapi.IN_QUERY,
-    description='Het versienummer van het `EnkelvoudigInformatieObject` dat opgehaald moet worden',
+    description='Het (automatische) versienummer van het INFORMATIEOBJECT.',
     type=openapi.TYPE_INTEGER
 )
 REGISTRATIE_QUERY_PARAM = openapi.Parameter(
     'registratieOp',
     openapi.IN_QUERY,
-    description='Een datumtijd in ISO8601 formaat, de `EnkelvoudigInformatieObject` versie die qua begin_registratie het kortst hiervoor zit wordt opgehaald',
+    description='Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het '
+                'kortst hiervoor zit wordt opgehaald.',
     type=openapi.TYPE_STRING
 )
 
@@ -89,18 +90,22 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     Deze lijst kan gefilterd wordt met query-string parameters.
 
     De objecten bevatten metadata over de documenten en de downloadlink
-    (`inhoud`) naar de binary data.
+    (`inhoud`) naar de binary data. Alleen de laatste versie van elk
+    (ENKELVOUDIG) INFORMATIEOBJECT wordt getoond. Specifieke versies kunnen
+    alleen
 
     retrieve:
-    Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.
-
-    Een specifiek (ENKELVOUDIGe) INFORMATIEOBJECT opvragen.
+    Een specifiek (ENKELVOUDIG) INFORMATIEOBJECT opvragen.
 
     Het object bevat metadata over het document en de downloadlink (`inhoud`)
-    naar de binary data.
+    naar de binary data. Dit geeft standaard de laatste versie van het
+    (ENKELVOUDIG) INFORMATIEOBJECT. Specifieke versies kunnen middels
+    query-string parameters worden opgevraagd.
 
     update:
     Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
+
+    Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
@@ -111,6 +116,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
 
     partial_update:
     Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
+
+    Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
