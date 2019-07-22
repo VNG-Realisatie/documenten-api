@@ -137,7 +137,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid'
     )
-    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download')
+    inhoud = AnyBase64File(
+        view_name='enkelvoudiginformatieobject-download',
+        help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes")
+    )
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True, min_value=0,
         help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
