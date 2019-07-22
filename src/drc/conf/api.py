@@ -32,3 +32,7 @@ SWAGGER_SETTINGS.update({
 })
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = '1.0'
+
+ztc_repo = 'vng-Realisatie/gemma-zaaktypecatalogus'
+ztc_commit = '3f672a7e1c03a2e415df4209b0e9fa7c32ce41e4'
+ZTC_API_SPEC = f'https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml'  # noqa
