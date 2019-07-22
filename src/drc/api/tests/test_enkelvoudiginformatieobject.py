@@ -1,6 +1,7 @@
 import uuid
 from base64 import b64encode
 from datetime import date
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.utils import timezone
@@ -31,7 +32,9 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_create(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create(self, *mocks):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -189,7 +192,9 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.data['bestandsomvang'], 12)  # 12 bytes
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_integrity_empty(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_integrity_empty(self, *mocks):
         """
         Assert that integrity is optional.
         """
@@ -220,7 +225,9 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         })
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_integrity_provided(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_integrity_provided(self, *mocks):
         """
         Assert that integrity is saved.
         """
@@ -293,11 +300,14 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+
 class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCase):
     list_url = reverse(EnkelvoudigInformatieObject)
     heeft_alle_autorisaties = True
 
-    def test_eio_update(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_eio_update(self, *mocks):
         eio = EnkelvoudigInformatieObjectFactory.create(
             beschrijving='beschrijving1',
             informatieobjecttype=INFORMATIEOBJECTTYPE,

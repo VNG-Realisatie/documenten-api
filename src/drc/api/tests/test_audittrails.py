@@ -1,6 +1,7 @@
 import uuid
 from base64 import b64encode
 from datetime import datetime
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -31,7 +32,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
-    def _create_enkelvoudiginformatieobject(self, **HEADERS):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def _create_enkelvoudiginformatieobject(self, *mocks, **HEADERS):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -133,7 +136,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(gebruiksrechten_delete_audittrail.oud, gebruiksrechten_response)
         self.assertEqual(gebruiksrechten_delete_audittrail.nieuw, None)
 
-    def test_update_enkelvoudiginformatieobject_audittrail(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_enkelvoudiginformatieobject_audittrail(self, *mocks):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 

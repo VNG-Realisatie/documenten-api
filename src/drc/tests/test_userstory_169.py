@@ -7,6 +7,7 @@ See:
 """
 import base64
 from io import BytesIO
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -29,7 +30,9 @@ class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_upload_image(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_upload_image(self, *mocks):
         url = get_operation_url('enkelvoudiginformatieobject_create')
 
         # create dummy image in memory

@@ -1,4 +1,5 @@
 from copy import deepcopy
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -39,7 +40,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 self.assertEqual(error['code'], code)
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
-    def test_validate_informatieobjecttype_invalid(self):
+    def test_validate_informatieobjecttype_invalid_url(self):
         url = reverse('enkelvoudiginformatieobject-list')
 
         response = self.client.post(url, {
@@ -129,7 +130,9 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
     url = reverse_lazy('enkelvoudiginformatieobject-list')
     heeft_alle_autorisaties = True
 
-    def test_ontvangen_informatieobjecten(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_ontvangen_informatieobjecten(self, *mocks):
         """
         Assert certain statuses are not allowed for received documents.
 
