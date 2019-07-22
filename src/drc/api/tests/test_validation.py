@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 from vng_api_common.validators import URLValidator
+from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -50,6 +51,25 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'informatieobjecttype')
         self.assertEqual(error['code'], URLValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_validate_informatieobjecttype_invalid_resource(self):
+        responses = {
+            INFORMATIEOBJECTTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'informatieobjecttype': INFORMATIEOBJECTTYPE,
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'informatieobjecttype')
+        self.assertEqual(error['code'], 'invalid-resource')
 
     def test_link_fetcher_cannot_connect(self):
         url = reverse('enkelvoudiginformatieobject-list')
