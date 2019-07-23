@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.test import override_settings
 
+from djangorestframework_camel_case.util import camelize
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -16,7 +17,6 @@ from drc.datamodel.models import (
     Gebruiksrechten, ObjectInformatieObject
 )
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
-from djangorestframework_camel_case.util import camelize
 
 ZAAK = f'http://example.com/zrc/api/v1/zaken/{uuid.uuid4().hex}'
 

@@ -6,24 +6,24 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework.parsers import MultiPartParser, FormParser
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
-    AuditTrailViewsetMixin,
+    AuditTrailViewsetMixin
 )
 from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin, NotificationDestroyMixin,
-    NotificationViewSetMixin, NotificationUpdateMixin
+    NotificationCreateMixin, NotificationDestroyMixin, NotificationUpdateMixin,
+    NotificationViewSetMixin
 )
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject,
-    Gebruiksrechten, ObjectInformatieObject, PartUpload
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject,
+    PartUpload
 )
 
 from .audits import AUDIT_DRC
@@ -44,12 +44,12 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
+    CompleteEnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
-    ObjectInformatieObjectSerializer,
-    UnlockEnkelvoudigInformatieObjectSerializer, PartUploadSerializer,
-    CompleteEnkelvoudigInformatieObjectSerializer
+    ObjectInformatieObjectSerializer, PartUploadSerializer,
+    UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
 

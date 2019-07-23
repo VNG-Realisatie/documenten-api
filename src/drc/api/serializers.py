@@ -5,21 +5,23 @@ import uuid
 from humanize import naturalsize
 import math
 import os.path
+import uuid
 from datetime import datetime
 
 from django.conf import settings
+from django.core.files.base import File
 from django.db import transaction
 from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
-from django.core.files.base import File
 
 from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
+
 from rest_framework.fields import FileField
+from rest_framework.reverse import reverse
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import (
     GegevensGroepSerializer, add_choice_values_help_text
@@ -36,11 +38,11 @@ from drc.datamodel.models import (
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
+from .utils import create_filename, merge_files
 from .validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     StatusValidator
 )
-from .utils import merge_files, create_filename
 
 
 class ViewFileFile(FileField):
@@ -166,7 +168,6 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
                 )
 
         return valid_attrs
-
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -569,4 +570,3 @@ class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()],
             },
         }
-

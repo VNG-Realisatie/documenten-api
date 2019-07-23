@@ -14,7 +14,8 @@ from vng_api_common.tests import (
 )
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical, PartUpload
+    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
+    PartUpload
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
