@@ -15,7 +15,7 @@ def rewrite_file_size(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0042_auto_20190704_1511'),
+        ('datamodel', '0047_auto_20190704_1511'),
     ]
 
     operations = [

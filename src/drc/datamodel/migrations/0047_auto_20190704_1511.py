@@ -10,7 +10,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0041_migrate_to_flattened_urls'),
+        ('datamodel', '0046_auto_20190716_1513'),
     ]
 
     operations = [

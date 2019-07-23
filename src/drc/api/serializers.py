@@ -15,13 +15,11 @@ from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
-from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
-
 from rest_framework.fields import FileField
 from rest_framework.reverse import reverse
+from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import (
     GegevensGroepSerializer, add_choice_values_help_text
