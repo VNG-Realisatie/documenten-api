@@ -388,6 +388,6 @@ SENDFILE_URL = PRIVATE_MEDIA_URL
 
 # settings for uploading large files
 MIN_UPLOAD_SIZE = int(os.getenv('MIN_UPLOAD_SIZE', 4 * 2**30))
-CHUNK_SIZE = 6 * 2**20  # 6 MB
-READ_CHUNK = 6 * 2**20
+CHUNK_SIZE = 4 * 2**30  # 4 GB
+READ_CHUNK = 6 * 2**20  # 6 MB
 DEFAULT_EXTENTION = bin
