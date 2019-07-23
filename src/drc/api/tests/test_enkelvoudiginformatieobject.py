@@ -80,7 +80,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'uuid': stored_object.uuid,
         })
         expected_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=stored_object.uuid)
-        expected_part_url = get_operation_url('partupload_read', uuid=PartUpload.objects.get().uuid)
+        expected_part_url = get_operation_url('partupload_update', uuid=PartUpload.objects.get().uuid)
 
         expected_response = content.copy()
         expected_response.update({
