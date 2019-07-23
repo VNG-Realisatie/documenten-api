@@ -31,6 +31,7 @@ drf-nested-routers==0.90.2  # via vng-api-common
 drf-yasg==1.16.0
 first==2.0.1              # via pip-tools
 gemma-zds-client==0.11.0  # via vng-api-common
+humanize==0.5.1
 idna==2.7                 # via requests
 imagesize==1.1.0          # via sphinx
 inflection==0.3.1         # via drf-yasg

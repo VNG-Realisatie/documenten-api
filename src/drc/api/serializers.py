@@ -2,6 +2,7 @@
 Serializers of the Document Registratie Component REST API
 """
 import uuid
+from humanize import naturalsize
 
 from django.conf import settings
 from django.db import transaction
@@ -139,7 +140,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     )
     inhoud = AnyBase64File(
         view_name='enkelvoudiginformatieobject-download',
-        help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes")
+        help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes "
+                    f"(or {naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)})")
     )
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True, min_value=0,
