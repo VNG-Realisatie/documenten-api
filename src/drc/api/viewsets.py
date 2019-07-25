@@ -1,7 +1,4 @@
 from django.db import transaction
-from django.http.response import Http404
-from django.shortcuts import get_list_or_404, get_object_or_404
-from django.utils import dateparse, timezone
 from django.utils.translation import ugettext_lazy as _
 
 from drf_yasg import openapi
@@ -16,7 +13,6 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
-from vng_api_common.filters import Backend
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationDestroyMixin,
     NotificationViewSetMixin
@@ -25,8 +21,7 @@ from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC

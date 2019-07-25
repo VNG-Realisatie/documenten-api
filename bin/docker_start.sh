@@ -12,6 +12,7 @@ db_port=${DB_PORT:-5432}
 fixtures_dir=${FIXTURES_DIR:-/app/fixtures}
 
 uwsgi_port=${UWSGI_PORT:-8000}
+min_upload_size=${MIN_UPLOAD_SIZE:-4294967296}
 
 until PGPORT=$db_port PGPASSWORD=$db_password psql -h "$db_host" -U "$db_user" -c '\q'; do
   >&2 echo "Waiting for database connection..."
@@ -46,5 +47,6 @@ uwsgi \
     --chdir src \
     --processes 2 \
     --threads 2 \
-    --buffer-size=32768
+    --buffer-size=32768 \
+    --limit-post=$min_upload_size
     # processes & threads are needed for concurrency without nginx sitting inbetween
