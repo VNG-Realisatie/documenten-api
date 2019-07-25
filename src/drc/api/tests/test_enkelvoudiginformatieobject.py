@@ -85,7 +85,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         expected_response = content.copy()
         expected_response.update({
             'url': f"http://testserver{expected_url}",
-            'inhoud': f"http://testserver{expected_file_url}?versie=1",
+            'inhoud': None,
             'versie': 1,
             'beginRegistratie': stored_object.begin_registratie.isoformat().replace('+00:00', 'Z'),
             'vertrouwelijkheidaanduiding': 'openbaar',
@@ -151,7 +151,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'beginRegistratie': test_object.begin_registratie.isoformat().replace('+00:00', 'Z'),
             'versie': 1,
             'bestandsnaam': '',
-            'inhoud': f'http://testserver{file_url}?versie=1',
+            'inhoud': f'http://testserver{file_url}',
             'bestandsomvang': test_object.inhoud.size,
             'link': '',
             'beschrijving': '',

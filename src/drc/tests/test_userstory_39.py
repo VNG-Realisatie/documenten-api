@@ -58,13 +58,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(eio.identificatie, 'AMS20180701001')
         self.assertEqual(eio.creatiedatum, date(2018, 7, 1))
-
-        download_url = urlparse(response.data['inhoud'])
-
-        self.assertTrue(
-            download_url.path,
-            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
-        )
+        self.assertIsNone(response.data['inhoud'])
 
     def test_read_detail_file(self):
         self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]

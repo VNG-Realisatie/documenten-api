@@ -54,6 +54,12 @@ class ViewFileFile(FileField):
         if not is_private_storage:
             return super().to_representation(file)
 
+        # if there is no associated file link is not returned
+        try:
+            file.file
+        except ValueError:
+            return None
+
         assert self.view_name, "You must pass the `view_name` kwarg for private media fields"
 
         model_instance = file.instance
@@ -64,19 +70,7 @@ class ViewFileFile(FileField):
         kwargs = {lookup_field: getattr(model_instance, lookup_field)}
         url = reverse(self.view_name, kwargs=kwargs, request=request)
 
-        # Retrieve the correct version to construct the download url that
-        # points to the content of that version
-        instance = self.parent.instance
-        # in case of pagination instance can be a list object
-        if isinstance(instance, list):
-            instance = instance[0]
-
-        if hasattr(instance, 'versie'):
-            versie = instance.versie
-        else:
-            versie = instance.get(uuid=kwargs['uuid']).versie
-        query_string = urlencode({'versie': versie})
-        return f'{url}?{query_string}'
+        return url
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
