@@ -4863,7 +4863,7 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
-                    "description": "Download URL van de binaire inhoud.",
+                    "description": "Minimal accepted size of uploaded file = 4294967296 bytes (or 4.0 GiB)",
                     "type": "string",
                     "readOnly": true,
                     "format": "uri"
@@ -5191,7 +5191,7 @@
                 },
                 "inhoud": {
                     "title": "Inhoud",
-                    "description": "Download URL van de binaire inhoud.",
+                    "description": "Minimal accepted size of uploaded file = 4294967296 bytes (or 4.0 GiB)",
                     "type": "string",
                     "readOnly": true,
                     "format": "uri"

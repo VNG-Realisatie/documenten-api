@@ -53,7 +53,7 @@ Uitleg bij mogelijke waarden:
 | versie | Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
 | beginRegistratie | Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsnaam | De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie. | string | nee | C​R​U​D |
-| inhoud | Download URL van de binaire inhoud. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| inhoud | Minimal accepted size of uploaded file = 4294967296 bytes (or 4.0 GiB) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsomvang | The size of the whole file in bytes | integer | ja | C​R​U​D |
 | link | De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is. | string | nee | C​R​U​D |
 | beschrijving | Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT. | string | nee | C​R​U​D |
