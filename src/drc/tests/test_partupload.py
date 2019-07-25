@@ -106,7 +106,7 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(self.canonical.parts.count(), 0)
         self.assertNotEqual(self.eio.inhoud.path, '')
         self.assertEqual(self.eio.inhoud.size, self.file_content.size)
-        self.assertEqual(data['inhoud'], f'http://testserver{file_url}?versie=1')
+        self.assertEqual(data['inhoud'], f'http://testserver{file_url}')
 
     def _download_file(self):
         file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=self.eio.uuid)
@@ -160,3 +160,113 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'unlocked')
+
+    def test_upload_part_twice_correct(self):
+        self._create_metadata()
+        self._lock_document()
+        self._upload_part_files()
+
+        # upload one of parts again
+        self.file_content.seek(0)
+        part_files = split_file(self.file_content, settings.CHUNK_SIZE)
+        part = self.parts[0]
+        part_url = get_operation_url('partupload_update', uuid=part.uuid)
+
+        response = self.client.put(
+            part_url,
+            {'inhoud': part_files[0]},
+            format='multipart'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        part.refresh_from_db()
+
+        self.assertNotEqual(part.inhoud, '')
+        self.assertEqual(part.complete, True)
+
+    def test_upload_part_twice_incorrect_size(self):
+        self._create_metadata()
+        self._lock_document()
+        self._upload_part_files()
+
+        # upload one of parts again with incorrect size
+        part_file = SimpleUploadedFile("file.txt", b"file")
+        part = self.parts[0]
+        part_url = get_operation_url('partupload_update', uuid=part.uuid)
+
+        response = self.client.put(
+            part_url,
+            {'inhoud': part_file},
+            format='multipart'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'file-size')
+
+    def test_mark_complete_not_uploaded(self):
+        self._create_metadata()
+        self._lock_document()
+
+        # mark complete without uploading part files
+        complete_url = get_operation_url('enkelvoudiginformatieobject_complete', uuid=self.eio.uuid)
+
+        response = self.client.put(complete_url)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'incomplete-upload')
+
+    def test_update_metadata_without_upload(self):
+        self._create_metadata()
+        self._lock_document()
+
+        # update file metadata
+        eio_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=self.eio.uuid)
+
+        response = self.client.patch(eio_url, {
+            'beschrijving': 'beschrijving2',
+            'lock': self.canonical.lock
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        data = response.json()
+
+        self.assertEqual(self.canonical.enkelvoudiginformatieobject_set.count(), 2)
+        self.assertEqual(data['versie'], 2)
+        self.assertIsNone(data['inhoud'])  # the link to download is None
+        self.assertEqual(len(data['parts']), 2)  # all the parts are remained
+
+    def test_update_metadata_after_upload(self):
+        self._create_metadata()
+        self._lock_document()
+        self._upload_part_files()
+        self._mark_complete()
+
+        # update file metadata
+        eio_url = get_operation_url('enkelvoudiginformatieobject_read', uuid=self.eio.uuid)
+
+        response = self.client.patch(eio_url, {
+            'beschrijving': 'beschrijving2',
+            'lock': self.canonical.lock
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        data = response.json()
+        new_eio = self.canonical.enkelvoudiginformatieobject_set.order_by('-versie').first()
+        old_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=self.eio.uuid)
+        new_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=new_eio.uuid)
+
+        self.assertEqual(self.canonical.enkelvoudiginformatieobject_set.count(), 2)
+        self.assertEqual(data['versie'], 2)
+        # link is the same as it was
+        self.assertEqual(data['inhoud'], f'http://testserver{old_file_url}')
+        self.assertEqual(data['inhoud'], f'http://testserver{new_file_url}')
+
+        # download
+        self._download_file()
