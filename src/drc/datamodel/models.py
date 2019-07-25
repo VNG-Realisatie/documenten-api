@@ -169,7 +169,7 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
 
     @property
     def complete_upload(self) -> bool:
-        empty_parts = self.parts.filter(inhoud='')
+        empty_parts = self.bestandsdelen.filter(inhoud='')
         return empty_parts.count() == 0
 
 
@@ -374,7 +374,7 @@ class BestandsDeel(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     informatieobject = models.ForeignKey(
-        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='parts'
+        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='bestandsdelen'
     )
     index = models.PositiveIntegerField(
         help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
