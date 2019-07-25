@@ -69,11 +69,11 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
         ).replace(tzinfo=timezone.utc)
 
 
-class PartUploadFactory(factory.django.DjangoModelFactory):
+class BestandsDeelFactory(factory.django.DjangoModelFactory):
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     inhoud = factory.django.FileField(data=b'some data', filename='file_part.bin')
-    chunk_size = factory.LazyAttribute(lambda o: o.inhoud.size)
-    part_number = factory.fuzzy.FuzzyInteger(1, 100, 1)
+    grootte = factory.LazyAttribute(lambda o: o.inhoud.size)
+    index = factory.fuzzy.FuzzyInteger(1, 100, 1)
 
     class Meta:
-        model = 'datamodel.PartUpload'
+        model = 'datamodel.BestandsDeel'

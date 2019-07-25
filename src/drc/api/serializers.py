@@ -11,7 +11,6 @@ from datetime import datetime
 from django.conf import settings
 from django.core.files.base import File
 from django.db import transaction
-from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -32,7 +31,7 @@ from drc.datamodel.constants import (
 )
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject, PartUpload
+    Gebruiksrechten, ObjectInformatieObject, BestandsDeel
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -120,28 +119,30 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
             self.fail('does_not_exist')
 
 
-class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
+class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = PartUpload
+        model = BestandsDeel
         fields = (
             'url',
-            'part_number',
-            'chunk_size',
+            'index',
+            'grootte',
             'inhoud',
-            'complete'
+            'voltooid'
         )
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
             },
-            'part_number': {
+            'index': {
                 'read_only': True,
             },
-            'chunk_size': {
+            'grootte': {
                 'read_only': True,
             },
-            'complete': {
+            'voltooid': {
                 'read_only': True,
+                'help_text': _("Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: "
+                               "Het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen.")
             },
             'inhoud': {
                 'write_only': True,
@@ -153,7 +154,7 @@ class PartUploadSerializer(serializers.HyperlinkedModelSerializer):
 
         inhoud = valid_attrs.get('inhoud')
         if inhoud:
-            if inhoud.size != self.instance.chunk_size:
+            if inhoud.size != self.instance.grootte:
                 raise serializers.ValidationError(
                     _("The size of upload file should be equal chunkSize field"),
                     code='file-size'
@@ -192,7 +193,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "mogen er aanpassingen gemaakt worden."
         )
     )
-    parts = PartUploadSerializer(source='canonical.parts', many=True, read_only=True)
+    bestandsdelen = BestandsDeelSerializer(source='canonical.bestandsdelen', many=True, read_only=True)
 
     class Meta:
         model = EnkelvoudigInformatieObject
@@ -221,7 +222,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             'integriteit',
             'informatieobjecttype',  # van-relatie,
             'locked',
-            'parts',
+            'bestandsdelen',
         )
         extra_kwargs = {
             'informatieobjecttype': {
@@ -296,14 +297,14 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
         # create urls for chunks
         full_size = validated_data['bestandsomvang']
-        parts = math.ceil(full_size/settings.CHUNK_SIZE)
+        bestandsdelen = math.ceil(full_size/settings.CHUNK_SIZE)
 
-        for i in range(parts):
+        for i in range(bestandsdelen):
             chunk_size = min(settings.CHUNK_SIZE, full_size)
-            PartUpload.objects.create(
+            BestandsDeel.objects.create(
                 informatieobject=canonical,
-                chunk_size=chunk_size,
-                part_number=i + 1
+                grootte=chunk_size,
+                index=i + 1
             )
             full_size -= chunk_size
         return eio
@@ -472,8 +473,8 @@ class CompleteEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer)
         return valid_attrs
 
     def save(self, **kwargs):
-        parts = self.instance.canonical.parts.order_by('part_number')
-        part_files = [p.inhoud.file for p in parts]
+        bestandsdelen = self.instance.canonical.bestandsdelen.order_by('index')
+        part_files = [p.inhoud.file for p in bestandsdelen]
 
         # merge files
         file_name = create_filename(self.instance.bestandsnaam)
@@ -485,7 +486,7 @@ class CompleteEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer)
             self.instance.inhoud.save(file_name, File(file_obj))
 
         # delete part files
-        for part in parts:
+        for part in bestandsdelen:
             part.inhoud.delete()
             part.delete()
 

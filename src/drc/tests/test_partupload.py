@@ -54,15 +54,15 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(self.eio.vertrouwelijkheidaanduiding, VertrouwelijkheidsAanduiding.openbaar)
         self.assertEqual(self.eio.titel, 'detailed summary')
         self.assertEqual(self.eio.inhoud, '')
-        self.assertEqual(self.canonical.parts.count(), 2)
+        self.assertEqual(self.canonical.bestandsdelen.count(), 2)
 
-        self.parts = self.canonical.parts.order_by('part_number').all()
+        self.bestandsdelen = self.canonical.bestandsdelen.order_by('index').all()
 
-        for part in self.parts:
-            self.assertEqual(part.complete, False)
+        for part in self.bestandsdelen:
+            self.assertEqual(part.voltooid, False)
             self.assertEqual(part.inhoud, '')
-        self.assertEqual(self.parts[0].chunk_size, settings.CHUNK_SIZE)
-        self.assertEqual(self.parts[1].chunk_size, self.file_content.size - settings.CHUNK_SIZE)
+        self.assertEqual(self.bestandsdelen[0].grootte, settings.CHUNK_SIZE)
+        self.assertEqual(self.bestandsdelen[1].grootte, self.file_content.size - settings.CHUNK_SIZE)
 
     def _lock_document(self):
         lock_url = get_operation_url('enkelvoudiginformatieobject_lock', uuid=self.eio.uuid)
@@ -75,8 +75,8 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
 
     def _upload_part_files(self):
         part_files = split_file(self.file_content, settings.CHUNK_SIZE)
-        for part in self.parts:
-            part_url = get_operation_url('partupload_update', uuid=part.uuid)
+        for part in self.bestandsdelen:
+            part_url = get_operation_url('bestandsdeel_update', uuid=part.uuid)
 
             response = self.client.put(
                 part_url,
@@ -89,7 +89,7 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
             part.refresh_from_db()
 
             self.assertNotEqual(part.inhoud, '')
-            self.assertEqual(part.complete, True)
+            self.assertEqual(part.voltooid, True)
 
     def _mark_complete(self):
         complete_url = get_operation_url('enkelvoudiginformatieobject_complete', uuid=self.eio.uuid)
@@ -103,7 +103,7 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         self.eio.refresh_from_db()
         file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=self.eio.uuid)
 
-        self.assertEqual(self.canonical.parts.count(), 0)
+        self.assertEqual(self.canonical.bestandsdelen.count(), 0)
         self.assertNotEqual(self.eio.inhoud.path, '')
         self.assertEqual(self.eio.inhoud.size, self.file_content.size)
         self.assertEqual(data['inhoud'], f'http://testserver{file_url}')
@@ -128,12 +128,12 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         self._lock_document()
 
         # change file size for part file
-        part = self.parts[0]
-        part.chunk_size = part.chunk_size + 1
+        part = self.bestandsdelen[0]
+        part.grootte = part.grootte + 1
         part.save()
 
         # upload part file
-        part_url = get_operation_url('partupload_update', uuid=part.uuid)
+        part_url = get_operation_url('bestandsdeel_update', uuid=part.uuid)
         part_file = split_file(self.file_content, settings.CHUNK_SIZE)[0]
 
         response = self.client.put(
@@ -169,8 +169,8 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         # upload one of parts again
         self.file_content.seek(0)
         part_files = split_file(self.file_content, settings.CHUNK_SIZE)
-        part = self.parts[0]
-        part_url = get_operation_url('partupload_update', uuid=part.uuid)
+        part = self.bestandsdelen[0]
+        part_url = get_operation_url('bestandsdeel_update', uuid=part.uuid)
 
         response = self.client.put(
             part_url,
@@ -183,7 +183,7 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         part.refresh_from_db()
 
         self.assertNotEqual(part.inhoud, '')
-        self.assertEqual(part.complete, True)
+        self.assertEqual(part.voltooid, True)
 
     def test_upload_part_twice_incorrect_size(self):
         self._create_metadata()
@@ -192,8 +192,8 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
 
         # upload one of parts again with incorrect size
         part_file = SimpleUploadedFile("file.txt", b"file")
-        part = self.parts[0]
-        part_url = get_operation_url('partupload_update', uuid=part.uuid)
+        part = self.bestandsdelen[0]
+        part_url = get_operation_url('bestandsdeel_update', uuid=part.uuid)
 
         response = self.client.put(
             part_url,
@@ -239,7 +239,7 @@ class FileUploadAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(self.canonical.enkelvoudiginformatieobject_set.count(), 2)
         self.assertEqual(data['versie'], 2)
         self.assertIsNone(data['inhoud'])  # the link to download is None
-        self.assertEqual(len(data['parts']), 2)  # all the parts are remained
+        self.assertEqual(len(data['bestandsdelen']), 2)  # all the parts are remained
 
     def test_update_metadata_after_upload(self):
         self._create_metadata()

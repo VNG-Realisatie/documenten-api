@@ -218,7 +218,7 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         help_text=_("The size of the whole file in bytes")
     )
 
-    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/')
 
     link = models.URLField(
         max_length=200, blank=True,
@@ -368,7 +368,7 @@ class ObjectInformatieObject(APIMixin, models.Model):
         return self._unique_representation
 
 
-class PartUpload(models.Model):
+class BestandsDeel(models.Model):
     uuid = models.UUIDField(
         unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
@@ -376,20 +376,23 @@ class PartUpload(models.Model):
     informatieobject = models.ForeignKey(
         'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='parts'
     )
-    part_number = models.PositiveIntegerField(
-        help_text=_("A sequence number of file part within document")
+    index = models.PositiveIntegerField(
+        help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
     )
-    chunk_size = models.PositiveIntegerField(
-        help_text=_("The size of a chunk in bytes")
+    grootte = models.PositiveIntegerField(
+        help_text=_("De grootte van dit specifieke bestandsdeel.")
     )
-    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', blank=True)
+    inhoud = PrivateMediaFileField(
+        upload_to='uploads/%Y/%m/', blank=True,
+        help_text=_("De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")
+    )
 
     class Meta:
-        unique_together = ('informatieobject', 'part_number')
+        unique_together = ('informatieobject', 'index')
 
     def unique_representation(self):
-        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.part_number}"
+        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.index}"
 
     @property
-    def complete(self) -> bool:
+    def voltooid(self) -> bool:
         return bool(self.inhoud.name)

@@ -21,17 +21,17 @@ class Migration(migrations.Migration):
             preserve_default=False,
         ),
         migrations.CreateModel(
-            name='PartUpload',
+            name='BestandsDeel',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('uuid', models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True)),
-                ('part_number', models.PositiveIntegerField(help_text='A sequence number of file part within document')),
-                ('chunk_size', models.PositiveIntegerField(help_text='The size of a chunk in bytes')),
-                ('inhoud', privates.fields.PrivateMediaFileField(blank=True, storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='uploads/%Y/%m/')),
-                ('informatieobject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='parts', to='datamodel.EnkelvoudigInformatieObjectCanonical')),
+                ('index', models.PositiveIntegerField(help_text='Een volgnummer dat de volgorde van de bestandsdelen aangeeft.')),
+                ('grootte', models.PositiveIntegerField(help_text='De grootte van dit specifieke bestandsdeel.')),
+                ('inhoud', privates.fields.PrivateMediaFileField(blank=True, storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='uploads/%Y/%m/', help_text="De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")),
+                ('informatieobject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bestandsdelen', to='datamodel.EnkelvoudigInformatieObjectCanonical')),
             ],
             options={
-                'unique_together': {('informatieobject', 'part_number')},
+                'unique_together': {('informatieobject', 'index')},
             },
         ),
     ]

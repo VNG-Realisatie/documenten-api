@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from .factories import EnkelvoudigInformatieObjectFactory, PartUploadFactory
+from .factories import EnkelvoudigInformatieObjectFactory, BestandsDeelFactory
 
 
 class UploadTestCase(APITestCase):
@@ -11,7 +11,7 @@ class UploadTestCase(APITestCase):
             identificatie='5d940d52-ff5e-4b18-a769-977af9130c04'
         )
         canonical = eio.canonical
-        PartUploadFactory.create(informatieobject=canonical)
+        BestandsDeelFactory.create(informatieobject=canonical)
 
         self.assertTrue(canonical.complete_upload)
 
@@ -21,17 +21,17 @@ class UploadTestCase(APITestCase):
             identificatie='5d940d52-ff5e-4b18-a769-977af9130c04'
         )
         canonical = eio.canonical
-        PartUploadFactory.create(informatieobject=canonical)
-        PartUploadFactory.create(informatieobject=canonical, inhoud=None, chunk_size=0)
+        BestandsDeelFactory.create(informatieobject=canonical)
+        BestandsDeelFactory.create(informatieobject=canonical, inhoud=None, grootte=0)
 
         self.assertFalse(canonical.complete_upload)
 
     def test_complete_part_true(self):
-        part = PartUploadFactory.create()
+        part = BestandsDeelFactory.create()
 
-        self.assertTrue(part.complete)
+        self.assertTrue(part.voltooid)
 
     def test_complete_part_false(self):
-        part = PartUploadFactory.create(inhoud=None, chunk_size=0)
+        part = BestandsDeelFactory.create(inhoud=None, grootte=0)
 
-        self.assertFalse(part.complete)
+        self.assertFalse(part.voltooid)

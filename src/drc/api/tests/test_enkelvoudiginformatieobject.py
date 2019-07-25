@@ -15,7 +15,7 @@ from vng_api_common.tests import (
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    PartUpload
+    BestandsDeel
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
@@ -80,7 +80,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'uuid': stored_object.uuid,
         })
         expected_file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=stored_object.uuid)
-        expected_part_url = get_operation_url('partupload_update', uuid=PartUpload.objects.get().uuid)
+        expected_part_url = get_operation_url('bestandsdeel_update', uuid=BestandsDeel.objects.get().uuid)
 
         expected_response = content.copy()
         expected_response.update({
@@ -103,12 +103,12 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'indicatieGebruiksrecht': None,
             'status': '',
             'locked': False,
-            'parts': [
+            'bestandsdelen': [
                 {
                     'url': f'http://testserver{expected_part_url}',
-                    'chunkSize': 100,
-                    'complete': False,
-                    'partNumber': 1,
+                    'grootte': 100,
+                    'voltooid': False,
+                    'index': 1,
 
                 }
             ],
@@ -170,7 +170,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'locked': False,
-            'parts': []
+            'bestandsdelen': []
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))

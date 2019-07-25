@@ -23,7 +23,7 @@ from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject,
-    PartUpload
+    BestandsDeel
 )
 
 from .audits import AUDIT_DRC
@@ -48,7 +48,7 @@ from .serializers import (
     EnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
-    ObjectInformatieObjectSerializer, PartUploadSerializer,
+    ObjectInformatieObjectSerializer, BestandsDeelSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
@@ -491,7 +491,7 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
 
 
-class PartUploadViewSet(NotificationUpdateMixin,
+class BestandsDeelViewSet(NotificationUpdateMixin,
                         # AuditTrailViewSet,
                         mixins.UpdateModelMixin,
                         viewsets.GenericViewSet):
@@ -499,8 +499,8 @@ class PartUploadViewSet(NotificationUpdateMixin,
     update:
     Upload a file object
     """
-    queryset = PartUpload.objects.all()
-    serializer_class = PartUploadSerializer
+    queryset = BestandsDeel.objects.all()
+    serializer_class = BestandsDeelSerializer
     lookup_field = 'uuid'
     parser_classes = (MultiPartParser, FormParser)
     notifications_kanaal = KANAAL_DOCUMENTEN
