@@ -3,7 +3,6 @@ from datetime import datetime
 
 from django.test import override_settings
 
-from djangorestframework_camel_case.util import camelize
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -50,7 +49,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         response = self.client.post(self.informatieobject_list_url, content, **HEADERS)
 
-        return response.json()
+        return response.data
 
     def test_create_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
@@ -66,7 +65,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.actie, 'create')
         self.assertEqual(informatieobject_create_audittrail.resultaat, 201)
         self.assertEqual(informatieobject_create_audittrail.oud, None)
-        self.assertEqual(camelize(informatieobject_create_audittrail.nieuw), informatieobject_data)
+        self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
     @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
     def test_create_objectinformatieobject_audittrail(self):
@@ -159,7 +158,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'lock': '0f60f6d2d2714c809ed762372f5a363a'
         }
 
-        informatieobject_response = self.client.put(informatieobject_url, content).json()
+        informatieobject_response = self.client.put(informatieobject_url, content).data
 
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
@@ -176,8 +175,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # locked will be True in the version before changes as shown
         # in the audittrail
         informatieobject_data['locked'] = True
-        self.assertEqual(camelize(informatieobject_update_audittrail.oud), informatieobject_data)
-        self.assertEqual(camelize(informatieobject_update_audittrail.nieuw), informatieobject_response)
+        self.assertEqual(informatieobject_update_audittrail.oud, informatieobject_data)
+        self.assertEqual(informatieobject_update_audittrail.nieuw, informatieobject_response)
 
     def test_partial_update_enkelvoudiginformatieobject_audittrail(self):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
@@ -192,7 +191,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             informatieobject_url,
             {'titel': 'changed',
              'lock': '0f60f6d2d2714c809ed762372f5a363a'}
-        ).json()
+        ).data
 
         audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
         self.assertEqual(audittrails.count(), 2)
@@ -209,8 +208,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # locked will be True in the version before changes as shown
         # in the audittrail
         informatieobject_data['locked'] = True
-        self.assertEqual(camelize(informatieobject_partial_update_audittrail.oud), informatieobject_data)
-        self.assertEqual(camelize(informatieobject_partial_update_audittrail.nieuw), informatieobject_response)
+        self.assertEqual(informatieobject_partial_update_audittrail.oud, informatieobject_data)
+        self.assertEqual(informatieobject_partial_update_audittrail.nieuw, informatieobject_response)
 
     def test_audittrail_applicatie_information(self):
         object_response = self._create_enkelvoudiginformatieobject()
