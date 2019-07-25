@@ -5,9 +5,9 @@ from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
 from .viewsets import (
-    EnkelvoudigInformatieObjectAuditTrailViewSet,
+    BestandsDeelViewSet, EnkelvoudigInformatieObjectAuditTrailViewSet,
     EnkelvoudigInformatieObjectViewSet, GebruiksrechtenViewSet,
-    ObjectInformatieObjectViewSet, BestandsDeelViewSet
+    ObjectInformatieObjectViewSet
 )
 
 router = routers.DefaultRouter()

@@ -22,8 +22,8 @@ from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject,
-    BestandsDeel
+    BestandsDeel, EnkelvoudigInformatieObject, Gebruiksrechten,
+    ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC
@@ -44,11 +44,11 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
-    CompleteEnkelvoudigInformatieObjectSerializer,
+    BestandsDeelSerializer, CompleteEnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
-    ObjectInformatieObjectSerializer, BestandsDeelSerializer,
+    ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator

@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from .factories import EnkelvoudigInformatieObjectFactory, BestandsDeelFactory
+from .factories import BestandsDeelFactory, EnkelvoudigInformatieObjectFactory
 
 
 class UploadTestCase(APITestCase):

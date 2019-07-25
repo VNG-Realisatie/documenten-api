@@ -30,8 +30,9 @@ from drc.datamodel.constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 )
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject, BestandsDeel
+    BestandsDeel, EnkelvoudigInformatieObject,
+    EnkelvoudigInformatieObjectCanonical, Gebruiksrechten,
+    ObjectInformatieObject
 )
 
 from .auth import get_zrc_auth, get_ztc_auth

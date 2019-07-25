@@ -14,8 +14,8 @@ from vng_api_common.tests import (
 )
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    BestandsDeel
+    BestandsDeel, EnkelvoudigInformatieObject,
+    EnkelvoudigInformatieObjectCanonical
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
