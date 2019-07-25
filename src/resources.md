@@ -4,17 +4,17 @@ Dit document beschrijft de (RGBZ-)objecttypen die als resources ontsloten
 worden met de beschikbare attributen.
 
 
-## PartUpload
+## BestandsDeel
 
-Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/partupload)
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/bestandsdeel)
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| partNumber | A sequence number of file part within document | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
-| chunkSize | The size of a chunk in bytes | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
-| inhoud |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| complete |  | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
+| index | Een volgnummer dat de volgorde van de bestandsdelen aangeeft. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
+| grootte | De grootte van dit specifieke bestandsdeel. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
+| inhoud | De (binaire) bestandsinhoud van dit specifieke bestandsdeel. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| voltooid | Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: Het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen. | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## EnkelvoudigInformatieObject
 
@@ -53,7 +53,7 @@ Uitleg bij mogelijke waarden:
 | versie | Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
 | beginRegistratie | Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsnaam | De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie. | string | nee | C​R​U​D |
-| inhoud |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| inhoud | Download URL van de binaire inhoud. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsomvang | The size of the whole file in bytes | integer | ja | C​R​U​D |
 | link | De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is. | string | nee | C​R​U​D |
 | beschrijving | Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT. | string | nee | C​R​U​D |
@@ -62,7 +62,7 @@ Uitleg bij mogelijke waarden:
 | indicatieGebruiksrecht | Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null` zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de GEBRUIKSRECHTen resource. | boolean | nee | C​R​U​D |
 | informatieobjecttype | URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
-| parts |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
+| bestandsdelen |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## AuditTrail
 
