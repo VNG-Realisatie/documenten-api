@@ -2,7 +2,6 @@
 Serializers of the Document Registratie Component REST API
 """
 import uuid
-from humanize import naturalsize
 
 from django.conf import settings
 from django.db import transaction
@@ -11,6 +10,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
+from humanize import naturalsize
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
