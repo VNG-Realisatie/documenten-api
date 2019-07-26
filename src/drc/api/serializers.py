@@ -144,6 +144,11 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
 
 
 class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
+    lock = serializers.CharField(
+        write_only=True,
+        help_text='Hash string, which represents id of the lock of related informatieobject'
+    )
+
     class Meta:
         model = BestandsDeel
         fields = (
@@ -151,7 +156,8 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
             'index',
             'grootte',
             'inhoud',
-            'voltooid'
+            'voltooid',
+            'lock'
         )
         extra_kwargs = {
             'url': {
@@ -177,12 +183,19 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
         valid_attrs = super().validate(attrs)
 
         inhoud = valid_attrs.get('inhoud')
+        lock = valid_attrs.get('lock')
         if inhoud:
             if inhoud.size != self.instance.grootte:
                 raise serializers.ValidationError(
                     _("The size of upload file should be equal chunkSize field"),
                     code='file-size'
                 )
+
+        if lock != self.instance.informatieobject.lock:
+            raise serializers.ValidationError(
+                _("Lock id is not correct"),
+                code='incorrect-lock-id'
+            )
 
         return valid_attrs
 
