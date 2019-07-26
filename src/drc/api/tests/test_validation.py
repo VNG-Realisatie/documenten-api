@@ -1,4 +1,5 @@
 from copy import deepcopy
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -6,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors
 from vng_api_common.validators import URLValidator
+from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
@@ -39,7 +41,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 self.assertEqual(error['code'], code)
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
-    def test_validate_informatieobjecttype_invalid(self):
+    def test_validate_informatieobjecttype_invalid_url(self):
         url = reverse('enkelvoudiginformatieobject-list')
 
         response = self.client.post(url, {
@@ -49,6 +51,25 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'informatieobjecttype')
         self.assertEqual(error['code'], URLValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_validate_informatieobjecttype_invalid_resource(self):
+        responses = {
+            INFORMATIEOBJECTTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+
+        url = reverse('enkelvoudiginformatieobject-list')
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'informatieobjecttype': INFORMATIEOBJECTTYPE,
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'informatieobjecttype')
+        self.assertEqual(error['code'], 'invalid-resource')
 
     def test_link_fetcher_cannot_connect(self):
         url = reverse('enkelvoudiginformatieobject-list')
@@ -129,7 +150,9 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
     url = reverse_lazy('enkelvoudiginformatieobject-list')
     heeft_alle_autorisaties = True
 
-    def test_ontvangen_informatieobjecten(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_ontvangen_informatieobjecten(self, *mocks):
         """
         Assert certain statuses are not allowed for received documents.
 

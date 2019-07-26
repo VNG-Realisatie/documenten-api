@@ -5,6 +5,7 @@ See:
 https://github.com/VNG-Realisatie/gemma-zaken/issues/609
 """
 from base64 import b64encode
+from unittest.mock import patch
 
 from django.test import override_settings, tag
 
@@ -29,7 +30,9 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @tag('mock_client')
-    def test_vertrouwelijkheidaanduiding_derived(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_vertrouwelijkheidaanduiding_derived(self, *mocks):
         """
         Assert that the default vertrouwelijkheidaanduiding is set
         from informatieobjecttype
@@ -63,7 +66,9 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
             VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
         )
 
-    def test_vertrouwelijkheidaanduiding_explicit(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_vertrouwelijkheidaanduiding_explicit(self, *mocks):
         """
         Assert the explicit set of vertrouwelijkheidaanduiding
         """

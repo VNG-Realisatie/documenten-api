@@ -3,6 +3,7 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 import base64
 from datetime import date
+from unittest.mock import patch
 from urllib.parse import urlparse
 
 from django.test import override_settings
@@ -32,7 +33,9 @@ class US39TestCase(JWTAuthMixin, APITestCase):
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_create_enkelvoudiginformatieobject(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_enkelvoudiginformatieobject(self, *mocks):
         """
         Registreer een ENKELVOUDIGINFORMATIEOBJECT
         """

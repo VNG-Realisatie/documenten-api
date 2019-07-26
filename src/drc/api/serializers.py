@@ -20,7 +20,9 @@ from vng_api_common.serializers import (
     GegevensGroepSerializer, add_choice_values_help_text
 )
 from vng_api_common.utils import get_help_text
-from vng_api_common.validators import IsImmutableValidator, URLValidator
+from vng_api_common.validators import (
+    IsImmutableValidator, ResourceValidator, URLValidator
+)
 
 from drc.datamodel.constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, Statussen
@@ -195,7 +197,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         )
         extra_kwargs = {
             'informatieobjecttype': {
-                'validators': [URLValidator(get_auth=get_ztc_auth)],
+                'validators': [
+                    ResourceValidator('InformatieObjectType', settings.ZTC_API_SPEC, get_auth=get_ztc_auth)
+                ],
             },
             'taal': {
                 'min_length': 3,
