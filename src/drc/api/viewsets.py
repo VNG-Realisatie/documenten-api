@@ -44,9 +44,11 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
-    BestandsDeelSerializer, CompleteEnkelvoudigInformatieObjectSerializer,
+    BestandsDeelSerializer,
     EnkelvoudigInformatieObjectSerializer,
-    EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
+    EnkelvoudigInformatieObjectWithLockSerializer,
+    EnkelvoudigInformatieObjectCreateLockSerializer,
+    GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
@@ -200,6 +202,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         if self.action in ['update', 'partial_update']:
             return EnkelvoudigInformatieObjectWithLockSerializer
+        elif self.action == 'create' and self.request.data.get('inhoud', '') == '':
+            return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
     @swagger_auto_schema(
@@ -299,38 +303,13 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             force_unlock = True
 
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
-            canonical,
+            eio,
             data=request.data,
             context={'force_unlock': force_unlock}
         )
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @swagger_auto_schema(
-        request_body=CompleteEnkelvoudigInformatieObjectSerializer,
-        responses={
-            status.HTTP_200_OK: CompleteEnkelvoudigInformatieObjectSerializer,
-            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
-            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
-            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
-            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
-            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
-            status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
-            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
-            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
-        }
-    )
-    @action(detail=True, methods=['put'])
-    def complete(self, request, *args, **kwargs):
-        eio = self.get_object()
-        complete_serializer = CompleteEnkelvoudigInformatieObjectSerializer(
-            eio, data=request.data, context={'request': request}
-        )
-        complete_serializer.is_valid(raise_exception=True)
-        complete_serializer.save()
-        return Response(complete_serializer.data)
 
 
 class ObjectInformatieObjectViewSet(NotificationCreateMixin,
@@ -491,10 +470,8 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
 
 
-class BestandsDeelViewSet(NotificationUpdateMixin,
-                        # AuditTrailViewSet,
-                        mixins.UpdateModelMixin,
-                        viewsets.GenericViewSet):
+class BestandsDeelViewSet(mixins.UpdateModelMixin,
+                          viewsets.GenericViewSet):
     """
     update:
     Upload a file object
