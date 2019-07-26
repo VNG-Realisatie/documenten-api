@@ -36,6 +36,7 @@ from .permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired
 )
+from .schema import EIOAutoSchema
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
@@ -168,6 +169,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
+
+    swagger_schema = EIOAutoSchema
 
     @transaction.atomic
     def perform_destroy(self, instance):

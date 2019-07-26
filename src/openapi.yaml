@@ -389,6 +389,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
+        '413':
+          description: Request entity too large
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
         '415':
           description: Unsupported media type
           headers:
@@ -986,6 +998,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
+        '413':
+          description: Request entity too large
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
         '415':
           description: Unsupported media type
           headers:
@@ -1143,6 +1167,18 @@ paths:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: Gone
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '413':
+          description: Request entity too large
           headers:
             API-version:
               schema:

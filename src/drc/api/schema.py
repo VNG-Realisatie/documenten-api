@@ -1,7 +1,12 @@
+from collections import OrderedDict
+
 from django.conf import settings
 
-from humanize import naturalsize
 from drf_yasg import openapi
+from humanize import naturalsize
+from rest_framework import status
+from vng_api_common.inspectors.view import HTTP_STATUS_CODE_TITLES, AutoSchema
+from vng_api_common.serializers import FoutSerializer
 
 from .kanalen import KANAAL_DOCUMENTEN
 
@@ -69,3 +74,26 @@ info = openapi.Info(
         url='https://opensource.org/licenses/EUPL-1.2'
     ),
 )
+
+
+class EIOAutoSchema(AutoSchema):
+    """
+    Add the HTTP 413 error response to the schema.
+
+    This is only relevant for endpoints that support file uploads.
+    """
+
+    def _get_error_responses(self) -> OrderedDict:
+        responses = super()._get_error_responses()
+
+        if self.method not in ["POST", "PUT", "PATCH"]:
+            return responses
+
+        status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+        fout_schema = self.serializer_to_schema(FoutSerializer())
+        responses[status_code] = openapi.Response(
+            description=HTTP_STATUS_CODE_TITLES.get(status_code, ''),
+            schema=fout_schema,
+        )
+
+        return responses
