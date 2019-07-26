@@ -45,7 +45,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'auteur': 'ANONIEM',
             'formaat': 'text/plain',
             'taal': 'dut',
-            'bestandsomvang': 100,
+            'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
+            'bestandsomvang': 22,
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
@@ -58,7 +59,12 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(eio.identificatie, 'AMS20180701001')
         self.assertEqual(eio.creatiedatum, date(2018, 7, 1))
-        self.assertIsNone(response.data['inhoud'])
+        download_url = urlparse(response.data['inhoud'])
+
+        self.assertTrue(
+            download_url.path,
+            get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
+        )
 
     def test_read_detail_file(self):
         self.autorisatie.scopes = [SCOPE_DOCUMENTEN_ALLES_LEZEN]

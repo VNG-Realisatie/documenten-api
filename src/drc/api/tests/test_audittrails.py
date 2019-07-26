@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from base64 import b64encode
 
 from django.test import override_settings
 
@@ -40,7 +41,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
-            'bestandsomvang': 100,
+            'bestandsomvang': 17,
+            'inhoud': b64encode(b'some file content').decode('utf-8'),
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
@@ -150,7 +152,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
-            'bestandsomvang': 100,
+            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 17,
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',

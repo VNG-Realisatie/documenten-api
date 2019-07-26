@@ -40,7 +40,8 @@ class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
         image_data = base64.b64encode(image_io.getvalue())
 
         data = {
-            'bestandsomvang': 100,
+            'inhoud': image_data.decode('utf-8'),
+            'bestandsomvang': 633,
             'bronorganisatie': '715832694',
             'taal': 'dut',
             'creatiedatum': '2018-07-30',
@@ -59,6 +60,7 @@ class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
 
         self.assertResponseTypes(response_data, (
             ('url', str),
+            ('inhoud', str),
             ('bestandsomvang', int),
             ('bronorganisatie', str),
             ('taal', str),

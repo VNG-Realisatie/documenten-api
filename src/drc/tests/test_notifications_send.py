@@ -41,7 +41,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             'auteur': 'ANONIEM',
             'formaat': 'text/plain',
             'taal': 'dut',
-            'bestandsomvang': 100,
+            'bestandsomvang': 17,
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
