@@ -172,6 +172,11 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         empty_parts = self.bestandsdelen.filter(inhoud='')
         return empty_parts.count() == 0
 
+    @property
+    def empty_bestandsdelen(self) -> bool:
+        empty_parts = self.bestandsdelen.filter(inhoud='')
+        return empty_parts.count() == self.bestandsdelen.count()
+
 
 class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     """
