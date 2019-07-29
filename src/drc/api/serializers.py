@@ -12,6 +12,7 @@ from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlencode
+from django.core.files.base import ContentFile
 
 from drf_extra_fields.fields import Base64FileField
 from humanize import naturalsize
@@ -208,7 +209,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid'
     )
-    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download', required=False)
+    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download', required=False, allow_null=True)
     integriteit = IntegriteitSerializer(
         label=_("integriteit"), allow_null=True, required=False,
         help_text=_("Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand.")
@@ -312,15 +313,20 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         valid_attrs = super().validate(attrs)
 
         # check if file.size equal bestandsomvang
-        # create
-        if self.instance is None:
-            if 'inhoud' in valid_attrs and valid_attrs['inhoud'].size != valid_attrs['bestandsomvang']:
+        if self.instance is None:  # create
+            if valid_attrs.get('inhoud') is not None and valid_attrs['inhoud'].size != valid_attrs['bestandsomvang']:
                 raise serializers.ValidationError(
                     _("The size of upload file should be equal bestandsomvang field"),
                     code='file-size'
                 )
-
-        # todo validation for size of files for update
+        else:  # update
+            inhoud = valid_attrs.get('inhoud', self.instance.inhoud)
+            bestandsomvang = valid_attrs.get('bestandsomvang', self.instance.bestandsomvang)
+            if inhoud and inhoud.size != bestandsomvang:
+                raise serializers.ValidationError(
+                    _("The size of upload file should be equal bestandsomvang field"),
+                    code='file-size'
+                )
 
         return valid_attrs
 
@@ -344,13 +350,13 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.ondertekening = ondertekening
         eio.save()
 
-        if not eio.inhoud:
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
             # large file process
             full_size = validated_data['bestandsomvang']
-            bestandsdelen = math.ceil(full_size/settings.CHUNK_SIZE)
+            parts = math.ceil(full_size/settings.CHUNK_SIZE)
 
             # create chunk urls
-            for i in range(bestandsdelen):
+            for i in range(parts):
                 chunk_size = min(settings.CHUNK_SIZE, full_size)
                 BestandsDeel.objects.create(
                     informatieobject=canonical,
@@ -358,6 +364,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                     index=i + 1
                 )
                 full_size -= chunk_size
+
+        # create empty file if size == 0
+        if eio.bestandsomvang == 0:
+            eio.inhoud.save('empty_file', ContentFile(''))
+
         return eio
 
     def update(self, instance, validated_data):
@@ -366,23 +377,40 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         create a new EnkelvoudigInformatieObject with the same
         EnkelvoudigInformatieObjectCanonical
         """
-        instance.integriteit = validated_data.pop('integriteit', None)
-        instance.ondertekening = validated_data.pop('ondertekening', None)
+        integriteit = validated_data.pop('integriteit', None)
+        ondertekening = validated_data.pop('ondertekening', None)
 
-        validated_data_field_names = validated_data.keys()
-        for field in instance._meta.get_fields():
-            if field.name not in validated_data_field_names:
-                validated_data[field.name] = getattr(instance, field.name)
+        eio = super().update(instance, validated_data)
+        eio.integriteit = integriteit
+        eio.ondertekening = ondertekening
+        eio.save()
 
-        validated_data['pk'] = None
-        validated_data['versie'] += 1
+        # each update - delete previous part files
+        if eio.canonical.bestandsdelen.count() > 0:
+            for part in eio.canonical.bestandsdelen.all():
+                part.inhoud.delete()
+                part.delete()
 
-        # Remove the lock from the data from which a new
-        # EnkelvoudigInformatieObject will be created, because lock is not a
-        # part of that model
-        validated_data.pop('lock')
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
+            # large file process
+            full_size = eio.bestandsomvang
+            parts = math.ceil(full_size/settings.CHUNK_SIZE)
 
-        return super().create(validated_data)
+            # create chunk urls
+            for i in range(parts):
+                chunk_size = min(settings.CHUNK_SIZE, full_size)
+                BestandsDeel.objects.create(
+                    informatieobject=eio.canonical,
+                    grootte=chunk_size,
+                    index=i + 1
+                )
+                full_size -= chunk_size
+
+        # create empty file if size == 0
+        if eio.bestandsomvang == 0 and not eio.inhoud:
+            eio.inhoud.save('empty_file', ContentFile(''))
+
+        return eio
 
 
 class EnkelvoudigInformatieObjectWithLockSerializer(EnkelvoudigInformatieObjectSerializer):
@@ -480,9 +508,16 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             )
         return valid_attrs
 
+    @transaction.atomic
     def save(self, **kwargs):
         self.instance.lock = uuid.uuid4().hex
         self.instance.save()
+
+        # create new version of document
+        eio = self.instance.latest_version
+        eio.pk = None
+        eio.versie = eio.versie + 1
+        eio.save(0)
 
         return self.instance
 
@@ -506,7 +541,6 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         force_unlock = self.context.get('force_unlock', False)
 
         if force_unlock:
-            # TODO delete all part files
             return valid_attrs
 
         lock = valid_attrs.get('lock', '')
@@ -520,6 +554,12 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _("Upload of part files is not complete"),
                 code='incomplete-upload'
+            )
+        is_empty = self.instance.canonical.empty_bestandsdelen and not self.instance.inhoud
+        if is_empty and self.instance.bestandsomvang > 0:
+            raise serializers.ValidationError(
+                _("Either file shoul be upload or the file size = 0"),
+                code='file-size'
             )
 
         return valid_attrs
@@ -535,14 +575,18 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             return self.instance
 
         bestandsdelen = self.instance.canonical.bestandsdelen.order_by('index')
-        part_files = [p.inhoud.file for p in bestandsdelen]
-        # merge files
-        file_name = create_filename(self.instance.bestandsnaam)
-        file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, datetime.now().strftime('uploads/%Y/%m/'))
-        file_path = merge_files(part_files, file_dir, file_name)
-        # save full file to the instance FileField
-        with open(file_path) as file_obj:
-            self.instance.inhoud.save(file_name, File(file_obj))
+        if self.instance.canonical.complete_upload:
+            part_files = [p.inhoud.file for p in bestandsdelen]
+            # merge files
+            file_name = create_filename(self.instance.bestandsnaam)
+            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, datetime.now().strftime('uploads/%Y/%m/'))
+            file_path = merge_files(part_files, file_dir, file_name)
+            # save full file to the instance FileField
+            with open(file_path) as file_obj:
+                self.instance.inhoud.save(file_name, File(file_obj))
+        else:
+            self.instance.bestandsomvang = None
+            self.instance.save()
 
         # delete part files
         for part in bestandsdelen:
