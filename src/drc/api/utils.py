@@ -19,8 +19,7 @@ def get_absolute_url(url_name: str, uuid: str) -> str:
 
 
 def merge_files(part_files, file_dir, file_name) -> str:
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
+    os.makedirs(file_dir, exist_ok=True)
 
     file_path = os.path.join(file_dir, file_name)
     with open(file_path, 'wb') as output:

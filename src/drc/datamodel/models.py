@@ -393,6 +393,8 @@ class BestandsDeel(models.Model):
     )
 
     class Meta:
+        verbose_name = 'bestands deel'
+        verbose_name_plural = 'bestands delen'
         unique_together = ('informatieobject', 'index')
 
     def unique_representation(self):

@@ -4,7 +4,7 @@ from privates.admin import PrivateMediaMixin
 
 from .models import (
     EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject
+    Gebruiksrechten, ObjectInformatieObject, BestandsDeel
 )
 
 
@@ -18,17 +18,11 @@ class EnkelvoudigInformatieObjectInline(admin.StackedInline):
     extra = 1
 
 
-def unlock(modeladmin, request, queryset):
-    queryset.update(lock='')
-
-
 @admin.register(EnkelvoudigInformatieObjectCanonical)
 class EnkelvoudigInformatieObjectCanonicalAdmin(PrivateMediaMixin, admin.ModelAdmin):
     list_display = ['__str__', 'get_not_lock_display']
-    list_display = ['__str__']
     inlines = [EnkelvoudigInformatieObjectInline, GebruiksrechtenInline]
     private_media_fields = ('inhoud',)
-    actions = [unlock]
 
     def get_not_lock_display(self, obj) -> bool:
         return not bool(obj.lock)
@@ -57,3 +51,10 @@ class GebruiksrechtenAdmin(admin.ModelAdmin):
     list_display = ("uuid", "informatieobject")
     list_filter = ("informatieobject",)
     raw_id_fields = ("informatieobject",)
+
+
+@admin.register(BestandsDeel)
+class BestandsDeelAdmin(PrivateMediaMixin, admin.ModelAdmin):
+    list_display = ('__str__', "informatieobject", "index", "voltooid")
+    list_filter = ("informatieobject",)
+    private_media_fields = ('inhoud',)

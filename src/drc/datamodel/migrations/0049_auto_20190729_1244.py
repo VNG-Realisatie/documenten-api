@@ -15,4 +15,9 @@ class Migration(migrations.Migration):
             name='bestandsomvang',
             field=models.PositiveIntegerField(help_text='The size of the whole file in bytes', null=True, verbose_name='bestandsnaam'),
         ),
+
+        migrations.AlterModelOptions(
+            name='bestandsdeel',
+            options={'verbose_name': 'bestands deel', 'verbose_name_plural': 'bestands delen'},
+        ),
     ]
