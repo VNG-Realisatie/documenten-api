@@ -219,7 +219,7 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
     bestandsomvang = models.PositiveIntegerField(
-        _("bestandsnaam"),
+        _("bestandsnaam"), null=True,
         help_text=_("The size of the whole file in bytes")
     )
 
