@@ -16,7 +16,7 @@ router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectView
 ], basename='enkelvoudiginformatieobject')
 router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
-router.register('bestandsdelens', BestandsDeelViewSet)
+router.register('bestandsdelen', BestandsDeelViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 
