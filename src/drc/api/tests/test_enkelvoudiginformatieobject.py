@@ -320,6 +320,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
         eio_data.update({
             'beschrijving': 'beschrijving2',
             'inhoud': b64encode(b'aaaaa'),
+            'bestandsomvang': 5,
             'lock': lock
         })
 
@@ -328,7 +329,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         response_data = response.json()
 
         self.assertEqual(response_data['beschrijving'], 'beschrijving2')

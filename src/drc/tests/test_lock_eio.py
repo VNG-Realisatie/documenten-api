@@ -41,6 +41,26 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data['lock'], eio.lock)
         self.assertNotEqual(data['lock'], '')
 
+    def test_lock_create_new_version(self):
+        """test that locking file creates the new version of document """
+        canonical = EnkelvoudigInformatieObjectCanonicalFactory.create()
+        eio = canonical.latest_version
+        assert eio.versie == 1
+        assert canonical.enkelvoudiginformatieobject_set.count() == 1
+        url = get_operation_url('enkelvoudiginformatieobject_lock', uuid=eio.uuid)
+
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        canonical.refresh_from_db()
+        eio_new = canonical.latest_version
+
+        self.assertEqual(canonical.enkelvoudiginformatieobject_set.count(), 2)
+        self.assertEqual(eio_new.versie, 2)
+        self.assertEqual(eio.inhoud, eio_new.inhoud)
+        self.assertNotEqual(eio.pk, eio_new.pk)
+
     def test_lock_fail_locked_doc(self):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create(lock=uuid.uuid4().hex)
 
