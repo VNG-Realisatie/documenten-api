@@ -173,7 +173,7 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
             'voltooid': {
                 'read_only': True,
                 'help_text': _("Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: "
-                               "Het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen.")
+                               "het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen.")
             },
             'inhoud': {
                 'write_only': True,
@@ -188,7 +188,8 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
         if inhoud:
             if inhoud.size != self.instance.grootte:
                 raise serializers.ValidationError(
-                    _("The size of upload file should be equal chunkSize field"),
+                    _("Het aangeleverde bestand heeft een afwijkende bestandsgrootte (volgens het `grootte`-veld)."
+                       "Verwachting: {expected}b, ontvangen: {received}b").format(expected=self.instance.grootte, received=inhoud.size),
                     code='file-size'
                 )
 

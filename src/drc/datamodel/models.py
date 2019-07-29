@@ -388,7 +388,7 @@ class BestandsDeel(models.Model):
         help_text=_("De grootte van dit specifieke bestandsdeel.")
     )
     inhoud = PrivateMediaFileField(
-        upload_to='uploads/%Y/%m/', blank=True,
+        upload_to='part-uploads/%Y/%m/', blank=True,
         help_text=_("De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")
     )
 
