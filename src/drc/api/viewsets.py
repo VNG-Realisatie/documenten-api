@@ -15,7 +15,7 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailViewsetMixin
 )
 from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin, NotificationDestroyMixin, NotificationUpdateMixin,
+    NotificationCreateMixin, NotificationDestroyMixin,
     NotificationViewSetMixin
 )
 from vng_api_common.serializers import FoutSerializer
@@ -54,6 +54,7 @@ from .serializers import (
     UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
+from .mixins import UpdateWithoutPartialMixin
 
 # Openapi query parameters for version querying
 VERSIE_QUERY_PARAM = openapi.Parameter(
@@ -470,7 +471,7 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
 
 
-class BestandsDeelViewSet(mixins.UpdateModelMixin,
+class BestandsDeelViewSet(UpdateWithoutPartialMixin,
                           viewsets.GenericViewSet):
     """
     update:
@@ -480,11 +481,7 @@ class BestandsDeelViewSet(mixins.UpdateModelMixin,
     serializer_class = BestandsDeelSerializer
     lookup_field = 'uuid'
     parser_classes = (MultiPartParser, FormParser)
-    notifications_kanaal = KANAAL_DOCUMENTEN
-    notifications_main_resource_key = 'informatieobject'
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
-    audit = AUDIT_DRC
-    audittrail_main_resource_key = 'informatieobject'

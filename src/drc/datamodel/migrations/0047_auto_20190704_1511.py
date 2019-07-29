@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('uuid', models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True)),
                 ('index', models.PositiveIntegerField(help_text='Een volgnummer dat de volgorde van de bestandsdelen aangeeft.')),
                 ('grootte', models.PositiveIntegerField(help_text='De grootte van dit specifieke bestandsdeel.')),
-                ('inhoud', privates.fields.PrivateMediaFileField(blank=True, storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='uploads/%Y/%m/', help_text="De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")),
+                ('inhoud', privates.fields.PrivateMediaFileField(blank=True, storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='part-uploads/%Y/%m/', help_text="De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")),
                 ('informatieobject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bestandsdelen', to='datamodel.EnkelvoudigInformatieObjectCanonical')),
             ],
             options={
