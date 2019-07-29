@@ -1,6 +1,6 @@
 import uuid
-from datetime import datetime
 from base64 import b64encode
+from datetime import datetime
 
 from django.test import override_settings
 

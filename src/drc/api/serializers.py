@@ -7,12 +7,11 @@ import uuid
 from datetime import datetime
 
 from django.conf import settings
-from django.core.files.base import File
+from django.core.files.base import ContentFile, File
 from django.db import transaction
+from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils.http import urlencode
-from django.core.files.base import ContentFile
 
 from drf_extra_fields.fields import Base64FileField
 from humanize import naturalsize

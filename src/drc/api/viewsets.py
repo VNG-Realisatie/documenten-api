@@ -34,6 +34,7 @@ from .filters import (
     ObjectInformatieObjectFilter
 )
 from .kanalen import KANAAL_DOCUMENTEN
+from .mixins import UpdateWithoutPartialMixin
 from .permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired
@@ -44,17 +45,14 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
-    BestandsDeelSerializer,
+    BestandsDeelSerializer, EnkelvoudigInformatieObjectCreateLockSerializer,
     EnkelvoudigInformatieObjectSerializer,
-    EnkelvoudigInformatieObjectWithLockSerializer,
-    EnkelvoudigInformatieObjectCreateLockSerializer,
-    GebruiksrechtenSerializer,
+    EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer
 )
 from .validators import RemoteRelationValidator
-from .mixins import UpdateWithoutPartialMixin
 
 # Openapi query parameters for version querying
 VERSIE_QUERY_PARAM = openapi.Parameter(
