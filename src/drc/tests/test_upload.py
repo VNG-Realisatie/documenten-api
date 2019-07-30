@@ -31,6 +31,17 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     def test_create_eio(self):
+        """
+        Test the create process of the documents with base64 files
+        Input:
+        * inhoud - base64 encoded file
+        * bestandsomvang > 0 - file size related to the inhoud
+
+        Expected result:
+        * document is created without lock
+        * file is downloadable via the link
+        * bestandsdelen objects are not created
+        """
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -65,6 +76,17 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(data['locked'], False)
 
     def test_create_without_file(self):
+        """
+        Test the create process of the document metadata without a file
+        Input:
+        * inhoud - None
+        * bestandsomvang - None
+
+        Expected result:
+        * document is created without lock
+        * file link is None
+        * bestandsdelen objects are not created
+        """
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -94,6 +116,17 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(eio.bestandsomvang, None)
 
     def test_create_empty_file(self):
+        """
+        Test the create process of the document with empty file
+        Input:
+        * inhoud - None
+        * bestandsomvang - 0
+
+        Expected result:
+        * document is created without lock
+        * file link can be used to download an empty file
+        * bestandsdelen objects are not created
+        """
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -129,6 +162,18 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(file_response.content, b'')
 
     def test_update_eio_metadata(self):
+        """
+        Test the update process of the document metadata
+        Input:
+        * lock document
+        * updated fields don't include bestandsomvang and inhoud
+
+        Expected result:
+        * new version of document created during lock
+        * file link has another version
+        * file link points to the same file
+        * bestandsdelen objects are not created
+        """
         eio = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype=INFORMATIEOBJECTTYPE,
         )
@@ -154,6 +199,19 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(data['inhoud'], f'http://testserver{file_url}?versie=2')
 
     def test_update_eio_file(self):
+        """
+        Test the update process of the document file
+        Input:
+        * lock document
+        * update inhoud with another base64 encoded file
+        * update bestandsomvang
+
+        Expected result:
+        * new version of document created during lock
+        * file link has another version
+        * file link points to the new file
+        * bestandsdelen objects are not created
+        """
         eio = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype=INFORMATIEOBJECTTYPE,
         )
@@ -185,6 +243,18 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(eio_new.inhoud.file.read(), b'some other file content')
 
     def test_update_eio_file_set_empty(self):
+        """
+        Test the delete the file from the document
+        Input:
+        * lock document
+        * update inhoud - None
+        * update bestandsomvang - None
+
+        Expected result:
+        * new version of document created during lock
+        * file link - None
+        * bestandsdelen objects are not created
+        """
         eio = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype=INFORMATIEOBJECTTYPE,
         )
@@ -205,7 +275,6 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
             }
         )
 
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
@@ -216,6 +285,15 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         self.assertEqual(eio_new.bestandsomvang, None)
 
     def test_update_eio_only_size(self):
+        """
+        Test the update process of the size metadata
+        Input:
+        * lock document
+        * update bestandsomvang with positive integer
+
+        Expected result:
+        * 400 status because the new bestandsomvang is not related to the file size
+        """
         eio = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype=INFORMATIEOBJECTTYPE,
         )
@@ -234,6 +312,92 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'file-size')
 
+    def test_update_eio_only_file_without_size(self):
+        """
+        Test the update process of the file without changing file size
+        Input:
+        * lock document
+        * update inhoud with another base64 encoded file
+
+        Expected result:
+        * 400 status because the new file size is not related to the bestandsomvang
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+        detail_url = reverse(eio)
+        lock_url = get_operation_url('enkelvoudiginformatieobject_lock', uuid=eio.uuid)
+
+        # lock
+        response_lock = self.client.post(lock_url)
+        lock = response_lock.json()['lock']
+
+        # update metadata
+        response = self.client.patch(
+            detail_url,
+            {
+                'inhoud': b64encode(b'some other file content').decode('utf-8'),
+                'lock': lock
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'file-size')
+
+
+    def test_update_eio_put(self):
+        """
+        Test the full update process of the document
+        Input:
+        * lock document
+        * update inhoud with another base64 encoded file
+        * update all other fields
+
+        Expected result:
+        * new version of document created during lock
+        * file link has another version
+        * file link points to the new file
+        * bestandsdelen objects are not created
+        """
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+        detail_url = reverse(eio)
+        lock_url = get_operation_url('enkelvoudiginformatieobject_lock', uuid=eio.uuid)
+
+        # lock
+        response_lock = self.client.post(lock_url)
+        lock = response_lock.json()['lock']
+
+        # get data
+        eio_response = self.client.get(detail_url)
+        eio_data = eio_response.data
+
+        # update
+        eio_data.update({
+            'beschrijving': 'beschrijving2',
+            'inhoud': b64encode(b'aaaaa'),
+            'bestandsomvang': 5,
+            'lock': lock
+        })
+
+        for i in ['integriteit', 'ondertekening']:
+            eio_data.pop(i)
+
+        response = self.client.put(detail_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        eio_new = eio.canonical.latest_version
+        file_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=eio_new.uuid)
+
+        self.assertEqual(eio.canonical.bestandsdelen.count(), 0)
+        self.assertEqual(data['inhoud'], f'http://testserver{file_url}?versie=2')
+        self.assertEqual(eio_new.inhoud.file.read(), b'aaaaa')
+
 
 @temp_private_root()
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
@@ -249,7 +413,6 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
     def _create_metadata(self):
         self.file_content = SimpleUploadedFile("file.txt", b"filecontentstring")
         content = {
-
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
             'creatiedatum': '2018-06-27',
@@ -331,12 +494,54 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.content, b'filecontentstring')
 
     def test_create_eio_full_process(self):
+        """
+        Test the create process of the documents with part files
+
+        1. Create document metadata
+        Input:
+        * inhoud - None
+        * bestandsomvang > 0
+
+        Expected result:
+        * document is already locked after creation
+        * file link is None
+        * bestandsdelen objects are created based on the bestandsomvang
+
+        2. Upload part files
+        Input:
+        * part files which are the result of splitting the initial file
+        * lock
+
+        Expected result:
+        * for all part files voltooid = True
+
+        3. Unlock document
+        Expected result:
+        * part files merged into the whole file
+        * file link points to this file
+        * bestandsdelen objects are deleted
+
+        4. Download file
+        Expected result:
+        * file is downloadable via the file link
+        """
+
         self._create_metadata()
         self._upload_part_files()
         self._unlock()
         self._download_file()
 
     def test_upload_part_wrong_size(self):
+        """
+        Test the upload of the incorrect part file
+
+        Input:
+        * part files with the size different from grootte field
+        * lock
+
+        Expected result:
+        * 400 status because of the difference between expected and actual file sizes
+        """
         self._create_metadata()
 
         # change file size for part file
@@ -361,6 +566,16 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'file-size')
 
     def test_upload_part_twice_correct(self):
+        """
+        Test the upload of the same part file several times
+
+        Input:
+        * part file
+        * lock
+
+        Expected result:
+        * the repeated upload of the same file is permiitted. Voltooid = True
+        """
         self._create_metadata()
         self._upload_part_files()
 
@@ -384,6 +599,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(part.voltooid, True)
 
     def test_unlock_without_uploading(self):
+        """
+        Test the unlock of the document with no part files uploaded
+        Input:
+        * bestandsomvang of the document > 0
+        * bestandsdelen objects are created but not uploaded
+
+        Expected result:
+        * 400 status because the expected size of the file > 0
+        """
         self._create_metadata()
 
         # unlock
@@ -397,6 +621,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'file-size')
 
     def test_unlock_not_finish_upload(self):
+        """
+        Test the unlock of the document with not all part files uploaded
+        Input:
+        * bestandsomvang of the document > 0
+        * bestandsdelen objects are created, some of them are uploaded
+
+        Expected result:
+        * 400 status because the upload of part files is incomplete
+        """
         self._create_metadata()
 
         # unload 1 part of file
@@ -423,6 +656,18 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'incomplete-upload')
 
     def test_unlock_not_finish_upload_force(self):
+        """
+        Test the unlock of the document with not all part files uploaded
+        Input:
+        * bestandsomvang of the document > 0
+        * bestandsdelen objects are created, some of them are uploaded
+        * client has 'documenten.geforceerd-unlock' scope
+
+        Expected result:
+        * document is unlocked
+        * all bestandsdelen are deleted
+        * bestandsomvang is None
+        """
         self.autorisatie.scopes = self.autorisatie.scopes + [SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK]
         self.autorisatie.save()
         self._create_metadata()
@@ -454,6 +699,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(self.canonical.bestandsdelen.count(), 0)
 
     def test_update_metadata_without_upload(self):
+        """
+        Test the update process of the document metadata
+        Input:
+        * updated fields don't include bestandsomvang and inhoud
+
+        Expected result:
+        * new version of document is not created during lock since the object was created with lock
+        * bestandsdelen objects are created
+        """
         self._create_metadata()
 
         # update file metadata
@@ -474,6 +728,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(self.eio.beschrijving, 'beschrijving2')
 
     def test_update_metadata_after_unfinished_upload(self):
+        """
+        Test the update process of the document metadata with some of part files uploaded
+        Input:
+        * updated fields don't include bestandsomvang and inhoud
+
+        Expected result:
+        * bestandsdelen objects are regenerated
+        * all uploaded part files are lost
+        """
         self._create_metadata()
 
         # unload 1 part of file
@@ -510,6 +773,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(part_new.voltooid, False)
 
     def test_update_metadata_set_size(self):
+        """
+        Test the update process of the file size with some of part files uploaded
+        Input:
+        * bestandsomvang > 0
+
+        Expected result:
+        * bestandsdelen objects are regenerated based on the new bestandsomvang
+        * all uploaded part files are lost
+        """
         self._create_metadata()
 
         # update file metadata
@@ -531,6 +803,16 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data['inhoud'], None)
 
     def test_update_metadata_set_size_zero(self):
+        """
+        Test the update process of the file size = 0
+        Input:
+        * bestandsomvang = 0
+
+        Expected result:
+        * bestandsdelen objects are removed
+        * empty file is created
+        * file link points to this empty file
+        """
         self._create_metadata()
 
         # update file metadata
@@ -553,6 +835,15 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data['inhoud'], f'http://testserver{file_url}?versie=1')
 
     def test_update_metadata_set_size_null(self):
+        """
+        Test the remove of file from the document
+        Input:
+        * bestandsomvang = None
+
+        Expected result:
+        * bestandsdelen objects are removed
+        * file link is None
+        """
         self._create_metadata()
 
         # update file metadata
