@@ -364,9 +364,16 @@ if SENTRY_DSN:
     }
     LOGGING['handlers'].update({
         'sentry': {
-            'level': 'WARNING',
+            'level': 'DEBUG',
             'class': 'raven.handlers.logging.SentryHandler',
             'dsn': RAVEN_CONFIG['dsn']
+        },
+    })
+    LOGGING['loggers'].update({
+        'sentry': {
+            'handlers': ['sentry'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     })
 
