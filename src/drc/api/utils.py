@@ -30,7 +30,6 @@ def merge_files(part_files, file_dir, file_name) -> str:
 
 
 def create_filename(name):
-    file_uuid = str(uuid.uuid4())[:12]  # 12 characters are more than enough.
     main_part, ext = os.path.splitext(name)
-    ext = ext or settings.DEFAULT_EXTENSION
-    return f"{main_part}_{file_uuid}{ext}"
+    ext = ext or f".{settings.DEFAULT_EXTENSION}"
+    return f"{main_part}{ext}"

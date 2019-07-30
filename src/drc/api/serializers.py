@@ -14,10 +14,8 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from drf_extra_fields.fields import Base64FileField
-from humanize import naturalsize
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
-from rest_framework.fields import FileField
 from rest_framework.reverse import reverse
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
@@ -577,12 +575,16 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         bestandsdelen = self.instance.canonical.bestandsdelen.order_by('index')
         if self.instance.canonical.complete_upload:
             part_files = [p.inhoud.file for p in bestandsdelen]
+            # create the name of target file using the storage backend to the serializer
+            name = create_filename(self.instance.bestandsnaam)
+            file_field = self.instance._meta.get_field("inhoud")
+            rel_path = file_field.generate_filename(self.instance, name)
+            file_name = os.path.basename(rel_path)
             # merge files
-            file_name = create_filename(self.instance.bestandsnaam)
-            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, datetime.now().strftime('uploads/%Y/%m/'))
-            file_path = merge_files(part_files, file_dir, file_name)
+            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, file_name)
+            target_file = merge_files(part_files, file_dir, file_name)
             # save full file to the instance FileField
-            with open(file_path) as file_obj:
+            with open(target_file) as file_obj:
                 self.instance.inhoud.save(file_name, File(file_obj))
         else:
             self.instance.bestandsomvang = None
