@@ -22,12 +22,14 @@ from drc.api.tests.utils import split_file
 from drc.datamodel.models import EnkelvoudigInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
+from .mixins import MockValidationsMixin
+
 INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
 
 
 @temp_private_root()
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class SmallFileUpload(JWTAuthMixin, APITestCase):
+class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     def test_create_eio(self):
@@ -401,7 +403,7 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
 @temp_private_root()
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
                    CHUNK_SIZE=10)
-class LargeFileAPITests(JWTAuthMixin, APITestCase):
+class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
     informatieobjecttype = INFORMATIEOBJECTTYPE
     scopes = [
