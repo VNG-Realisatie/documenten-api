@@ -314,7 +314,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         if self.instance is None:  # create
             if valid_attrs.get('inhoud') is not None and valid_attrs['inhoud'].size != valid_attrs['bestandsomvang']:
                 raise serializers.ValidationError(
-                    _("The size of upload file should be equal bestandsomvang field"),
+                    _("The size of upload file should be match the 'bestandsomvang' field"),
                     code='file-size'
                 )
         else:  # update
@@ -384,7 +384,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.save()
 
         # each update - delete previous part files
-        if eio.canonical.bestandsdelen.count() > 0:
+        if eio.canonical.bestandsdelen.exists():
             for part in eio.canonical.bestandsdelen.all():
                 part.inhoud.delete()
                 part.delete()
@@ -556,7 +556,7 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         is_empty = self.instance.canonical.empty_bestandsdelen and not self.instance.inhoud
         if is_empty and self.instance.bestandsomvang > 0:
             raise serializers.ValidationError(
-                _("Either file shoul be upload or the file size = 0"),
+                _("Either file should be upload or the file size = 0"),
                 code='file-size'
             )
 

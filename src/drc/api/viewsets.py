@@ -473,7 +473,7 @@ class BestandsDeelViewSet(UpdateWithoutPartialMixin,
                           viewsets.GenericViewSet):
     """
     update:
-    Upload a file object
+    Upload een bestandsdeel
     """
     queryset = BestandsDeel.objects.all()
     serializer_class = BestandsDeelSerializer
