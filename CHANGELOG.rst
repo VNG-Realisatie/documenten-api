@@ -189,23 +189,23 @@ Breaking changes
 
   .. code-block:: json
 
-  {
-    "kenmerken": [
-      {"key1": "value1"},
-      {"key2": "value2"},
-    ]
-  }
+      {
+        "kenmerken": [
+          {"key1": "value1"},
+          {"key2": "value2"},
+        ]
+      }
 
   New:
 
   .. code-block:: json
 
-  {
-    "kenmerken": {
-      "key1": "value1",
-      "key2": "value2",
-    }
-  }
+      {
+        "kenmerken": {
+          "key1": "value1",
+          "key2": "value2",
+        }
+      }
 
 * Removed the zds-schema compatibility. Upgrade to 0.9.1 first if you haven't
   done so yet.

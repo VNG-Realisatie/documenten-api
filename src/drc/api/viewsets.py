@@ -398,8 +398,8 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.
 
     **Opmerkingen**
-    - Het toevoegen van gebruiksrechten zorgt ervoor dat de
-      `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
+      - Het toevoegen van gebruiksrechten zorgt ervoor dat de
+        `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
 
     list:
     Alle GEBRUIKSRECHTen opvragen.
@@ -425,9 +425,9 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     Verwijder een GEBRUIKSRECHT.
 
     **Opmerkingen**
-    - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
-      wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
-      `null` gezet.
+      - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
+        wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
+        `null` gezet.
     """
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer

@@ -115,7 +115,7 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
     `EnkelvoudigInformatieObject`
 
     Needed because the canonical `EnkelvoudigInformatieObjectCanonical` no longer stores
-    the uuid, but the `EnkelvoudigInformatieObject`s related to it do
+    the uuid, but the `EnkelvoudigInformatieObject`\s related to it do
     store the uuid
     """
 
