@@ -49,6 +49,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'formaat': 'text/plain',
             'taal': 'dut',
             'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
+            'bestandsomvang': 22,
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }
@@ -61,7 +62,6 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(eio.identificatie, 'AMS20180701001')
         self.assertEqual(eio.creatiedatum, date(2018, 7, 1))
-
         download_url = urlparse(response.data['inhoud'])
 
         self.assertTrue(

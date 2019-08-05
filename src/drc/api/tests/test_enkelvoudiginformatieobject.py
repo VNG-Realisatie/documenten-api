@@ -15,7 +15,8 @@ from vng_api_common.tests import (
 )
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical
+    BestandsDeel, EnkelvoudigInformatieObject,
+    EnkelvoudigInformatieObjectCanonical
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory, ObjectInformatieObjectFactory
@@ -45,6 +46,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 17,
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
@@ -72,6 +74,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertAlmostEqual(stored_object.begin_registratie, timezone.now())
         self.assertEqual(stored_object.bestandsnaam, 'dummy.txt')
         self.assertEqual(stored_object.inhoud.read(), b'some file content')
+        self.assertEqual(stored_object.bestandsomvang, 17)
         self.assertEqual(stored_object.link, 'http://een.link')
         self.assertEqual(stored_object.beschrijving, 'test_beschrijving')
         self.assertEqual(stored_object.informatieobjecttype, INFORMATIEOBJECTTYPE)
@@ -105,8 +108,9 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'indicatieGebruiksrecht': None,
             'status': '',
             'locked': False,
+            'bestandsdelen': [],
+            'lock': ''
         })
-
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected_response.keys()))
 
@@ -163,6 +167,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'locked': False,
+            'bestandsdelen': []
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))
@@ -209,6 +214,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'bestandsnaam': 'dummy.txt',
             'vertrouwelijkheidaanduiding': 'openbaar',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 17,
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': None,
         }
@@ -242,6 +248,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'bestandsnaam': 'dummy.txt',
             'vertrouwelijkheidaanduiding': 'openbaar',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 17,
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
             'integriteit': {
                 "algoritme": "md5",
@@ -324,6 +331,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
         eio_data.update({
             'beschrijving': 'beschrijving2',
             'inhoud': b64encode(b'aaaaa'),
+            'bestandsomvang': 5,
             'lock': lock
         })
 
@@ -332,7 +340,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         response_data = response.json()
 
         self.assertEqual(response_data['beschrijving'], 'beschrijving2')

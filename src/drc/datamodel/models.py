@@ -167,6 +167,16 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         versies = self.enkelvoudiginformatieobject_set.order_by('-versie')
         return versies.first()
 
+    @property
+    def complete_upload(self) -> bool:
+        empty_parts = self.bestandsdelen.filter(inhoud='')
+        return empty_parts.count() == 0
+
+    @property
+    def empty_bestandsdelen(self) -> bool:
+        empty_parts = self.bestandsdelen.filter(inhoud='')
+        return empty_parts.count() == self.bestandsdelen.count()
+
 
 class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
     """
@@ -208,8 +218,13 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         help_text=_("De naam van het fysieke bestand waarin de inhoud van het "
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
-    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/', )
-    # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
+    bestandsomvang = models.PositiveIntegerField(
+        _("bestandsomvang"), null=True,
+        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
+    )
+
+    inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/')
+
     link = models.URLField(
         max_length=200, blank=True,
         help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te '
@@ -356,3 +371,35 @@ class ObjectInformatieObject(APIMixin, models.Model):
             io_id = request_object_attribute(self.object, 'identificatie', self.object_type)
             self._unique_representation = f"({self.informatieobject.latest_version.unique_representation()}) - {io_id}"
         return self._unique_representation
+
+
+class BestandsDeel(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=_uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    informatieobject = models.ForeignKey(
+        'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='bestandsdelen'
+    )
+    volgnummer = models.PositiveIntegerField(
+        help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
+    )
+    omvang = models.PositiveIntegerField(
+        help_text=_("De grootte van dit specifieke bestandsdeel.")
+    )
+    inhoud = PrivateMediaFileField(
+        upload_to='part-uploads/%Y/%m/', blank=True,
+        help_text=_("De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")
+    )
+
+    class Meta:
+        verbose_name = 'bestands deel'
+        verbose_name_plural = 'bestands delen'
+        unique_together = ('informatieobject', 'volgnummer')
+
+    def unique_representation(self):
+        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.volgnummer}"
+
+    @property
+    def voltooid(self) -> bool:
+        return bool(self.inhoud.name)

@@ -6,6 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
@@ -21,7 +22,8 @@ from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    BestandsDeel, EnkelvoudigInformatieObject, Gebruiksrechten,
+    ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC
@@ -32,6 +34,7 @@ from .filters import (
     ObjectInformatieObjectFilter
 )
 from .kanalen import KANAAL_DOCUMENTEN
+from .mixins import UpdateWithoutPartialMixin
 from .permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired
@@ -43,6 +46,7 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
 )
 from .serializers import (
+    BestandsDeelSerializer, EnkelvoudigInformatieObjectCreateLockSerializer,
     EnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
@@ -165,7 +169,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
         'lock': SCOPE_DOCUMENTEN_LOCK,
-        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
+        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -199,6 +203,8 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         if self.action in ['update', 'partial_update']:
             return EnkelvoudigInformatieObjectWithLockSerializer
+        elif self.action == 'create':
+            return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
     @swagger_auto_schema(
@@ -298,7 +304,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
             force_unlock = True
 
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
-            canonical,
+            eio,
             data=request.data,
             context={'force_unlock': force_unlock}
         )
@@ -463,3 +469,18 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     Een specifieke audit trail regel opvragen.
     """
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
+
+
+class BestandsDeelViewSet(UpdateWithoutPartialMixin, viewsets.GenericViewSet):
+    """
+    update:
+    Upload een bestandsdeel
+    """
+    queryset = BestandsDeel.objects.all()
+    serializer_class = BestandsDeelSerializer
+    lookup_field = 'uuid'
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
+    }

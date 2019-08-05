@@ -43,7 +43,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             'auteur': 'ANONIEM',
             'formaat': 'text/plain',
             'taal': 'dut',
-            'inhoud': base64.b64encode(b'Extra tekst in bijlage').decode('utf-8'),
+            'bestandsomvang': 17,
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar
         }

@@ -44,6 +44,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'formaat': 'txt',
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
+            'bestandsomvang': 17,
             'inhoud': b64encode(b'some file content').decode('utf-8'),
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
@@ -157,6 +158,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'taal': 'eng',
             'bestandsnaam': 'dummy.txt',
             'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'bestandsomvang': 17,
             'link': 'http://een.link',
             'beschrijving': 'test_beschrijving',
             'informatieobjecttype': 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1',
@@ -181,6 +183,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # locked will be True in the version before changes as shown
         # in the audittrail
         informatieobject_data['locked'] = True
+        del informatieobject_data['lock']
+
         self.assertEqual(informatieobject_update_audittrail.oud, informatieobject_data)
         self.assertEqual(informatieobject_update_audittrail.nieuw, informatieobject_response)
 
@@ -214,6 +218,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # locked will be True in the version before changes as shown
         # in the audittrail
         informatieobject_data['locked'] = True
+        del informatieobject_data['lock']
         self.assertEqual(informatieobject_partial_update_audittrail.oud, informatieobject_data)
         self.assertEqual(informatieobject_partial_update_audittrail.nieuw, informatieobject_response)
 

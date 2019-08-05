@@ -55,6 +55,7 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
                 'taal': 'eng',
                 'bestandsnaam': 'dummy.txt',
                 'inhoud': b64encode(b'some file content').decode('utf-8'),
+                'bestandsomvang': 17,
                 'link': 'http://een.link',
                 'beschrijving': 'test_beschrijving',
                 'informatieobjecttype': INFORMATIEOBJECTTYPE
@@ -90,13 +91,14 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
                 'taal': 'eng',
                 'bestandsnaam': 'dummy.txt',
                 'inhoud': b64encode(b'some file content').decode('utf-8'),
+                'bestandsomvang': 17,
                 'link': 'http://een.link',
                 'beschrijving': 'test_beschrijving',
                 'informatieobjecttype': INFORMATIEOBJECTTYPE,
                 'vertrouwelijkheidaanduiding': 'openbaar'
             })
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.assertEqual(
             response.data['vertrouwelijkheidaanduiding'],
             VertrouwelijkheidsAanduiding.openbaar,

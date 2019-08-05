@@ -13,7 +13,8 @@ class EIOTests(TestCase):
         canonical = EnkelvoudigInformatieObjectCanonical.objects.create()
         eio = EnkelvoudigInformatieObject.objects.create(
             canonical=canonical,
-            creatiedatum=date(2019, 7, 1)
+            creatiedatum=date(2019, 7, 1),
+            bestandsomvang=17
         )
 
         self.assertEqual(
@@ -26,13 +27,15 @@ class EIOTests(TestCase):
         EnkelvoudigInformatieObject.objects.create(
             canonical=canonical,
             creatiedatum=date(2019, 7, 1),
-            identificatie="DOCUMENT-2019-0000000015"
+            identificatie="DOCUMENT-2019-0000000015",
+            bestandsomvang=17
         )
 
         canonical2 = EnkelvoudigInformatieObjectCanonical.objects.create()
         eio2 = EnkelvoudigInformatieObject.objects.create(
             canonical=canonical2,
             creatiedatum=date(2019, 9, 15),
+            bestandsomvang=17
         )
 
         self.assertEqual(

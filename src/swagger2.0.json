@@ -33,6 +33,209 @@
         }
     ],
     "paths": {
+        "/bestandsdelen/{uuid}": {
+            "put": {
+                "operationId": "bestandsdeel_update",
+                "description": "Upload een bestandsdeel",
+                "parameters": [
+                    {
+                        "name": "inhoud",
+                        "in": "formData",
+                        "description": "De (binaire) bestandsinhoud van dit specifieke bestandsdeel.",
+                        "required": false,
+                        "type": "file"
+                    },
+                    {
+                        "name": "lock",
+                        "in": "formData",
+                        "description": "Hash string, which represents id of the lock of related informatieobject",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BestandsDeel"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "Not acceptable",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "Unsupported media type",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "consumes": [
+                    "multipart/form-data",
+                    "application/x-www-form-urlencoded"
+                ],
+                "tags": [
+                    "bestandsdelen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
+        },
         "/enkelvoudiginformatieobjecten": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
@@ -249,7 +452,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectCreateLockData"
                         }
                     },
                     {
@@ -278,7 +481,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectCreateLockData"
                         },
                         "headers": {
                             "API-version": {
@@ -4004,6 +4207,181 @@
         }
     },
     "definitions": {
+        "BestandsDeel": {
+            "required": [
+                "lock"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "volgnummer": {
+                    "title": "Volgnummer",
+                    "description": "Een volgnummer dat de volgorde van de bestandsdelen aangeeft.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "omvang": {
+                    "title": "Omvang",
+                    "description": "De grootte van dit specifieke bestandsdeel.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "inhoud": {
+                    "title": "Inhoud",
+                    "description": "De (binaire) bestandsinhoud van dit specifieke bestandsdeel.",
+                    "type": "string",
+                    "readOnly": true,
+                    "format": "uri"
+                },
+                "voltooid": {
+                    "title": "Voltooid",
+                    "description": "Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen.",
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock of related informatieobject",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "Fout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "FieldValidationError": {
+            "required": [
+                "name",
+                "code",
+                "reason"
+            ],
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "description": "Naam van het veld met ongeldige gegevens",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "title": "Reason",
+                    "description": "Uitleg wat er precies fout is met de gegevens",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "ValidatieFout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance",
+                "invalidParams"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "invalidParams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FieldValidationError"
+                    }
+                }
+            }
+        },
         "Ondertekening": {
             "title": "ondertekening",
             "description": "Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.",
@@ -4192,14 +4570,16 @@
                     "description": "Download URL van de binaire inhoud.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 2147483647,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4253,144 +4633,23 @@
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
                     "readOnly": true
-                }
-            }
-        },
-        "Fout": {
-            "required": [
-                "code",
-                "title",
-                "status",
-                "detail",
-                "instance"
-            ],
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "Type",
-                    "description": "URI referentie naar het type fout, bedoeld voor developers",
-                    "type": "string"
                 },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "title": {
-                    "title": "Title",
-                    "description": "Generieke titel voor het type fout",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "status": {
-                    "title": "Status",
-                    "description": "De HTTP status code",
-                    "type": "integer"
-                },
-                "detail": {
-                    "title": "Detail",
-                    "description": "Extra informatie bij de fout, indien beschikbaar",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "instance": {
-                    "title": "Instance",
-                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
-        "FieldValidationError": {
-            "required": [
-                "name",
-                "code",
-                "reason"
-            ],
-            "type": "object",
-            "properties": {
-                "name": {
-                    "title": "Name",
-                    "description": "Naam van het veld met ongeldige gegevens",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "reason": {
-                    "title": "Reason",
-                    "description": "Uitleg wat er precies fout is met de gegevens",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
-        "ValidatieFout": {
-            "required": [
-                "code",
-                "title",
-                "status",
-                "detail",
-                "instance",
-                "invalidParams"
-            ],
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "Type",
-                    "description": "URI referentie naar het type fout, bedoeld voor developers",
-                    "type": "string"
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "title": {
-                    "title": "Title",
-                    "description": "Generieke titel voor het type fout",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "status": {
-                    "title": "Status",
-                    "description": "De HTTP status code",
-                    "type": "integer"
-                },
-                "detail": {
-                    "title": "Detail",
-                    "description": "Extra informatie bij de fout, indien beschikbaar",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "instance": {
-                    "title": "Instance",
-                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "invalidParams": {
+                "bestandsdelen": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/FieldValidationError"
-                    }
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
+                    "readOnly": true
                 }
             }
         },
-        "EnkelvoudigInformatieObjectData": {
+        "EnkelvoudigInformatieObjectCreateLockData": {
             "required": [
                 "bronorganisatie",
                 "creatiedatum",
                 "titel",
                 "auteur",
                 "taal",
-                "inhoud",
                 "informatieobjecttype"
             ],
             "type": "object",
@@ -4499,14 +4758,16 @@
                     "title": "Inhoud",
                     "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
-                    "format": "bytes"
+                    "format": "bytes",
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 2147483647,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4560,6 +4821,20 @@
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
                     "readOnly": true
+                },
+                "bestandsdelen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
+                    "readOnly": true
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Lock id generated if the large file is created and should be used while updating the document. Documents with base64 encoded files are created without lock",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
                 }
             }
         },
@@ -4709,7 +4984,6 @@
                 "titel",
                 "auteur",
                 "taal",
-                "inhoud",
                 "informatieobjecttype",
                 "lock"
             ],
@@ -4819,14 +5093,16 @@
                     "title": "Inhoud",
                     "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
-                    "format": "bytes"
+                    "format": "bytes",
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 2147483647,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4879,6 +5155,13 @@
                     "title": "locked",
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
+                    "readOnly": true
+                },
+                "bestandsdelen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
                     "readOnly": true
                 },
                 "lock": {

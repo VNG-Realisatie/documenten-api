@@ -30,13 +30,13 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     inhoud = factory.django.FileField(data=b'some data', filename='file.bin')
     informatieobjecttype = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
     vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
+    bestandsomvang = factory.LazyAttribute(lambda o: o.inhoud.size)
 
     class Meta:
         model = 'datamodel.EnkelvoudigInformatieObject'
 
 
 class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
-
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     object = factory.Faker('url')
 
@@ -67,3 +67,13 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
             self.informatieobject.latest_version.creatiedatum,
             datetime.time(0, 0)
         ).replace(tzinfo=timezone.utc)
+
+
+class BestandsDeelFactory(factory.django.DjangoModelFactory):
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
+    inhoud = factory.django.FileField(data=b'some data', filename='file_part.bin')
+    omvang = factory.LazyAttribute(lambda o: o.inhoud.size)
+    volgnummer = factory.fuzzy.FuzzyInteger(1, 100, 1)
+
+    class Meta:
+        model = 'datamodel.BestandsDeel'

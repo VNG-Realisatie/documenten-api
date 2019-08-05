@@ -5,7 +5,7 @@ from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
 from .viewsets import (
-    EnkelvoudigInformatieObjectAuditTrailViewSet,
+    BestandsDeelViewSet, EnkelvoudigInformatieObjectAuditTrailViewSet,
     EnkelvoudigInformatieObjectViewSet, GebruiksrechtenViewSet,
     ObjectInformatieObjectViewSet
 )
@@ -16,6 +16,7 @@ router.register('enkelvoudiginformatieobjecten', EnkelvoudigInformatieObjectView
 ], basename='enkelvoudiginformatieobject')
 router.register('gebruiksrechten', GebruiksrechtenViewSet)
 router.register('objectinformatieobjecten', ObjectInformatieObjectViewSet)
+router.register('bestandsdelen', BestandsDeelViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 

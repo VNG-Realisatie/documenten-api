@@ -168,6 +168,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
             'auteur': 'dummy',
             'taal': 'nld',
             'inhoud': 'aGVsbG8gd29ybGQ=',
+            'bestandsomvang': 17,
             'informatieobjecttype': INFORMATIEOBJECTTYPE,
             'ontvangstdatum': '2018-12-24',
         }
