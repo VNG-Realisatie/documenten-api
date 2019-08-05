@@ -15,6 +15,7 @@ class Http413(APIException):
 class ErrorView(APIView):
     exception_class = None
     title = None
+    swagger_schema = None
 
     def get(self, request, *args, **kwargs):
         exc = self.exception_class(detail=self.title)

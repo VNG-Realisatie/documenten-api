@@ -6,6 +6,7 @@ from drf_yasg import openapi
 from humanize import naturalsize
 from rest_framework import status
 from vng_api_common.inspectors.view import HTTP_STATUS_CODE_TITLES, AutoSchema
+from vng_api_common.notifications.utils import notification_documentation
 from vng_api_common.serializers import FoutSerializer
 
 from .kanalen import KANAAL_DOCUMENTEN
@@ -51,9 +52,7 @@ Deze API vereist autorisatie. Je kan de
 [token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te
 genereren.
 
-**Notificaties**
-
-Deze API publiceert notificaties op het kanaal `{KANAAL_DOCUMENTEN.label}`.
+{notification_documentation(KANAAL_DOCUMENTEN)}
 
 **Handige links**
 
