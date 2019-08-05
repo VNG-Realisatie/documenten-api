@@ -7,11 +7,17 @@ from django.views.generic.base import TemplateView
 
 from vng_api_common.views import ViewConfigView
 
+from .views import HTTP413View, HTTP500View
+
 handler500 = 'drc.utils.views.server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('drc.api.urls')),
+
+    # dynamic backend URLs for nginx error pages
+    path("413.json", HTTP413View.as_view()),
+    path("500.json", HTTP500View.as_view()),
 
     # Simply show the index template.
     path('', TemplateView.as_view(template_name='index.html')),
