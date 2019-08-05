@@ -219,8 +219,8 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
                     "informatieobject is vastgelegd, inclusief extensie.")
     )
     bestandsomvang = models.PositiveIntegerField(
-        _("bestandsnaam"), null=True,
-        help_text=_("The size of the whole file in bytes")
+        _("bestandsomvang"), null=True,
+        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
     )
 
     inhoud = PrivateMediaFileField(upload_to='uploads/%Y/%m/')
@@ -381,10 +381,10 @@ class BestandsDeel(models.Model):
     informatieobject = models.ForeignKey(
         'EnkelvoudigInformatieObjectCanonical', on_delete=models.CASCADE, related_name='bestandsdelen'
     )
-    index = models.PositiveIntegerField(
+    volgnummer = models.PositiveIntegerField(
         help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
     )
-    grootte = models.PositiveIntegerField(
+    omvang = models.PositiveIntegerField(
         help_text=_("De grootte van dit specifieke bestandsdeel.")
     )
     inhoud = PrivateMediaFileField(
@@ -395,10 +395,10 @@ class BestandsDeel(models.Model):
     class Meta:
         verbose_name = 'bestands deel'
         verbose_name_plural = 'bestands delen'
-        unique_together = ('informatieobject', 'index')
+        unique_together = ('informatieobject', 'volgnummer')
 
     def unique_representation(self):
-        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.index}"
+        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.volgnummer}"
 
     @property
     def voltooid(self) -> bool:

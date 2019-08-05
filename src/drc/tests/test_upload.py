@@ -346,7 +346,6 @@ class SmallFileUpload(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'file-size')
 
-
     def test_update_eio_put(self):
         """
         Test the full update process of the document
@@ -444,13 +443,13 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data['locked'], True)
         self.assertEqual(data['lock'], self.canonical.lock)
 
-        self.bestandsdelen = self.canonical.bestandsdelen.order_by('index').all()
+        self.bestandsdelen = self.canonical.bestandsdelen.order_by('volgnummer').all()
 
         for part in self.bestandsdelen:
             self.assertEqual(part.voltooid, False)
             self.assertEqual(part.inhoud, '')
-        self.assertEqual(self.bestandsdelen[0].grootte, settings.CHUNK_SIZE)
-        self.assertEqual(self.bestandsdelen[1].grootte, self.file_content.size - settings.CHUNK_SIZE)
+        self.assertEqual(self.bestandsdelen[0].omvang, settings.CHUNK_SIZE)
+        self.assertEqual(self.bestandsdelen[1].omvang, self.file_content.size - settings.CHUNK_SIZE)
 
     def _upload_part_files(self):
         part_files = split_file(self.file_content, settings.CHUNK_SIZE)
@@ -546,7 +545,7 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
 
         # change file size for part file
         part = self.bestandsdelen[0]
-        part.grootte = part.grootte + 1
+        part.omvang = part.omvang + 1
         part.save()
 
         # upload part file
@@ -766,7 +765,7 @@ class LargeFileAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.canonical.refresh_from_db()
-        part_new = self.canonical.bestandsdelen.order_by('index').first()
+        part_new = self.canonical.bestandsdelen.order_by('volgnummer').first()
 
         self.assertEqual(self.canonical.bestandsdelen.count(), 2)
         self.assertEqual(self.canonical.empty_bestandsdelen, True)

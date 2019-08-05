@@ -22,7 +22,7 @@ class UploadTestCase(APITestCase):
         )
         canonical = eio.canonical
         BestandsDeelFactory.create(informatieobject=canonical)
-        BestandsDeelFactory.create(informatieobject=canonical, inhoud=None, grootte=0)
+        BestandsDeelFactory.create(informatieobject=canonical, inhoud=None, omvang=0)
 
         self.assertFalse(canonical.complete_upload)
 
@@ -32,6 +32,6 @@ class UploadTestCase(APITestCase):
         self.assertTrue(part.voltooid)
 
     def test_complete_part_false(self):
-        part = BestandsDeelFactory.create(inhoud=None, grootte=0)
+        part = BestandsDeelFactory.create(inhoud=None, omvang=0)
 
         self.assertFalse(part.voltooid)

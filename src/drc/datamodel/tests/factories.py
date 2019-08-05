@@ -72,8 +72,8 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
 class BestandsDeelFactory(factory.django.DjangoModelFactory):
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     inhoud = factory.django.FileField(data=b'some data', filename='file_part.bin')
-    grootte = factory.LazyAttribute(lambda o: o.inhoud.size)
-    index = factory.fuzzy.FuzzyInteger(1, 100, 1)
+    omvang = factory.LazyAttribute(lambda o: o.inhoud.size)
+    volgnummer = factory.fuzzy.FuzzyInteger(1, 100, 1)
 
     class Meta:
         model = 'datamodel.BestandsDeel'

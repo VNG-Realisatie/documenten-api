@@ -29,7 +29,7 @@ paths:
   /bestandsdelen/{uuid}:
     put:
       operationId: bestandsdeel_update
-      description: Upload a file object
+      description: Upload een bestandsdeel
       responses:
         '200':
           description: OK
@@ -3529,13 +3529,13 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
-        index:
-          title: Index
+        volgnummer:
+          title: Volgnummer
           description: Een volgnummer dat de volgorde van de bestandsdelen aangeeft.
           type: integer
           readOnly: true
-        grootte:
-          title: Grootte
+        omvang:
+          title: Omvang
           description: De grootte van dit specifieke bestandsdeel.
           type: integer
           readOnly: true
@@ -3917,8 +3917,8 @@ components:
           readOnly: true
           nullable: true
         bestandsomvang:
-          title: Bestandsnaam
-          description: The size of the whole file in bytes
+          title: Bestandsomvang
+          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
           type: integer
           maximum: 2147483647
           minimum: 0
@@ -4143,8 +4143,8 @@ components:
           format: bytes
           nullable: true
         bestandsomvang:
-          title: Bestandsnaam
-          description: The size of the whole file in bytes
+          title: Bestandsomvang
+          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
           type: integer
           maximum: 2147483647
           minimum: 0
@@ -4218,9 +4218,9 @@ components:
           readOnly: true
         lock:
           title: Lock
-          description: Tijdens het updaten van een document (PATCH, PUT) moet het
-            `lock` veld opgegeven worden. Bij het aanmaken (POST) mag het geen waarde
-            hebben.
+          description: Lock id generated if the large file is created and should be
+            used while updating the document. Documents with base64 encoded files
+            are created without lock
           type: string
           readOnly: true
           minLength: 1
@@ -4531,8 +4531,8 @@ components:
           format: bytes
           nullable: true
         bestandsomvang:
-          title: Bestandsnaam
-          description: The size of the whole file in bytes
+          title: Bestandsomvang
+          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
           type: integer
           maximum: 2147483647
           minimum: 0

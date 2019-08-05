@@ -106,6 +106,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             'status': '',
             'locked': False,
             'bestandsdelen': [],
+            'lock': ''
         })
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected_response.keys()))

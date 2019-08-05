@@ -56,6 +56,6 @@ class GebruiksrechtenAdmin(admin.ModelAdmin):
 
 @admin.register(BestandsDeel)
 class BestandsDeelAdmin(PrivateMediaMixin, admin.ModelAdmin):
-    list_display = ('__str__', "informatieobject", "index", "voltooid")
+    list_display = ('__str__', "informatieobject", "volgnummer", "voltooid")
     list_filter = ("informatieobject",)
     private_media_fields = ('inhoud',)

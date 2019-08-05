@@ -25,13 +25,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('uuid', models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True)),
-                ('index', models.PositiveIntegerField(help_text='Een volgnummer dat de volgorde van de bestandsdelen aangeeft.')),
-                ('grootte', models.PositiveIntegerField(help_text='De grootte van dit specifieke bestandsdeel.')),
+                ('volgnummer', models.PositiveIntegerField(help_text='Een volgnummer dat de volgorde van de bestandsdelen aangeeft.')),
+                ('omvang', models.PositiveIntegerField(help_text='De grootte van dit specifieke bestandsdeel.')),
                 ('inhoud', privates.fields.PrivateMediaFileField(blank=True, storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='part-uploads/%Y/%m/', help_text="De (binaire) bestandsinhoud van dit specifieke bestandsdeel.")),
                 ('informatieobject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bestandsdelen', to='datamodel.EnkelvoudigInformatieObjectCanonical')),
             ],
             options={
-                'unique_together': {('informatieobject', 'index')},
+                'unique_together': {('informatieobject', 'volgnummer')},
             },
         ),
     ]

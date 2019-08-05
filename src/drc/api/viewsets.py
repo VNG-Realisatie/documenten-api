@@ -169,7 +169,6 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
         'lock': SCOPE_DOCUMENTEN_LOCK,
         'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
-        'complete': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -201,7 +200,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         if self.action in ['update', 'partial_update']:
             return EnkelvoudigInformatieObjectWithLockSerializer
-        elif self.action == 'create' and self.request.data.get('inhoud', '') == '':
+        elif self.action == 'create':
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
@@ -469,8 +468,7 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
 
 
-class BestandsDeelViewSet(UpdateWithoutPartialMixin,
-                          viewsets.GenericViewSet):
+class BestandsDeelViewSet(UpdateWithoutPartialMixin, viewsets.GenericViewSet):
     """
     update:
     Upload een bestandsdeel

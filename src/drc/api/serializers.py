@@ -151,8 +151,8 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
         model = BestandsDeel
         fields = (
             'url',
-            'index',
-            'grootte',
+            'volgnummer',
+            'omvang',
             'inhoud',
             'voltooid',
             'lock'
@@ -161,10 +161,10 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
             'url': {
                 'lookup_field': 'uuid',
             },
-            'index': {
+            'volgnummer': {
                 'read_only': True,
             },
-            'grootte': {
+            'omvang': {
                 'read_only': True,
             },
             'voltooid': {
@@ -183,10 +183,10 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
         inhoud = valid_attrs.get('inhoud')
         lock = valid_attrs.get('lock')
         if inhoud:
-            if inhoud.size != self.instance.grootte:
+            if inhoud.size != self.instance.omvang:
                 raise serializers.ValidationError(
                     _("Het aangeleverde bestand heeft een afwijkende bestandsgrootte (volgens het `grootte`-veld)."
-                       "Verwachting: {expected}b, ontvangen: {received}b").format(expected=self.instance.grootte, received=inhoud.size),
+                       "Verwachting: {expected}b, ontvangen: {received}b").format(expected=self.instance.omvang, received=inhoud.size),
                     code='file-size'
                 )
 
@@ -314,7 +314,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         if self.instance is None:  # create
             if valid_attrs.get('inhoud') is not None and valid_attrs['inhoud'].size != valid_attrs['bestandsomvang']:
                 raise serializers.ValidationError(
-                    _("The size of upload file should be match the 'bestandsomvang' field"),
+                    _("The size of upload file should match the 'bestandsomvang' field"),
                     code='file-size'
                 )
         else:  # update
@@ -322,11 +322,23 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             bestandsomvang = valid_attrs.get('bestandsomvang', self.instance.bestandsomvang)
             if inhoud and inhoud.size != bestandsomvang:
                 raise serializers.ValidationError(
-                    _("The size of upload file should be equal bestandsomvang field"),
+                    _("The size of upload file should match bestandsomvang field"),
                     code='file-size'
                 )
 
         return valid_attrs
+
+    def _create_bestandsdeel(self, full_size, canonical):
+        """add chunk urls"""
+        parts = math.ceil(full_size / settings.CHUNK_SIZE)
+        for i in range(parts):
+            chunk_size = min(settings.CHUNK_SIZE, full_size)
+            BestandsDeel.objects.create(
+                informatieobject=canonical,
+                omvang=chunk_size,
+                volgnummer=i + 1
+            )
+            full_size -= chunk_size
 
     @transaction.atomic
     def create(self, validated_data):
@@ -348,20 +360,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.ondertekening = ondertekening
         eio.save()
 
+        # large file process
         if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
-            # large file process
-            full_size = validated_data['bestandsomvang']
-            parts = math.ceil(full_size/settings.CHUNK_SIZE)
-
-            # create chunk urls
-            for i in range(parts):
-                chunk_size = min(settings.CHUNK_SIZE, full_size)
-                BestandsDeel.objects.create(
-                    informatieobject=canonical,
-                    grootte=chunk_size,
-                    index=i + 1
-                )
-                full_size -= chunk_size
+            self._create_bestandsdeel(validated_data['bestandsomvang'], canonical)
 
         # create empty file if size == 0
         if eio.bestandsomvang == 0:
@@ -389,20 +390,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 part.inhoud.delete()
                 part.delete()
 
+        # large file process
         if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
-            # large file process
-            full_size = eio.bestandsomvang
-            parts = math.ceil(full_size/settings.CHUNK_SIZE)
-
-            # create chunk urls
-            for i in range(parts):
-                chunk_size = min(settings.CHUNK_SIZE, full_size)
-                BestandsDeel.objects.create(
-                    informatieobject=eio.canonical,
-                    grootte=chunk_size,
-                    index=i + 1
-                )
-                full_size -= chunk_size
+            self._create_bestandsdeel(eio.bestandsomvang, eio.canonical)
 
         # create empty file if size == 0
         if eio.bestandsomvang == 0 and not eio.inhoud:
@@ -459,8 +449,9 @@ class EnkelvoudigInformatieObjectCreateLockSerializer(EnkelvoudigInformatieObjec
    """
     lock = serializers.CharField(
         read_only=True, source='canonical.lock',
-        help_text=_("Lock must be provided during updating the document (PATCH, PUT), "
-                    "not while creating it"),
+        help_text=_("Lock id generated if the large file is created and should be used "
+                    "while updating the document. Documents with base64 encoded files "
+                    "are created without lock"),
     )
 
     class Meta(EnkelvoudigInformatieObjectSerializer.Meta):
@@ -477,9 +468,10 @@ class EnkelvoudigInformatieObjectCreateLockSerializer(EnkelvoudigInformatieObjec
     def create(self, validated_data):
         eio = super().create(validated_data)
 
-        # lock document
-        eio.canonical.lock = uuid.uuid4().hex
-        eio.canonical.save()
+        # lock document if it is a large file upload
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
+            eio.canonical.lock = uuid.uuid4().hex
+            eio.canonical.save()
         return eio
 
 
@@ -515,7 +507,7 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         eio = self.instance.latest_version
         eio.pk = None
         eio.versie = eio.versie + 1
-        eio.save(0)
+        eio.save()
 
         return self.instance
 
@@ -572,7 +564,7 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
         if self.instance.canonical.empty_bestandsdelen:
             return self.instance
 
-        bestandsdelen = self.instance.canonical.bestandsdelen.order_by('index')
+        bestandsdelen = self.instance.canonical.bestandsdelen.order_by('volgnummer')
         if self.instance.canonical.complete_upload:
             part_files = [p.inhoud.file for p in bestandsdelen]
             # create the name of target file using the storage backend to the serializer
