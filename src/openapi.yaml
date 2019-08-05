@@ -1,87 +1,33 @@
 openapi: 3.0.0
 info:
   title: Documenten API
-  description: 'Een API om een documentregistratiecomponent (DRC) te benaderen.
-
-
-    In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een
-
-    INFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens.
-
-    INFORMATIEOBJECTen kunnen aan andere objecten zoals zaken en besluiten worden
-
-    gerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.
-
-
-    GEBRUIKSRECHTEN leggen voorwaarden op aan het gebruik van het INFORMATIEOBJECT
-
-    (buiten raadpleging). Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd
-
-    of gehandhaafd.
-
-
-    De typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in
-
-    de vorm van INFORMATIEOBJECTTYPEn.
-
-
-    **Uploaden van bestanden**
-
-
-    Binnen deze API bestaan een aantal endpoints die binaire data ontvangen, al
-
-    dan niet base64-encoded. Webservers moeten op deze endpoints een minimale
-
-    request body size van 4.0 GiB ondersteunen. Dit omvat de JSON van de
-
-    metadata EN de base64-encoded bestandsdata. Hou hierbij rekening met de
-
-    overhead van base64, die ongeveer 33% bedraagt in worst-case scenario''s. Dit
-
-    betekent dat bij een limiet van 4GB het bestand maximaal ongeveer 3GB groot
-
-    mag zijn.
-
-
-    **Afhankelijkheden**
-
-
-    Deze API is afhankelijk van:
-
-
-    * Catalogi API
-
-    * Notificaties API
-
-    * Autorisaties API *(optioneel)*
-
-    * Zaken API *(optioneel)*
-
-
-    **Autorisatie**
-
-
-    Deze API vereist autorisatie. Je kan de
-
-    [token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te
-
-    genereren.
-
-
-    **Notificaties**
-
-
-    Deze API publiceert notificaties op het kanaal `documenten`.
-
-
-    **Handige links**
-
-
-    * [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
-
-    * [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
-
-    '
+  description: "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
+    In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
+    INFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens.\nINFORMATIEOBJECTen\
+    \ kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar\
+    \ dat hoeft niet) en kunnen gebruiksrechten hebben.\n\nGEBRUIKSRECHTEN leggen\
+    \ voorwaarden op aan het gebruik van het INFORMATIEOBJECT\n(buiten raadpleging).\
+    \ Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd\nof gehandhaafd.\n\n\
+    De typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in\n\
+    de vorm van INFORMATIEOBJECTTYPEn.\n\n**Uploaden van bestanden**\n\nBinnen deze\
+    \ API bestaan een aantal endpoints die binaire data ontvangen, al\ndan niet base64-encoded.\
+    \ Webservers moeten op deze endpoints een minimale\nrequest body size van 1.0\
+    \ KiB ondersteunen. Dit omvat de JSON van de\nmetadata EN de base64-encoded bestandsdata.\
+    \ Hou hierbij rekening met de\noverhead van base64, die ongeveer 33% bedraagt\
+    \ in worst-case scenario's. Dit\nbetekent dat bij een limiet van 4GB het bestand\
+    \ maximaal ongeveer 3GB groot\nmag zijn.\n\n**Afhankelijkheden**\n\nDeze API is\
+    \ afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Autorisaties API *(optioneel)*\n\
+    * Zaken API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie.\
+    \ Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens\
+    \ te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het\
+    \ kanaal `documenten`.\n\n**Main resource**\n\n`enkelvoudiginformatieobject`\n\
+    \n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon\
+    \ zijnde de organisatie die het informatieobject heeft gecre\xEBerd of heeft ontvangen\
+    \ en als eerste in een samenwerkingsketen heeft vastgelegd.\n* `informatieobjecttype`:\
+    \ URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).\n* `vertrouwelijkheidaanduiding`:\
+    \ Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd\
+    \ is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n\
+    * [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n"
   contact:
     url: https://zaakgerichtwerken.vng.cloud
     email: standaarden.ondersteuning@vng.nl
@@ -2037,7 +1983,7 @@ paths:
       operationId: gebruiksrechten_create
       summary: Maak een GEBRUIKSRECHT aan.
       description: "Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.\n\n**Opmerkingen**\n\
-        - Het toevoegen van gebruiksrechten zorgt ervoor dat de\n  `indicatieGebruiksrecht`\
+        \  - Het toevoegen van gebruiksrechten zorgt ervoor dat de\n    `indicatieGebruiksrecht`\
         \ op het informatieobject op `true` gezet wordt."
       parameters:
       - name: X-NLX-Request-Application-Id
@@ -2658,9 +2604,9 @@ paths:
     delete:
       operationId: gebruiksrechten_delete
       summary: Verwijder een GEBRUIKSRECHT.
-      description: "**Opmerkingen**\n- Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT\
-        \ verwijderd\n  wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT\
-        \ op\n  `null` gezet."
+      description: "**Opmerkingen**\n  - Indien het laatste GEBRUIKSRECHT van een\
+        \ INFORMATIEOBJECT verwijderd\n    wordt, dan wordt de `indicatieGebruiksrecht`\
+        \ van het INFORMATIEOBJECT op\n    `null` gezet."
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
