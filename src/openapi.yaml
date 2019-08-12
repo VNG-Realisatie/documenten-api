@@ -42,6 +42,23 @@ paths:
     put:
       operationId: bestandsdeel_update
       description: Upload een bestandsdeel
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                inhoud:
+                  description: De (binaire) bestandsinhoud van dit specifieke bestandsdeel.
+                  type: string
+                  format: binary
+                lock:
+                  description: Hash string, which represents id of the lock of related
+                    informatieobject
+                  type: string
+                  minLength: 1
+              required:
+              - lock
       responses:
         '200':
           description: OK
@@ -180,23 +197,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.bijwerken
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                inhoud:
-                  description: De (binaire) bestandsinhoud van dit specifieke bestandsdeel.
-                  type: string
-                  format: binary
-                lock:
-                  description: Hash string, which represents id of the lock of related
-                    informatieobject
-                  type: string
-                  minLength: 1
-              required:
-              - lock
     parameters:
     - name: uuid
       in: path
@@ -412,6 +412,12 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnkelvoudigInformatieObjectCreateLockData'
+        required: true
       responses:
         '201':
           description: Created
@@ -555,12 +561,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.aanmaken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EnkelvoudigInformatieObjectCreateLockData'
-        required: true
     parameters: []
   /enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail:
     get:
@@ -1014,6 +1014,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
       responses:
         '200':
           description: OK
@@ -1164,8 +1166,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
     patch:
       operationId: enkelvoudiginformatieobject_partial_update
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
@@ -1193,6 +1193,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
       responses:
         '200':
           description: OK
@@ -1343,8 +1345,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/EnkelvoudigInformatieObjectWithLockData'
     delete:
       operationId: enkelvoudiginformatieobject_delete
       summary: Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
@@ -1663,6 +1663,12 @@ paths:
         (ENKELVOUDIG) INFORMATIEOBJECT bijgewerkt (`PUT`, `PATCH`) en weer
 
         ontgrendeld worden.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockEnkelvoudigInformatieObject'
+        required: true
       responses:
         '200':
           description: ''
@@ -1789,12 +1795,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.lock
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LockEnkelvoudigInformatieObject'
-        required: true
     parameters:
     - name: uuid
       in: path
@@ -1810,6 +1810,12 @@ paths:
       description: 'Heft de "checkout" op waardoor het (ENKELVOUDIG) INFORMATIEOBJECT
 
         ontgrendeld wordt.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnlockEnkelvoudigInformatieObject'
+        required: true
       responses:
         '204':
           description: No content
@@ -1932,12 +1938,6 @@ paths:
       security:
       - JWT-Claims:
         - (documenten.lock | documenten.geforceerd-unlock)
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UnlockEnkelvoudigInformatieObject'
-        required: true
     parameters:
     - name: uuid
       in: path
@@ -2173,6 +2173,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Gebruiksrechten'
       responses:
         '201':
           description: Created
@@ -2304,8 +2306,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.aanmaken
-      requestBody:
-        $ref: '#/components/requestBodies/Gebruiksrechten'
     parameters: []
   /gebruiksrechten/{uuid}:
     get:
@@ -2463,6 +2463,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Gebruiksrechten'
       responses:
         '200':
           description: OK
@@ -2601,8 +2603,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/Gebruiksrechten'
     patch:
       operationId: gebruiksrechten_partial_update
       summary: Werk een GEBRUIKSRECHT relatie deels bij.
@@ -2628,6 +2628,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Gebruiksrechten'
       responses:
         '200':
           description: OK
@@ -2766,8 +2768,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.bijwerken
-      requestBody:
-        $ref: '#/components/requestBodies/Gebruiksrechten'
     delete:
       operationId: gebruiksrechten_delete
       summary: Verwijder een GEBRUIKSRECHT.
@@ -3112,6 +3112,12 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInformatieObject'
+        required: true
       responses:
         '201':
           description: Created
@@ -3243,12 +3249,6 @@ paths:
       security:
       - JWT-Claims:
         - documenten.aanmaken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ObjectInformatieObject'
-        required: true
     parameters: []
   /objectinformatieobjecten/{uuid}:
     get:
