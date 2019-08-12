@@ -163,6 +163,41 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(file_response.status_code, status.HTTP_200_OK)
         self.assertEqual(file_response.content, b'')
 
+    def test_create_without_size(self):
+        """
+        Test the create process of the documents with base64 files
+        Input:
+        * inhoud - base64 encoded file
+        * bestandsomvang - None
+
+        Expected result:
+        * 400 status because the bestandsomvang is not related to the file size
+        """
+
+        content = {
+            'identificatie': uuid.uuid4().hex,
+            'bronorganisatie': '159351741',
+            'creatiedatum': '2018-06-27',
+            'titel': 'detailed summary',
+            'auteur': 'test_auteur',
+            'formaat': 'txt',
+            'taal': 'eng',
+            'bestandsnaam': 'dummy.txt',
+            'inhoud': b64encode(b'some file content').decode('utf-8'),
+            'link': 'http://een.link',
+            'beschrijving': 'test_beschrijving',
+            'informatieobjecttype': INFORMATIEOBJECTTYPE,
+            'vertrouwelijkheidaanduiding': 'openbaar',
+        }
+        list_url = reverse(EnkelvoudigInformatieObject)
+
+        response = self.client.post(list_url, content)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'file-size')
+
     def test_update_eio_metadata(self):
         """
         Test the update process of the document metadata
