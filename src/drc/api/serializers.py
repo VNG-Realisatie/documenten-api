@@ -626,7 +626,11 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()]
             }
         }
-        validators = [ObjectInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
+        validators = [
+            ObjectInformatieObjectValidator(),
+            InformatieObjectUniqueValidator('object', 'informatieobject')
+        ]
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
