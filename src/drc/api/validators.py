@@ -15,6 +15,7 @@ from zds_client import ClientError
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.validators import validate_status
 
+from .auth import get_zrc_auth
 from .utils import get_absolute_url
 
 
@@ -70,7 +71,12 @@ class ObjectInformatieObjectValidator:
                 oas_schema = settings.BRC_API_SPEC
 
             try:
-                ResourceValidator(object_type.capitalize(), oas_schema)(object_url)
+                ResourceValidator(
+                    object_type.capitalize(),
+                    oas_schema,
+                    get_auth=get_zrc_auth,
+                    headers={'Accept-Crs': 'EPSG:4326'}
+                )(object_url)
             except exceptions.ValidationError as exc:
                 raise serializers.ValidationError({
                     'object': exc.detail
