@@ -73,7 +73,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
     @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_create_objectinformatieobject_audittrail(self):
+    @patch('vng_api_common.validators.obj_has_shape', return_value=True)
+    def test_create_objectinformatieobject_audittrail(self, *mocks):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
         content = {
