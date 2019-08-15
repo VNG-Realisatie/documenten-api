@@ -5,16 +5,19 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin, get_validation_errors
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
+from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
-from .utils import reverse, reverse_lazy
+from .utils import reverse_lazy
 
 INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
+ZAAK = 'https://zrc.nl/api/v1/zaken/1234'
+BESLUIT = 'https://brc.nl/api/v1/besluiten/4321'
 
 
 class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
@@ -244,3 +247,50 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
             with self.subTest(query_param=key, value=value):
                 response = self.client.get(url, {key: value}, HTTP_ACCEPT_CRS='EPSG:4326')
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+@override_settings(
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+)
+class ObjectInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    list_url = reverse(ObjectInformatieObject)
+
+    @patch('vng_api_common.validators.obj_has_shape', return_value=False)
+    def test_create_oio_invalid_resource_zaak(self, *mocks):
+
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid
+        })
+
+        response = self.client.post(self.list_url, {
+            'object': ZAAK,
+            'informatieobject': f'http://testserver{eio_url}',
+            'objectType': 'zaak'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'object')
+        self.assertEqual(error['code'], 'invalid-resource')
+
+    @patch('vng_api_common.validators.obj_has_shape', return_value=False)
+    def test_create_oio_invalid_resource_besluit(self, *mocks):
+
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid
+        })
+
+        response = self.client.post(self.list_url, {
+            'object': BESLUIT,
+            'informatieobject': f'http://testserver{eio_url}',
+            'objectType': 'besluit'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'object')
+        self.assertEqual(error['code'], 'invalid-resource')
