@@ -80,7 +80,7 @@ class ObjectInformatieObjectValidator:
             except exceptions.ValidationError as exc:
                 raise serializers.ValidationError({
                     'object': exc.detail
-                })
+                }, code=ResourceValidator.code)
 
             oios = client.list(resource, query_params={
                 object_type: object_url,
