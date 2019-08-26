@@ -315,7 +315,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
         # check if file.size equal bestandsomvang
         if self.instance is None:  # create
-            if valid_attrs.get('inhoud') is not None and valid_attrs['inhoud'].size != valid_attrs['bestandsomvang']:
+            inhoud = valid_attrs.get('inhoud')
+            if inhoud is not None and inhoud.size != valid_attrs.get('bestandsomvang'):
                 raise serializers.ValidationError(
                     _("The size of upload file should match the 'bestandsomvang' field"),
                     code='file-size'
