@@ -307,11 +307,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ObjectInformatieObjectViewSet(NotificationCreateMixin,
-                                    NotificationDestroyMixin,
-                                    AuditTrailCreateMixin,
-                                    AuditTrailDestroyMixin,
-                                    CheckQueryParamsMixin,
+class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     mixins.CreateModelMixin,
                                     mixins.DestroyModelMixin,
@@ -357,8 +353,6 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
-    notifications_kanaal = KANAAL_DOCUMENTEN
-    notifications_main_resource_key = 'informatieobject'
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -368,8 +362,6 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
-    audit = AUDIT_DRC
-    audittrail_main_resource_key = 'informatieobject'
 
     def perform_destroy(self, instance):
         # destroy is only allowed if the remote relation does no longer exist, so check for that

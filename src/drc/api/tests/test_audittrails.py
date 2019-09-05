@@ -71,33 +71,6 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
 
-    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    @patch('vng_api_common.validators.obj_has_shape', return_value=True)
-    def test_create_objectinformatieobject_audittrail(self, *mocks):
-        informatieobject = EnkelvoudigInformatieObjectFactory.create()
-
-        content = {
-            'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': informatieobject.uuid}),
-            'object': ZAAK,
-            'objectType': ObjectTypes.zaak,
-        }
-
-        # Send to the API
-        objectinformatieobject_response = self.client.post(self.objectinformatieobject_list_url, content).data
-
-        informatieobject_url = objectinformatieobject_response['informatieobject']
-        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
-        self.assertEqual(audittrails.count(), 1)
-
-        # Verify that the audittrail for the ObjectInformatieObject creation
-        # contains the correct information
-        objectinformatieobject_create_audittrail = audittrails.get()
-        self.assertEqual(objectinformatieobject_create_audittrail.bron, 'DRC')
-        self.assertEqual(objectinformatieobject_create_audittrail.actie, 'create')
-        self.assertEqual(objectinformatieobject_create_audittrail.resultaat, 201)
-        self.assertEqual(objectinformatieobject_create_audittrail.oud, None)
-        self.assertEqual(objectinformatieobject_create_audittrail.nieuw, objectinformatieobject_response)
-
     def test_create_and_delete_gebruiksrechten_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
 
