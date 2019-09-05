@@ -3091,27 +3091,6 @@ paths:
         - de combinatie `informatieobject` en `object` moet uniek zijn
 
         - bestaan van `object` URL'
-      parameters:
-      - name: X-NLX-Request-Application-Id
-        in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-Audit-Toelichting
-        in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
-        required: false
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
@@ -3390,27 +3369,6 @@ paths:
         Andere API''s, zoals de Zaken API en de Besluiten API, gebruiken dit
 
         endpoint bij het synchroniseren van relaties.'
-      parameters:
-      - name: X-NLX-Request-Application-Id
-        in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-Audit-Toelichting
-        in: header
-        description: Toelichting waarom een bepaald verzoek wordt gedaan
-        required: false
-        schema:
-          type: string
       responses:
         '204':
           description: No content

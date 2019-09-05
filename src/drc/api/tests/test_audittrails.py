@@ -9,7 +9,6 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
-from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import JWTAuthMixin, reverse, reverse_lazy
 from vng_api_common.utils import get_uuid_from_path
 
@@ -71,32 +70,6 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.resultaat, 201)
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
-
-    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_create_objectinformatieobject_audittrail(self):
-        informatieobject = EnkelvoudigInformatieObjectFactory.create()
-
-        content = {
-            'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': informatieobject.uuid}),
-            'object': ZAAK,
-            'objectType': ObjectTypes.zaak,
-        }
-
-        # Send to the API
-        objectinformatieobject_response = self.client.post(self.objectinformatieobject_list_url, content).data
-
-        informatieobject_url = objectinformatieobject_response['informatieobject']
-        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
-        self.assertEqual(audittrails.count(), 1)
-
-        # Verify that the audittrail for the ObjectInformatieObject creation
-        # contains the correct information
-        objectinformatieobject_create_audittrail = audittrails.get()
-        self.assertEqual(objectinformatieobject_create_audittrail.bron, 'DRC')
-        self.assertEqual(objectinformatieobject_create_audittrail.actie, 'create')
-        self.assertEqual(objectinformatieobject_create_audittrail.resultaat, 201)
-        self.assertEqual(objectinformatieobject_create_audittrail.oud, None)
-        self.assertEqual(objectinformatieobject_create_audittrail.nieuw, objectinformatieobject_response)
 
     def test_create_and_delete_gebruiksrechten_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
