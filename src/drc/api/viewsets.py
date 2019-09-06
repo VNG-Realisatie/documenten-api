@@ -39,6 +39,7 @@ from .permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired
 )
+from .renderers import BinaryFileRenderer
 from .schema import EIOAutoSchema
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -175,6 +176,11 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     audit = AUDIT_DRC
 
     swagger_schema = EIOAutoSchema
+
+    def get_renderers(self):
+        if self.action == 'download':
+            return [BinaryFileRenderer]
+        return super().get_renderers()
 
     @transaction.atomic
     def perform_destroy(self, instance):

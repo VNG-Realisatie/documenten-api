@@ -175,6 +175,17 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             with self.subTest(field=key):
                 self.assertEqual(response_data[key], expected[key])
 
+    def test_eio_download_with_accept_application_octet_stream_header(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving='beschrijving1',
+            inhoud__data=b'inhoud1'
+        )
+
+        eio_url = get_operation_url('enkelvoudiginformatieobject_download', uuid=eio.uuid)
+
+        response = self.client.get(eio_url, HTTP_ACCEPT='application/octet-stream')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_bestandsomvang(self):
         """
         Assert that the API shows the filesize.
