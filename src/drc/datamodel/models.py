@@ -5,6 +5,7 @@ from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from privates.fields import PrivateMediaFileField
+from vng_api_common.caching import ETagMixin
 from vng_api_common.constants import ObjectTypes
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import RSINField, VertrouwelijkheidsAanduidingField
@@ -178,7 +179,7 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         return empty_parts.count() == self.bestandsdelen.count()
 
 
-class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
+class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
     """
     Stores the content of a specific version of an
     EnkelvoudigInformatieObjectCanonical
@@ -267,7 +268,7 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         unique_together = ('uuid', 'versie')
 
 
-class Gebruiksrechten(models.Model):
+class Gebruiksrechten(ETagMixin, models.Model):
     uuid = models.UUIDField(
         unique=True, default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
@@ -324,7 +325,7 @@ class Gebruiksrechten(models.Model):
         return f"({informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden}"
 
 
-class ObjectInformatieObject(APIMixin, models.Model):
+class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     """
     Modelleer een INFORMATIEOBJECT horend bij een OBJECT.
 
