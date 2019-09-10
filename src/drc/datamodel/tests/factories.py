@@ -35,6 +35,11 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'datamodel.EnkelvoudigInformatieObject'
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
 
 class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
@@ -52,6 +57,9 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
             object_type=ObjectTypes.besluit,
             object=factory.Sequence(lambda n: f'https://brc.nl/api/v1/besluiten/{n}')
         )
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
 
 
 class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
@@ -60,6 +68,11 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.Gebruiksrechten'
+
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
 
     @factory.lazy_attribute
     def startdatum(self):
