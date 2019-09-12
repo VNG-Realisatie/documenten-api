@@ -17,14 +17,14 @@ from drc.datamodel.tests.factories import (
 class EnkelvoudigInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_besluit_get_cache_header(self):
+    def test_eio_get_cache_header(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
 
         response = self.client.get(reverse(eio))
 
         self.assertHasETag(response)
 
-    def test_besluit_head_cache_header(self):
+    def test_eio_head_cache_header(self):
         eio = EnkelvoudigInformatieObjectFactory.create()
 
         self.assertHeadHasETag(reverse(eio))
@@ -59,14 +59,14 @@ class EnkelvoudigInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCas
 class ObjectInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_besluit_get_cache_header(self):
+    def test_oio_get_cache_header(self):
         oio = ObjectInformatieObjectFactory.create()
 
         response = self.client.get(reverse(oio))
 
         self.assertHasETag(response)
 
-    def test_besluit_head_cache_header(self):
+    def test_oio_head_cache_header(self):
         oio = ObjectInformatieObjectFactory.create()
 
         self.assertHeadHasETag(reverse(oio))
@@ -101,14 +101,14 @@ class ObjectInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 class GebruiksrechtenCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_besluit_get_cache_header(self):
+    def test_gebruiksrecht_get_cache_header(self):
         gebruiksrecht = GebruiksrechtenFactory.create()
 
         response = self.client.get(reverse(gebruiksrecht))
 
         self.assertHasETag(response)
 
-    def test_besluit_head_cache_header(self):
+    def test_gebruiksrechthead_cache_header(self):
         gebruiksrecht = GebruiksrechtenFactory.create()
 
         self.assertHeadHasETag(reverse(gebruiksrecht))
@@ -140,12 +140,22 @@ class GebruiksrechtenCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class EnkelvoudigInformatieObjectCacheTransactionTests(JWTAuthMixin, APITestCase):
+class EnkelvoudigInformatieObjectCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
     heeft_alle_autorisaties = True
 
-    def test_invalidate_new_status(self):
+    def setUp(self):
+        super().setUp()
+        self._create_credentials(
+            self.client_id,
+            self.secret,
+            self.heeft_alle_autorisaties,
+            self.max_vertrouwelijkheidaanduiding,
+        )
+
+    def test_invalidate_etag_after_change(self):
         """
-        Status URL is part of the resource, so new status invalidates the ETag.
+        Because changes are made to the informatieobject, a code 200 should be
+        returned
         """
         eio = EnkelvoudigInformatieObjectFactory.create(titel="bla", with_etag=True)
         etag = eio._etag
