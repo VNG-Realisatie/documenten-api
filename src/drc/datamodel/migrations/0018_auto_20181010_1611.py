@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0017_auto_20181010_1548'),
-    ]
+    dependencies = [("datamodel", "0017_auto_20181010_1548")]
 
     operations = [
         migrations.AlterField(
-            model_name='objectinformatieobject',
-            name='beschrijving',
-            field=models.TextField(blank=True, help_text='Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT.', verbose_name='beschrijving'),
-        ),
+            model_name="objectinformatieobject",
+            name="beschrijving",
+            field=models.TextField(
+                blank=True,
+                help_text="Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT.",
+                verbose_name="beschrijving",
+            ),
+        )
     ]

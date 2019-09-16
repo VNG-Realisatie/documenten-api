@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0041_migrate_to_flattened_urls'),
-        ('datamodel', '0042_auto_20190701_1418'),
+        ("datamodel", "0041_migrate_to_flattened_urls"),
+        ("datamodel", "0042_auto_20190701_1418"),
     ]
 
-    operations = [
-    ]
+    operations = []

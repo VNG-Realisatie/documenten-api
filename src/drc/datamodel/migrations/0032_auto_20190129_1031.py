@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0031_gebruiksrechten_uuid'),
-    ]
+    dependencies = [("datamodel", "0031_gebruiksrechten_uuid")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='indicatie_gebruiksrecht',
-            field=models.NullBooleanField(default=None, help_text="Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.", verbose_name='indicatie gebruiksrecht'),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="indicatie_gebruiksrecht",
+            field=models.NullBooleanField(
+                default=None,
+                help_text="Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag 'null' zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de `Gebruiksrechten` resource.",
+                verbose_name="indicatie gebruiksrecht",
+            ),
+        )
     ]

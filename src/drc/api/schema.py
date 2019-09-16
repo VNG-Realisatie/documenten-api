@@ -68,11 +68,10 @@ info = openapi.Info(
     description=description,
     contact=openapi.Contact(
         email="standaarden.ondersteuning@vng.nl",
-        url="https://zaakgerichtwerken.vng.cloud"
+        url="https://zaakgerichtwerken.vng.cloud",
     ),
     license=openapi.License(
-        name="EUPL 1.2",
-        url='https://opensource.org/licenses/EUPL-1.2'
+        name="EUPL 1.2", url="https://opensource.org/licenses/EUPL-1.2"
     ),
 )
 
@@ -93,8 +92,7 @@ class EIOAutoSchema(AutoSchema):
         status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
         fout_schema = self.serializer_to_schema(FoutSerializer())
         responses[status_code] = openapi.Response(
-            description=HTTP_STATUS_CODE_TITLES.get(status_code, ''),
-            schema=fout_schema,
+            description=HTTP_STATUS_CODE_TITLES.get(status_code, ""), schema=fout_schema
         )
 
         return responses

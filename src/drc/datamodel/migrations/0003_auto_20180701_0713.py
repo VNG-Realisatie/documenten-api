@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0002_auto_20180629_1504'),
-    ]
+    dependencies = [("datamodel", "0002_auto_20180629_1504")]
 
     operations = [
         migrations.AlterField(
-            model_name='zaakinformatieobject',
-            name='zaak',
-            field=models.URLField(help_text='URL naar de ZAAK in het ZRC.'),
-        ),
+            model_name="zaakinformatieobject",
+            name="zaak",
+            field=models.URLField(help_text="URL naar de ZAAK in het ZRC."),
+        )
     ]

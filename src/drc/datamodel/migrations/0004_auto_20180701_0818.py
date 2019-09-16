@@ -6,15 +6,19 @@ import vng_api_common.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0003_auto_20180701_0713'),
-    ]
+    dependencies = [("datamodel", "0003_auto_20180701_0713")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='bronorganisatie',
-            field=models.CharField(blank=True, default='', help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.', max_length=9, validators=[vng_api_common.validators.validate_non_negative_string]),
+            model_name="enkelvoudiginformatieobject",
+            name="bronorganisatie",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                max_length=9,
+                validators=[vng_api_common.validators.validate_non_negative_string],
+            ),
             preserve_default=False,
-        ),
+        )
     ]

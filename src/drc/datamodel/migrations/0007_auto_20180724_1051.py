@@ -6,19 +6,25 @@ import uuid
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0006_auto_20180724_1049'),
-    ]
+    dependencies = [("datamodel", "0006_auto_20180724_1049")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='uuid',
-            field=models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True),
+            model_name="enkelvoudiginformatieobject",
+            name="uuid",
+            field=models.UUIDField(
+                default=uuid.uuid4,
+                help_text="Unieke resource identifier (UUID4)",
+                unique=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='zaakinformatieobject',
-            name='uuid',
-            field=models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True),
+            model_name="zaakinformatieobject",
+            name="uuid",
+            field=models.UUIDField(
+                default=uuid.uuid4,
+                help_text="Unieke resource identifier (UUID4)",
+                unique=True,
+            ),
         ),
     ]

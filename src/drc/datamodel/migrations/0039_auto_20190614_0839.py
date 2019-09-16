@@ -6,32 +6,33 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0038_auto_20190614_0834'),
-    ]
+    dependencies = [("datamodel", "0038_auto_20190614_0834")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='gebruiksrechten',
-            name='canonical',
-        ),
-        migrations.RemoveField(
-            model_name='objectinformatieobject',
-            name='canonical',
+        migrations.RemoveField(model_name="gebruiksrechten", name="canonical"),
+        migrations.RemoveField(model_name="objectinformatieobject", name="canonical"),
+        migrations.AlterField(
+            model_name="enkelvoudiginformatieobject",
+            name="canonical",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datamodel.EnkelvoudigInformatieObjectCanonical",
+            ),
         ),
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='canonical',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datamodel.EnkelvoudigInformatieObjectCanonical'),
+            model_name="gebruiksrechten",
+            name="informatieobject",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datamodel.EnkelvoudigInformatieObjectCanonical",
+            ),
         ),
         migrations.AlterField(
-            model_name='gebruiksrechten',
-            name='informatieobject',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datamodel.EnkelvoudigInformatieObjectCanonical'),
-        ),
-        migrations.AlterField(
-            model_name='objectinformatieobject',
-            name='informatieobject',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datamodel.EnkelvoudigInformatieObjectCanonical'),
+            model_name="objectinformatieobject",
+            name="informatieobject",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datamodel.EnkelvoudigInformatieObjectCanonical",
+            ),
         ),
     ]

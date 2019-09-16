@@ -6,19 +6,14 @@ from vng_api_common.constants import ObjectTypes
 
 
 def zaak_naar_object(apps, _):
-    ObjectInformatieObject = apps.get_model('datamodel', 'ObjectInformatieObject')
+    ObjectInformatieObject = apps.get_model("datamodel", "ObjectInformatieObject")
     ObjectInformatieObject.objects.update(
-        object=F('zaak'),
-        object_type=ObjectTypes.zaak
+        object=F("zaak"), object_type=ObjectTypes.zaak
     )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0013_auto_20180919_1002'),
-    ]
+    dependencies = [("datamodel", "0013_auto_20180919_1002")]
 
-    operations = [
-        migrations.RunPython(zaak_naar_object, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(zaak_naar_object, migrations.RunPython.noop)]

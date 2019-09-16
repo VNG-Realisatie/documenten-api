@@ -1,1 +1,1 @@
-default_app_config = 'drc.utils.apps.UtilsConfig'
+default_app_config = "drc.utils.apps.UtilsConfig"

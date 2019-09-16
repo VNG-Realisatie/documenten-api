@@ -5,27 +5,43 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0050_auto_20190805_0934'),
-    ]
+    dependencies = [("datamodel", "0050_auto_20190805_0934")]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='_etag',
-            field=models.CharField(default='', editable=False, help_text='MD5 hash of the resource representation in its current version.', max_length=32, verbose_name='etag value'),
+            model_name="enkelvoudiginformatieobject",
+            name="_etag",
+            field=models.CharField(
+                default="",
+                editable=False,
+                help_text="MD5 hash of the resource representation in its current version.",
+                max_length=32,
+                verbose_name="etag value",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='gebruiksrechten',
-            name='_etag',
-            field=models.CharField(default='', editable=False, help_text='MD5 hash of the resource representation in its current version.', max_length=32, verbose_name='etag value'),
+            model_name="gebruiksrechten",
+            name="_etag",
+            field=models.CharField(
+                default="",
+                editable=False,
+                help_text="MD5 hash of the resource representation in its current version.",
+                max_length=32,
+                verbose_name="etag value",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='objectinformatieobject',
-            name='_etag',
-            field=models.CharField(default='', editable=False, help_text='MD5 hash of the resource representation in its current version.', max_length=32, verbose_name='etag value'),
+            model_name="objectinformatieobject",
+            name="_etag",
+            field=models.CharField(
+                default="",
+                editable=False,
+                help_text="MD5 hash of the resource representation in its current version.",
+                max_length=32,
+                verbose_name="etag value",
+            ),
             preserve_default=False,
         ),
     ]

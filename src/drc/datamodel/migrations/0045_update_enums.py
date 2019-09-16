@@ -6,25 +6,27 @@ from django.db.models.functions import Lower, Replace
 
 
 def forward(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model("datamodel", "EnkelvoudigInformatieObject")
+    EnkelvoudigInformatieObject = apps.get_model(
+        "datamodel", "EnkelvoudigInformatieObject"
+    )
     EnkelvoudigInformatieObject.objects.all().update(
-        integriteit_algoritme=Lower(Replace(F('integriteit_algoritme'), Value(' '), Value('_'))),
-        status=Lower(Replace(F('status'), Value(' '), Value('_'))),
-        vertrouwelijkheidaanduiding=Lower(Replace(F('vertrouwelijkheidaanduiding'), Value(' '), Value('_'))),
+        integriteit_algoritme=Lower(
+            Replace(F("integriteit_algoritme"), Value(" "), Value("_"))
+        ),
+        status=Lower(Replace(F("status"), Value(" "), Value("_"))),
+        vertrouwelijkheidaanduiding=Lower(
+            Replace(F("vertrouwelijkheidaanduiding"), Value(" "), Value("_"))
+        ),
     )
 
     ObjectInformatieObject = apps.get_model("datamodel", "ObjectInformatieObject")
     ObjectInformatieObject.objects.all().update(
-        object_type=Lower(Replace(F('object_type'), Value(' '), Value('_'))),
+        object_type=Lower(Replace(F("object_type"), Value(" "), Value("_")))
     )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0044_auto_20190712_1743'),
-    ]
+    dependencies = [("datamodel", "0044_auto_20190712_1743")]
 
-    operations = [
-        migrations.RunPython(forward)
-    ]
+    operations = [migrations.RunPython(forward)]

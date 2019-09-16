@@ -4,7 +4,9 @@ from django.db import migrations
 
 
 def rewrite_file_size(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model("datamodel.EnkelvoudigInformatieObject")
+    EnkelvoudigInformatieObject = apps.get_model(
+        "datamodel.EnkelvoudigInformatieObject"
+    )
 
     docs = EnkelvoudigInformatieObject.objects.all()
     for doc in docs:
@@ -14,10 +16,6 @@ def rewrite_file_size(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0047_auto_20190704_1511'),
-    ]
+    dependencies = [("datamodel", "0047_auto_20190704_1511")]
 
-    operations = [
-        migrations.RunPython(rewrite_file_size, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(rewrite_file_size, migrations.RunPython.noop)]
