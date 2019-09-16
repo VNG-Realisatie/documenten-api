@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0049_auto_20190729_1244'),
-    ]
+    dependencies = [("datamodel", "0049_auto_20190729_1244")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='bestandsomvang',
-            field=models.PositiveIntegerField(help_text='Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.', null=True, verbose_name='bestandsomvang'),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="bestandsomvang",
+            field=models.PositiveIntegerField(
+                help_text="Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
+                null=True,
+                verbose_name="bestandsomvang",
+            ),
+        )
     ]

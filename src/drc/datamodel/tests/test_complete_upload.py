@@ -4,11 +4,10 @@ from .factories import BestandsDeelFactory, EnkelvoudigInformatieObjectFactory
 
 
 class UploadTestCase(APITestCase):
-
     def test_complete_upload_true(self):
         eio = EnkelvoudigInformatieObjectFactory(
             bronorganisatie=730924658,
-            identificatie='5d940d52-ff5e-4b18-a769-977af9130c04'
+            identificatie="5d940d52-ff5e-4b18-a769-977af9130c04",
         )
         canonical = eio.canonical
         BestandsDeelFactory.create(informatieobject=canonical)
@@ -18,7 +17,7 @@ class UploadTestCase(APITestCase):
     def test_complete_upload_false(self):
         eio = EnkelvoudigInformatieObjectFactory(
             bronorganisatie=730924658,
-            identificatie='5d940d52-ff5e-4b18-a769-977af9130c04'
+            identificatie="5d940d52-ff5e-4b18-a769-977af9130c04",
         )
         canonical = eio.canonical
         BestandsDeelFactory.create(informatieobject=canonical)

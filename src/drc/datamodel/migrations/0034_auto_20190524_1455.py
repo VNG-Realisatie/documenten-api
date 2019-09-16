@@ -5,33 +5,28 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0033_auto_20190301_1442'),
-    ]
+    dependencies = [("datamodel", "0033_auto_20190301_1442")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='objectinformatieobject',
-            options={'verbose_name': 'Objectinformatieobject', 'verbose_name_plural': 'Objectinformatieobjecten'},
+            name="objectinformatieobject",
+            options={
+                "verbose_name": "Objectinformatieobject",
+                "verbose_name_plural": "Objectinformatieobjecten",
+            },
         ),
         migrations.RemoveField(
-            model_name='objectinformatieobject',
-            name='aard_relatie',
+            model_name="objectinformatieobject", name="aard_relatie"
         ),
         migrations.RemoveField(
-            model_name='objectinformatieobject',
-            name='beschrijving',
+            model_name="objectinformatieobject", name="beschrijving"
         ),
         migrations.RemoveField(
-            model_name='objectinformatieobject',
-            name='registratiedatum',
+            model_name="objectinformatieobject", name="registratiedatum"
         ),
-        migrations.RemoveField(
-            model_name='objectinformatieobject',
-            name='titel',
-        ),
+        migrations.RemoveField(model_name="objectinformatieobject", name="titel"),
         migrations.AlterUniqueTogether(
-            name='enkelvoudiginformatieobject',
-            unique_together={('bronorganisatie', 'identificatie')},
+            name="enkelvoudiginformatieobject",
+            unique_together={("bronorganisatie", "identificatie")},
         ),
     ]

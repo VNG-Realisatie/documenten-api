@@ -5,21 +5,19 @@ from django.db import migrations
 
 
 def gen_uuid(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model('datamodel', 'EnkelvoudigInformatieObject')
-    ZaakInformatieObject = apps.get_model('datamodel', 'ZaakInformatieObject')
+    EnkelvoudigInformatieObject = apps.get_model(
+        "datamodel", "EnkelvoudigInformatieObject"
+    )
+    ZaakInformatieObject = apps.get_model("datamodel", "ZaakInformatieObject")
 
     for Model in (EnkelvoudigInformatieObject, ZaakInformatieObject):
         for row in Model.objects.all():
             row.uuid = uuid.uuid4()
-            row.save(update_fields=['uuid'])
+            row.save(update_fields=["uuid"])
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0005_auto_20180724_1049'),
-    ]
+    dependencies = [("datamodel", "0005_auto_20180724_1049")]
 
-    operations = [
-        migrations.RunPython(gen_uuid, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(gen_uuid, migrations.RunPython.noop)]

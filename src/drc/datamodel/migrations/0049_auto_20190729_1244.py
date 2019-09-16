@@ -5,19 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0048_migrate_bestandsomvang'),
-    ]
+    dependencies = [("datamodel", "0048_migrate_bestandsomvang")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='bestandsomvang',
-            field=models.PositiveIntegerField(help_text='The size of the whole file in bytes', null=True, verbose_name='bestandsnaam'),
+            model_name="enkelvoudiginformatieobject",
+            name="bestandsomvang",
+            field=models.PositiveIntegerField(
+                help_text="The size of the whole file in bytes",
+                null=True,
+                verbose_name="bestandsnaam",
+            ),
         ),
-
         migrations.AlterModelOptions(
-            name='bestandsdeel',
-            options={'verbose_name': 'bestands deel', 'verbose_name_plural': 'bestands delen'},
+            name="bestandsdeel",
+            options={
+                "verbose_name": "bestands deel",
+                "verbose_name_plural": "bestands delen",
+            },
         ),
     ]

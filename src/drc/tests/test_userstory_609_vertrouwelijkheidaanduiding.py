@@ -17,19 +17,21 @@ from zds_client.tests.mocks import mock_client
 
 from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN
 
-INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+INFORMATIEOBJECTTYPE = (
+    "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
+)
 
 
 @override_settings(
-    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
+    LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+    ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
 )
 class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
-    @tag('mock_client')
+    @tag("mock_client")
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_vertrouwelijkheidaanduiding_derived(self, *mocks):
@@ -37,33 +39,36 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
         Assert that the default vertrouwelijkheidaanduiding is set
         from informatieobjecttype
         """
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
         responses = {
             INFORMATIEOBJECTTYPE: {
-                'url': INFORMATIEOBJECTTYPE,
-                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
+                "url": INFORMATIEOBJECTTYPE,
+                "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
             }
         }
 
         with mock_client(responses):
-            response = self.client.post(url, {
-                'bronorganisatie': '159351741',
-                'creatiedatum': '2018-06-27',
-                'titel': 'detailed summary',
-                'auteur': 'test_auteur',
-                'formaat': 'txt',
-                'taal': 'eng',
-                'bestandsnaam': 'dummy.txt',
-                'inhoud': b64encode(b'some file content').decode('utf-8'),
-                'bestandsomvang': 17,
-                'link': 'http://een.link',
-                'beschrijving': 'test_beschrijving',
-                'informatieobjecttype': INFORMATIEOBJECTTYPE
-            })
+            response = self.client.post(
+                url,
+                {
+                    "bronorganisatie": "159351741",
+                    "creatiedatum": "2018-06-27",
+                    "titel": "detailed summary",
+                    "auteur": "test_auteur",
+                    "formaat": "txt",
+                    "taal": "eng",
+                    "bestandsnaam": "dummy.txt",
+                    "inhoud": b64encode(b"some file content").decode("utf-8"),
+                    "bestandsomvang": 17,
+                    "link": "http://een.link",
+                    "beschrijving": "test_beschrijving",
+                    "informatieobjecttype": INFORMATIEOBJECTTYPE,
+                },
+            )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
-            response.data['vertrouwelijkheidaanduiding'],
+            response.data["vertrouwelijkheidaanduiding"],
             VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
         )
 
@@ -73,33 +78,36 @@ class US609TestCase(TypeCheckMixin, JWTAuthMixin, APITestCase):
         """
         Assert the explicit set of vertrouwelijkheidaanduiding
         """
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
         responses = {
             INFORMATIEOBJECTTYPE: {
-                'url': INFORMATIEOBJECTTYPE,
-                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
+                "url": INFORMATIEOBJECTTYPE,
+                "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
             }
         }
 
         with mock_client(responses):
-            response = self.client.post(url, {
-                'bronorganisatie': '159351741',
-                'creatiedatum': '2018-06-27',
-                'titel': 'detailed summary',
-                'auteur': 'test_auteur',
-                'formaat': 'txt',
-                'taal': 'eng',
-                'bestandsnaam': 'dummy.txt',
-                'inhoud': b64encode(b'some file content').decode('utf-8'),
-                'bestandsomvang': 17,
-                'link': 'http://een.link',
-                'beschrijving': 'test_beschrijving',
-                'informatieobjecttype': INFORMATIEOBJECTTYPE,
-                'vertrouwelijkheidaanduiding': 'openbaar'
-            })
+            response = self.client.post(
+                url,
+                {
+                    "bronorganisatie": "159351741",
+                    "creatiedatum": "2018-06-27",
+                    "titel": "detailed summary",
+                    "auteur": "test_auteur",
+                    "formaat": "txt",
+                    "taal": "eng",
+                    "bestandsnaam": "dummy.txt",
+                    "inhoud": b64encode(b"some file content").decode("utf-8"),
+                    "bestandsomvang": 17,
+                    "link": "http://een.link",
+                    "beschrijving": "test_beschrijving",
+                    "informatieobjecttype": INFORMATIEOBJECTTYPE,
+                    "vertrouwelijkheidaanduiding": "openbaar",
+                },
+            )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.assertEqual(
-            response.data['vertrouwelijkheidaanduiding'],
+            response.data["vertrouwelijkheidaanduiding"],
             VertrouwelijkheidsAanduiding.openbaar,
         )

@@ -6,14 +6,26 @@ import vng_api_common.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0008_auto_20180730_1252'),
-    ]
+    dependencies = [("datamodel", "0008_auto_20180730_1252")]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='vertrouwelijkheidsaanduiding',
-            field=vng_api_common.fields.VertrouwelijkheidsAanduidingField(blank=True, choices=[('openbaar', 'OPENBAAR'), ('beperkt openbaar', 'BEPERKT OPENBAAR'), ('intern', 'INTERN'), ('zaakvertrouwelijk', 'ZAAKVERTROUWELIJK'), ('vertrouwelijk', 'VERTROUWELIJK'), ('confidentieel', 'CONFIDENTIEEL'), ('geheim', 'GEHEIM'), ('zeer geheim', 'ZEER GEHEIM')], help_text='Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.', max_length=20),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="vertrouwelijkheidsaanduiding",
+            field=vng_api_common.fields.VertrouwelijkheidsAanduidingField(
+                blank=True,
+                choices=[
+                    ("openbaar", "OPENBAAR"),
+                    ("beperkt openbaar", "BEPERKT OPENBAAR"),
+                    ("intern", "INTERN"),
+                    ("zaakvertrouwelijk", "ZAAKVERTROUWELIJK"),
+                    ("vertrouwelijk", "VERTROUWELIJK"),
+                    ("confidentieel", "CONFIDENTIEEL"),
+                    ("geheim", "GEHEIM"),
+                    ("zeer geheim", "ZEER GEHEIM"),
+                ],
+                help_text="Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.",
+                max_length=20,
+            ),
+        )
     ]

@@ -10,13 +10,16 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url
 from drc.api.scopes import SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 from drc.datamodel.models import EnkelvoudigInformatieObject, Gebruiksrechten
 from drc.datamodel.tests.factories import (
-    EnkelvoudigInformatieObjectCanonicalFactory, GebruiksrechtenFactory
+    EnkelvoudigInformatieObjectCanonicalFactory,
+    GebruiksrechtenFactory,
 )
 
-INFORMATIEOBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1'
+INFORMATIEOBJECTTYPE = (
+    "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
+)
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class US349TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
@@ -33,12 +36,14 @@ class US349TestCase(JWTAuthMixin, APITestCase):
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
 
         informatieobject_delete_url = get_operation_url(
-            'enkelvoudiginformatieobject_delete',
-            uuid=informatieobject.latest_version.uuid
+            "enkelvoudiginformatieobject_delete",
+            uuid=informatieobject.latest_version.uuid,
         )
 
         response = self.client.delete(informatieobject_delete_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
+        self.assertEqual(
+            response.status_code, status.HTTP_204_NO_CONTENT, response.data
+        )
 
         self.assertEqual(EnkelvoudigInformatieObject.objects.all().count(), 0)
 

@@ -14,140 +14,119 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse, reverse_lazy
 
-INFORMATIEOBJECTTYPE = 'https://example.com/informatieobjecttype/foo'
+INFORMATIEOBJECTTYPE = "https://example.com/informatieobjecttype/foo"
 
 
 class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def assertGegevensGroepRequired(self, url: str, field: str, base_body: dict, cases: tuple):
+    def assertGegevensGroepRequired(
+        self, url: str, field: str, base_body: dict, cases: tuple
+    ):
         for key, code in cases:
             with self.subTest(key=key, expected_code=code):
                 body = deepcopy(base_body)
                 del body[key]
                 response = self.client.post(url, {field: body})
 
-                error = get_validation_errors(response, f'{field}.{key}')
-                self.assertEqual(error['code'], code)
+                error = get_validation_errors(response, f"{field}.{key}")
+                self.assertEqual(error["code"], code)
 
-    def assertGegevensGroepValidation(self, url: str, field: str, base_body: dict, cases: tuple):
+    def assertGegevensGroepValidation(
+        self, url: str, field: str, base_body: dict, cases: tuple
+    ):
         for key, code, blank_value in cases:
             with self.subTest(key=key, expected_code=code):
                 body = deepcopy(base_body)
                 body[key] = blank_value
                 response = self.client.post(url, {field: body})
 
-                error = get_validation_errors(response, f'{field}.{key}')
-                self.assertEqual(error['code'], code)
+                error = get_validation_errors(response, f"{field}.{key}")
+                self.assertEqual(error["code"], code)
 
-    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_404")
     def test_validate_informatieobjecttype_invalid_url(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        response = self.client.post(url, {
-            'informatieobjecttype': INFORMATIEOBJECTTYPE,
-        })
+        response = self.client.post(url, {"informatieobjecttype": INFORMATIEOBJECTTYPE})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        error = get_validation_errors(response, 'informatieobjecttype')
-        self.assertEqual(error['code'], URLValidator.code)
+        error = get_validation_errors(response, "informatieobjecttype")
+        self.assertEqual(error["code"], URLValidator.code)
 
-    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     def test_validate_informatieobjecttype_invalid_resource(self):
-        responses = {
-            INFORMATIEOBJECTTYPE: {
-                'some': 'incorrect property'
-            }
-        }
+        responses = {INFORMATIEOBJECTTYPE: {"some": "incorrect property"}}
 
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
         with mock_client(responses):
-            response = self.client.post(url, {
-                'informatieobjecttype': INFORMATIEOBJECTTYPE,
-            })
+            response = self.client.post(
+                url, {"informatieobjecttype": INFORMATIEOBJECTTYPE}
+            )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        error = get_validation_errors(response, 'informatieobjecttype')
-        self.assertEqual(error['code'], 'invalid-resource')
+        error = get_validation_errors(response, "informatieobjecttype")
+        self.assertEqual(error["code"], "invalid-resource")
 
     def test_link_fetcher_cannot_connect(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        response = self.client.post(url, {
-            'informatieobjecttype': 'http://invalid-host/informatieobjecttype/foo',
-        })
+        response = self.client.post(
+            url,
+            {"informatieobjecttype": "http://invalid-host/informatieobjecttype/foo"},
+        )
 
         self.assertNotEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_integriteit(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        base_body = {
-            'algoritme': 'MD5',
-            'waarde': 'foobarbaz',
-            'datum': '2018-12-13',
-        }
+        base_body = {"algoritme": "MD5", "waarde": "foobarbaz", "datum": "2018-12-13"}
 
         cases = (
-            ('algoritme', 'required'),
-            ('waarde', 'required'),
-            ('datum', 'required'),
+            ("algoritme", "required"),
+            ("waarde", "required"),
+            ("datum", "required"),
         )
 
-        self.assertGegevensGroepRequired(url, 'integriteit', base_body, cases)
+        self.assertGegevensGroepRequired(url, "integriteit", base_body, cases)
 
     def test_integriteit_bad_values(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        base_body = {
-            'algoritme': 'MD5',
-            'waarde': 'foobarbaz',
-            'datum': '2018-12-13',
-        }
+        base_body = {"algoritme": "MD5", "waarde": "foobarbaz", "datum": "2018-12-13"}
 
         cases = (
-            ('algoritme', 'invalid_choice', ''),
-            ('waarde', 'blank', ''),
-            ('datum', 'null', None),
+            ("algoritme", "invalid_choice", ""),
+            ("waarde", "blank", ""),
+            ("datum", "null", None),
         )
 
-        self.assertGegevensGroepValidation(url, 'integriteit', base_body, cases)
+        self.assertGegevensGroepValidation(url, "integriteit", base_body, cases)
 
     def test_ondertekening(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        base_body = {
-            'soort': OndertekeningSoorten.analoog,
-            'datum': '2018-12-13',
-        }
+        base_body = {"soort": OndertekeningSoorten.analoog, "datum": "2018-12-13"}
 
-        cases = (
-            ('soort', 'required'),
-            ('datum', 'required'),
-        )
+        cases = (("soort", "required"), ("datum", "required"))
 
-        self.assertGegevensGroepRequired(url, 'ondertekening', base_body, cases)
+        self.assertGegevensGroepRequired(url, "ondertekening", base_body, cases)
 
     def test_ondertekening_bad_values(self):
-        url = reverse('enkelvoudiginformatieobject-list')
+        url = reverse("enkelvoudiginformatieobject-list")
 
-        base_body = {
-            'soort': OndertekeningSoorten.digitaal,
-            'datum': '2018-12-13',
-        }
-        cases = (
-            ('soort', 'invalid_choice', ''),
-            ('datum', 'null', None),
-        )
+        base_body = {"soort": OndertekeningSoorten.digitaal, "datum": "2018-12-13"}
+        cases = (("soort", "invalid_choice", ""), ("datum", "null", None))
 
-        self.assertGegevensGroepValidation(url, 'ondertekening', base_body, cases)
+        self.assertGegevensGroepValidation(url, "ondertekening", base_body, cases)
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
-    url = reverse_lazy('enkelvoudiginformatieobject-list')
+    url = reverse_lazy("enkelvoudiginformatieobject-list")
     heeft_alle_autorisaties = True
 
     @patch("vng_api_common.validators.fetcher")
@@ -162,27 +141,27 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
         """
         invalid_statuses = (Statussen.in_bewerking, Statussen.ter_vaststelling)
         data = {
-            'bronorganisatie': '319582462',
-            'creatiedatum': '2018-12-24',
-            'titel': 'dummy',
-            'auteur': 'dummy',
-            'taal': 'nld',
-            'inhoud': 'aGVsbG8gd29ybGQ=',
-            'bestandsomvang': 17,
-            'informatieobjecttype': INFORMATIEOBJECTTYPE,
-            'ontvangstdatum': '2018-12-24',
+            "bronorganisatie": "319582462",
+            "creatiedatum": "2018-12-24",
+            "titel": "dummy",
+            "auteur": "dummy",
+            "taal": "nld",
+            "inhoud": "aGVsbG8gd29ybGQ=",
+            "bestandsomvang": 17,
+            "informatieobjecttype": INFORMATIEOBJECTTYPE,
+            "ontvangstdatum": "2018-12-24",
         }
 
         for invalid_status in invalid_statuses:
             with self.subTest(status=invalid_status):
                 _data = data.copy()
-                _data['status'] = invalid_status
+                _data["status"] = invalid_status
 
                 response = self.client.post(self.url, _data)
 
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-            error = get_validation_errors(response, 'status')
-            self.assertEqual(error['code'], 'invalid_for_received')
+            error = get_validation_errors(response, "status")
+            self.assertEqual(error["code"], "invalid_for_received")
 
     def test_informatieobjecten_niet_ontvangen(self):
         """
@@ -191,14 +170,11 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
         """
         for valid_status, _ in Statussen.choices:
             with self.subTest(status=status):
-                data = {
-                    'ontvangstdatum': None,
-                    'status': valid_status
-                }
+                data = {"ontvangstdatum": None, "status": valid_status}
 
                 response = self.client.post(self.url, data)
 
-            error = get_validation_errors(response, 'status')
+            error = get_validation_errors(response, "status")
             self.assertIsNone(error)
 
     def test_status_set_ontvangstdatum_is_set_later(self):
@@ -207,40 +183,42 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
         has been set, is not possible.
         """
         eio = EnkelvoudigInformatieObjectFactory.create(
-            ontvangstdatum=None,
-            informatieobjecttype=INFORMATIEOBJECTTYPE
+            ontvangstdatum=None, informatieobjecttype=INFORMATIEOBJECTTYPE
         )
-        url = reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': eio.uuid})
+        url = reverse("enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid})
 
         for invalid_status in (Statussen.in_bewerking, Statussen.ter_vaststelling):
             with self.subTest(status=invalid_status):
                 eio.status = invalid_status
                 eio.save()
-                data = {'ontvangstdatum': '2018-12-24'}
+                data = {"ontvangstdatum": "2018-12-24"}
 
                 response = self.client.patch(url, data)
 
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-                error = get_validation_errors(response, 'status')
-                self.assertEqual(error['code'], 'invalid_for_received')
+                error = get_validation_errors(response, "status")
+                self.assertEqual(error["code"], "invalid_for_received")
 
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
     Test that incorrect filter usage results in HTTP 400.
     """
+
     heeft_alle_autorisaties = True
 
     def test_oio_invalid_filters(self):
-        url = reverse('objectinformatieobject-list')
+        url = reverse("objectinformatieobject-list")
 
         invalid_filters = {
-            'object': '123',  # must be url
-            'informatieobject': '123',  # must be url
-            'foo': 'bar',  # unknown
+            "object": "123",  # must be url
+            "informatieobject": "123",  # must be url
+            "foo": "bar",  # unknown
         }
 
         for key, value in invalid_filters.items():
             with self.subTest(query_param=key, value=value):
-                response = self.client.get(url, {key: value}, HTTP_ACCEPT_CRS='EPSG:4326')
+                response = self.client.get(
+                    url, {key: value}, HTTP_ACCEPT_CRS="EPSG:4326"
+                )
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

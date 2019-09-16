@@ -5,19 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0045_update_enums'),
-    ]
+    dependencies = [("datamodel", "0045_update_enums")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='begin_registratie',
-            field=models.DateTimeField(auto_now=True, help_text='Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.'),
+            model_name="enkelvoudiginformatieobject",
+            name="begin_registratie",
+            field=models.DateTimeField(
+                auto_now=True,
+                help_text="Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.",
+            ),
         ),
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='versie',
-            field=models.PositiveIntegerField(default=1, help_text='Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.'),
+            model_name="enkelvoudiginformatieobject",
+            name="versie",
+            field=models.PositiveIntegerField(
+                default=1,
+                help_text="Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.",
+            ),
         ),
     ]

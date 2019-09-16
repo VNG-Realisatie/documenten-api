@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0023_enkelvoudiginformatieobject_ontvangstdatum'),
-    ]
+    dependencies = [("datamodel", "0023_enkelvoudiginformatieobject_ontvangstdatum")]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='indicatie_gebruiksrecht',
-            field=models.NullBooleanField(default=None, help_text='Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging.', verbose_name='indicatie gebruiksrecht'),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="indicatie_gebruiksrecht",
+            field=models.NullBooleanField(
+                default=None,
+                help_text="Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging.",
+                verbose_name="indicatie gebruiksrecht",
+            ),
+        )
     ]

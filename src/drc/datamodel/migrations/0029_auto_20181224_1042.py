@@ -5,14 +5,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0028_enkelvoudiginformatieobject_status'),
-    ]
+    dependencies = [("datamodel", "0028_enkelvoudiginformatieobject_status")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='status',
-            field=models.CharField(blank=True, choices=[('in bewerking', 'Aan het informatieobject wordt nog gewerkt.'), ('ter vaststelling', 'Informatieobject gereed maar moet nog vastgesteld worden.'), ('definitief', 'Informatieobject door bevoegd iets of iemand vastgesteld dan wel ontvangen.'), ('gearchiveerd', 'Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-element.')], help_text="Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in 'gearchiveerd' impliceert dat het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben.", max_length=20, verbose_name='status'),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("in bewerking", "Aan het informatieobject wordt nog gewerkt."),
+                    (
+                        "ter vaststelling",
+                        "Informatieobject gereed maar moet nog vastgesteld worden.",
+                    ),
+                    (
+                        "definitief",
+                        "Informatieobject door bevoegd iets of iemand vastgesteld dan wel ontvangen.",
+                    ),
+                    (
+                        "gearchiveerd",
+                        "Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-element.",
+                    ),
+                ],
+                help_text="Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in 'gearchiveerd' impliceert dat het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben.",
+                max_length=20,
+                verbose_name="status",
+            ),
+        )
     ]

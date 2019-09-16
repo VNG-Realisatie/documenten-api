@@ -6,14 +6,18 @@ import vng_api_common.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0041_auto_20190701_1417'),
-    ]
+    dependencies = [("datamodel", "0041_auto_20190701_1417")]
 
     operations = [
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='identificatie',
-            field=models.CharField(blank=True, default='', help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.', max_length=40, validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()]),
-        ),
+            model_name="enkelvoudiginformatieobject",
+            name="identificatie",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                max_length=40,
+                validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()],
+            ),
+        )
     ]

@@ -6,14 +6,18 @@ import vng_api_common.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0016_auto_20180920_1240'),
-    ]
+    dependencies = [("datamodel", "0016_auto_20180920_1240")]
 
     operations = [
         migrations.AlterField(
-            model_name='objectinformatieobject',
-            name='registratiedatum',
-            field=models.DateTimeField(blank=True, help_text='De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd.', null=True, validators=[vng_api_common.validators.UntilNowValidator()], verbose_name='registratiedatum'),
-        ),
+            model_name="objectinformatieobject",
+            name="registratiedatum",
+            field=models.DateTimeField(
+                blank=True,
+                help_text="De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd.",
+                null=True,
+                validators=[vng_api_common.validators.UntilNowValidator()],
+                verbose_name="registratiedatum",
+            ),
+        )
     ]
