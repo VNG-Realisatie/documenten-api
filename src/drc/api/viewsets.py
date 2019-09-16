@@ -14,6 +14,7 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.caching import conditional_retrieve
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationDestroyMixin,
     NotificationViewSetMixin
@@ -72,6 +73,7 @@ REGISTRATIE_QUERY_PARAM = openapi.Parameter(
 )
 
 
+@conditional_retrieve()
 class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
                                          ListFilterByAuthorizationsMixin,
                                          AuditTrailViewsetMixin,
@@ -319,6 +321,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@conditional_retrieve()
 class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     mixins.CreateModelMixin,
@@ -389,6 +392,7 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
             super().perform_destroy(instance)
 
 
+@conditional_retrieve()
 class GebruiksrechtenViewSet(NotificationViewSetMixin,
                              ListFilterByAuthorizationsMixin,
                              AuditTrailViewsetMixin,
