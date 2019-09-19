@@ -1,1 +1,1 @@
-default_app_config = 'drc.api.apps.DRCApiConfig'
+default_app_config = "drc.api.apps.DRCApiConfig"

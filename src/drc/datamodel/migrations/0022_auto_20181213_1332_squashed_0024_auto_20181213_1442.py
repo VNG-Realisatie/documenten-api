@@ -6,29 +6,60 @@ import vng_api_common.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0021_enkelvoudiginformatieobject_bestandsnaam'),
-    ]
+    dependencies = [("datamodel", "0021_enkelvoudiginformatieobject_bestandsnaam")]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='integriteit_algoritme',
-            field=models.CharField(blank=True, choices=[('CRC-16', 'crc 16'), ('CRC-32', 'crc 32'), ('CRC-64', 'crc 64'), ('fletcher-4', 'fletcher 4'), ('fletcher-8', 'fletcher 8'), ('fletcher-16', 'fletcher 16'), ('fletcher-32', 'fletcher 32'), ('HMAC', 'hmac'), ('MD5', 'md5'), ('SHA-1', 'sha 1'), ('SHA-256', 'sha 256'), ('SHA-512', 'sha 512'), ('SHA-3', 'sha 3')], help_text='Aanduiding van algoritme, gebruikt om de checksum te maken.', max_length=20, verbose_name='integriteit algoritme'),
+            model_name="enkelvoudiginformatieobject",
+            name="integriteit_algoritme",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("CRC-16", "crc 16"),
+                    ("CRC-32", "crc 32"),
+                    ("CRC-64", "crc 64"),
+                    ("fletcher-4", "fletcher 4"),
+                    ("fletcher-8", "fletcher 8"),
+                    ("fletcher-16", "fletcher 16"),
+                    ("fletcher-32", "fletcher 32"),
+                    ("HMAC", "hmac"),
+                    ("MD5", "md5"),
+                    ("SHA-1", "sha 1"),
+                    ("SHA-256", "sha 256"),
+                    ("SHA-512", "sha 512"),
+                    ("SHA-3", "sha 3"),
+                ],
+                help_text="Aanduiding van algoritme, gebruikt om de checksum te maken.",
+                max_length=20,
+                verbose_name="integriteit algoritme",
+            ),
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='integriteit_datum',
-            field=models.DateField(blank=True, help_text='Datum waarop de checksum is gemaakt.', null=True, verbose_name='integriteit datum'),
+            model_name="enkelvoudiginformatieobject",
+            name="integriteit_datum",
+            field=models.DateField(
+                blank=True,
+                help_text="Datum waarop de checksum is gemaakt.",
+                null=True,
+                verbose_name="integriteit datum",
+            ),
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='integriteit_waarde',
-            field=models.CharField(blank=True, help_text='De waarde van de checksum.', max_length=128, verbose_name='integriteit waarde'),
+            model_name="enkelvoudiginformatieobject",
+            name="integriteit_waarde",
+            field=models.CharField(
+                blank=True,
+                help_text="De waarde van de checksum.",
+                max_length=128,
+                verbose_name="integriteit waarde",
+            ),
         ),
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='bronorganisatie',
-            field=vng_api_common.fields.RSINField(help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.', max_length=9),
+            model_name="enkelvoudiginformatieobject",
+            name="bronorganisatie",
+            field=vng_api_common.fields.RSINField(
+                help_text="Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                max_length=9,
+            ),
         ),
     ]

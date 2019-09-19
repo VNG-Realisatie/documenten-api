@@ -6,30 +6,39 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0001_initial'),
-    ]
+    dependencies = [("datamodel", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='ZaakInformatieObject',
+            name="ZaakInformatieObject",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('zaak', models.URLField(help_text='URL naar het ZAAK in het ZRC.')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("zaak", models.URLField(help_text="URL naar het ZAAK in het ZRC.")),
             ],
             options={
-                'verbose_name': 'Zaakinformatieobject',
-                'verbose_name_plural': 'Zaakinformatieobjecten',
+                "verbose_name": "Zaakinformatieobject",
+                "verbose_name_plural": "Zaakinformatieobjecten",
             },
         ),
         migrations.AlterField(
-            model_name='enkelvoudiginformatieobject',
-            name='inhoud',
-            field=models.FileField(upload_to='uploads/%Y/%m/'),
+            model_name="enkelvoudiginformatieobject",
+            name="inhoud",
+            field=models.FileField(upload_to="uploads/%Y/%m/"),
         ),
         migrations.AddField(
-            model_name='zaakinformatieobject',
-            name='informatieobject',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datamodel.EnkelvoudigInformatieObject'),
+            model_name="zaakinformatieobject",
+            name="informatieobject",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datamodel.EnkelvoudigInformatieObject",
+            ),
         ),
     ]

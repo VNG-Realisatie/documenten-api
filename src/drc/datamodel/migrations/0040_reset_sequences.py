@@ -4,9 +4,9 @@ import os
 from django.conf import settings
 from django.db import migrations
 
-INFILE = os.path.join(settings.BASE_DIR, 'bin', 'reset_sequences.sql')
+INFILE = os.path.join(settings.BASE_DIR, "bin", "reset_sequences.sql")
 
-with open(INFILE, 'r') as infile:
+with open(INFILE, "r") as infile:
     SQL = infile.read()
 
 
@@ -25,10 +25,6 @@ def reset_sequences(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0039_auto_20190614_0839'),
-    ]
+    dependencies = [("datamodel", "0039_auto_20190614_0839")]
 
-    operations = [
-        migrations.RunPython(reset_sequences, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(reset_sequences, migrations.RunPython.noop)]

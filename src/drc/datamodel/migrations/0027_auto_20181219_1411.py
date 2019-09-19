@@ -5,19 +5,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0026_auto_20181219_1336'),
-    ]
+    dependencies = [("datamodel", "0026_auto_20181219_1336")]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='ondertekening_datum',
-            field=models.DateField(blank=True, help_text='De datum waarop de ondertekening van het INFORMATIEOBJECT heeft plaatsgevonden.', null=True, verbose_name='ondertekeningdatum'),
+            model_name="enkelvoudiginformatieobject",
+            name="ondertekening_datum",
+            field=models.DateField(
+                blank=True,
+                help_text="De datum waarop de ondertekening van het INFORMATIEOBJECT heeft plaatsgevonden.",
+                null=True,
+                verbose_name="ondertekeningdatum",
+            ),
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='ondertekening_soort',
-            field=models.CharField(blank=True, choices=[('analoog', 'Analoog'), ('digitaal', 'Digitaal'), ('pki', 'PKI')], help_text='Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT', max_length=10, verbose_name='ondertekeningsoort'),
+            model_name="enkelvoudiginformatieobject",
+            name="ondertekening_soort",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("analoog", "Analoog"),
+                    ("digitaal", "Digitaal"),
+                    ("pki", "PKI"),
+                ],
+                help_text="Aanduiding van de wijze van ondertekening van het INFORMATIEOBJECT",
+                max_length=10,
+                verbose_name="ondertekeningsoort",
+            ),
         ),
     ]

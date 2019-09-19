@@ -6,29 +6,42 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0009_enkelvoudiginformatieobject_vertrouwelijkheidsaanduiding'),
+        ("datamodel", "0009_enkelvoudiginformatieobject_vertrouwelijkheidsaanduiding")
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='enkelvoudiginformatieobject',
-            old_name='vertrouwelijkheidsaanduiding',
-            new_name='vertrouwelijkaanduiding',
+            model_name="enkelvoudiginformatieobject",
+            old_name="vertrouwelijkheidsaanduiding",
+            new_name="vertrouwelijkaanduiding",
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='beschrijving',
-            field=models.TextField(blank=True, help_text='Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.', max_length=1000, null=True),
+            model_name="enkelvoudiginformatieobject",
+            name="beschrijving",
+            field=models.TextField(
+                blank=True,
+                help_text="Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.",
+                max_length=1000,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='informatieobjecttype',
-            field=models.URLField(default='http://www.vngrealisatie.nl/onbekend', help_text='URL naar de INFORMATIEOBJECTTYPE in het ZTC.'),
+            model_name="enkelvoudiginformatieobject",
+            name="informatieobjecttype",
+            field=models.URLField(
+                default="http://www.vngrealisatie.nl/onbekend",
+                help_text="URL naar de INFORMATIEOBJECTTYPE in het ZTC.",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='link',
-            field=models.CharField(blank=True, help_text='De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is.', max_length=200, null=True),
+            model_name="enkelvoudiginformatieobject",
+            name="link",
+            field=models.CharField(
+                blank=True,
+                help_text="De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is.",
+                max_length=200,
+                null=True,
+            ),
         ),
     ]

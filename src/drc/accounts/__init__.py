@@ -1,1 +1,1 @@
-default_app_config = 'drc.accounts.apps.AccountsConfig'
+default_app_config = "drc.accounts.apps.AccountsConfig"

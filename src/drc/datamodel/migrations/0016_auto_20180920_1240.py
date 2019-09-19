@@ -5,13 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0015_remove_objectinformatieobject_zaak'),
-    ]
+    dependencies = [("datamodel", "0015_remove_objectinformatieobject_zaak")]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='objectinformatieobject',
-            unique_together={('informatieobject', 'object')},
-        ),
+            name="objectinformatieobject",
+            unique_together={("informatieobject", "object")},
+        )
     ]

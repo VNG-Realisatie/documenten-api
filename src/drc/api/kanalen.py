@@ -8,8 +8,8 @@ KANAAL_DOCUMENTEN = Kanaal(
     settings.NOTIFICATIONS_KANAAL,
     main_resource=EnkelvoudigInformatieObject,
     kenmerken=(
-        'bronorganisatie',
-        'informatieobjecttype',
-        'vertrouwelijkheidaanduiding'
-    )
+        "bronorganisatie",
+        "informatieobjecttype",
+        "vertrouwelijkheidaanduiding",
+    ),
 )

@@ -4,7 +4,9 @@ from django.db import migrations
 
 
 def rewrite_urls(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model("datamodel.EnkelvoudigInformatieObject")
+    EnkelvoudigInformatieObject = apps.get_model(
+        "datamodel.EnkelvoudigInformatieObject"
+    )
 
     docs = EnkelvoudigInformatieObject.objects.filter(
         informatieobjecttype__regex=r"^https?://.*/catalogussen/[\w-]+/.*"
@@ -13,17 +15,13 @@ def rewrite_urls(apps, schema_editor):
         bits = doc.informatieobjecttype.split("/")
         index = bits.index("catalogussen")
 
-        new_bits = bits[0:index] + bits[index + 2:]
+        new_bits = bits[0:index] + bits[index + 2 :]
         doc.informatieobjecttype = "/".join(new_bits)
         doc.save()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0040_reset_sequences'),
-    ]
+    dependencies = [("datamodel", "0040_reset_sequences")]
 
-    operations = [
-        migrations.RunPython(rewrite_urls, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(rewrite_urls, migrations.RunPython.noop)]

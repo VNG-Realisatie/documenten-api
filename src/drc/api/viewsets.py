@@ -10,68 +10,80 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
-    AuditTrailViewsetMixin
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    AuditTrailViewSet,
+    AuditTrailViewsetMixin,
 )
 from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin, NotificationDestroyMixin,
-    NotificationViewSetMixin
+    NotificationCreateMixin,
+    NotificationDestroyMixin,
+    NotificationViewSetMixin,
 )
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject,
+    Gebruiksrechten,
+    ObjectInformatieObject,
 )
 
 from .audits import AUDIT_DRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
     EnkelvoudigInformatieObjectDetailFilter,
-    EnkelvoudigInformatieObjectListFilter, GebruiksrechtenFilter,
-    ObjectInformatieObjectFilter
+    EnkelvoudigInformatieObjectListFilter,
+    GebruiksrechtenFilter,
+    ObjectInformatieObjectFilter,
 )
 from .kanalen import KANAAL_DOCUMENTEN
 from .permissions import (
     InformationObjectAuthScopesRequired,
-    InformationObjectRelatedAuthScopesRequired
+    InformationObjectRelatedAuthScopesRequired,
 )
 from .renderers import BinaryFileRenderer
 from .schema import EIOAutoSchema
 from .scopes import (
-    SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
-    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, SCOPE_DOCUMENTEN_LOCK
+    SCOPE_DOCUMENTEN_AANMAKEN,
+    SCOPE_DOCUMENTEN_ALLES_LEZEN,
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+    SCOPE_DOCUMENTEN_LOCK,
 )
 from .serializers import (
     EnkelvoudigInformatieObjectSerializer,
-    EnkelvoudigInformatieObjectWithLockSerializer, GebruiksrechtenSerializer,
+    EnkelvoudigInformatieObjectWithLockSerializer,
+    GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
     ObjectInformatieObjectSerializer,
-    UnlockEnkelvoudigInformatieObjectSerializer
+    UnlockEnkelvoudigInformatieObjectSerializer,
 )
 from .validators import RemoteRelationValidator
 
 # Openapi query parameters for version querying
 VERSIE_QUERY_PARAM = openapi.Parameter(
-    'versie',
+    "versie",
     openapi.IN_QUERY,
-    description='Het (automatische) versienummer van het INFORMATIEOBJECT.',
-    type=openapi.TYPE_INTEGER
+    description="Het (automatische) versienummer van het INFORMATIEOBJECT.",
+    type=openapi.TYPE_INTEGER,
 )
 REGISTRATIE_QUERY_PARAM = openapi.Parameter(
-    'registratieOp',
+    "registratieOp",
     openapi.IN_QUERY,
-    description='Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het '
-                'kortst hiervoor zit wordt opgehaald.',
-    type=openapi.TYPE_STRING
+    description="Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het "
+    "kortst hiervoor zit wordt opgehaald.",
+    type=openapi.TYPE_STRING,
 )
 
 
-class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
-                                         ListFilterByAuthorizationsMixin,
-                                         AuditTrailViewsetMixin,
-                                         viewsets.ModelViewSet):
+class EnkelvoudigInformatieObjectViewSet(
+    NotificationViewSetMixin,
+    ListFilterByAuthorizationsMixin,
+    AuditTrailViewsetMixin,
+    viewsets.ModelViewSet,
+):
     """
     Opvragen en bewerken van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten).
 
@@ -153,20 +165,23 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     Heft de "checkout" op waardoor het (ENKELVOUDIG) INFORMATIEOBJECT
     ontgrendeld wordt.
     """
-    queryset = EnkelvoudigInformatieObject.objects.order_by('canonical', '-versie').distinct('canonical')
-    lookup_field = 'uuid'
+
+    queryset = EnkelvoudigInformatieObject.objects.order_by(
+        "canonical", "-versie"
+    ).distinct("canonical")
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
-    permission_classes = (InformationObjectAuthScopesRequired, )
+    permission_classes = (InformationObjectAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'create': SCOPE_DOCUMENTEN_AANMAKEN,
-        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
-        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
-        'download': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'lock': SCOPE_DOCUMENTEN_LOCK,
-        'unlock': SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK
+        "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "create": SCOPE_DOCUMENTEN_AANMAKEN,
+        "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "download": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "lock": SCOPE_DOCUMENTEN_LOCK,
+        "unlock": SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     }
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
@@ -174,18 +189,20 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     swagger_schema = EIOAutoSchema
 
     def get_renderers(self):
-        if self.action == 'download':
+        if self.action == "download":
             return [BinaryFileRenderer]
         return super().get_renderers()
 
     @transaction.atomic
     def perform_destroy(self, instance):
         if instance.canonical.objectinformatieobject_set.exists():
-            raise serializers.ValidationError({
-                api_settings.NON_FIELD_ERRORS_KEY: _(
-                    "All relations to the document must be destroyed before destroying the document"
-                )},
-                code="pending-relations"
+            raise serializers.ValidationError(
+                {
+                    api_settings.NON_FIELD_ERRORS_KEY: _(
+                        "All relations to the document must be destroyed before destroying the document"
+                    )
+                },
+                code="pending-relations",
             )
 
         super().perform_destroy(instance.canonical)
@@ -203,21 +220,18 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
-        if getattr(self, 'action', None) in ['update', 'partial_update']:
+        if getattr(self, "action", None) in ["update", "partial_update"]:
             return EnkelvoudigInformatieObjectWithLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
     @swagger_auto_schema(
-        manual_parameters=[
-            VERSIE_QUERY_PARAM,
-            REGISTRATIE_QUERY_PARAM
-        ]
+        manual_parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM]
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        method='get',
+        method="get",
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
         # https://swagger.io/docs/specification/2-0/mime-types/
         # OAS 3 has a better mechanism: https://swagger.io/docs/specification/describing-responses/
@@ -225,52 +239,81 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         responses={
             status.HTTP_200_OK: openapi.Response(
                 "De binaire bestandsinhoud",
-                schema=openapi.Schema(type=openapi.TYPE_FILE)
+                schema=openapi.Schema(type=openapi.TYPE_FILE),
             ),
-            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
-            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
-            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
-            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response(
+                "Unauthorized", schema=FoutSerializer
+            ),
+            status.HTTP_403_FORBIDDEN: openapi.Response(
+                "Forbidden", schema=FoutSerializer
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Response(
+                "Not found", schema=FoutSerializer
+            ),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response(
+                "Not acceptable", schema=FoutSerializer
+            ),
             status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
-            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
-            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response(
+                "Unsupported media type", schema=FoutSerializer
+            ),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response(
+                "Throttled", schema=FoutSerializer
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
+                "Internal server error", schema=FoutSerializer
+            ),
         },
-        manual_parameters=[
-            VERSIE_QUERY_PARAM,
-            REGISTRATIE_QUERY_PARAM
-        ]
+        manual_parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM],
     )
-    @action(methods=['get'], detail=True, name='enkelvoudiginformatieobject_download')
+    @action(methods=["get"], detail=True, name="enkelvoudiginformatieobject_download")
     def download(self, request, *args, **kwargs):
         eio = self.get_object()
         return sendfile(
             request,
             eio.inhoud.path,
             attachment=True,
-            mimetype='application/octet-stream'
+            mimetype="application/octet-stream",
         )
 
     @swagger_auto_schema(
         request_body=LockEnkelvoudigInformatieObjectSerializer,
         responses={
             status.HTTP_200_OK: LockEnkelvoudigInformatieObjectSerializer,
-            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
-            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
-            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
-            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
-            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_400_BAD_REQUEST: openapi.Response(
+                "Bad request", schema=FoutSerializer
+            ),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response(
+                "Unauthorized", schema=FoutSerializer
+            ),
+            status.HTTP_403_FORBIDDEN: openapi.Response(
+                "Forbidden", schema=FoutSerializer
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Response(
+                "Not found", schema=FoutSerializer
+            ),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response(
+                "Not acceptable", schema=FoutSerializer
+            ),
             status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
-            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
-            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
-        }
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response(
+                "Unsupported media type", schema=FoutSerializer
+            ),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response(
+                "Throttled", schema=FoutSerializer
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
+                "Internal server error", schema=FoutSerializer
+            ),
+        },
     )
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def lock(self, request, *args, **kwargs):
         eio = self.get_object()
         canonical = eio.canonical
-        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(canonical, data=request.data)
+        lock_serializer = LockEnkelvoudigInformatieObjectSerializer(
+            canonical, data=request.data
+        )
         lock_serializer.is_valid(raise_exception=True)
         lock_serializer.save()
         return Response(lock_serializer.data)
@@ -279,18 +322,34 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         request_body=UnlockEnkelvoudigInformatieObjectSerializer,
         responses={
             status.HTTP_204_NO_CONTENT: openapi.Response("No content"),
-            status.HTTP_400_BAD_REQUEST: openapi.Response("Bad request", schema=FoutSerializer),
-            status.HTTP_401_UNAUTHORIZED: openapi.Response("Unauthorized", schema=FoutSerializer),
-            status.HTTP_403_FORBIDDEN: openapi.Response("Forbidden", schema=FoutSerializer),
-            status.HTTP_404_NOT_FOUND: openapi.Response("Not found", schema=FoutSerializer),
-            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response("Not acceptable", schema=FoutSerializer),
+            status.HTTP_400_BAD_REQUEST: openapi.Response(
+                "Bad request", schema=FoutSerializer
+            ),
+            status.HTTP_401_UNAUTHORIZED: openapi.Response(
+                "Unauthorized", schema=FoutSerializer
+            ),
+            status.HTTP_403_FORBIDDEN: openapi.Response(
+                "Forbidden", schema=FoutSerializer
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Response(
+                "Not found", schema=FoutSerializer
+            ),
+            status.HTTP_406_NOT_ACCEPTABLE: openapi.Response(
+                "Not acceptable", schema=FoutSerializer
+            ),
             status.HTTP_410_GONE: openapi.Response("Gone", schema=FoutSerializer),
-            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response("Unsupported media type", schema=FoutSerializer),
-            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response("Throttled", schema=FoutSerializer),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response("Internal server error", schema=FoutSerializer),
-        }
+            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: openapi.Response(
+                "Unsupported media type", schema=FoutSerializer
+            ),
+            status.HTTP_429_TOO_MANY_REQUESTS: openapi.Response(
+                "Throttled", schema=FoutSerializer
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
+                "Internal server error", schema=FoutSerializer
+            ),
+        },
     )
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
         canonical = eio.canonical
@@ -299,25 +358,25 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         if self.request.jwt_auth.has_auth(
             scopes=SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
             informatieobjecttype=eio.informatieobjecttype,
-            vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding
+            vertrouwelijkheidaanduiding=eio.vertrouwelijkheidaanduiding,
         ):
             force_unlock = True
 
         unlock_serializer = UnlockEnkelvoudigInformatieObjectSerializer(
-            canonical,
-            data=request.data,
-            context={'force_unlock': force_unlock}
+            canonical, data=request.data, context={"force_unlock": force_unlock}
         )
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
-                                    ListFilterByAuthorizationsMixin,
-                                    mixins.CreateModelMixin,
-                                    mixins.DestroyModelMixin,
-                                    viewsets.ReadOnlyModelViewSet):
+class ObjectInformatieObjectViewSet(
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en verwijderen van OBJECT-INFORMATIEOBJECT relaties.
 
@@ -355,18 +414,19 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
     Andere API's, zoals de Zaken API en de Besluiten API, gebruiken dit
     endpoint bij het synchroniseren van relaties.
     """
+
     queryset = ObjectInformatieObject.objects.all()
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'create': SCOPE_DOCUMENTEN_AANMAKEN,
-        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
-        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "create": SCOPE_DOCUMENTEN_AANMAKEN,
+        "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
     }
 
     def perform_destroy(self, instance):
@@ -376,17 +436,19 @@ class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
         try:
             validator(instance)
         except serializers.ValidationError as exc:
-            raise serializers.ValidationError({
-                api_settings.NON_FIELD_ERRORS_KEY: exc
-            }, code=exc.detail[0].code)
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: exc}, code=exc.detail[0].code
+            )
         else:
             super().perform_destroy(instance)
 
 
-class GebruiksrechtenViewSet(NotificationViewSetMixin,
-                             ListFilterByAuthorizationsMixin,
-                             AuditTrailViewsetMixin,
-                             viewsets.ModelViewSet):
+class GebruiksrechtenViewSet(
+    NotificationViewSetMixin,
+    ListFilterByAuthorizationsMixin,
+    AuditTrailViewsetMixin,
+    viewsets.ModelViewSet,
+):
     """
     Opvragen en bewerken van GEBRUIKSRECHTen bij een INFORMATIEOBJECT.
 
@@ -427,23 +489,24 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
         wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
         `null` gezet.
     """
+
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer
     filterset_class = GebruiksrechtenFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     notifications_kanaal = KANAAL_DOCUMENTEN
-    notifications_main_resource_key = 'informatieobject'
+    notifications_main_resource_key = "informatieobject"
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'retrieve': SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        'create': SCOPE_DOCUMENTEN_AANMAKEN,
-        'destroy': SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-        'update': SCOPE_DOCUMENTEN_BIJWERKEN,
-        'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
+        "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "create": SCOPE_DOCUMENTEN_AANMAKEN,
+        "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
     }
     audit = AUDIT_DRC
-    audittrail_main_resource_key = 'informatieobject'
+    audittrail_main_resource_key = "informatieobject"
 
 
 class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
@@ -460,4 +523,5 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
 
     Een specifieke audit trail regel opvragen.
     """
-    main_resource_lookup_field = 'enkelvoudiginformatieobject_uuid'
+
+    main_resource_lookup_field = "enkelvoudiginformatieobject_uuid"

@@ -4,8 +4,12 @@ from django.db import migrations
 
 
 def create_canonicals(apps, schema_editor):
-    EnkelvoudigInformatieObject = apps.get_model('datamodel', 'EnkelvoudigInformatieObject')
-    EnkelvoudigInformatieObjectCanonical = apps.get_model('datamodel', 'EnkelvoudigInformatieObjectCanonical')
+    EnkelvoudigInformatieObject = apps.get_model(
+        "datamodel", "EnkelvoudigInformatieObject"
+    )
+    EnkelvoudigInformatieObjectCanonical = apps.get_model(
+        "datamodel", "EnkelvoudigInformatieObjectCanonical"
+    )
     for eio in EnkelvoudigInformatieObject.objects.all():
         canonical = EnkelvoudigInformatieObjectCanonical.objects.create(id=eio.id)
         eio.canonical = canonical
@@ -16,9 +20,13 @@ def create_canonicals(apps, schema_editor):
 
 
 def remove_canonicals(apps, schema_editor):
-    EnkelvoudigInformatieObjectCanonical = apps.get_model('datamodel', 'EnkelvoudigInformatieObjectCanonical')
+    EnkelvoudigInformatieObjectCanonical = apps.get_model(
+        "datamodel", "EnkelvoudigInformatieObjectCanonical"
+    )
     for eio_canonical in EnkelvoudigInformatieObjectCanonical.objects.all():
-        related_eios = eio_canonical.enkelvoudiginformatieobject_set.all().order_by('-versie')
+        related_eios = eio_canonical.enkelvoudiginformatieobject_set.all().order_by(
+            "-versie"
+        )
         latest = related_eios.first()
         for eio in related_eios:
             eio.canonical = None
@@ -37,10 +45,6 @@ def remove_canonicals(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0037_auto_20190614_0834'),
-    ]
+    dependencies = [("datamodel", "0037_auto_20190614_0834")]
 
-    operations = [
-        migrations.RunPython(create_canonicals, remove_canonicals)
-    ]
+    operations = [migrations.RunPython(create_canonicals, remove_canonicals)]
