@@ -392,3 +392,10 @@ PRIVATE_MEDIA_URL = '/private-media/'
 SENDFILE_BACKEND = 'sendfile.backends.simple'
 SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
 SENDFILE_URL = PRIVATE_MEDIA_URL
+
+# settings for uploading large files
+MIN_UPLOAD_SIZE = int(os.getenv('MIN_UPLOAD_SIZE', 4 * 2**30))  # 4GB
+
+# Relevant for multipart parser, which comes into play with file uploads in the
+# next version.
+DATA_UPLOAD_MAX_MEMORY_SIZE = MIN_UPLOAD_SIZE

@@ -96,6 +96,7 @@ COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
 COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
 COPY ./src /app/src
 COPY ./docs /app/docs
+COPY ./CHANGELOG.rst /app/CHANGELOG.rst
 COPY ./bin/reset_sequences.sql ./bin/
 
 ENV DJANGO_SETTINGS_MODULE=drc.conf.docker

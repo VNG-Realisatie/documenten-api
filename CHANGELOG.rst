@@ -2,6 +2,32 @@
 Wijzigingen
 ===========
 
+1.0.0-rc2 (2019-09-19)
+======================
+
+Second release candidate.
+
+* Documented webserver requirements so that consumers know the minimal size of
+  request bodies they can send.
+* Documented and implemented HTTP 413 for uploads that are too large
+* Added documentation w/r to notifications to the API spec document itself. For
+  provider implementations: this means you MUST send these notifications.
+* Added resource validation for ``EnkelvoudigInformatieObject.informatieobjecttype``
+* Fixed HTTP 5xx errors not being returned in JSON format for API endpoints
+* Updated dependencies to latest security releases
+* Fixed missing auth headers for OIO object resource validation
+* Fixed downloading uploaded documents with content type ``application/octet-stream``
+* Improved validation error message when base64 data with incorrect padding is
+  detected
+
+Breaking changes
+----------------
+
+* Removed audittrail and notifications from ``ObjectInformatieObject``. You
+  should instead consult the relevant ``ZaakinformatieObject`` or
+  ``BesluitInformatieObject``.
+* Fixed typo in audit trail ``Wijzigingen`` schema (was ``Wijzgingen``)
+
 1.0.0-rc1 (2019-07-18)
 ======================
 
@@ -189,23 +215,23 @@ Breaking changes
 
   .. code-block:: json
 
-  {
-    "kenmerken": [
-      {"key1": "value1"},
-      {"key2": "value2"},
-    ]
-  }
+      {
+        "kenmerken": [
+          {"key1": "value1"},
+          {"key2": "value2"},
+        ]
+      }
 
   New:
 
   .. code-block:: json
 
-  {
-    "kenmerken": {
-      "key1": "value1",
-      "key2": "value2",
-    }
-  }
+      {
+        "kenmerken": {
+          "key1": "value1",
+          "key2": "value2",
+        }
+      }
 
 * Removed the zds-schema compatibility. Upgrade to 0.9.1 first if you haven't
   done so yet.

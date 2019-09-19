@@ -26,8 +26,10 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN]
     informatieobjecttype = INFORMATIEOBJECTTYPE
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @patch('zds_client.Client.from_url')
-    def test_send_notif_create_enkelvoudiginformatieobject(self, mock_client):
+    def test_send_notif_create_enkelvoudiginformatieobject(self, mock_client, *mocks):
         """
         Registreer een ENKELVOUDIGINFORMATIEOBJECT
         """

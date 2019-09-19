@@ -18,6 +18,13 @@ The settings listed below are pulled from environment variables.
 * ``SECRET_KEY``: a strong secret key, used in various cryptographic process.
   We recommend generating one using the `secret key generator`_. Required.
 
+* ``MIN_UPLOAD_SIZE``: the minimal request body that should be allowed,
+  defaults to 4Gb. Note that this must also be set in the webserver config,
+  at least for the ``/api/v1/enkelvoudinginformatieobjecten`` endpoints.
+
+  This envvar is consumed by the Docker-compose nginx config, uwsgi server and
+  Django itself.
+
 **Database**
 
 The database credentials on Docker have sane defaults.

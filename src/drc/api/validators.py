@@ -8,14 +8,16 @@ from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 from vng_api_common.models import APICredential
 from vng_api_common.tests.urls import reverse
+from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
 
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.validators import validate_status
 
+from .auth import get_zrc_auth
 from .utils import get_absolute_url
 
 sentry = logging.getLogger('sentry')
@@ -66,9 +68,24 @@ class ObjectInformatieObjectValidator:
             if object_type == 'zaak':
                 resource = 'zaakinformatieobject'
                 component = 'ZRC'
+                oas_schema = settings.ZRC_API_SPEC
             elif object_type == 'besluit':
                 resource = 'besluitinformatieobject'
                 component = 'BRC'
+                oas_schema = settings.BRC_API_SPEC
+
+            try:
+                ResourceValidator(
+                    object_type.capitalize(),
+                    oas_schema,
+                    get_auth=get_zrc_auth,
+                    headers={'Accept-Crs': 'EPSG:4326'}
+                )(object_url)
+            except exceptions.ValidationError as exc:
+                raise serializers.ValidationError({
+                    'object': exc.detail
+                }, code=ResourceValidator.code)
+
             oios = client.list(resource, query_params={
                 object_type: object_url,
                 'informatieobject': informatieobject_url

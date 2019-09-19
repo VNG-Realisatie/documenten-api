@@ -1,15 +1,21 @@
 """
 Serializers of the Document Registratie Component REST API
 """
+import binascii
 import uuid
+from base64 import b64decode
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-from drf_extra_fields.fields import Base64FileField
+import six
+from drf_extra_fields.fields import Base64FieldMixin, Base64FileField
+from humanize import naturalsize
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import serializers
 from rest_framework.reverse import reverse
@@ -19,7 +25,9 @@ from vng_api_common.serializers import (
     GegevensGroepSerializer, add_choice_values_help_text
 )
 from vng_api_common.utils import get_help_text
-from vng_api_common.validators import IsImmutableValidator, URLValidator
+from vng_api_common.validators import (
+    IsImmutableValidator, ResourceValidator, URLValidator
+)
 
 from drc.datamodel.constants import (
     ChecksumAlgoritmes, OndertekeningSoorten, Statussen
@@ -50,6 +58,18 @@ class AnyBase64File(Base64FileField):
 
     def get_file_extension(self, filename, decoded_file):
         return "bin"
+
+    def to_internal_value(self, base64_data):
+        try:
+            return super().to_internal_value(base64_data)
+        except Exception as exc:
+            try:
+                b64decode(base64_data)
+            except binascii.Error as e:
+                if str(e) == 'Incorrect padding':
+                    raise ValidationError(_("The provided base64 data has incorrect padding"), code='incorrect-base64-padding')
+                raise ValidationError(str(e), code='invalid-base64')
+            raise exc
 
     def to_representation(self, file):
         is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
@@ -112,7 +132,7 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(serializers.Hyperlinked
     `EnkelvoudigInformatieObject`
 
     Needed because the canonical `EnkelvoudigInformatieObjectCanonical` no longer stores
-    the uuid, but the `EnkelvoudigInformatieObject`s related to it do
+    the uuid, but the `EnkelvoudigInformatieObject`\s related to it do
     store the uuid
     """
 
@@ -137,7 +157,11 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         view_name='enkelvoudiginformatieobject-detail',
         lookup_field='uuid'
     )
-    inhoud = AnyBase64File(view_name='enkelvoudiginformatieobject-download')
+    inhoud = AnyBase64File(
+        view_name='enkelvoudiginformatieobject-download',
+        help_text=_(f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes "
+                    f"(or {naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)})")
+    )
     bestandsomvang = serializers.IntegerField(
         source='inhoud.size', read_only=True, min_value=0,
         help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.")
@@ -190,7 +214,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         )
         extra_kwargs = {
             'informatieobjecttype': {
-                'validators': [URLValidator(get_auth=get_ztc_auth)],
+                'validators': [
+                    ResourceValidator('InformatieObjectType', settings.ZTC_API_SPEC, get_auth=get_ztc_auth)
+                ],
             },
             'taal': {
                 'min_length': 3,
@@ -425,7 +451,11 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [IsImmutableValidator()]
             }
         }
-        validators = [ObjectInformatieObjectValidator(), InformatieObjectUniqueValidator('object', 'informatieobject')]
+        validators = [
+            ObjectInformatieObjectValidator(),
+            InformatieObjectUniqueValidator('object', 'informatieobject')
+        ]
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -1,6 +1,7 @@
 import uuid
 from base64 import b64encode
 from datetime import datetime
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -31,7 +32,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
-    def _create_enkelvoudiginformatieobject(self, **HEADERS):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def _create_enkelvoudiginformatieobject(self, *mocks, **HEADERS):
         content = {
             'identificatie': uuid.uuid4().hex,
             'bronorganisatie': '159351741',
@@ -67,32 +70,6 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(informatieobject_create_audittrail.resultaat, 201)
         self.assertEqual(informatieobject_create_audittrail.oud, None)
         self.assertEqual(informatieobject_create_audittrail.nieuw, informatieobject_data)
-
-    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_create_objectinformatieobject_audittrail(self):
-        informatieobject = EnkelvoudigInformatieObjectFactory.create()
-
-        content = {
-            'informatieobject': reverse('enkelvoudiginformatieobject-detail', kwargs={'uuid': informatieobject.uuid}),
-            'object': ZAAK,
-            'objectType': ObjectTypes.zaak,
-        }
-
-        # Send to the API
-        objectinformatieobject_response = self.client.post(self.objectinformatieobject_list_url, content).data
-
-        informatieobject_url = objectinformatieobject_response['informatieobject']
-        audittrails = AuditTrail.objects.filter(hoofd_object=informatieobject_url)
-        self.assertEqual(audittrails.count(), 1)
-
-        # Verify that the audittrail for the ObjectInformatieObject creation
-        # contains the correct information
-        objectinformatieobject_create_audittrail = audittrails.get()
-        self.assertEqual(objectinformatieobject_create_audittrail.bron, 'DRC')
-        self.assertEqual(objectinformatieobject_create_audittrail.actie, 'create')
-        self.assertEqual(objectinformatieobject_create_audittrail.resultaat, 201)
-        self.assertEqual(objectinformatieobject_create_audittrail.oud, None)
-        self.assertEqual(objectinformatieobject_create_audittrail.nieuw, objectinformatieobject_response)
 
     def test_create_and_delete_gebruiksrechten_audittrail(self):
         informatieobject = EnkelvoudigInformatieObjectFactory.create()
@@ -133,7 +110,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(gebruiksrechten_delete_audittrail.oud, gebruiksrechten_response)
         self.assertEqual(gebruiksrechten_delete_audittrail.nieuw, None)
 
-    def test_update_enkelvoudiginformatieobject_audittrail(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_enkelvoudiginformatieobject_audittrail(self, *mocks):
         informatieobject_data = self._create_enkelvoudiginformatieobject()
         informatieobject_url = informatieobject_data['url']
 

@@ -175,7 +175,7 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
 
     The model is split into two parts to support versioning, now a single
     `EnkelvoudigInformatieObjectCanonical` can exist with multiple different
-    `EnkelvoudigInformatieObject`s, which can be retrieved by filtering
+    `EnkelvoudigInformatieObject`\s, which can be retrieved by filtering
     """
     canonical = models.ForeignKey(
         EnkelvoudigInformatieObjectCanonical,

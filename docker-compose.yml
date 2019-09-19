@@ -12,6 +12,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=drc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
+      - MIN_UPLOAD_SIZE=${MIN_UPLOAD_SIZE:-4294967296}
     depends_on:
       - db
 
@@ -20,6 +21,10 @@ services:
     ports:
       - 8000:80
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/mysite.template
+      - ./nginx/proxy:/etc/nginx/conf.d/proxy
+    environment:
+      - MIN_UPLOAD_SIZE=${MIN_UPLOAD_SIZE:-4294967296}
+    command: /bin/bash -c "envsubst '$$MIN_UPLOAD_SIZE' < /etc/nginx/conf.d/mysite.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
     depends_on:
       - web

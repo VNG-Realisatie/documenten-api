@@ -1,7 +1,4 @@
 from django.db import transaction
-from django.http.response import Http404
-from django.shortcuts import get_list_or_404, get_object_or_404
-from django.utils import dateparse, timezone
 from django.utils.translation import ugettext_lazy as _
 
 from drf_yasg import openapi
@@ -16,7 +13,6 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
-from vng_api_common.filters import Backend
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationDestroyMixin,
     NotificationViewSetMixin
@@ -25,8 +21,7 @@ from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.datamodel.models import (
-    EnkelvoudigInformatieObject, EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten, ObjectInformatieObject
+    EnkelvoudigInformatieObject, Gebruiksrechten, ObjectInformatieObject
 )
 
 from .audits import AUDIT_DRC
@@ -41,6 +36,8 @@ from .permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired
 )
+from .renderers import BinaryFileRenderer
+from .schema import EIOAutoSchema
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN, SCOPE_DOCUMENTEN_BIJWERKEN,
@@ -174,6 +171,13 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_DOCUMENTEN
     audit = AUDIT_DRC
 
+    swagger_schema = EIOAutoSchema
+
+    def get_renderers(self):
+        if self.action == 'download':
+            return [BinaryFileRenderer]
+        return super().get_renderers()
+
     @transaction.atomic
     def perform_destroy(self, instance):
         if instance.canonical.objectinformatieobject_set.exists():
@@ -199,7 +203,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
-        if self.action in ['update', 'partial_update']:
+        if getattr(self, 'action', None) in ['update', 'partial_update']:
             return EnkelvoudigInformatieObjectWithLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
@@ -309,11 +313,7 @@ class EnkelvoudigInformatieObjectViewSet(NotificationViewSetMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ObjectInformatieObjectViewSet(NotificationCreateMixin,
-                                    NotificationDestroyMixin,
-                                    AuditTrailCreateMixin,
-                                    AuditTrailDestroyMixin,
-                                    CheckQueryParamsMixin,
+class ObjectInformatieObjectViewSet(CheckQueryParamsMixin,
                                     ListFilterByAuthorizationsMixin,
                                     mixins.CreateModelMixin,
                                     mixins.DestroyModelMixin,
@@ -359,8 +359,6 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
     serializer_class = ObjectInformatieObjectSerializer
     filterset_class = ObjectInformatieObjectFilter
     lookup_field = 'uuid'
-    notifications_kanaal = KANAAL_DOCUMENTEN
-    notifications_main_resource_key = 'informatieobject'
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -370,8 +368,6 @@ class ObjectInformatieObjectViewSet(NotificationCreateMixin,
         'update': SCOPE_DOCUMENTEN_BIJWERKEN,
         'partial_update': SCOPE_DOCUMENTEN_BIJWERKEN,
     }
-    audit = AUDIT_DRC
-    audittrail_main_resource_key = 'informatieobject'
 
     def perform_destroy(self, instance):
         # destroy is only allowed if the remote relation does no longer exist, so check for that
@@ -400,8 +396,8 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.
 
     **Opmerkingen**
-    - Het toevoegen van gebruiksrechten zorgt ervoor dat de
-      `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
+      - Het toevoegen van gebruiksrechten zorgt ervoor dat de
+        `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
 
     list:
     Alle GEBRUIKSRECHTen opvragen.
@@ -427,9 +423,9 @@ class GebruiksrechtenViewSet(NotificationViewSetMixin,
     Verwijder een GEBRUIKSRECHT.
 
     **Opmerkingen**
-    - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
-      wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
-      `null` gezet.
+      - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
+        wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
+        `null` gezet.
     """
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer

@@ -32,3 +32,15 @@ SWAGGER_SETTINGS.update({
 })
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = '1.0'
+
+ztc_repo = 'vng-Realisatie/gemma-zaaktypecatalogus'
+ztc_commit = '3f672a7e1c03a2e415df4209b0e9fa7c32ce41e4'
+ZTC_API_SPEC = f'https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml'  # noqa
+
+zrc_repo = 'vng-Realisatie/gemma-zaakregistratiecomponent'
+zrc_commit = '8ea1950fe4ec2ad99504d345eba60a175eea3edf'
+ZRC_API_SPEC = f'https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml'  # noqa
+
+brc_repo = 'vng-Realisatie/gemma-besluitregistratiecomponent'
+brc_commit = '87dde6338e6417f307d1d935983ce50466d77f48'
+BRC_API_SPEC = f'https://raw.githubusercontent.com/{brc_repo}/{brc_commit}/src/openapi.yaml'  # noqa

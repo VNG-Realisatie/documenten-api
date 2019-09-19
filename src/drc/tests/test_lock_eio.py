@@ -1,6 +1,7 @@
 import tempfile
 import uuid
 from base64 import b64encode
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -98,7 +99,9 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'incorrect-lock-id')
 
-    def test_create_ignores_lock(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_ignores_lock(self, *mocks):
         url = get_operation_url('enkelvoudiginformatieobject_create')
         data = {
             'identificatie': uuid.uuid4().hex,
