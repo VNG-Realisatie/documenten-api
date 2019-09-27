@@ -1184,12 +1184,14 @@ paths:
       description: 'Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende
         versies,
 
-        samen met alle gerelateerde resources binnen deze API.
+        samen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk
+
+        als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
+
+        INFORMATIEOBJECT.
 
 
         **Gerelateerde resources**
-
-        - OBJECT-INFORMATIEOBJECT
 
         - GEBRUIKSRECHTen
 
