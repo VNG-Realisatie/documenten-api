@@ -13,7 +13,9 @@ from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
-from drc.datamodel.models import ObjectInformatieObject
+from drc.datamodel.models import (
+    EnkelvoudigInformatieObject, ObjectInformatieObject
+)
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse_lazy
@@ -288,6 +290,78 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
                 error = get_validation_errors(response, 'status')
                 self.assertEqual(error['code'], 'invalid_for_received')
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_status_definitief_forbidden(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving='beschrijving1',
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief
+        )
+
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid,
+        })
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f'{eio_url}/lock').data['lock']
+        eio_data.update({
+            'beschrijving': 'beschrijving2',
+            'inhoud': b64encode(b'aaaaa'),
+            'lock': lock
+        })
+
+        for i in ['integriteit', 'ondertekening']:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        data = response.json()
+        self.assertEqual(data["code"], "permission_denied")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_old_version_forbidden_if_latest_version_is_definitief(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving='beschrijving1',
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio2 = EnkelvoudigInformatieObjectFactory.create(
+            canonical=eio.canonical,
+            versie=2,
+            beschrijving='beschrijving1',
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief
+        )
+
+        eio_url = reverse('enkelvoudiginformatieobject-detail', kwargs={
+            'uuid': eio.uuid,
+        })
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f'{eio_url}/lock').data['lock']
+        eio_data.update({
+            'beschrijving': 'beschrijving2',
+            'inhoud': b64encode(b'aaaaa'),
+            'lock': lock
+        })
+
+        for i in ['integriteit', 'ondertekening']:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        data = response.json()
+        self.assertEqual(data["code"], "permission_denied")
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
