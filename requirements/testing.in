@@ -6,3 +6,4 @@ isort
 pep8
 pylint
 tblib
+requests-mock

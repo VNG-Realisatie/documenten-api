@@ -28,6 +28,7 @@ from vng_api_common.serializers import (
 from vng_api_common.utils import get_help_text
 from vng_api_common.validators import (
     IsImmutableValidator,
+    PublishValidator,
     ResourceValidator,
     URLValidator,
 )
@@ -246,7 +247,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         extra_kwargs = {
             "informatieobjecttype": {
                 "validators": [
-                    ResourceValidator(
+                    PublishValidator(
                         "InformatieObjectType",
                         settings.ZTC_API_SPEC,
                         get_auth=get_ztc_auth,
