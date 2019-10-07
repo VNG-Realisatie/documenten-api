@@ -28,7 +28,8 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
 
     list_url = reverse(ObjectInformatieObject)
 
-    def test_create_with_objecttype_zaak(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_with_objecttype_zaak(self, *mocks):
         eio = EnkelvoudigInformatieObjectFactory.create()
         eio_url = reverse(
             "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
@@ -48,7 +49,8 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         zio = eio.canonical.objectinformatieobject_set.get()
         self.assertEqual(zio.object, ZAAK)
 
-    def test_create_with_objecttype_besluit(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_with_objecttype_besluit(self, *mocks):
         eio = EnkelvoudigInformatieObjectFactory.create()
         eio_url = reverse(
             "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
@@ -68,7 +70,8 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         bio = eio.canonical.objectinformatieobject_set.get()
         self.assertEqual(bio.object, BESLUIT)
 
-    def test_duplicate_object(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_duplicate_object(self, *mocks):
         """
         Test the (informatieobject, object) unique together validation.
         """

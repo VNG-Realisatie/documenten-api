@@ -333,6 +333,9 @@ if SENTRY_DSN:
             }
         }
     )
+    LOGGING["loggers"].update(
+        {"sentry": {"handlers": ["sentry"], "level": "DEBUG", "propagate": True}}
+    )
 
 #
 # SSL or not?
@@ -355,3 +358,7 @@ MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2 ** 30))
 CHUNK_SIZE = 4 * 2 ** 30  # 4 GB
 READ_CHUNK = 6 * 2 ** 20  # 6 MB
 DEFAULT_EXTENSION = "bin"
+
+# Relevant for multipart parser, which comes into play with file uploads in the
+# next version.
+DATA_UPLOAD_MAX_MEMORY_SIZE = MIN_UPLOAD_SIZE

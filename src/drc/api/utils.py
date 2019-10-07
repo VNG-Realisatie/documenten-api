@@ -1,6 +1,5 @@
 import os
 import shutil
-import uuid
 
 from django.conf import settings
 from django.contrib.sites.models import Site
