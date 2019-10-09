@@ -351,9 +351,9 @@ class EnkelvoudigInformatieObjectWithLockSerializer(EnkelvoudigInformatieObjectS
             )
 
         if self.instance.canonical.latest_version.status == Statussen.definitief:
-            raise exceptions.PermissionDenied(_(
+            raise serializers.ValidationError(_(
                 "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
-            ))
+            ), code="modify-status-definitief")
 
         return valid_attrs
 

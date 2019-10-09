@@ -318,10 +318,10 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        data = response.json()
-        self.assertEqual(data["code"], "permission_denied")
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
@@ -358,10 +358,10 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        data = response.json()
-        self.assertEqual(data["code"], "permission_denied")
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
