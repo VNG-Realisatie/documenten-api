@@ -80,6 +80,7 @@ REGISTRATIE_QUERY_PARAM = openapi.Parameter(
 
 class EnkelvoudigInformatieObjectViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
@@ -445,6 +446,7 @@ class ObjectInformatieObjectViewSet(
 
 class GebruiksrechtenViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
