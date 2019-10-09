@@ -1,15 +1,12 @@
-import logging
 from collections import OrderedDict
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import exceptions, serializers
 from vng_api_common.models import APICredential
-from vng_api_common.tests.urls import reverse
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
 
@@ -18,8 +15,6 @@ from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
 from .utils import get_absolute_url
-
-sentry = logging.getLogger("sentry")
 
 
 class StatusValidator:
@@ -126,10 +121,6 @@ class RemoteRelationValidator:
 
         resource = f"{object_informatie_object.object_type}informatieobject"
 
-        sentry.info(
-            f"Besluit url: {object_url} Client {client} {settings.ZDS_CLIENT_CLASS}"
-        )
-
         try:
             relations = client.list(
                 resource,
@@ -143,7 +134,6 @@ class RemoteRelationValidator:
                 exc.args[0], code="relation-lookup-error"
             ) from exc
 
-        sentry.info(f"Relations {relations}")
         if len(relations) >= 1:
             raise serializers.ValidationError(self.message, code=self.code)
 
