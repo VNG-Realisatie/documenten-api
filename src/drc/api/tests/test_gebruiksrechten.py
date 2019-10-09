@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin, get_validation_errors
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, get_validation_errors
 
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectCanonicalFactory,
@@ -103,3 +103,14 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
         eio_data = self.client.get(eio_url).json()
         self.assertIsNone(eio_data["indicatieGebruiksrecht"])
+
+    def test_validate_unknown_query_params(self):
+        GebruiksrechtenFactory.create_batch(2)
+        url = get_operation_url("gebruiksrechten_list")
+
+        response = self.client.get(url, {"someparam": "somevalue"})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "unknown-parameters")

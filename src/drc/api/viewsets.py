@@ -11,17 +11,11 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin,
-    AuditTrailDestroyMixin,
     AuditTrailViewSet,
     AuditTrailViewsetMixin,
 )
 from vng_api_common.caching import conditional_retrieve
-from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin,
-    NotificationDestroyMixin,
-    NotificationViewSetMixin,
-)
+from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -87,6 +81,7 @@ REGISTRATIE_QUERY_PARAM = openapi.Parameter(
 @conditional_retrieve()
 class EnkelvoudigInformatieObjectViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
@@ -126,6 +121,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
@@ -138,6 +134,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
@@ -146,10 +143,11 @@ class EnkelvoudigInformatieObjectViewSet(
     Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
 
     Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,
-    samen met alle gerelateerde resources binnen deze API.
+    samen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk
+    als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
+    INFORMATIEOBJECT.
 
     **Gerelateerde resources**
-    - OBJECT-INFORMATIEOBJECT
     - GEBRUIKSRECHTen
     - audit trail regels
 
@@ -456,6 +454,7 @@ class ObjectInformatieObjectViewSet(
 @conditional_retrieve()
 class GebruiksrechtenViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,

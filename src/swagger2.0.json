@@ -1259,7 +1259,7 @@
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1475,7 +1475,7 @@
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1691,7 +1691,7 @@
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
                 "summary": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.",
-                "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API.\n\n**Gerelateerde resources**\n- OBJECT-INFORMATIEOBJECT\n- GEBRUIKSRECHTen\n- audit trail regels",
+                "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk\nals er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)\nINFORMATIEOBJECT.\n\n**Gerelateerde resources**\n- GEBRUIKSRECHTen\n- audit trail regels",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",

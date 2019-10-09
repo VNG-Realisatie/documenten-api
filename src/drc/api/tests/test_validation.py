@@ -265,6 +265,86 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
                 error = get_validation_errors(response, "status")
                 self.assertEqual(error["code"], "invalid_for_received")
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_status_definitief_forbidden(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1",
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        eio_data.update(
+            {
+                "beschrijving": "beschrijving2",
+                "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
+                "lock": lock,
+            }
+        )
+
+        for i in ["integriteit", "ondertekening"]:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_old_version_forbidden_if_latest_version_is_definitief(
+        self, *mocks
+    ):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1", informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
+
+        eio2 = EnkelvoudigInformatieObjectFactory.create(
+            canonical=eio.canonical,
+            versie=2,
+            beschrijving="beschrijving1",
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        eio_data.update(
+            {
+                "beschrijving": "beschrijving2",
+                "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
+                "lock": lock,
+            }
+        )
+
+        for i in ["integriteit", "ondertekening"]:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
+
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
