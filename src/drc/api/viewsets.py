@@ -114,6 +114,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
@@ -126,6 +127,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
