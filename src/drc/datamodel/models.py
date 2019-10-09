@@ -1,6 +1,7 @@
 import logging
 import uuid as _uuid
 
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
@@ -255,8 +256,9 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
             "informatieobject is vastgelegd, inclusief extensie."
         ),
     )
-    bestandsomvang = models.PositiveIntegerField(
+    bestandsomvang = models.BigIntegerField(
         _("bestandsomvang"),
+        validators=[MinValueValidator(0)],
         null=True,
         help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt."),
     )
@@ -450,8 +452,9 @@ class BestandsDeel(models.Model):
     volgnummer = models.PositiveIntegerField(
         help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
     )
-    omvang = models.PositiveIntegerField(
-        help_text=_("De grootte van dit specifieke bestandsdeel.")
+    omvang = models.BigIntegerField(
+        validators=[MinValueValidator(0)],
+        help_text=_("De grootte van dit specifieke bestandsdeel."),
     )
     inhoud = PrivateMediaFileField(
         upload_to="part-uploads/%Y/%m/",

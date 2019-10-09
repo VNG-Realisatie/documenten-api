@@ -629,13 +629,13 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             # create the name of target file using the storage backend to the serializer
             name = create_filename(self.instance.bestandsnaam)
             file_field = self.instance._meta.get_field("inhoud")
-            rel_path = file_field.generate_filename(self.instance, name)
-            file_name = os.path.basename(rel_path)
+            rel_name = file_field.generate_filename(self.instance, name)
+            rel_path, file_name = os.path.split(rel_name)
             # merge files
-            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, file_name)
+            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, rel_path)
             target_file = merge_files(part_files, file_dir, file_name)
             # save full file to the instance FileField
-            with open(target_file) as file_obj:
+            with open(target_file, "rb") as file_obj:
                 self.instance.inhoud.save(file_name, File(file_obj))
         else:
             self.instance.bestandsomvang = None
