@@ -87,6 +87,7 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - geldigheid `informatieobjecttype` URL
+    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
 
     list:
     Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.
@@ -114,6 +115,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
     - status NIET `definitief`
 
     *TODO*
@@ -127,6 +129,7 @@ class EnkelvoudigInformatieObjectViewSet(
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
     - geldigheid `informatieobjecttype` URL
+    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
     - status NIET `definitief`
 
     *TODO*

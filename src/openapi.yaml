@@ -223,7 +223,10 @@ paths:
       summary: Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.
       description: '**Er wordt gevalideerd op**
 
-        - geldigheid `informatieobjecttype` URL'
+        - geldigheid `informatieobjecttype` URL
+
+        - `informatieobjecttype` being published (`informatieobjecttype.concept` =
+        False)'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -825,8 +828,9 @@ paths:
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
       description: "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
         \ INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
-        - geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n\
-        - valideer immutable attributes"
+        - geldigheid `informatieobjecttype` URL\n- `informatieobjecttype` being published\
+        \ (`informatieobjecttype.concept` = False)\n- status NIET `definitief`\n\n\
+        *TODO*\n- valideer immutable attributes"
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -1005,8 +1009,9 @@ paths:
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
       description: "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
         \ INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
-        - geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n\
-        - valideer immutable attributes"
+        - geldigheid `informatieobjecttype` URL\n- `informatieobjecttype` being published\
+        \ (`informatieobjecttype.concept` = False)\n- status NIET `definitief`\n\n\
+        *TODO*\n- valideer immutable attributes"
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
