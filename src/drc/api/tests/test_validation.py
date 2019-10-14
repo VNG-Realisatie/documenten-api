@@ -81,7 +81,9 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_validate_informatieobjecttype_unpublished(self, *mocks):
-        responses = {INFORMATIEOBJECTTYPE: {"url": INFORMATIEOBJECTTYPE, 'concept': True}}
+        responses = {
+            INFORMATIEOBJECTTYPE: {"url": INFORMATIEOBJECTTYPE, "concept": True}
+        }
         url = reverse("enkelvoudiginformatieobject-list")
 
         with requests_mock.Mocker() as m:
