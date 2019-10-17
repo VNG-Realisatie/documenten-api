@@ -242,7 +242,7 @@
             "post": {
                 "operationId": "enkelvoudiginformatieobject_create",
                 "summary": "Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid `informatieobjecttype` URL",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen\n  worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype` - `concept` moet `false` zijn",
                 "parameters": [
                     {
                         "name": "data",
@@ -962,7 +962,7 @@
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen\n  worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype` - `concept` moet `false` zijn\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
@@ -1178,7 +1178,7 @@
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen\n  worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype` - `concept` moet `false` zijn\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
                 "parameters": [
                     {
                         "name": "data",
