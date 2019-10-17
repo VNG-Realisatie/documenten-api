@@ -86,8 +86,9 @@ class EnkelvoudigInformatieObjectViewSet(
     Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.
 
     **Er wordt gevalideerd op**
-    - geldigheid `informatieobjecttype` URL
-    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
 
     list:
     Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.
@@ -114,8 +115,9 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL
-    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
     - status NIET `definitief`
 
     *TODO*
@@ -128,8 +130,9 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL
-    - `informatieobjecttype` being published (`informatieobjecttype.concept` = False)
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
     - status NIET `definitief`
 
     *TODO*
