@@ -225,9 +225,10 @@ class EnkelvoudigInformatieObjectViewSet(
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
-        if getattr(self, "action", None) in ["update", "partial_update"]:
+        action = getattr(self, "action", None)
+        if action in ["update", "partial_update"]:
             return EnkelvoudigInformatieObjectWithLockSerializer
-        elif self.action == "create":
+        elif action == "create":
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
