@@ -10,7 +10,10 @@ def rewrite_file_size(apps, schema_editor):
 
     docs = EnkelvoudigInformatieObject.objects.all()
     for doc in docs:
-        doc.bestandsomvang = doc.inhoud.size
+        if not doc.inhoud.storage.exists(doc.inhoud.name):
+            doc.bestandsomvang = 0
+        else:
+            doc.bestandsomvang = doc.inhoud.size
         doc.save()
 
 
