@@ -7,3 +7,4 @@ isort
 pyquery
 tblib
 webtest
+requests-mock

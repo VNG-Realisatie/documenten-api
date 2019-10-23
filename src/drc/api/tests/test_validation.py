@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -74,6 +75,25 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "informatieobjecttype")
         self.assertEqual(error["code"], "invalid-resource")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_validate_informatieobjecttype_unpublished(self, *mocks):
+        responses = {
+            INFORMATIEOBJECTTYPE: {"url": INFORMATIEOBJECTTYPE, "concept": True}
+        }
+        url = reverse("enkelvoudiginformatieobject-list")
+
+        with requests_mock.Mocker() as m:
+            m.get(INFORMATIEOBJECTTYPE, json=responses[INFORMATIEOBJECTTYPE])
+            with mock_client(responses):
+                response = self.client.post(
+                    url, {"informatieobjecttype": INFORMATIEOBJECTTYPE}
+                )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "informatieobjecttype")
+        self.assertEqual(error["code"], "not-published")
 
     def test_link_fetcher_cannot_connect(self):
         url = reverse("enkelvoudiginformatieobject-list")
