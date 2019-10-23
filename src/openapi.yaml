@@ -3397,6 +3397,7 @@ components:
             plaatsgevonden.
           type: string
           format: date
+      nullable: true
     Integriteit:
       title: integriteit
       description: Uitdrukking van mate van volledigheid en onbeschadigd zijn van
@@ -3466,6 +3467,7 @@ components:
           description: Datum waarop de checksum is gemaakt.
           type: string
           format: date
+      nullable: true
     EnkelvoudigInformatieObject:
       required:
       - bronorganisatie

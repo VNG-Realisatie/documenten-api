@@ -43,7 +43,7 @@ markupsafe==1.0           # via jinja2
 oyaml==0.7                # via vng-api-common
 packaging==19.0           # via sphinx
 pillow==5.2.0
-pip-tools==4.0.0
+pip-tools==4.2.0
 psycopg2-binary==2.7.5
 pygments==2.3.1           # via sphinx
 pyjwt==1.6.4              # via gemma-zds-client, vng-api-common
@@ -64,7 +64,7 @@ sqlparse==0.3.0           # via django
 unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.3           # via requests
-vng-api-common==1.0.21
+vng-api-common==1.0.23
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools==41.4.0        # via markdown, sphinx

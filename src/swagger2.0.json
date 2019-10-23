@@ -3986,7 +3986,8 @@
                     "type": "string",
                     "format": "date"
                 }
-            }
+            },
+            "x-nullable": true
         },
         "Integriteit": {
             "title": "integriteit",
@@ -4031,7 +4032,8 @@
                     "type": "string",
                     "format": "date"
                 }
-            }
+            },
+            "x-nullable": true
         },
         "EnkelvoudigInformatieObject": {
             "required": [
