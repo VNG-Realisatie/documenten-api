@@ -39,16 +39,16 @@ mag zijn.
 
 _Nieuw in 1.1.0_
 
-Bestanden kunnen groter zijn dan de minimale bestandslimiet die door providers
-ondersteunt moet worden. De consumer moet dan:
+Bestanden kunnen groter zijn dan de minimale die door providers
+ondersteund moet worden. De consumer moet dan:
 
 1. Het INFORMATIEOBJECT aanmaken in de API, waarbij de totale bestandsgrootte
    meegestuurd wordt en de inhoud leeggelaten wordt.
    De API antwoordt met een lijst van BESTANDSDEELen, elk met een volgnummer
    en bestandsgrootte. De API lockt tegelijkertijd het INFORMATIEOBJECT.
-2. Het bestand opsplitsen - ieder BESTANDSDEEL moet de bestandsgrootte hebben
-   zoals dit aangegeven werd in de response.
-3. Voor elk stuk van het bestand moet de binaire data naar de overeenkomstige
+2. Het bestand opsplitsen: ieder BESTANDSDEEL moet de bestandsgrootte hebben
+   zoals dit aangegeven werd in de response bij 1.
+3. Voor elk stuk van het bestand de binaire data naar de overeenkomstige
    BESTANDSDEEL-url gestuurd worden, samen met het lock ID.
 4. Het INFORMATIEOBJECT unlocken. De provider valideert op dat moment dat alle
    bestandsdelen correct opgestuurd werden, en voegt deze samen tot het
