@@ -7,8 +7,9 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 
 INFORMATIEOBJECTTYPE = (
@@ -68,3 +69,23 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                 },
             },
         )
+
+    @patch("zds_client.Client.from_url")
+    def test_send_notif_create_gebruiksrechten(self, mock_client):
+        client = mock_client.return_value
+
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(eio)
+        api_url = get_operation_url("gebruiksrechten_create")
+
+        response = self.client.post(
+            api_url,
+            {
+                "informatieobject": f"http://testserver{eio_url}",
+                "startdatum": "2019-10-22T00:00:00Z",
+                "omschrijvingVoorwaarden": "mlem",
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        client.create.assert_called_once()
