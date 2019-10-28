@@ -114,3 +114,22 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "unknown-parameters")
+
+    def test_filter_invalid_resource_url(self):
+        GebruiksrechtenFactory.create()
+        url = get_operation_url("gebruiksrechten_list")
+
+        bad_urls = [
+            "https://google.nl",
+            "https://example.com/",
+            "https://example.com/404",
+        ]
+        for bad_url in bad_urls:
+            with self.subTest(bad_url=bad_url):
+                response = self.client.get(
+                    url,
+                    {"informatieobject": bad_url},
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(len(response.data), 0)
