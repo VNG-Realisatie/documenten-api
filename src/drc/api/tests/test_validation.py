@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -13,7 +14,7 @@ from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
-from drc.datamodel.models import ObjectInformatieObject
+from drc.datamodel.models import EnkelvoudigInformatieObject, ObjectInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse_lazy
@@ -74,6 +75,25 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "informatieobjecttype")
         self.assertEqual(error["code"], "invalid-resource")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_validate_informatieobjecttype_unpublished(self, *mocks):
+        responses = {
+            INFORMATIEOBJECTTYPE: {"url": INFORMATIEOBJECTTYPE, "concept": True}
+        }
+        url = reverse("enkelvoudiginformatieobject-list")
+
+        with requests_mock.Mocker() as m:
+            m.get(INFORMATIEOBJECTTYPE, json=responses[INFORMATIEOBJECTTYPE])
+            with mock_client(responses):
+                response = self.client.post(
+                    url, {"informatieobjecttype": INFORMATIEOBJECTTYPE}
+                )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "informatieobjecttype")
+        self.assertEqual(error["code"], "not-published")
 
     def test_link_fetcher_cannot_connect(self):
         url = reverse("enkelvoudiginformatieobject-list")
@@ -262,6 +282,84 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
                 error = get_validation_errors(response, "status")
                 self.assertEqual(error["code"], "invalid_for_received")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_status_definitief_forbidden(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1",
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        eio_data.update(
+            {
+                "beschrijving": "beschrijving2",
+                "inhoud": b64encode(b"aaaaa"),
+                "lock": lock,
+            }
+        )
+
+        for i in ["integriteit", "ondertekening"]:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_old_version_forbidden_if_latest_version_is_definitief(
+        self, *mocks
+    ):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1", informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
+
+        eio2 = EnkelvoudigInformatieObjectFactory.create(
+            canonical=eio.canonical,
+            versie=2,
+            beschrijving="beschrijving1",
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        eio_data.update(
+            {
+                "beschrijving": "beschrijving2",
+                "inhoud": b64encode(b"aaaaa"),
+                "lock": lock,
+            }
+        )
+
+        for i in ["integriteit", "ondertekening"]:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
 
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):

@@ -2,6 +2,26 @@
 Wijzigingen
 ===========
 
+1.0.0-rc2 bugfixes (2019-11-04)
+===============================
+
+Fixes of defects found in RC2
+
+* Added querystring parameter checks to endpoints for unknown params
+* Improved documentation on which validations apply where
+* Fixed schema of ``GegevensGroep`` which may often be ``null``
+
+Breaking changes
+----------------
+
+* ``PUT`` and ``PATCH`` calls are now blocked if
+  ``EnkelvoudigInformatieObject.status`` is ``definitief``
+* ``EnkelvoudigInformatieObject.informatieobjecttype`` must now be published,
+  added validator
+* Filtering on bad/unexpected URLs now returns an empty result list instead of
+  validation errors
+
+
 1.0.0-rc2 (2019-09-19)
 ======================
 

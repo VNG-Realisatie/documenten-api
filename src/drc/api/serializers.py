@@ -17,7 +17,7 @@ import six
 from drf_extra_fields.fields import Base64FieldMixin, Base64FileField
 from humanize import naturalsize
 from privates.storages import PrivateMediaFileSystemStorage
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 from rest_framework.reverse import reverse
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
@@ -28,6 +28,7 @@ from vng_api_common.serializers import (
 from vng_api_common.utils import get_help_text
 from vng_api_common.validators import (
     IsImmutableValidator,
+    PublishValidator,
     ResourceValidator,
     URLValidator,
 )
@@ -246,7 +247,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         extra_kwargs = {
             "informatieobjecttype": {
                 "validators": [
-                    ResourceValidator(
+                    PublishValidator(
                         "InformatieObjectType",
                         settings.ZTC_API_SPEC,
                         get_auth=get_ztc_auth,
@@ -401,6 +402,15 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
             raise serializers.ValidationError(
                 _("Lock id is not correct"), code="incorrect-lock-id"
             )
+
+        if self.instance.canonical.latest_version.status == Statussen.definitief:
+            raise serializers.ValidationError(
+                _(
+                    "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
+                ),
+                code="modify-status-definitief",
+            )
+
         return valid_attrs
 
 

@@ -10,16 +10,10 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin,
-    AuditTrailDestroyMixin,
     AuditTrailViewSet,
     AuditTrailViewsetMixin,
 )
-from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin,
-    NotificationDestroyMixin,
-    NotificationViewSetMixin,
-)
+from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -80,6 +74,7 @@ REGISTRATIE_QUERY_PARAM = openapi.Parameter(
 
 class EnkelvoudigInformatieObjectViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
@@ -91,7 +86,9 @@ class EnkelvoudigInformatieObjectViewSet(
     Maak een (ENKELVOUDIG) INFORMATIEOBJECT aan.
 
     **Er wordt gevalideerd op**
-    - geldigheid `informatieobjecttype` URL
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
 
     list:
     Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.
@@ -118,7 +115,10 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
@@ -130,7 +130,10 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL
+    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
+      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
+    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
+    - status NIET `definitief`
 
     *TODO*
     - valideer immutable attributes
@@ -139,10 +142,11 @@ class EnkelvoudigInformatieObjectViewSet(
     Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
 
     Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,
-    samen met alle gerelateerde resources binnen deze API.
+    samen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk
+    als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
+    INFORMATIEOBJECT.
 
     **Gerelateerde resources**
-    - OBJECT-INFORMATIEOBJECT
     - GEBRUIKSRECHTen
     - audit trail regels
 
@@ -220,7 +224,7 @@ class EnkelvoudigInformatieObjectViewSet(
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
-        if getattr(self, "action", None) in ["update", "partial_update"]:
+        if self.action in ["update", "partial_update"]:
             return EnkelvoudigInformatieObjectWithLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
@@ -445,6 +449,7 @@ class ObjectInformatieObjectViewSet(
 
 class GebruiksrechtenViewSet(
     NotificationViewSetMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
