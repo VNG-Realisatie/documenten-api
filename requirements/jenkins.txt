@@ -52,7 +52,7 @@ mccabe==0.6.1             # via pylint
 oyaml==0.7
 packaging==19.0
 pep8==1.7.1
-pillow==5.2.0
+pillow==6.2.1
 pip-tools==4.2.0
 psycopg2-binary==2.7.5
 pygments==2.3.1
@@ -82,4 +82,4 @@ vng-api-common==1.0.28
 wrapt==1.10.11            # via astroid
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.5.0        # via markdown, sphinx
+# setuptools==41.6.0        # via markdown, sphinx
