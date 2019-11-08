@@ -52,7 +52,7 @@ pyparsing==2.3.1          # via packaging
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
-pyyaml==3.12              # via gemma-zds-client, oyaml, vng-api-common
+pyyaml==5.1.2             # via gemma-zds-client, oyaml, vng-api-common
 raven==6.9.0
 requests==2.21            # via coreapi, gemma-zds-client, sphinx, vng-api-common
 ruamel.yaml==0.15.40      # via drf-yasg

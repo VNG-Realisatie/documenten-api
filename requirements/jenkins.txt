@@ -63,7 +63,7 @@ pyparsing==2.3.1
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
-pyyaml==3.12
+pyyaml==5.1.2
 raven==6.9.0
 requests-mock==1.7.0
 requests==2.21
