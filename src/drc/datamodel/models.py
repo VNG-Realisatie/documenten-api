@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from privates.fields import PrivateMediaFileField
 from vng_api_common.caching import ETagMixin
-from vng_api_common.constants import ObjectTypes
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import RSINField, VertrouwelijkheidsAanduidingField
 from vng_api_common.models import APIMixin
@@ -17,7 +16,12 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
+from .constants import (
+    ChecksumAlgoritmes,
+    ObjectInformatieObjectTypes,
+    OndertekeningSoorten,
+    Statussen,
+)
 from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
 
@@ -408,7 +412,7 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     object_type = models.CharField(
         "objecttype",
         max_length=100,
-        choices=ObjectTypes.choices,
+        choices=ObjectInformatieObjectTypes.choices,
         help_text="Het type van het gerelateerde OBJECT.",
     )
 
