@@ -4548,7 +4548,9 @@ components:
 
             * `drc` - Documentregistratiecomponent
 
-            * `brc` - Besluitregistratiecomponent'
+            * `brc` - Besluitregistratiecomponent
+
+            * `kcc` - Klantcontactcomponent'
           type: string
           enum:
           - ac
@@ -4557,6 +4559,7 @@ components:
           - ztc
           - drc
           - brc
+          - kcc
         requestId:
           title: Request id
           description: Een globaal "request" ID om een verzoek door het netwerk heen
@@ -4995,3 +4998,4 @@ components:
           enum:
           - besluit
           - zaak
+          - verzoek
