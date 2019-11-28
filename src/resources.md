@@ -82,7 +82,7 @@ Uitleg bij mogelijke waarden:
 * `ztc` - Zaaktypecatalogus
 * `drc` - Documentregistratiecomponent
 * `brc` - Besluitregistratiecomponent
-* `kcc` - Klantcontactcomponent | string | ja | C​R​U​D |
+* `kic` - Klantinteractiescomponent | string | ja | C​R​U​D |
 | requestId | Een globaal &quot;request&quot; ID om een verzoek door het netwerk heen te traceren. | string | nee | C​R​U​D |
 | applicatieId | Unieke identificatie van de applicatie, binnen de organisatie. | string | nee | C​R​U​D |
 | applicatieWeergave | Vriendelijke naam van de applicatie. | string | nee | C​R​U​D |

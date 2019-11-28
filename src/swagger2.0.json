@@ -5091,7 +5091,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent\n* `kcc` - Klantcontactcomponent",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent\n* `kic` - Klantinteractiescomponent",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -5100,7 +5100,7 @@
                         "ztc",
                         "drc",
                         "brc",
-                        "kcc"
+                        "kic"
                     ]
                 },
                 "requestId": {
@@ -5505,5 +5505,19 @@
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "enkelvoudiginformatieobjecten",
+            "description": ""
+        },
+        {
+            "name": "gebruiksrechten",
+            "description": ""
+        },
+        {
+            "name": "objectinformatieobjecten",
+            "description": "Het betreft een relatie tussen een willekeurig OBJECT, bijvoorbeeld een\nZAAK in de Zaken API, en een INFORMATIEOBJECT."
+        }
+    ]
 }
