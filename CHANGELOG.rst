@@ -2,6 +2,31 @@
 Wijzigingen
 ===========
 
+1.0.1 (2019-12-16)
+==================
+
+API spec bugfix release. There are some fixes and clarifications in the API
+spec compared to 1.0.0. Additionally, some bugfixes without effect on the API
+spec have been carried out.
+
+API spec changes
+----------------
+
+* Fix ``EnkelvoudigInformatieObject`` validations documentation:
+    - ``EnkelvoudigInformatieObject.informatieobjecttype`` is immutable
+    - ``EnkelvoudigInformatieObject.informatieobjecttype`` is validated against
+      ZTC API spec on ``enkelvoudiginformatieobject_create``
+
+Implementation changes
+----------------------
+
+* Fix passing the port from nginx to django
+
+1.0.0 final (2019-11-18)
+========================
+
+:tada: Final 1.0.0 API spec release
+
 1.0.0-rc2 bugfixes (2019-11-04)
 ===============================
 
