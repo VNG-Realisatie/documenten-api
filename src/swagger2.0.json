@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.0.0"
+        "version": "1.0.1"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -962,7 +962,7 @@
             "put": {
                 "operationId": "enkelvoudiginformatieobject_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen\n  worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype` - `concept` moet `false` zijn\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`",
                 "parameters": [
                     {
                         "name": "data",
@@ -1178,7 +1178,7 @@
             "patch": {
                 "operationId": "enkelvoudiginformatieobject_partial_update",
                 "summary": "Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.",
-                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen\n  worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype` - `concept` moet `false` zijn\n- status NIET `definitief`\n\n*TODO*\n- valideer immutable attributes",
+                "description": "Dit cre\u00ebert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n- het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`",
                 "parameters": [
                     {
                         "name": "data",

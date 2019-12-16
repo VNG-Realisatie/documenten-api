@@ -115,13 +115,8 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
-      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
-    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
+    - het `informatieobjecttype` mag niet gewijzigd worden
     - status NIET `definitief`
-
-    *TODO*
-    - valideer immutable attributes
 
     partial_update:
     Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
@@ -130,13 +125,8 @@ class EnkelvoudigInformatieObjectViewSet(
 
     **Er wordt gevalideerd op**
     - correcte `lock` waarde
-    - geldigheid `informatieobjecttype` URL - de resource moet opgevraagd kunnen
-      worden uit de catalogi API en de vorm van een INFORMATIEOBJECTTYPE hebben.
-    - publicatie `informatieobjecttype` - `concept` moet `false` zijn
+    - het `informatieobjecttype` mag niet gewijzigd worden
     - status NIET `definitief`
-
-    *TODO*
-    - valideer immutable attributes
 
     destroy:
     Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.

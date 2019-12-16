@@ -247,6 +247,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         extra_kwargs = {
             "informatieobjecttype": {
                 "validators": [
+                    IsImmutableValidator(),
                     PublishValidator(
                         "InformatieObjectType",
                         settings.ZTC_API_SPEC,
