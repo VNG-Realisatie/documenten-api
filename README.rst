@@ -48,7 +48,7 @@ References
 
 .. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=develop
     :alt: Build status
-    :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=develop
+    :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
