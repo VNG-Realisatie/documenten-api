@@ -359,3 +359,6 @@ MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2 ** 30))  # 4GB
 # Relevant for multipart parser, which comes into play with file uploads in the
 # next version.
 DATA_UPLOAD_MAX_MEMORY_SIZE = MIN_UPLOAD_SIZE
+
+# URL for documentation that's shown in API schema
+DOCUMENTATION_URL = "https://vng-realisatie.github.io/gemma-zaken"

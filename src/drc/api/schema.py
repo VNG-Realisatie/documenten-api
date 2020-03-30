@@ -58,8 +58,8 @@ genereren.
 
 **Handige links**
 
-* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
-* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
+* [Documentatie]({settings.DOCUMENTATION_URL}/standaard)
+* [Zaakgericht werken]({settings.DOCUMENTATION_URL})
 """
 
 info = openapi.Info(
@@ -67,8 +67,7 @@ info = openapi.Info(
     default_version=settings.API_VERSION,
     description=description,
     contact=openapi.Contact(
-        email="standaarden.ondersteuning@vng.nl",
-        url="https://zaakgerichtwerken.vng.cloud",
+        email="standaarden.ondersteuning@vng.nl", url=settings.DOCUMENTATION_URL,
     ),
     license=openapi.License(
         name="EUPL 1.2", url="https://opensource.org/licenses/EUPL-1.2"
