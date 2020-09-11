@@ -79,7 +79,8 @@ class AnyBase64File(Base64FileField):
                         code="incorrect-base64-padding",
                     )
                 raise ValidationError(str(e), code="invalid-base64")
-            raise exc
+            except TypeError as exc:
+                raise ValidationError(str(exc))
 
     def to_representation(self, file):
         is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)

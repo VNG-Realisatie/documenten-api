@@ -46,9 +46,9 @@ References
 * `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
 
 
-.. |build-status| image:: http://jenkins.nlx.io/buildStatus/icon?job=gemma-documentregistratiecomponent-stable
+.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=develop
     :alt: Build status
-    :target: http://jenkins.nlx.io/job/gemma-documentregistratiecomponent-stable
+    :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
