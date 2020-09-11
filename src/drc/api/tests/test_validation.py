@@ -14,7 +14,7 @@ from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
 from drc.datamodel.constants import OndertekeningSoorten, Statussen
-from drc.datamodel.models import EnkelvoudigInformatieObject, ObjectInformatieObject
+from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse_lazy
@@ -165,6 +165,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
             "bestandsnaam": "dummy.txt",
             # Remove padding from the base64 data
             "inhoud": b64encode(b"some file content").decode("utf-8")[:-1],
+            "bestandsomvang": 17,
             "link": "http://een.link",
             "beschrijving": "test_beschrijving",
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
@@ -194,8 +195,8 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
             "formaat": "txt",
             "taal": "eng",
             "bestandsnaam": "dummy.txt",
-            # Remove padding from the base64 data
             "inhoud": b64encode(b"some file content").decode("utf-8"),
+            "bestandsomvang": 17,
             "link": "http://een.link",
             "beschrijving": "test_beschrijving",
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
@@ -232,6 +233,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
             "auteur": "dummy",
             "taal": "nld",
             "inhoud": "aGVsbG8gd29ybGQ=",
+            "bestandsomvang": 17,
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
             "ontvangstdatum": "2018-12-24",
         }
@@ -304,6 +306,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
             {
                 "beschrijving": "beschrijving2",
                 "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
                 "lock": lock,
             }
         )
@@ -347,6 +350,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
             {
                 "beschrijving": "beschrijving2",
                 "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
                 "lock": lock,
             }
         )
