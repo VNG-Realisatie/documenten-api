@@ -521,9 +521,9 @@ class EnkelvoudigInformatieObjectCreateLockSerializer(
     EnkelvoudigInformatieObjectSerializer
 ):
     """
-   This serializer class is used by EnkelvoudigInformatieObjectViewSet for
-   create operation for large files
-   """
+    This serializer class is used by EnkelvoudigInformatieObjectViewSet for
+    create operation for large files
+    """
 
     lock = serializers.CharField(
         read_only=True,
