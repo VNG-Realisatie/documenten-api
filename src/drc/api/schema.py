@@ -67,7 +67,8 @@ info = openapi.Info(
     default_version=settings.API_VERSION,
     description=description,
     contact=openapi.Contact(
-        email="standaarden.ondersteuning@vng.nl", url=settings.DOCUMENTATION_URL,
+        email="standaarden.ondersteuning@vng.nl",
+        url=settings.DOCUMENTATION_URL,
     ),
     license=openapi.License(
         name="EUPL 1.2", url="https://opensource.org/licenses/EUPL-1.2"
