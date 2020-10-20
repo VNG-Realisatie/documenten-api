@@ -31,13 +31,18 @@ class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
         "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
     )
     vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
+    bestandsomvang = factory.LazyAttribute(lambda o: o.inhoud.size)
 
     class Meta:
         model = "datamodel.EnkelvoudigInformatieObject"
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
 
 class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
-
     informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
     object = factory.Faker("url")
 
@@ -53,6 +58,9 @@ class ObjectInformatieObjectFactory(factory.django.DjangoModelFactory):
             object_type=ObjectTypes.besluit,
             object=factory.Sequence(lambda n: f"https://brc.nl/api/v1/besluiten/{n}"),
         )
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
 
 
 class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
@@ -62,8 +70,23 @@ class GebruiksrechtenFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "datamodel.Gebruiksrechten"
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
     @factory.lazy_attribute
     def startdatum(self):
         return datetime.datetime.combine(
             self.informatieobject.latest_version.creatiedatum, datetime.time(0, 0)
         ).replace(tzinfo=timezone.utc)
+
+
+class BestandsDeelFactory(factory.django.DjangoModelFactory):
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
+    inhoud = factory.django.FileField(data=b"some data", filename="file_part.bin")
+    omvang = factory.LazyAttribute(lambda o: o.inhoud.size)
+    volgnummer = factory.fuzzy.FuzzyInteger(1, 100, 1)
+
+    class Meta:
+        model = "datamodel.BestandsDeel"

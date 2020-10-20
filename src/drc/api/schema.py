@@ -37,6 +37,28 @@ overhead van base64, die ongeveer 33% bedraagt in worst-case scenario's. Dit
 betekent dat bij een limiet van 4GB het bestand maximaal ongeveer 3GB groot
 mag zijn.
 
+_Nieuw in 1.1.0_
+
+Bestanden kunnen groter zijn dan de minimale die door providers
+ondersteund moet worden. De consumer moet dan:
+
+1. Het INFORMATIEOBJECT aanmaken in de API, waarbij de totale bestandsgrootte
+   meegestuurd wordt en de inhoud leeggelaten wordt.
+   De API antwoordt met een lijst van BESTANDSDEELen, elk met een volgnummer
+   en bestandsgrootte. De API lockt tegelijkertijd het INFORMATIEOBJECT.
+2. Het bestand opsplitsen: ieder BESTANDSDEEL moet de bestandsgrootte hebben
+   zoals dit aangegeven werd in de response bij 1.
+3. Voor elk stuk van het bestand de binaire data naar de overeenkomstige
+   BESTANDSDEEL-url gestuurd worden, samen met het lock ID.
+4. Het INFORMATIEOBJECT unlocken. De provider valideert op dat moment dat alle
+   bestandsdelen correct opgestuurd werden, en voegt deze samen tot het
+   resulterende bestand.
+
+Het bijwerken van een INFORMATIEOBJECT heeft een gelijkaardig verloop.
+
+De 1.0.x manier van uploaden is ook beschikbaar voor kleine(re) bestanden die
+niet gesplitst hoeven te worden.
+
 **Afhankelijkheden**
 
 Deze API is afhankelijk van:
@@ -58,8 +80,8 @@ genereren.
 
 **Handige links**
 
-* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
-* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
+* [Documentatie]({settings.DOCUMENTATION_URL}/standaard)
+* [Zaakgericht werken]({settings.DOCUMENTATION_URL})
 """
 
 info = openapi.Info(
@@ -68,7 +90,7 @@ info = openapi.Info(
     description=description,
     contact=openapi.Contact(
         email="standaarden.ondersteuning@vng.nl",
-        url="https://zaakgerichtwerken.vng.cloud",
+        url=settings.DOCUMENTATION_URL,
     ),
     license=openapi.License(
         name="EUPL 1.2", url="https://opensource.org/licenses/EUPL-1.2"

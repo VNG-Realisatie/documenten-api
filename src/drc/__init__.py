@@ -7,7 +7,7 @@
 import re
 from collections import namedtuple
 
-__version__ = "1.0.1"
+__version__ = "1.1.0-alpha"
 __author__ = "VNG Realisatie"
 __homepage__ = "https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent"
 __docformat__ = "restructuredtext"

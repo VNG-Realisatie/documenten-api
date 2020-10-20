@@ -39,6 +39,26 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data["lock"], eio.lock)
         self.assertNotEqual(data["lock"], "")
 
+    def test_lock_create_new_version(self):
+        """test that locking file creates the new version of document """
+        canonical = EnkelvoudigInformatieObjectCanonicalFactory.create()
+        eio = canonical.latest_version
+        assert eio.versie == 1
+        assert canonical.enkelvoudiginformatieobject_set.count() == 1
+        url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        canonical.refresh_from_db()
+        eio_new = canonical.latest_version
+
+        self.assertEqual(canonical.enkelvoudiginformatieobject_set.count(), 2)
+        self.assertEqual(eio_new.versie, 2)
+        self.assertEqual(eio.inhoud, eio_new.inhoud)
+        self.assertNotEqual(eio.pk, eio_new.pk)
+
     def test_lock_fail_locked_doc(self):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create(lock=uuid.uuid4().hex)
 
@@ -116,6 +136,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
             "taal": "eng",
             "bestandsnaam": "dummy.txt",
             "inhoud": b64encode(b"some file content").decode("utf-8"),
+            "bestandsomvang": 17,
             "link": "http://een.link",
             "beschrijving": "test_beschrijving",
             "informatieobjecttype": "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1",
@@ -126,7 +147,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.assertNotIn("lock", response.data)
+        self.assertEqual(response.data["lock"], "")
 
 
 class EioUnlockAPITests(JWTAuthMixin, APITestCase):

@@ -85,7 +85,8 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
     def test_delete_gebruiksrechten(self):
         gebruiksrechten = GebruiksrechtenFactory.create(
-            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+            informatieobject__latest_version__identificatie="short",
         )
         url = reverse("gebruiksrechten-detail", kwargs={"uuid": gebruiksrechten.uuid})
         eio_url = reverse(
@@ -126,10 +127,7 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
         ]
         for bad_url in bad_urls:
             with self.subTest(bad_url=bad_url):
-                response = self.client.get(
-                    url,
-                    {"informatieobject": bad_url},
-                )
+                response = self.client.get(url, {"informatieobject": bad_url})
 
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 self.assertEqual(len(response.data), 0)

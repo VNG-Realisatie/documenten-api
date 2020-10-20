@@ -2,20 +2,20 @@
 Serializers of the Document Registratie Component REST API
 """
 import binascii
+import math
+import os.path
 import uuid
 from base64 import b64decode
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile, File
 from django.db import transaction
 from django.utils.http import urlencode
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-import six
-from drf_extra_fields.fields import Base64FieldMixin, Base64FileField
-from humanize import naturalsize
+from drf_extra_fields.fields import Base64FileField
 from privates.storages import PrivateMediaFileSystemStorage
 from rest_framework import exceptions, serializers
 from rest_framework.reverse import reverse
@@ -35,6 +35,7 @@ from vng_api_common.validators import (
 
 from drc.datamodel.constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 from drc.datamodel.models import (
+    BestandsDeel,
     EnkelvoudigInformatieObject,
     EnkelvoudigInformatieObjectCanonical,
     Gebruiksrechten,
@@ -42,6 +43,7 @@ from drc.datamodel.models import (
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
+from .utils import create_filename, merge_files
 from .validators import (
     InformatieObjectUniqueValidator,
     ObjectInformatieObjectValidator,
@@ -77,13 +79,20 @@ class AnyBase64File(Base64FileField):
                         code="incorrect-base64-padding",
                     )
                 raise ValidationError(str(e), code="invalid-base64")
-            raise exc
+            except TypeError as exc:
+                raise ValidationError(str(exc))
 
     def to_representation(self, file):
         is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
 
         if not is_private_storage or self.represent_in_base64:
             return super().to_representation(file)
+
+        # if there is no associated file link is not returned
+        try:
+            file.file
+        except ValueError:
+            return None
 
         assert (
             self.view_name
@@ -167,6 +176,52 @@ class EnkelvoudigInformatieObjectHyperlinkedRelatedField(
             self.fail("does_not_exist")
 
 
+class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
+    lock = serializers.CharField(
+        write_only=True,
+        help_text="Hash string, which represents id of the lock of related informatieobject",
+    )
+
+    class Meta:
+        model = BestandsDeel
+        fields = ("url", "volgnummer", "omvang", "inhoud", "voltooid", "lock")
+        extra_kwargs = {
+            "url": {"lookup_field": "uuid"},
+            "volgnummer": {"read_only": True},
+            "omvang": {"read_only": True},
+            "voltooid": {
+                "read_only": True,
+                "help_text": _(
+                    "Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: "
+                    "het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen."
+                ),
+            },
+            "inhoud": {"write_only": True},
+        }
+
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        inhoud = valid_attrs.get("inhoud")
+        lock = valid_attrs.get("lock")
+        if inhoud:
+            if inhoud.size != self.instance.omvang:
+                raise serializers.ValidationError(
+                    _(
+                        "Het aangeleverde bestand heeft een afwijkende bestandsgrootte (volgens het `grootte`-veld)."
+                        "Verwachting: {expected}b, ontvangen: {received}b"
+                    ).format(expected=self.instance.omvang, received=inhoud.size),
+                    code="file-size",
+                )
+
+        if lock != self.instance.informatieobject.lock:
+            raise serializers.ValidationError(
+                _("Lock id is not correct"), code="incorrect-lock-id"
+            )
+
+        return valid_attrs
+
+
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the EnkelvoudigInformatieObject model
@@ -177,16 +232,8 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
     )
     inhoud = AnyBase64File(
         view_name="enkelvoudiginformatieobject-download",
-        help_text=_(
-            f"Minimal accepted size of uploaded file = {settings.MIN_UPLOAD_SIZE} bytes "
-            f"(or {naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)})"
-        ),
-    )
-    bestandsomvang = serializers.IntegerField(
-        source="inhoud.size",
-        read_only=True,
-        min_value=0,
-        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt."),
+        required=False,
+        allow_null=True,
     )
     integriteit = IntegriteitSerializer(
         label=_("integriteit"),
@@ -214,6 +261,9 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "Geeft aan of het document gelocked is. Alleen als een document gelocked is, "
             "mogen er aanpassingen gemaakt worden."
         ),
+    )
+    bestandsdelen = BestandsDeelSerializer(
+        source="canonical.bestandsdelen", many=True, read_only=True
     )
 
     class Meta:
@@ -243,6 +293,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "integriteit",
             "informatieobjecttype",  # van-relatie,
             "locked",
+            "bestandsdelen",
         )
         extra_kwargs = {
             "informatieobjecttype": {
@@ -252,7 +303,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                         "InformatieObjectType",
                         settings.ZTC_API_SPEC,
                         get_auth=get_ztc_auth,
-                    )
+                    ),
                 ]
             },
             "taal": {"min_length": 3},
@@ -313,6 +364,42 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             )
         return indicatie
 
+    def validate(self, attrs):
+        valid_attrs = super().validate(attrs)
+
+        # check if file.size equal bestandsomvang
+        if self.instance is None:  # create
+            inhoud = valid_attrs.get("inhoud")
+            if inhoud is not None and inhoud.size != valid_attrs.get("bestandsomvang"):
+                raise serializers.ValidationError(
+                    _(
+                        "The size of upload file should match the 'bestandsomvang' field"
+                    ),
+                    code="file-size",
+                )
+        else:  # update
+            inhoud = valid_attrs.get("inhoud", self.instance.inhoud)
+            bestandsomvang = valid_attrs.get(
+                "bestandsomvang", self.instance.bestandsomvang
+            )
+            if inhoud and inhoud.size != bestandsomvang:
+                raise serializers.ValidationError(
+                    _("The size of upload file should match bestandsomvang field"),
+                    code="file-size",
+                )
+
+        return valid_attrs
+
+    def _create_bestandsdeel(self, full_size, canonical):
+        """add chunk urls"""
+        parts = math.ceil(full_size / settings.CHUNK_SIZE)
+        for i in range(parts):
+            chunk_size = min(settings.CHUNK_SIZE, full_size)
+            BestandsDeel.objects.create(
+                informatieobject=canonical, omvang=chunk_size, volgnummer=i + 1
+            )
+            full_size -= chunk_size
+
     @transaction.atomic
     def create(self, validated_data):
         """
@@ -336,6 +423,15 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.integriteit = integriteit
         eio.ondertekening = ondertekening
         eio.save()
+
+        # large file process
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
+            self._create_bestandsdeel(validated_data["bestandsomvang"], canonical)
+
+        # create empty file if size == 0
+        if eio.bestandsomvang == 0:
+            eio.inhoud.save("empty_file", ContentFile(""))
+
         return eio
 
     def update(self, instance, validated_data):
@@ -344,23 +440,29 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         create a new EnkelvoudigInformatieObject with the same
         EnkelvoudigInformatieObjectCanonical
         """
-        instance.integriteit = validated_data.pop("integriteit", None)
-        instance.ondertekening = validated_data.pop("ondertekening", None)
+        integriteit = validated_data.pop("integriteit", None)
+        ondertekening = validated_data.pop("ondertekening", None)
 
-        validated_data_field_names = validated_data.keys()
-        for field in instance._meta.get_fields():
-            if field.name not in validated_data_field_names:
-                validated_data[field.name] = getattr(instance, field.name)
+        eio = super().update(instance, validated_data)
+        eio.integriteit = integriteit
+        eio.ondertekening = ondertekening
+        eio.save()
 
-        validated_data["pk"] = None
-        validated_data["versie"] += 1
+        # each update - delete previous part files
+        if eio.canonical.bestandsdelen.exists():
+            for part in eio.canonical.bestandsdelen.all():
+                part.inhoud.delete()
+                part.delete()
 
-        # Remove the lock from the data from which a new
-        # EnkelvoudigInformatieObject will be created, because lock is not a
-        # part of that model
-        validated_data.pop("lock")
+        # large file process
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
+            self._create_bestandsdeel(eio.bestandsomvang, eio.canonical)
 
-        return super().create(validated_data)
+        # create empty file if size == 0
+        if eio.bestandsomvang == 0 and not eio.inhoud:
+            eio.inhoud.save("empty_file", ContentFile(""))
+
+        return eio
 
 
 class EnkelvoudigInformatieObjectWithLockSerializer(
@@ -415,6 +517,40 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
         return valid_attrs
 
 
+class EnkelvoudigInformatieObjectCreateLockSerializer(
+    EnkelvoudigInformatieObjectSerializer
+):
+    """
+    This serializer class is used by EnkelvoudigInformatieObjectViewSet for
+    create operation for large files
+    """
+
+    lock = serializers.CharField(
+        read_only=True,
+        source="canonical.lock",
+        help_text=_(
+            "Lock id generated if the large file is created and should be used "
+            "while updating the document. Documents with base64 encoded files "
+            "are created without lock"
+        ),
+    )
+
+    class Meta(EnkelvoudigInformatieObjectSerializer.Meta):
+        # Use the same fields as the parent class and add the lock to it
+        fields = EnkelvoudigInformatieObjectSerializer.Meta.fields + ("lock",)
+        extra_kwargs = EnkelvoudigInformatieObjectSerializer.Meta.extra_kwargs.copy()
+        extra_kwargs.update({"lock": {"source": "canonical.lock", "read_only": True}})
+
+    def create(self, validated_data):
+        eio = super().create(validated_data)
+
+        # lock document if it is a large file upload
+        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
+            eio.canonical.lock = uuid.uuid4().hex
+            eio.canonical.save()
+        return eio
+
+
 class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     """
     Serializer for the lock action of EnkelvoudigInformatieObjectCanonical
@@ -434,9 +570,16 @@ class LockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             )
         return valid_attrs
 
+    @transaction.atomic
     def save(self, **kwargs):
         self.instance.lock = uuid.uuid4().hex
         self.instance.save()
+
+        # create new version of document
+        eio = self.instance.latest_version
+        eio.pk = None
+        eio.versie = eio.versie + 1
+        eio.save()
 
         return self.instance
 
@@ -450,7 +593,7 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnkelvoudigInformatieObjectCanonical
         fields = ("lock",)
-        extra_kwargs = {"lock": {"required": False, "write_only": True}}
+        extra_kwargs = {"lock": {"required": False}}
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
@@ -460,15 +603,61 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             return valid_attrs
 
         lock = valid_attrs.get("lock", "")
-        if lock != self.instance.lock:
+        if lock != self.instance.canonical.lock:
             raise serializers.ValidationError(
                 _("Lock id is not correct"), code="incorrect-lock-id"
             )
+
+        if (
+            not self.instance.canonical.complete_upload
+            and not self.instance.canonical.empty_bestandsdelen
+        ):
+            raise serializers.ValidationError(
+                _("Upload of part files is not complete"), code="incomplete-upload"
+            )
+        is_empty = (
+            self.instance.canonical.empty_bestandsdelen and not self.instance.inhoud
+        )
+        if is_empty and self.instance.bestandsomvang > 0:
+            raise serializers.ValidationError(
+                _("Either file should be upload or the file size = 0"), code="file-size"
+            )
+
         return valid_attrs
 
+    @transaction.atomic
     def save(self, **kwargs):
-        self.instance.lock = ""
-        self.instance.save()
+        # unlock
+        self.instance.canonical.lock = ""
+        self.instance.canonical.save()
+
+        # merge files and clean bestandsdelen
+        if self.instance.canonical.empty_bestandsdelen:
+            return self.instance
+
+        bestandsdelen = self.instance.canonical.bestandsdelen.order_by("volgnummer")
+        if self.instance.canonical.complete_upload:
+            part_files = [p.inhoud.file for p in bestandsdelen]
+            # create the name of target file using the storage backend to the serializer
+            name = create_filename(self.instance.bestandsnaam)
+            file_field = self.instance._meta.get_field("inhoud")
+            rel_name = file_field.generate_filename(self.instance, name)
+            rel_path, file_name = os.path.split(rel_name)
+            # merge files
+            file_dir = os.path.join(settings.PRIVATE_MEDIA_ROOT, rel_path)
+            target_file = merge_files(part_files, file_dir, file_name)
+            # save full file to the instance FileField
+            with open(target_file, "rb") as file_obj:
+                self.instance.inhoud.save(file_name, File(file_obj))
+        else:
+            self.instance.bestandsomvang = None
+            self.instance.save()
+
+        # delete part files
+        for part in bestandsdelen:
+            part.inhoud.delete()
+            part.delete()
+
         return self.instance
 
 

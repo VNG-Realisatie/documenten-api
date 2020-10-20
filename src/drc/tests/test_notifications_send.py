@@ -9,8 +9,8 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 from drc.api.scopes import SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 INFORMATIEOBJECTTYPE = (
     "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
@@ -43,6 +43,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             "auteur": "ANONIEM",
             "formaat": "text/plain",
             "taal": "dut",
+            "bestandsomvang": 22,
             "inhoud": base64.b64encode(b"Extra tekst in bijlage").decode("utf-8"),
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
             "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
@@ -84,7 +85,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                 "informatieobject": f"http://testserver{eio_url}",
                 "startdatum": "2019-10-22T00:00:00Z",
                 "omschrijvingVoorwaarden": "mlem",
-            }
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

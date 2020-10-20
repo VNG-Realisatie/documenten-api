@@ -52,6 +52,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "taal": "eng",
             "bestandsnaam": "dummy.txt",
             "inhoud": b64encode(b"some file content").decode("utf-8"),
+            "bestandsomvang": 17,
             "link": "http://een.link",
             "beschrijving": "test_beschrijving",
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
@@ -79,6 +80,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertAlmostEqual(stored_object.begin_registratie, timezone.now())
         self.assertEqual(stored_object.bestandsnaam, "dummy.txt")
         self.assertEqual(stored_object.inhoud.read(), b"some file content")
+        self.assertEqual(stored_object.bestandsomvang, 17)
         self.assertEqual(stored_object.link, "http://een.link")
         self.assertEqual(stored_object.beschrijving, "test_beschrijving")
         self.assertEqual(stored_object.informatieobjecttype, INFORMATIEOBJECTTYPE)
@@ -110,9 +112,10 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
                 "indicatieGebruiksrecht": None,
                 "status": "",
                 "locked": False,
+                "bestandsdelen": [],
+                "lock": "",
             }
         )
-
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected_response.keys()))
 
@@ -166,6 +169,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "integriteit": {"algoritme": "", "waarde": "", "datum": None},
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
             "locked": False,
+            "bestandsdelen": [],
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))
@@ -185,6 +189,21 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
         response = self.client.get(eio_url, HTTP_ACCEPT="application/octet-stream")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_download_non_existing_eio(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1", inhoud__data=b"inhoud1"
+        )
+
+        eio_url = get_operation_url(
+            "enkelvoudiginformatieobject_download", uuid=eio.uuid
+        )
+
+        eio.delete()
+
+        # Try to download from the url, even though the object no longer exists
+        response = self.client.get(eio_url, HTTP_ACCEPT="application/octet-stream")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_bestandsomvang(self):
         """
@@ -224,6 +243,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "bestandsnaam": "dummy.txt",
             "vertrouwelijkheidaanduiding": "openbaar",
             "inhoud": b64encode(b"some file content").decode("utf-8"),
+            "bestandsomvang": 17,
             "informatieobjecttype": "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1",
             "integriteit": None,
         }
@@ -255,6 +275,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "bestandsnaam": "dummy.txt",
             "vertrouwelijkheidaanduiding": "openbaar",
             "inhoud": b64encode(b"some file content").decode("utf-8"),
+            "bestandsomvang": 17,
             "informatieobjecttype": "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1",
             "integriteit": {
                 "algoritme": "md5",
@@ -325,6 +346,37 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "unknown-parameters")
 
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_invalid_inhoud(self, *mocks):
+        content = {
+            "identificatie": uuid.uuid4().hex,
+            "bronorganisatie": "159351741",
+            "creatiedatum": "2018-06-27",
+            "titel": "detailed summary",
+            "auteur": "test_auteur",
+            "formaat": "txt",
+            "taal": "eng",
+            "bestandsnaam": "dummy.txt",
+            "inhoud": [1, 2, 3],
+            "link": "http://een.link",
+            "beschrijving": "test_beschrijving",
+            "informatieobjecttype": INFORMATIEOBJECTTYPE,
+            "vertrouwelijkheidaanduiding": "openbaar",
+        }
+
+        # Send to the API
+        response = self.client.post(self.list_url, content)
+
+        # Test response
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "inhoud")
+        self.assertEqual(error["code"], "invalid")
+
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCase):
@@ -350,6 +402,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
             {
                 "beschrijving": "beschrijving2",
                 "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
                 "lock": lock,
             }
         )
@@ -359,7 +412,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         response_data = response.json()
 
         self.assertEqual(response_data["beschrijving"], "beschrijving2")
