@@ -294,14 +294,14 @@ AXES_LOCK_OUT_AT_FAILURE = True  # Default: True
 AXES_USE_USER_AGENT = False  # Default: False
 AXES_COOLOFF_TIME = 1  # One hour
 AXES_BEHIND_REVERSE_PROXY = (
-    True
-)  # Default: False (we are typically using Nginx as reverse proxy)
+    True  # Default: False (we are typically using Nginx as reverse proxy)
+)
 AXES_ONLY_USER_FAILURES = (
-    False
-)  # Default: False (you might want to block on username rather than IP)
+    False  # Default: False (you might want to block on username rather than IP)
+)
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = (
-    False
-)  # Default: False (you might want to block on username and IP)
+    False  # Default: False (you might want to block on username and IP)
+)
 
 
 HIJACK_LOGIN_REDIRECT_URL = "/"
@@ -359,3 +359,6 @@ MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2 ** 30))  # 4GB
 # Relevant for multipart parser, which comes into play with file uploads in the
 # next version.
 DATA_UPLOAD_MAX_MEMORY_SIZE = MIN_UPLOAD_SIZE
+
+# URL for documentation that's shown in API schema
+DOCUMENTATION_URL = "https://vng-realisatie.github.io/gemma-zaken"

@@ -40,6 +40,7 @@ fi
 >&2 echo "Starting server"
 uwsgi \
     --http :$uwsgi_port \
+    --http-keepalive \
     --module drc.wsgi \
     --static-map /static=/app/static \
     --static-map /media=/app/media  \
