@@ -40,7 +40,7 @@ Versie      Release datum   Einddatum ondersteuning     Documentatie
 Referentie implementatie
 ========================
 
-|build-status| |coverage| |docker|
+|build-status| |coverage| |docker| |black| |python-versions|
 
 Referentieimplementatie van de Documenten API. Ook wel 
 Documentregistratiecomponent (DRC) genoemd) 
@@ -79,10 +79,19 @@ Links
     :alt: Coverage
     :target: https://codecov.io/gh/VNG-Realisatie/gemma-documentregistratiecomponent
 
-.. |docker| image:: https://img.shields.io/badge/docker-latest-blue
+.. |docker| image:: https://img.shields.io/badge/docker-latest-blue.svg
     :alt: Docker image
     :target: https://hub.docker.com/r/vngr/gemma-drc/
 
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Code style
+    :target: https://github.com/psf/black
+
+.. |python-versions| image:: https://img.shields.io/badge/python-3.6%2B-blue.svg
+    :alt: Supported Python version
+    :target: https://hub.docker.com/r/vngr/gemma-drc/
+
+.. _testomgeving: https://ref.tst.vng.cloud/drc/
 
 Licentie
 ========

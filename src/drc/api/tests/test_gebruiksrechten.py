@@ -85,7 +85,8 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
     def test_delete_gebruiksrechten(self):
         gebruiksrechten = GebruiksrechtenFactory.create(
-            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+            informatieobject__latest_version__identificatie="short",
         )
         url = reverse("gebruiksrechten-detail", kwargs={"uuid": gebruiksrechten.uuid})
         eio_url = reverse(

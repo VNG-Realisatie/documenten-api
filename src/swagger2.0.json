@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Documenten API",
-        "description": "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\nIn een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\nINFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens.\nINFORMATIEOBJECTen kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.\n\nGEBRUIKSRECHTEN leggen voorwaarden op aan het gebruik van het INFORMATIEOBJECT\n(buiten raadpleging). Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in\nde vorm van INFORMATIEOBJECTTYPEn.\n\n**Uploaden van bestanden**\n\nBinnen deze API bestaan een aantal endpoints die binaire data ontvangen, al\ndan niet base64-encoded. Webservers moeten op deze endpoints een minimale\nrequest body size van 4.0 GiB ondersteunen. Dit omvat de JSON van de\nmetadata EN de base64-encoded bestandsdata. Hou hierbij rekening met de\noverhead van base64, die ongeveer 33% bedraagt in worst-case scenario's. Dit\nbetekent dat bij een limiet van 4GB het bestand maximaal ongeveer 3GB groot\nmag zijn.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Autorisaties API *(optioneel)*\n* Zaken API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `documenten`.\n\n**Main resource**\n\n`enkelvoudiginformatieobject`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.\n* `informatieobjecttype`: URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n* [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n",
+        "description": "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\nIn een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\nINFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens.\nINFORMATIEOBJECTen kunnen aan andere objecten zoals zaken en besluiten worden\ngerelateerd (maar dat hoeft niet) en kunnen gebruiksrechten hebben.\n\nGEBRUIKSRECHTEN leggen voorwaarden op aan het gebruik van het INFORMATIEOBJECT\n(buiten raadpleging). Deze GEBRUIKSRECHTEN worden niet door de API gevalideerd\nof gehandhaafd.\n\nDe typering van INFORMATIEOBJECTen is in de Catalogi API (ZTC) ondergebracht in\nde vorm van INFORMATIEOBJECTTYPEn.\n\n**Uploaden van bestanden**\n\nBinnen deze API bestaan een aantal endpoints die binaire data ontvangen, al\ndan niet base64-encoded. Webservers moeten op deze endpoints een minimale\nrequest body size van 4.0 GiB ondersteunen. Dit omvat de JSON van de\nmetadata EN de base64-encoded bestandsdata. Hou hierbij rekening met de\noverhead van base64, die ongeveer 33% bedraagt in worst-case scenario's. Dit\nbetekent dat bij een limiet van 4GB het bestand maximaal ongeveer 3GB groot\nmag zijn.\n\n_Nieuw in 1.1.0_\n\nBestanden kunnen groter zijn dan de minimale die door providers\nondersteund moet worden. De consumer moet dan:\n\n1. Het INFORMATIEOBJECT aanmaken in de API, waarbij de totale bestandsgrootte\n   meegestuurd wordt en de inhoud leeggelaten wordt.\n   De API antwoordt met een lijst van BESTANDSDEELen, elk met een volgnummer\n   en bestandsgrootte. De API lockt tegelijkertijd het INFORMATIEOBJECT.\n2. Het bestand opsplitsen: ieder BESTANDSDEEL moet de bestandsgrootte hebben\n   zoals dit aangegeven werd in de response bij 1.\n3. Voor elk stuk van het bestand de binaire data naar de overeenkomstige\n   BESTANDSDEEL-url gestuurd worden, samen met het lock ID.\n4. Het INFORMATIEOBJECT unlocken. De provider valideert op dat moment dat alle\n   bestandsdelen correct opgestuurd werden, en voegt deze samen tot het\n   resulterende bestand.\n\nHet bijwerken van een INFORMATIEOBJECT heeft een gelijkaardig verloop.\n\nDe 1.0.x manier van uploaden is ook beschikbaar voor kleine(re) bestanden die\nniet gesplitst hoeven te worden.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Autorisaties API *(optioneel)*\n* Zaken API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `documenten`.\n\n**Main resource**\n\n`enkelvoudiginformatieobject`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.\n* `informatieobjecttype`: URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n* [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n",
         "contact": {
             "url": "https://vng-realisatie.github.io/gemma-zaken",
             "email": "standaarden.ondersteuning@vng.nl"
@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.0.1"
+        "version": "1.1.0-alpha"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -22,9 +22,9 @@
     ],
     "securityDefinitions": {
         "JWT-Claims": {
-            "bearerFormat": "JWT",
+            "type": "http",
             "scheme": "bearer",
-            "type": "http"
+            "bearerFormat": "JWT"
         }
     },
     "security": [
@@ -33,6 +33,209 @@
         }
     ],
     "paths": {
+        "/bestandsdelen/{uuid}": {
+            "put": {
+                "operationId": "bestandsdeel_update",
+                "description": "Upload een bestandsdeel",
+                "parameters": [
+                    {
+                        "name": "inhoud",
+                        "in": "formData",
+                        "description": "De (binaire) bestandsinhoud van dit specifieke bestandsdeel.",
+                        "required": false,
+                        "type": "file"
+                    },
+                    {
+                        "name": "lock",
+                        "in": "formData",
+                        "description": "Hash string, which represents id of the lock of related informatieobject",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BestandsDeel"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "Not acceptable",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "Unsupported media type",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "consumes": [
+                    "multipart/form-data",
+                    "application/x-www-form-urlencoded"
+                ],
+                "tags": [
+                    "bestandsdelen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.bijwerken"
+                        ]
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                }
+            ]
+        },
         "/enkelvoudiginformatieobjecten": {
             "get": {
                 "operationId": "enkelvoudiginformatieobject_list",
@@ -249,7 +452,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectCreateLockData"
                         }
                     },
                     {
@@ -278,7 +481,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                            "$ref": "#/definitions/EnkelvoudigInformatieObjectCreateLockData"
                         },
                         "headers": {
                             "API-version": {
@@ -614,7 +817,25 @@
                 "operationId": "audittrail_read",
                 "summary": "Een specifieke audit trail regel opvragen.",
                 "description": "Een specifieke audit trail regel opvragen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -622,6 +843,10 @@
                             "$ref": "#/definitions/AuditTrail"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -804,6 +1029,23 @@
                         "in": "query",
                         "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
+                    },
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -813,6 +1055,10 @@
                             "$ref": "#/definitions/EnkelvoudigInformatieObject"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -939,6 +1185,57 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "enkelvoudiginformatieobject_headers",
+                "summary": "De headers voor een specifiek(e) ENKELVOUDIGINFORMATIEOBJECT opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -1596,6 +1893,23 @@
                         "in": "query",
                         "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
+                    },
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -2534,7 +2848,25 @@
                 "operationId": "gebruiksrechten_read",
                 "summary": "Een specifieke GEBRUIKSRECHT opvragen.",
                 "description": "Een specifieke GEBRUIKSRECHT opvragen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2542,6 +2874,10 @@
                             "$ref": "#/definitions/Gebruiksrechten"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -2668,6 +3004,57 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gebruiksrechten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "gebruiksrechten_headers",
+                "summary": "De headers voor een specifiek(e) GEBRUIKSRECHTEN opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3639,7 +4026,25 @@
                 "operationId": "objectinformatieobject_read",
                 "summary": "Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.",
                 "description": "Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -3647,6 +4052,10 @@
                             "$ref": "#/definitions/ObjectInformatieObject"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3773,6 +4182,57 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "objectinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "objectinformatieobject_headers",
+                "summary": "De headers voor een specifiek(e) OBJECTINFORMATIEOBJECT opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3961,6 +4421,181 @@
         }
     },
     "definitions": {
+        "BestandsDeel": {
+            "required": [
+                "lock"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "volgnummer": {
+                    "title": "Volgnummer",
+                    "description": "Een volgnummer dat de volgorde van de bestandsdelen aangeeft.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "omvang": {
+                    "title": "Omvang",
+                    "description": "De grootte van dit specifieke bestandsdeel.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "inhoud": {
+                    "title": "Inhoud",
+                    "description": "De (binaire) bestandsinhoud van dit specifieke bestandsdeel.",
+                    "type": "string",
+                    "readOnly": true,
+                    "format": "uri"
+                },
+                "voltooid": {
+                    "title": "Voltooid",
+                    "description": "Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen.",
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Hash string, which represents id of the lock of related informatieobject",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "Fout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "FieldValidationError": {
+            "required": [
+                "name",
+                "code",
+                "reason"
+            ],
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "description": "Naam van het veld met ongeldige gegevens",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "title": "Reason",
+                    "description": "Uitleg wat er precies fout is met de gegevens",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "ValidatieFout": {
+            "required": [
+                "code",
+                "title",
+                "status",
+                "detail",
+                "instance",
+                "invalidParams"
+            ],
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Type",
+                    "description": "URI referentie naar het type fout, bedoeld voor developers",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "description": "Systeemcode die het type fout aangeeft",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "title": "Title",
+                    "description": "Generieke titel voor het type fout",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "De HTTP status code",
+                    "type": "integer"
+                },
+                "detail": {
+                    "title": "Detail",
+                    "description": "Extra informatie bij de fout, indien beschikbaar",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "instance": {
+                    "title": "Instance",
+                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "invalidParams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FieldValidationError"
+                    }
+                }
+            }
+        },
         "Ondertekening": {
             "title": "ondertekening",
             "description": "Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.",
@@ -4151,14 +4786,16 @@
                     "description": "Download URL van de binaire inhoud.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 9223372036854775807,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4212,144 +4849,23 @@
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
                     "readOnly": true
-                }
-            }
-        },
-        "Fout": {
-            "required": [
-                "code",
-                "title",
-                "status",
-                "detail",
-                "instance"
-            ],
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "Type",
-                    "description": "URI referentie naar het type fout, bedoeld voor developers",
-                    "type": "string"
                 },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "title": {
-                    "title": "Title",
-                    "description": "Generieke titel voor het type fout",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "status": {
-                    "title": "Status",
-                    "description": "De HTTP status code",
-                    "type": "integer"
-                },
-                "detail": {
-                    "title": "Detail",
-                    "description": "Extra informatie bij de fout, indien beschikbaar",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "instance": {
-                    "title": "Instance",
-                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
-        "FieldValidationError": {
-            "required": [
-                "name",
-                "code",
-                "reason"
-            ],
-            "type": "object",
-            "properties": {
-                "name": {
-                    "title": "Name",
-                    "description": "Naam van het veld met ongeldige gegevens",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "reason": {
-                    "title": "Reason",
-                    "description": "Uitleg wat er precies fout is met de gegevens",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
-        "ValidatieFout": {
-            "required": [
-                "code",
-                "title",
-                "status",
-                "detail",
-                "instance",
-                "invalidParams"
-            ],
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "Type",
-                    "description": "URI referentie naar het type fout, bedoeld voor developers",
-                    "type": "string"
-                },
-                "code": {
-                    "title": "Code",
-                    "description": "Systeemcode die het type fout aangeeft",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "title": {
-                    "title": "Title",
-                    "description": "Generieke titel voor het type fout",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "status": {
-                    "title": "Status",
-                    "description": "De HTTP status code",
-                    "type": "integer"
-                },
-                "detail": {
-                    "title": "Detail",
-                    "description": "Extra informatie bij de fout, indien beschikbaar",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "instance": {
-                    "title": "Instance",
-                    "description": "URI met referentie naar dit specifiek voorkomen van de fout. Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "invalidParams": {
+                "bestandsdelen": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/FieldValidationError"
-                    }
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
+                    "readOnly": true
                 }
             }
         },
-        "EnkelvoudigInformatieObjectData": {
+        "EnkelvoudigInformatieObjectCreateLockData": {
             "required": [
                 "bronorganisatie",
                 "creatiedatum",
                 "titel",
                 "auteur",
                 "taal",
-                "inhoud",
                 "informatieobjecttype"
             ],
             "type": "object",
@@ -4458,14 +4974,16 @@
                     "title": "Inhoud",
                     "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
-                    "format": "bytes"
+                    "format": "bytes",
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 9223372036854775807,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4519,6 +5037,20 @@
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
                     "readOnly": true
+                },
+                "bestandsdelen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
+                    "readOnly": true
+                },
+                "lock": {
+                    "title": "Lock",
+                    "description": "Lock id generated if the large file is created and should be used while updating the document. Documents with base64 encoded files are created without lock",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
                 }
             }
         },
@@ -4559,7 +5091,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent\n* `kic` - Klantinteractiescomponent",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -4567,8 +5099,15 @@
                         "zrc",
                         "ztc",
                         "drc",
-                        "brc"
+                        "brc",
+                        "kic"
                     ]
+                },
+                "requestId": {
+                    "title": "Request id",
+                    "description": "Een globaal \"request\" ID om een verzoek door het netwerk heen te traceren.",
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "applicatieId": {
                     "title": "Applicatie id",
@@ -4668,7 +5207,6 @@
                 "titel",
                 "auteur",
                 "taal",
-                "inhoud",
                 "informatieobjecttype",
                 "lock"
             ],
@@ -4778,14 +5316,16 @@
                     "title": "Inhoud",
                     "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
                     "type": "string",
-                    "format": "bytes"
+                    "format": "bytes",
+                    "x-nullable": true
                 },
                 "bestandsomvang": {
                     "title": "Bestandsomvang",
                     "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
                     "type": "integer",
-                    "readOnly": true,
-                    "minimum": 0
+                    "maximum": 9223372036854775807,
+                    "minimum": 0,
+                    "x-nullable": true
                 },
                 "link": {
                     "title": "Link",
@@ -4838,6 +5378,13 @@
                     "title": "locked",
                     "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
                     "type": "boolean",
+                    "readOnly": true
+                },
+                "bestandsdelen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
                     "readOnly": true
                 },
                 "lock": {
@@ -4952,10 +5499,25 @@
                     "type": "string",
                     "enum": [
                         "besluit",
-                        "zaak"
+                        "zaak",
+                        "verzoek"
                     ]
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "enkelvoudiginformatieobjecten",
+            "description": ""
+        },
+        {
+            "name": "gebruiksrechten",
+            "description": ""
+        },
+        {
+            "name": "objectinformatieobjecten",
+            "description": "Het betreft een relatie tussen een willekeurig OBJECT, bijvoorbeeld een\nZAAK in de Zaken API, en een INFORMATIEOBJECT."
+        }
+    ]
 }
