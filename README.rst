@@ -21,7 +21,7 @@ Versie      Release datum   API specificatie
 ==========  ==============  =============================
 1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.0...1.0.1?diff=split#diff-3dc0f8f7373b32ea3bf5eabe02993f9a>`_)
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.0...1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_
 ==========  ==============  =============================
@@ -87,7 +87,7 @@ Links
 Licentie
 ========
 
-Copyright © VNG Realisatie 2018
+Copyright © VNG Realisatie 2018 - 2020
 
 Licensed under the EUPL_
 
