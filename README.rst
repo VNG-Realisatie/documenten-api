@@ -1,65 +1,93 @@
-============================
-Documentregistratiecomponent
-============================
+==============
+Documenten API
+==============
 
 :Version: 1.0.1
 :Source: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
-:PythonVersion: 3.6
 
-|build-status|
-
-Referentieimplementatie van de documentregistratiecomponent (DRC).
-
-Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
-van VNG.
-
-Introduction
-============
+Introductie
+===========
 
 Binnen het Nederlandse gemeentelandschap wordt zaakgericht werken nagestreefd.
 Om dit mogelijk te maken is er gegevensuitwisseling nodig. Er is een behoefte
-om informatieobjecten (documenten) te relateren aan zaken.
+om informatieobjecten (documenten) te relateren aan bijvoorbeeld zaken.
+
+API specificaties
+=================
+
+==========  ==============  =============================
+Versie      Release datum   API specificatie 
+==========  ==============  =============================
+1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_,
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.0...1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_,
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_
+==========  ==============  =============================
+
+Zie ook: `Alle versies en wijzigingen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/blob/master/CHANGELOG.rst>`_
+
+Ondersteuning
+-------------
+
+==========  ==============  ==========================  =================
+Versie      Release datum   Einddatum ondersteuning     Documentatie
+==========  ==============  ==========================  =================
+1.x         2019-11-18      (nog niet bekend)           `Documentatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
+==========  ==============  ==========================  =================
+
+Referentie implementatie
+========================
+
+|build-status| |coverage| |docker|
+
+Referentieimplementatie van de Documenten API. Ook wel 
+Documentregistratiecomponent (DRC) genoemd) 
+
+Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
+van VNG Realisatie.
 
 Deze referentieimplementatie toont aan dat de API specificatie voor de
-documentregistratiecomponent (hierna DRC) implementeerbaar is, en vormt een
-voorbeeld voor andere implementaties indien ergens twijfel bestaat.
+Documenten API implementeerbaar is, en vormt een voorbeeld voor andere 
+implementaties indien ergens twijfel bestaat.
 
 Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
 testen.
 
-Documentation
-=============
+.. _testomgeving: https://documenten-api.vng.cloud/
 
-See ``docs/contents/installation.rst`` for installation instructions, available settings and
-commands.
+Links
+=====
 
-If you intend to develop on the component, we recommend the ``development.rst``
-document, otherwise ``docker.rst`` is recommended.
-
-See ``docs/contents/configuration.rst`` for runtime configuration.
-
-References
-==========
-
-* `Issues <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/issues>`_
+* Deze API is onderdeel van de `VNG standaard "API's voor Zaakgericht werken" <https://github.com/VNG-Realisatie/gemma-zaken>`_
+* `Functionele specificatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
+* `Testomgeving <https://documenten-api.vng.cloud/>`_
+* `Issues <https://github.com/VNG-Realisatie/gemma-zaken/issues>`_
 * `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
 
 
-.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=develop
+.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=master
     :alt: Build status
     :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
-     :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
+     :target: https://hub.docker.com/r/vngr/gemma-drc
      :alt: Requirements status
 
-.. _testomgeving: https://ref.tst.vng.cloud/drc/
+.. |coverage| image:: https://codecov.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/branch/master/graphs/badge.svg?branch=master
+    :alt: Coverage
+    :target: https://codecov.io/gh/VNG-Realisatie/gemma-documentregistratiecomponent
+
+.. |docker| image:: https://img.shields.io/badge/docker-latest-blue
+    :alt: Docker image
+    :target: https://hub.docker.com/r/vngr/gemma-drc/
+
 
 Licentie
 ========
 
-Copyright © VNG Realisatie 2018
+Copyright © VNG Realisatie 2018 - 2020
 
 Licensed under the EUPL_
 
