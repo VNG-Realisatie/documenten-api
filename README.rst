@@ -17,7 +17,7 @@ API specificaties
 =================
 
 ==========  ==============  =============================
-Versie      Release datum   API specificatie 
+Versie      Release datum   API specificatie
 ==========  ==============  =============================
 1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_
@@ -40,16 +40,16 @@ Versie      Release datum   Einddatum ondersteuning     Documentatie
 Referentie implementatie
 ========================
 
-|build-status| |coverage| |docker| |black| |python-versions|
+|build-status| |coverage| |docker| |black| |python-versions| |lint-oas| |generate-sdks| |generate-postman-collection|
 
-Referentieimplementatie van de Documenten API. Ook wel 
-Documentregistratiecomponent (DRC) genoemd) 
+Referentieimplementatie van de Documenten API. Ook wel
+Documentregistratiecomponent (DRC) genoemd)
 
 Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
 van VNG Realisatie.
 
 Deze referentieimplementatie toont aan dat de API specificatie voor de
-Documenten API implementeerbaar is, en vormt een voorbeeld voor andere 
+Documenten API implementeerbaar is, en vormt een voorbeeld voor andere
 implementaties indien ergens twijfel bestaat.
 
 Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
@@ -90,6 +90,18 @@ Links
 .. |python-versions| image:: https://img.shields.io/badge/python-3.6%2B-blue.svg
     :alt: Supported Python version
     :target: https://hub.docker.com/r/vngr/gemma-drc/
+
+.. |lint-oas| image:: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/workflows/lint-oas/badge.svg
+    :alt: Lint OAS
+    :target: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/actions?query=workflow%3Alint-oas
+
+.. |generate-sdks| image:: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/workflows/generate-sdks/badge.svg
+    :alt: Generate SDKs
+    :target: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/actions?query=workflow%3Agenerate-sdks
+
+.. |generate-postman-collection| image:: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/workflows/generate-postman-collection/badge.svg
+    :alt: Generate Postman collection
+    :target: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/actions?query=workflow%3Agenerate-postman-collection
 
 .. _testomgeving: https://ref.tst.vng.cloud/drc/
 
