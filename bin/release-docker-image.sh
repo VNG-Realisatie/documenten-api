@@ -61,6 +61,7 @@ if [[ -n "$git_tag" ]]; then
     echo "Building image for git tag $git_tag"
 fi
 
-release_tag=$(get_release_tag)
+# Only run get_release_tag if no tag has been specified
+if [[ -z $1 ]]; then release_tag=$(get_release_tag); else release_tag=$1; fi
 build_image $release_tag
 push_image $release_tag
