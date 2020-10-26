@@ -56,7 +56,7 @@ implementaties indien ergens twijfel bestaat.
 Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
 testen.
 
-.. _testomgeving: https://documenten-api.vng.cloud/
+.. _`testomgeving`: https://documenten-api.vng.cloud/
 
 Links
 =====
