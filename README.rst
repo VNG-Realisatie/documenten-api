@@ -53,20 +53,29 @@ Deze referentieimplementatie toont aan dat de API specificatie voor de
 Documenten API implementeerbaar is, en vormt een voorbeeld voor andere
 implementaties indien ergens twijfel bestaat.
 
-Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
+Deze component heeft ook een `demo omgeving`_ waar leveranciers tegenaan kunnen
 testen.
-
-.. _`testomgeving`: https://documenten-api.vng.cloud/
 
 Links
 =====
 
-* Deze API is onderdeel van de `VNG standaard "API's voor Zaakgericht werken" <https://github.com/VNG-Realisatie/gemma-zaken>`_
-* `Functionele specificatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
-* `Testomgeving <https://documenten-api.vng.cloud/>`_
-* `Issues <https://github.com/VNG-Realisatie/gemma-zaken/issues>`_
-* `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
+* Deze API is onderdeel van de `VNG standaard "API's voor Zaakgericht werken" <https://github.com/VNG-Realisatie/gemma-zaken>`_.
+* Lees de `functionele specificatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_ bij de API specificatie.
+* Bekijk de `demo omgeving`_ met de laatst gepubliceerde versie.
+* Bekijk de `test omgeving <https://documenten-api.test.vng.cloud/>`_ met de laatste ontwikkel versie.
+* Rapporteer `issues <https://github.com/VNG-Realisatie/gemma-zaken/issues>`_ bij vragen, fouten of wensen.
+* Bekijk de `code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_ van de referentie implementatie.
 
+.. _`demo omgeving`: https://documenten-api.vng.cloud/
+
+Licentie
+========
+
+Copyright © VNG Realisatie 2018 - 2020
+
+Licensed under the EUPL_
+
+.. _EUPL: LICENCE.md
 
 .. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=master
     :alt: Build status
@@ -103,14 +112,3 @@ Links
 .. |generate-postman-collection| image:: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/workflows/generate-postman-collection/badge.svg
     :alt: Generate Postman collection
     :target: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/actions?query=workflow%3Agenerate-postman-collection
-
-.. _testomgeving: https://ref.tst.vng.cloud/drc/
-
-Licentie
-========
-
-Copyright © VNG Realisatie 2018 - 2020
-
-Licensed under the EUPL_
-
-.. _EUPL: LICENCE.md
