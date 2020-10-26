@@ -1,3 +1,5 @@
+import os
+
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
 API_VERSION = "1.0.1"
@@ -46,3 +48,7 @@ ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/o
 brc_repo = "vng-Realisatie/gemma-besluitregistratiecomponent"
 brc_commit = "87dde6338e6417f307d1d935983ce50466d77f48"
 BRC_API_SPEC = f"https://raw.githubusercontent.com/{brc_repo}/{brc_commit}/src/openapi.yaml"  # noqa
+
+SELF_REPO = "VNG-Realisatie/gemma-documentregistratiecomponent"
+SELF_BRANCH = os.getenv("SELF_BRANCH") or API_VERSION
+GITHUB_API_SPEC = f"https://raw.githubusercontent.com/{SELF_REPO}/{SELF_BRANCH}/src/openapi.yaml"  # noqa
