@@ -384,7 +384,8 @@ class ObjectInformatieObject(APIMixin, models.Model):
     )
     object = models.URLField(
         help_text="URL-referentie naar het gerelateerde OBJECT (in deze of een "
-        "andere API)."
+        "andere API).",
+        max_length=1000,
     )
     object_type = models.CharField(
         "objecttype",

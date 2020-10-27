@@ -4471,7 +4471,7 @@ components:
             andere API).
           type: string
           format: uri
-          maxLength: 200
+          maxLength: 1000
           minLength: 1
         objectType:
           title: Objecttype
