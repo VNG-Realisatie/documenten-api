@@ -15,6 +15,7 @@ om informatieobjecten (documenten) te relateren aan bijvoorbeeld zaken.
 
 API specificaties
 =================
+
 |lint-oas| |generate-sdks| |generate-postman-collection|
 
 ==========  ==============  =============================
@@ -22,7 +23,7 @@ Versie      Release datum   API specificatie
 ==========  ==============  =============================
 1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.1/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.0...1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.0..1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/1.0.0/src/openapi.yaml>`_
 ==========  ==============  =============================
@@ -82,7 +83,6 @@ Licensed under the EUPL_
     :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
-     :target: https://hub.docker.com/r/vngr/gemma-drc
      :alt: Requirements status
 
 .. |coverage| image:: https://codecov.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/branch/master/graphs/badge.svg?branch=master
@@ -99,7 +99,6 @@ Licensed under the EUPL_
 
 .. |python-versions| image:: https://img.shields.io/badge/python-3.6%2B-blue.svg
     :alt: Supported Python version
-    :target: https://hub.docker.com/r/vngr/gemma-drc/
 
 .. |lint-oas| image:: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/workflows/lint-oas/badge.svg
     :alt: Lint OAS

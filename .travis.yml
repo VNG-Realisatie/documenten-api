@@ -36,7 +36,7 @@ jobs:
       before_install: skip
       install: skip
       before_script: skip
-      script: docker build .
+      script: docker build . --build-arg COMMIT_HASH=${TRAVIS_COMMIT:-`git rev-parse HEAD`}
 
     - stage: Publication
       name: Publish Docker image
