@@ -21,9 +21,9 @@ API specificaties
 ==========  ==============  =============================
 Versie      Release datum   API specificatie
 ==========  ==============  =============================
-master       n.v.t.         `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/stable/master/src/openapi.yaml>`_,
-                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/stable/master/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/master..stable/1.0.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+master       n.v.t.         `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_,
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/stable/1.0.x..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/stable/1.0.x/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/stable/1.0.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/1.0.1..stable/1.0.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
