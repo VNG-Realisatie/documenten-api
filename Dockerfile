@@ -59,6 +59,9 @@ COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
 COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
 COPY ./src /app/src
 COPY ./bin/reset_sequences.sql /app/bin/
+ARG COMMIT_HASH
+ENV GIT_SHA=${COMMIT_HASH}
+
 RUN mkdir /app/log && rm /app/src/drc/conf/test.py
 CMD ["/runtests.sh"]
 
@@ -98,6 +101,9 @@ COPY ./src /app/src
 COPY ./docs /app/docs
 COPY ./CHANGELOG.rst /app/CHANGELOG.rst
 COPY ./bin/reset_sequences.sql ./bin/
+
+ARG COMMIT_HASH
+ENV GIT_SHA=${COMMIT_HASH}
 
 ENV DJANGO_SETTINGS_MODULE=drc.conf.docker
 
