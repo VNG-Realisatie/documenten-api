@@ -28,7 +28,7 @@ import drc  # noqa isort:skip
 
 # -- Project information -----------------------------------------------------
 
-project = 'DocumentRegistratieComponent'
+project = 'Documenten API'
 copyright = '2018, VNG Realisatie'
 author = drc.__author__
 
@@ -95,7 +95,7 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     # 'github_user': 'VNG-Realisatie',
     # 'github_banner': True,
-    # 'github_repo': 'gemma-documentregistratiecomponent',
+    # 'github_repo': 'documenten-api',
     # 'travis_button': True,
     # 'codecov_button': True,
     # 'analytics_id':  '',

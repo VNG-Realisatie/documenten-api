@@ -1,4 +1,4 @@
-# Contributing to Zaaktypecatalogus
+# Contributing to Documenten API
 
 ## Reporting issues
 
