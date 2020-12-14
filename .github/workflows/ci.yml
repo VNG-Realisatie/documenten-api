@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: vngr/notificaties-api
+  IMAGE_NAME: vngr/gemma-drc
   DJANGO_SETTINGS_MODULE: drc.conf.jenkins
   SECRET_KEY: dummy
   DB_USER: postgres
