@@ -81,9 +81,9 @@ Licensed under the EUPL_
 
 .. _EUPL: LICENCE.md
 
-.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent.svg?branch=master
+.. |build-status| image:: https://github.com/VNG-Realisatie/documenten-api/workflows/ci-build/badge.svg
     :alt: Build status
-    :target: https://travis-ci.org/VNG-Realisatie/gemma-documentregistratiecomponent
+    :target: https://github.com/VNG-Realisatie/documenten-api/actions?query=workflow%3Aci-build
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
      :alt: Requirements status
