@@ -18,18 +18,18 @@ API specificaties
 
 |lint-oas| |generate-sdks| |generate-postman-collection|
 
-==========  ==============  =============================
-Versie      Release datum   API specificatie
-==========  ==============  =============================
-1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_,
+==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
+Versie      Release datum   API specificatie                                                                                                                                                                                      Autorisaties                                                                                                             Notificaties
+==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
+1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_,                                                        `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.0.1..stable/1.0.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
-1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.1/src/openapi.yaml>`_,
+1.0.1       2019-12-16      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.1/src/openapi.yaml>`_,                                                               `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.1/src/autorisaties.md>`_                              `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.1/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.1/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.0.0..1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
-1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_,
+                            (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.0.0...1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_,                                                               `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/autorisaties.md>`_                              `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_
-==========  ==============  =============================
+==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 
 Zie ook: `Alle versies en wijzigingen <https://github.com/VNG-Realisatie/documenten-api/blob/master/CHANGELOG.rst>`_
 
@@ -81,9 +81,9 @@ Licensed under the EUPL_
 
 .. _EUPL: LICENCE.md
 
-.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/documenten-api.svg?branch=master
+.. |build-status| image:: https://github.com/VNG-Realisatie/documenten-api/workflows/ci-build/badge.svg
     :alt: Build status
-    :target: https://travis-ci.org/VNG-Realisatie/documenten-api
+    :target: https://github.com/VNG-Realisatie/documenten-api/actions?query=workflow%3Aci-build
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/documenten-api/requirements.svg?branch=master
      :alt: Requirements status
