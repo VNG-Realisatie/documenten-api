@@ -136,17 +136,9 @@ paths:
         \ de vorm van een INFORMATIEOBJECTTYPE hebben.\n- publicatie `informatieobjecttype`\
         \ - `concept` moet `false` zijn"
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -388,17 +380,9 @@ paths:
         \ INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
         - het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`"
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -467,17 +451,9 @@ paths:
         \ INFORMATIEOBJECT.\n\n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
         - het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`"
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -558,17 +534,9 @@ paths:
 
         - audit trail regels'
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -1170,17 +1138,9 @@ paths:
         \  - Het toevoegen van gebruiksrechten zorgt ervoor dat de\n    `indicatieGebruiksrecht`\
         \ op het informatieobject op `true` gezet wordt."
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -1280,17 +1240,9 @@ paths:
       summary: Werk een GEBRUIKSRECHT in zijn geheel bij.
       description: Werk een GEBRUIKSRECHT in zijn geheel bij.
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -1345,17 +1297,9 @@ paths:
       summary: Werk een GEBRUIKSRECHT relatie deels bij.
       description: Werk een GEBRUIKSRECHT relatie deels bij.
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string
@@ -1412,17 +1356,9 @@ paths:
         \ INFORMATIEOBJECT verwijderd\n    wordt, dan wordt de `indicatieGebruiksrecht`\
         \ van het INFORMATIEOBJECT op\n    `null` gezet."
       parameters:
-      - name: X-NLX-Request-Application-Id
+      - name: X-NLX-Logrecord-ID
         in: header
-        description: Identificatie van de applicatie die het verzoek stuurt (indien
-          NLX wordt gebruikt).
-        required: false
-        schema:
-          type: string
-      - name: X-NLX-Request-User-Id
-        in: header
-        description: Identificatie van de gebruiker die het verzoek stuurt (indien
-          NLX wordt gebruikt).
+        description: Identifier of the request, traceable throughout the network
         required: false
         schema:
           type: string

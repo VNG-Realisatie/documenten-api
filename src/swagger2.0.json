@@ -154,16 +154,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -489,16 +482,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -595,16 +581,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -693,16 +672,9 @@
                 "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk\nals er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)\nINFORMATIEOBJECT.\n\n**Gerelateerde resources**\n- GEBRUIKSRECHTen\n- audit trail regels",
                 "parameters": [
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -1445,16 +1417,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -1603,16 +1568,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -1695,16 +1653,9 @@
                         }
                     },
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
@@ -1779,16 +1730,9 @@
                 "description": "**Opmerkingen**\n  - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd\n    wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op\n    `null` gezet.",
                 "parameters": [
                     {
-                        "name": "X-NLX-Request-Application-Id",
+                        "name": "X-NLX-Logrecord-ID",
                         "in": "header",
-                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-NLX-Request-User-Id",
-                        "in": "header",
-                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "description": "Identifier of the request, traceable throughout the network",
                         "required": false,
                         "type": "string"
                     },
