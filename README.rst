@@ -48,7 +48,7 @@ Referentie implementatie
 |build-status| |coverage| |docker| |black| |python-versions|
 
 Referentieimplementatie van de Documenten API. Ook wel
-Documentregistratiecomponent (DRC) genoemd)
+Documentregistratiecomponent (DRC) genoemd.
 
 Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
 van VNG Realisatie.
