@@ -1,11 +1,12 @@
 import logging
 import uuid as _uuid
 
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from privates.fields import PrivateMediaFileField
-from vng_api_common.constants import ObjectTypes
+from vng_api_common.caching import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import RSINField, VertrouwelijkheidsAanduidingField
 from vng_api_common.models import APIMixin
@@ -15,7 +16,12 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
+from .constants import (
+    ChecksumAlgoritmes,
+    ObjectInformatieObjectTypes,
+    OndertekeningSoorten,
+    Statussen,
+)
 from .query import InformatieobjectQuerySet, InformatieobjectRelatedQuerySet
 from .validators import validate_status
 
@@ -199,8 +205,18 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
         versies = self.enkelvoudiginformatieobject_set.order_by("-versie")
         return versies.first()
 
+    @property
+    def complete_upload(self) -> bool:
+        empty_parts = self.bestandsdelen.filter(inhoud="")
+        return empty_parts.count() == 0
 
-class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
+    @property
+    def empty_bestandsdelen(self) -> bool:
+        empty_parts = self.bestandsdelen.filter(inhoud="")
+        return empty_parts.count() == self.bestandsdelen.count()
+
+
+class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
     """
     Stores the content of a specific version of an
     EnkelvoudigInformatieObjectCanonical
@@ -244,8 +260,15 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
             "informatieobject is vastgelegd, inclusief extensie."
         ),
     )
+    bestandsomvang = models.BigIntegerField(
+        _("bestandsomvang"),
+        validators=[MinValueValidator(0)],
+        null=True,
+        help_text=_("Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt."),
+    )
+
     inhoud = PrivateMediaFileField(upload_to="uploads/%Y/%m/")
-    # inhoud = models.FileField(upload_to='uploads/%Y/%m/')
+
     link = models.URLField(
         max_length=200,
         blank=True,
@@ -301,7 +324,7 @@ class EnkelvoudigInformatieObject(APIMixin, InformatieObject):
         unique_together = ("uuid", "versie")
 
 
-class Gebruiksrechten(models.Model):
+class Gebruiksrechten(ETagMixin, models.Model):
     uuid = models.UUIDField(
         unique=True, default=_uuid.uuid4, help_text="Unieke resource identifier (UUID4)"
     )
@@ -363,10 +386,10 @@ class Gebruiksrechten(models.Model):
 
     def unique_representation(self):
         informatieobject = self.informatieobject.latest_version
-        return f"({informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden}"
+        return f"({informatieobject.unique_representation()}) - {self.omschrijving_voorwaarden[:50]}"
 
 
-class ObjectInformatieObject(APIMixin, models.Model):
+class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     """
     Modelleer een INFORMATIEOBJECT horend bij een OBJECT.
 
@@ -390,7 +413,7 @@ class ObjectInformatieObject(APIMixin, models.Model):
     object_type = models.CharField(
         "objecttype",
         max_length=100,
-        choices=ObjectTypes.choices,
+        choices=ObjectInformatieObjectTypes.choices,
         help_text="Het type van het gerelateerde OBJECT.",
     )
 
@@ -420,3 +443,38 @@ class ObjectInformatieObject(APIMixin, models.Model):
             )
             self._unique_representation = f"({self.informatieobject.latest_version.unique_representation()}) - {io_id}"
         return self._unique_representation
+
+
+class BestandsDeel(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=_uuid.uuid4, help_text="Unieke resource identifier (UUID4)"
+    )
+    informatieobject = models.ForeignKey(
+        "EnkelvoudigInformatieObjectCanonical",
+        on_delete=models.CASCADE,
+        related_name="bestandsdelen",
+    )
+    volgnummer = models.PositiveIntegerField(
+        help_text=_("Een volgnummer dat de volgorde van de bestandsdelen aangeeft.")
+    )
+    omvang = models.BigIntegerField(
+        validators=[MinValueValidator(0)],
+        help_text=_("De grootte van dit specifieke bestandsdeel."),
+    )
+    inhoud = PrivateMediaFileField(
+        upload_to="part-uploads/%Y/%m/",
+        blank=True,
+        help_text=_("De (binaire) bestandsinhoud van dit specifieke bestandsdeel."),
+    )
+
+    class Meta:
+        verbose_name = "bestands deel"
+        verbose_name_plural = "bestands delen"
+        unique_together = ("informatieobject", "volgnummer")
+
+    def unique_representation(self):
+        return f"({self.informatieobject.latest_version.unique_representation()}) - {self.volgnummer}"
+
+    @property
+    def voltooid(self) -> bool:
+        return bool(self.inhoud.name)

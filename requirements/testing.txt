@@ -2,7 +2,7 @@
 black
 coverage
 django-webtest
-factory_boy
+factory_boy<3.1
 freezegun
 isort
 pyquery

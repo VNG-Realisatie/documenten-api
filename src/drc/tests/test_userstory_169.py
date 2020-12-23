@@ -44,6 +44,7 @@ class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
 
         data = {
             "inhoud": image_data.decode("utf-8"),
+            "bestandsomvang": 633,
             "bronorganisatie": "715832694",
             "taal": "dut",
             "creatiedatum": "2018-07-30",
@@ -65,6 +66,7 @@ class US169Tests(TypeCheckMixin, JWTAuthMixin, APITestCase):
             (
                 ("url", str),
                 ("inhoud", str),
+                ("bestandsomvang", int),
                 ("bronorganisatie", str),
                 ("taal", str),
                 ("creatiedatum", str),

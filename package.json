@@ -24,14 +24,14 @@
     "autoprefixer": "^9.6.1",
     "cssnano": "^4.1.10",
     "gulp": "^4.0.2",
-    "gulp-sass": "^4.0.2",
-    "swagger2openapi": "^5.3.1",
     "gulp-file": "^0.4.0",
     "gulp-hub": "^4.2.0",
     "gulp-if": "^3.0.0",
     "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "postcss-selector-lint": "^1.0.0",
+    "swagger2openapi": "^7.0.3",
     "yargs": "^13.3.0"
   }
 }
