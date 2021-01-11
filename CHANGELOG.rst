@@ -2,6 +2,46 @@
 Wijzigingen
 ===========
 
+1.0.2 (...)
+===========
+
+API spec changes
+----------------
+
+* Add ETag headers to the following resources (`Issue 1096`_):
+    - ``EnkelvoudigInformatieObject``
+    - ``Gebruiksrechten``
+    - ``ObjectInformatieObject``
+* Enable uploading of large files for ``EnkelvoudigInformatieObject`` (`Issue 1078`_)
+* Remove audittrail headers from ``ObjectInformatieObject`` resource
+* Implement caching (conditional GET with ETag headers) (`Issue 1096`_)
+* Add ``verzoek`` type to possible ``ObjectInformatieObject.object_type`` and ``kcc`` to component enum
+* Change ``ObjectInformatieObject.object`` ``maxLength`` from 200 -> 1000 (`Issue 1542`_)
+
+
+Implementation changes
+----------------------
+
+* Add validation for ``EnkelvoudigInformatieObject.inhoud`` type (`Issue 1530`_)
+* Fix error that occurred when trying to download a deleted/nonexistent ``EnkelvoudigInformatieObject`` (`Issue 1617`_)
+* Remove audittrail logging and notifications from ``ObjectInformatieObject`` resource
+* Fix 406 error that occurred when trying to download ``ObjectInformatieObject.inhoud`` with ``application/octet-stream`` header (`Issue 1280`_)
+* Fix documentation references in API schema description (`Issue 1552`_)
+* Display API version and commit hash on component dashboard (`Issue 1706`_)
+
+Breaking changes
+----------------
+
+
+.. _Issue 1530: https://github.com/VNG-Realisatie/gemma-zaken/issues/1530
+.. _Issue 1552: https://github.com/VNG-Realisatie/gemma-zaken/issues/1552
+.. _Issue 1617: https://github.com/VNG-Realisatie/gemma-zaken/issues/1617
+.. _Issue 1078: https://github.com/VNG-Realisatie/gemma-zaken/issues/1078
+.. _Issue 1280: https://github.com/VNG-Realisatie/gemma-zaken/issues/1280
+.. _Issue 1096: https://github.com/VNG-Realisatie/gemma-zaken/issues/1096
+.. _Issue 1542: https://github.com/VNG-Realisatie/gemma-zaken/issues/1542
+.. _Issue 1706: https://github.com/VNG-Realisatie/gemma-zaken/issues/1706
+
 1.0.1 (2019-12-16)
 ==================
 

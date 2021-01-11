@@ -3,7 +3,7 @@ Documentregistratiecomponent
 ============================
 
 :Version: 0.1.5
-:Source: https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent
+:Source: https://github.com/VNG-Realisatie/documenten-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 :PythonVersion: 3.6
 
@@ -47,16 +47,16 @@ Contents
 References
 ============
 
-* `Issues <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/issues>`_
-* `Code <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/>`_
+* `Issues <https://github.com/VNG-Realisatie/documenten-api/issues>`_
+* `Code <https://github.com/VNG-Realisatie/documenten-api/>`_
 
 
-.. |build-status| image:: http://jenkins.nlx.io/buildStatus/icon?job=gemma-documentregistratiecomponent-stable
+.. |build-status| image:: http://jenkins.nlx.io/buildStatus/icon?job=documenten-api-stable
     :alt: Build status
-    :target: http://jenkins.nlx.io/job/gemma-documentregistratiecomponent-stable
+    :target: http://jenkins.nlx.io/job/documenten-api-stable
 
-.. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements.svg?branch=master
-     :target: https://requires.io/github/VNG-Realisatie/gemma-documentregistratiecomponent/requirements/?branch=master
+.. |requirements| image:: https://requires.io/github/VNG-Realisatie/documenten-api/requirements.svg?branch=master
+     :target: https://requires.io/github/VNG-Realisatie/documenten-api/requirements/?branch=master
      :alt: Requirements status
 
 .. _testomgeving: https://documenten-api.vng.cloud/

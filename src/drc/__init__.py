@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""DocumentRegistratieComponent"""
+"""Documenten API"""
 # :copyright: (c) 2018, VNG Realisatie
 #             All rights reserved.
 # :license:   EUPL 1.2, see LICENSE for more details.
@@ -9,7 +9,7 @@ from collections import namedtuple
 
 __version__ = "1.1.0-alpha"
 __author__ = "VNG Realisatie"
-__homepage__ = "https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent"
+__homepage__ = "https://github.com/VNG-Realisatie/documenten-api"
 __docformat__ = "restructuredtext"
 
 # -eof meta-

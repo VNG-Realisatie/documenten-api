@@ -76,14 +76,14 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 Uitleg bij mogelijke waarden:
 
-* `ac` - Autorisatiecomponent
-* `nrc` - Notificatierouteringcomponent
-* `zrc` - Zaakregistratiecomponent
-* `ztc` - Zaaktypecatalogus
-* `drc` - Documentregistratiecomponent
-* `brc` - Besluitregistratiecomponent
-* `kic` - Klantinteractiescomponent | string | ja | C​R​U​D |
-| requestId | Een globaal &quot;request&quot; ID om een verzoek door het netwerk heen te traceren. | string | nee | C​R​U​D |
+* `ac` - Autorisaties API
+* `nrc` - Notificaties API
+* `zrc` - Zaken API
+* `ztc` - Catalogi API
+* `drc` - Documenten API
+* `brc` - Besluiten API
+* `cmc` - Contactmomenten API
+* `kc` - Klanten API | string | ja | C​R​U​D |
 | applicatieId | Unieke identificatie van de applicatie, binnen de organisatie. | string | nee | C​R​U​D |
 | applicatieWeergave | Vriendelijke naam van de applicatie. | string | nee | C​R​U​D |
 | gebruikersId | Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon. | string | nee | C​R​U​D |
