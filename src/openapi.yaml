@@ -1461,7 +1461,9 @@ paths:
 
         als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
 
-        INFORMATIEOBJECT.
+        INFORMATIEOBJECT. Specifieke versies kunnen middels
+
+        query-string parameters worden opgevraagd.
 
 
         **Gerelateerde resources**
@@ -1490,6 +1492,11 @@ paths:
         required: false
         schema:
           type: string
+      - name: versie
+        in: query
+        description: Het (automatische) versienummer van het INFORMATIEOBJECT.
+        schema:
+          type: integer  
       responses:
         '204':
           description: No content
