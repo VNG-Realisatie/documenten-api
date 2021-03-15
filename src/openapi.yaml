@@ -3323,6 +3323,198 @@ paths:
       schema:
         type: string
         format: uuid
+  /gebruiksrechten/_zoek:
+    post:
+      operationId: gebruiksrechten__zoek
+      summary: Voer een zoekopdracht uit op GEBRUIKSRECHTen.
+      description: 'Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
+
+        niet geschikt voor ingewikkelder zoekopdrachten.'
+      parameters:
+      - name: page
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        required: false
+        schema:
+          type: integer
+      - name: uuid_in
+        in: query
+        description: Een array met op te vragen UUIDs.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GebruiksrechtenZoek'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Crs:
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
+              schema:
+                type: string
+                enum:
+                - EPSG:4326
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                required:
+                - count
+                - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                    nullable: true
+                  previous:
+                    type: string
+                    format: uri
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Gebruiksrechten'
+        '400':
+          description: Bad request
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: Unauthorized
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: Forbidden
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: Not acceptable
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: Conflict
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: Gone
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '412':
+          description: Precondition failed
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: Unsupported media type
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: Too many requests
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: Internal server error
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - gebruiksrechten
+      security:
+      - JWT-Claims:
+        - documenten.lezen
+    parameters: []
+
   /objectinformatieobjecten:
     get:
       operationId: objectinformatieobject_list
@@ -5343,6 +5535,11 @@ components:
           type: string
           readOnly: true
           minLength: 1
+        lockedBy:
+          title: Locked By
+          description: URL-referentie naar de gebruiker die het INFORMATIEOBJECT heeft gelocked.
+          type: string
+          format: uri
     UnlockEnkelvoudigInformatieObject:
       type: object
       properties:
@@ -5380,7 +5577,7 @@ components:
           type: string
           format: date-time
         einddatum:
-          title: Startdatum
+          title: Einddatum
           description: Einddatum van de periode waarin de gebruiksrechtvoorwaarden
             van toepassing zijn.
           type: string
@@ -5437,3 +5634,46 @@ components:
           - besluit
           - zaak
           - verzoek
+    GebruiksrechtenZoek:
+      type: object
+      properties:
+        uuid__in:
+          description: Array of unieke resource identifiers (UUID4)
+          type: array
+          items:
+            type: string
+            format: uuid
+        url:
+          title: Url
+          description: URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          type: string
+          format: uri
+          readOnly: true
+          maxLength: 1000
+          minLength: 1
+        informatieobject:
+          title: Informatieobject
+          description: URL-referentie naar het INFORMATIEOBJECT.
+          type: string
+          format: uri
+        startdatum:
+          title: Startdatum
+          description: Begindatum van de periode waarin de gebruiksrechtvoorwaarden
+            van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject
+            de startdatum.
+          type: string
+          format: date-time
+        einddatum:
+          title: Einddatum
+          description: Einddatum van de periode waarin de gebruiksrechtvoorwaarden
+            van toepassing zijn.
+          type: string
+          format: date-time
+          nullable: true
+        omschrijvingVoorwaarden:
+          title: Omschrijving voorwaarden
+          description: Omschrijving van de van toepassing zijnde voorwaarden aan het
+            gebruik anders dan raadpleging
+          type: string
+          minLength: 1
