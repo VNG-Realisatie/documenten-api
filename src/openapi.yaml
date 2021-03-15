@@ -4565,7 +4565,7 @@ components:
         taal:
           title: Taal
           description: 'Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT
-            is vastgelegd. Voorbeeld: `nld`. Zie: https://www.iso.org/standard/4767.html'
+            is vastgelegd. Voorbeeld: `dut`. Zie: https://www.iso.org/standard/4767.html'
           type: string
           maxLength: 3
           minLength: 3
