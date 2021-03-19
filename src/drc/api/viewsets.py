@@ -195,7 +195,14 @@ class EnkelvoudigInformatieObjectViewSet(
         return super().get_renderers()
 
     @transaction.atomic
+    @swagger_auto_schema(
+        manual_parameters=[VERSIE_QUERY_PARAM]
+    )
     def perform_destroy(self, instance):
+        versie = self.request.query_params.get("versie")
+        if versie:
+            return self.destroy_document_version(instance, versie)
+
         if instance.canonical.objectinformatieobject_set.exists():
             raise serializers.ValidationError(
                 {
@@ -207,6 +214,48 @@ class EnkelvoudigInformatieObjectViewSet(
             )
 
         super().perform_destroy(instance.canonical)
+
+    def destroy_document_version(self, document: EnkelvoudigInformatieObject, versie: int) -> None:
+        document_version = EnkelvoudigInformatieObject.objects.filter(
+            identificatie=document.identificatie, bronorganisatie=document.bronorganisatie, versie=versie
+        )
+        if not document_version.exists():
+            raise serializers.ValidationError(_("The document version requested does not exist"),
+                code="wrong-version-number",
+            )
+
+        # Check if there are OIOs related to this specific version of the document
+        oios_related_to_version = ObjectInformatieObject.objects.filter(informatieobject=document.canonical, informatieobject_versie=versie)
+
+        if oios_related_to_version.exists():
+            raise serializers.ValidationError(
+                {
+                    api_settings.NON_FIELD_ERRORS_KEY: _(
+                        "All relations to the document version must be destroyed before destroying the document"
+                    )
+                }, code="pending-relations",
+            )
+
+        # Check if this document version is the last one remaining. If it is, check if there are related OIOs
+        # without version specified
+        documents_in_history = EnkelvoudigInformatieObject.objects.filter(
+            identificatie=document.identificatie, bronorganisatie=document.bronorganisatie
+        )
+        if documents_in_history.count() == 1:
+            oios_related = ObjectInformatieObject.objects.filter(informatieobject=document.canonical)
+
+            if oios_related.exists():
+                raise serializers.ValidationError(
+                    {
+                        api_settings.NON_FIELD_ERRORS_KEY: _(
+                            "All relations to the document must be destroyed before destroying the document"
+                        )
+                    }, code="pending-relations",
+                )
+
+            return super().perform_destroy(document.canonical)
+
+        return super().perform_destroy(document)
 
     @property
     def filterset_class(self):
