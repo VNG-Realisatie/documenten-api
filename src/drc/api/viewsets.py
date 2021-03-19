@@ -143,6 +143,10 @@ class EnkelvoudigInformatieObjectViewSet(
     als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
     INFORMATIEOBJECT.
 
+    Het is ook mogelijk om een specifieke versie van de (ENKELVOUDIG) INFORMATIEOBJECTen
+    te verwijderen. Specifieke versies kunnen middels
+    query-string parameters worden verwijderd.
+
     **Gerelateerde resources**
     - GEBRUIKSRECHTen
     - audit trail regels

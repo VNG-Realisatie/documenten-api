@@ -1691,7 +1691,7 @@
             "delete": {
                 "operationId": "enkelvoudiginformatieobject_delete",
                 "summary": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.",
-                "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk\nals er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)\nINFORMATIEOBJECT.\n\n**Gerelateerde resources**\n- GEBRUIKSRECHTen\n- audit trail regels",
+                "description": "Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT en alle bijbehorende versies,\nsamen met alle gerelateerde resources binnen deze API. Dit is alleen mogelijk\nals er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)\nINFORMATIEOBJECT.\n\nHet is ook mogelijk om een specifieke versie van de (ENKELVOUDIG) INFORMATIEOBJECTen\nte verwijderen. Specifieke versies kunnen middels\nquery-string parameters worden verwijderd.\n\n**Gerelateerde resources**\n- GEBRUIKSRECHTen\n- audit trail regels",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",

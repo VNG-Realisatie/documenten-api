@@ -1464,6 +1464,13 @@ paths:
         INFORMATIEOBJECT.
 
 
+        Het is ook mogelijk om een specifieke versie van de (ENKELVOUDIG) INFORMATIEOBJECTen
+
+        te verwijderen. Specifieke versies kunnen middels
+
+        query-string parameters worden verwijderd.
+
+
         **Gerelateerde resources**
 
         - GEBRUIKSRECHTen
