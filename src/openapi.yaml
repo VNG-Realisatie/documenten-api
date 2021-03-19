@@ -3287,9 +3287,13 @@ paths:
 
         **Er wordt gevalideerd op**
 
-        - geldigheid `informatieobject` URL
+        - geldigheid `informatieobject` URL. Specifieke INFORMATIEOBJECT versies kunnen
+        middels query-string parameters
 
-        - de combinatie `informatieobject` en `object` moet uniek zijn
+        worden gebruikt.
+
+        - de combinatie `informatieobject`, `object` en, indien gebruikt, de informatie
+        object versie moet uniek zijn
 
         - bestaan van `object` URL'
       requestBody:
@@ -5010,3 +5014,7 @@ components:
           - besluit
           - zaak
           - verzoek
+        informatieobjectVersie:
+          title: Informatieobject versie
+          type: integer
+          nullable: true

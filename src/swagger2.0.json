@@ -3848,7 +3848,7 @@
             "post": {
                 "operationId": "objectinformatieobject_create",
                 "summary": "Maak een OBJECT-INFORMATIEOBJECT relatie aan.",
-                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nAndere API's, zoals de Zaken API en de Besluiten API, gebruiken dit\nendpoint bij het synchroniseren van relaties.\n\n**Er wordt gevalideerd op**\n- geldigheid `informatieobject` URL\n- de combinatie `informatieobject` en `object` moet uniek zijn\n- bestaan van `object` URL",
+                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nAndere API's, zoals de Zaken API en de Besluiten API, gebruiken dit\nendpoint bij het synchroniseren van relaties.\n\n**Er wordt gevalideerd op**\n- geldigheid `informatieobject` URL. Specifieke INFORMATIEOBJECT versies kunnen middels query-string parameters\nworden gebruikt.\n- de combinatie `informatieobject`, `object` en, indien gebruikt, de informatie object versie moet uniek zijn\n- bestaan van `object` URL",
                 "parameters": [
                     {
                         "name": "data",
@@ -5502,6 +5502,11 @@
                         "zaak",
                         "verzoek"
                     ]
+                },
+                "informatieobjectVersie": {
+                    "title": "Informatieobject versie",
+                    "type": "integer",
+                    "x-nullable": true
                 }
             }
         }

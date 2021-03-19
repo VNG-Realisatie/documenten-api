@@ -449,8 +449,9 @@ class ObjectInformatieObjectViewSet(
     endpoint bij het synchroniseren van relaties.
 
     **Er wordt gevalideerd op**
-    - geldigheid `informatieobject` URL
-    - de combinatie `informatieobject` en `object` moet uniek zijn
+    - geldigheid `informatieobject` URL. Specifieke INFORMATIEOBJECT versies kunnen middels query-string parameters
+    worden gebruikt.
+    - de combinatie `informatieobject`, `object` en, indien gebruikt, de informatie object versie moet uniek zijn
     - bestaan van `object` URL
 
     list:

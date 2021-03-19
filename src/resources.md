@@ -136,6 +136,7 @@ Uitleg bij mogelijke waarden:
 
 * `besluit` - Besluit
 * `zaak` - Zaak | string | ja | C​R​U​D |
+| informatieobjectVersie |  | integer | nee | C​R​U​D |
 
 
 * Create, Read, Update, Delete
