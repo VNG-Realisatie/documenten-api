@@ -6,6 +6,7 @@ import math
 import os.path
 import uuid
 from base64 import b64decode
+from urllib.parse import urlparse, parse_qs
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -47,7 +48,7 @@ from .utils import create_filename, merge_files
 from .validators import (
     InformatieObjectUniqueValidator,
     ObjectInformatieObjectValidator,
-    StatusValidator,
+    StatusValidator, InformatieObjectVersionValidator,
 )
 
 
@@ -668,10 +669,11 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         queryset=EnkelvoudigInformatieObject.objects,
         help_text=get_help_text("datamodel.ObjectInformatieObject", "informatieobject"),
     )
+    informatieobject_versie = serializers.IntegerField(required=False, allow_null=True, default=None)
 
     class Meta:
         model = ObjectInformatieObject
-        fields = ("url", "informatieobject", "object", "object_type")
+        fields = ("url", "informatieobject", "object", "object_type", "informatieobject_versie")
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
             "informatieobject": {"validators": [IsImmutableValidator()]},
@@ -687,7 +689,8 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         }
         validators = [
             ObjectInformatieObjectValidator(),
-            InformatieObjectUniqueValidator("object", "informatieobject"),
+            InformatieObjectUniqueValidator("object", "informatieobject", "informatieobject_versie"),
+            InformatieObjectVersionValidator()
         ]
 
     def __init__(self, *args, **kwargs):
@@ -698,6 +701,13 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
         if not hasattr(self, "initial_data"):
             return
+
+        informatieobject_url = urlparse(self.initial_data["informatieobject"])
+        query_params = parse_qs(informatieobject_url.query)
+        if "versie" in query_params:
+            self.initial_data["informatieobject_versie"] = query_params["versie"][0]
+        else:
+            self.initial_data["informatieobject_versie"] = None
 
 
 class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
