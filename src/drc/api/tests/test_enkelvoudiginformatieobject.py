@@ -617,6 +617,183 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+class EnkelvoudigInformatieObjectVersionDeleteAPITests(JWTAuthMixin, APITestCase):
+    list_url = reverse(EnkelvoudigInformatieObject)
+    heeft_alle_autorisaties = True
+
+    def test_delete_version_without_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(f"{eio_url}?versie=1")
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response_delete.status_code)
+
+        self.assertEqual(1, document_versions.count())
+
+    def test_delete_version_with_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical, informatieobject_versie=2)
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(f"{eio_url}?versie=2")
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response_delete.status_code)
+        self.assertEqual("pending-relations", response_delete.json()["invalidParams"][0]["code"])
+
+        self.assertEqual(2, document_versions.count())
+
+    def test_delete_version_with_relation_to_another_version(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical, informatieobject_versie=2)
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(f"{eio_url}?versie=1")
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response_delete.status_code)
+
+        self.assertEqual(1, document_versions.count())
+
+    def test_delete_all_versions_without_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(eio_url)
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response_delete.status_code)
+
+        self.assertEqual(0, document_versions.count())
+
+    def test_delete_all_versions_with_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical)
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(eio_url)
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response_delete.status_code)
+        self.assertEqual("pending-relations", response_delete.json()["invalidParams"][0]["code"])
+
+        self.assertEqual(2, document_versions.count())
+
+    def test_delete_all_versions_with_relations_with_specific_version(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical, informatieobject_versie=1)
+
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(2, document_versions.count())
+
+        response_delete = self.client.delete(eio_url)
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response_delete.status_code)
+        self.assertEqual("pending-relations", response_delete.json()["invalidParams"][0]["code"])
+
+        self.assertEqual(2, document_versions.count())
+
+    def test_delete_last_version_without_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(1, document_versions.count())
+
+        canonical_objects = EnkelvoudigInformatieObjectCanonical.objects.all()
+        self.assertEqual(1, canonical_objects.count())
+
+        response_delete = self.client.delete(f"{eio_url}?versie=1")
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response_delete.status_code)
+
+        self.assertEqual(0, document_versions.count())
+        self.assertEqual(0, canonical_objects.count())
+
+    def test_delete_last_version_with_relations(self):
+        eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        document_versions = EnkelvoudigInformatieObject.objects.filter(
+            bronorganisatie=eio.bronorganisatie, identificatie=eio.identificatie
+        )
+        self.assertEqual(1, document_versions.count())
+
+        ObjectInformatieObjectFactory.create(informatieobject=eio.canonical)
+
+        response_delete = self.client.delete(f"{eio_url}?versie=1")
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response_delete.status_code)
+
+        self.assertEqual(1, document_versions.count())
+
+
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class EnkelvoudigInformatieObjectPaginationAPITests(JWTAuthMixin, APITestCase):
     list_url = reverse(EnkelvoudigInformatieObject)
     heeft_alle_autorisaties = True
