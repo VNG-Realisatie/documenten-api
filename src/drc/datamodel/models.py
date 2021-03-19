@@ -405,6 +405,12 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
         on_delete=models.CASCADE,
         help_text="URL-referentie naar het INFORMATIEOBJECT.",
     )
+    informatieobject_versie = models.IntegerField(
+        verbose_name=_("informatieobject versie"),
+        blank=True,
+        null=True,
+        help_text=_("De versie van het INFORMATIEOBJECT")
+    )
     object = models.URLField(
         help_text="URL-referentie naar het gerelateerde OBJECT (in deze of een "
         "andere API).",
@@ -422,7 +428,7 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     class Meta:
         verbose_name = "Oobject-informatieobject"
         verbose_name_plural = "object-informatieobjecten"
-        unique_together = ("informatieobject", "object")
+        unique_together = [("informatieobject", "object", "informatieobject_versie")]
 
     def __str__(self):
         return self.get_title()
