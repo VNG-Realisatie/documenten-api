@@ -39,8 +39,8 @@ info:
     \ en als eerste in een samenwerkingsketen heeft vastgelegd.\n* `informatieobjecttype`:\
     \ URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).\n* `vertrouwelijkheidaanduiding`:\
     \ Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd\
-    \ is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n\
-    * [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n"
+    \ is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n\
+    * [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n"
   contact:
     url: https://zaakgerichtwerken.vng.cloud
     email: standaarden.ondersteuning@vng.nl
