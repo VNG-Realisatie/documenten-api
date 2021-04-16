@@ -42,7 +42,7 @@ info:
     \ is.\n\n**Resources en acties**\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n\
     * [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n"
   contact:
-    url: https://zaakgerichtwerken.vng.cloud
+    url: https://vng-realisatie.github.io/gemma-zaken
     email: standaarden.ondersteuning@vng.nl
   license:
     name: EUPL 1.2
