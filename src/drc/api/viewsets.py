@@ -143,6 +143,10 @@ class EnkelvoudigInformatieObjectViewSet(
     als er geen OBJECTINFORMATIEOBJECTen relateerd zijn aan het (ENKELVOUDIG)
     INFORMATIEOBJECT.
 
+    Het is ook mogelijk om een specifieke versie van de (ENKELVOUDIG) INFORMATIEOBJECTen
+    te verwijderen. Specifieke versies kunnen middels
+    query-string parameters worden verwijderd.
+
     **Gerelateerde resources**
     - GEBRUIKSRECHTen
     - audit trail regels
@@ -195,7 +199,14 @@ class EnkelvoudigInformatieObjectViewSet(
         return super().get_renderers()
 
     @transaction.atomic
+    @swagger_auto_schema(
+        manual_parameters=[VERSIE_QUERY_PARAM]
+    )
     def perform_destroy(self, instance):
+        versie = self.request.query_params.get("versie")
+        if versie:
+            return self.perform_destroy_single_version(instance, versie)
+
         if instance.canonical.objectinformatieobject_set.exists():
             raise serializers.ValidationError(
                 {
@@ -207,6 +218,43 @@ class EnkelvoudigInformatieObjectViewSet(
             )
 
         super().perform_destroy(instance.canonical)
+
+    def perform_destroy_single_version(self, document: EnkelvoudigInformatieObject, versie: int) -> None:
+        # Raise an error if the document with specified version doesn't exist
+        self.get_object()
+
+        # Check if there are OIOs related to this specific version of the document
+        oios_related_to_version = ObjectInformatieObject.objects.filter(informatieobject=document.canonical, informatieobject_versie=versie)
+
+        if oios_related_to_version.exists():
+            raise serializers.ValidationError(
+                {
+                    api_settings.NON_FIELD_ERRORS_KEY: _(
+                        "All relations to the document version must be destroyed before destroying the document"
+                    )
+                }, code="pending-relations",
+            )
+
+        # Check if this document version is the last one remaining. If it is, check if there are related OIOs
+        # without version specified
+        documents_in_history = EnkelvoudigInformatieObject.objects.filter(
+            canonical=document.canonical
+        )
+        if documents_in_history.count() == 1:
+            oios_related = ObjectInformatieObject.objects.filter(informatieobject=document.canonical)
+
+            if oios_related.exists():
+                raise serializers.ValidationError(
+                    {
+                        api_settings.NON_FIELD_ERRORS_KEY: _(
+                            "All relations to the document must be destroyed before destroying the document"
+                        )
+                    }, code="pending-relations",
+                )
+
+            return super().perform_destroy(document.canonical)
+
+        return super().perform_destroy(document)
 
     @property
     def filterset_class(self):
@@ -396,8 +444,9 @@ class ObjectInformatieObjectViewSet(
     endpoint bij het synchroniseren van relaties.
 
     **Er wordt gevalideerd op**
-    - geldigheid `informatieobject` URL
-    - de combinatie `informatieobject` en `object` moet uniek zijn
+    - geldigheid `informatieobject` URL. Specifieke INFORMATIEOBJECT versies kunnen middels query-string parameters
+    worden gebruikt.
+    - de combinatie `informatieobject`, `object` en, indien gebruikt, de informatie object versie moet uniek zijn
     - bestaan van `object` URL
 
     list:

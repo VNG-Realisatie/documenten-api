@@ -10,7 +10,7 @@ from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
 
-from drc.datamodel.models import ObjectInformatieObject
+from drc.datamodel.models import ObjectInformatieObject, EnkelvoudigInformatieObject
 from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
@@ -147,18 +147,51 @@ class InformatieObjectUniqueValidator:
     message = _("The fields {field_names} must make a unique set.")
     code = "unique"
 
-    def __init__(self, remote_resource_field, field: str):
-        self.remote_resource_field = remote_resource_field
-        self.field = field
+    def __init__(self, object_field, informatieobject_field, version_field):
+        self.object_field = object_field
+        self.informatieobject_field = informatieobject_field
+        self.version_field = version_field
 
     def __call__(self, context: OrderedDict):
         object_url = context["object"]
         informatieobject = context["informatieobject"]
+        informatieobject_version = context["informatieobject_versie"]
 
-        oios = informatieobject.objectinformatieobject_set.filter(object=object_url)
+        if informatieobject_version:
+            oios = informatieobject.objectinformatieobject_set.filter(
+                object=object_url,
+                informatieobject_versie=informatieobject_version
+            )
+        else:
+            oios = informatieobject.objectinformatieobject_set.filter(
+                object=object_url,
+                informatieobject_versie__isnull=True
+            )
 
         if oios:
-            field_names = (self.remote_resource_field, self.field)
+            field_names = (self.object_field, self.informatieobject_field, self.version_field)
             raise serializers.ValidationError(
                 detail=self.message.format(field_names=field_names), code=self.code
+            )
+
+
+class InformatieObjectVersionValidator:
+    """
+    Validate that the version of the informatie object exists
+    """
+
+    message = _("The version of the document does not exist.")
+    code = "wrong-version"
+
+    def __call__(self, context: OrderedDict):
+        if not context["informatieobject_versie"]:
+            return
+
+        documents = EnkelvoudigInformatieObject.objects.filter(
+            canonical=context["informatieobject"], versie=context["informatieobject_versie"]
+        )
+
+        if not documents.exists():
+            raise serializers.ValidationError(
+                detail=self.message, code=self.code
             )

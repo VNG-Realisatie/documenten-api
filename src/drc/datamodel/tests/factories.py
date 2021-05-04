@@ -9,16 +9,18 @@ from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
 
 class EnkelvoudigInformatieObjectCanonicalFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "datamodel.EnkelvoudigInformatieObjectCanonical"
-
     latest_version = factory.RelatedFactory(
         "drc.datamodel.tests.factories.EnkelvoudigInformatieObjectFactory", "canonical"
     )
 
+    class Meta:
+        model = "datamodel.EnkelvoudigInformatieObjectCanonical"
+
 
 class EnkelvoudigInformatieObjectFactory(factory.django.DjangoModelFactory):
-    canonical = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
+    canonical = factory.SubFactory(
+        EnkelvoudigInformatieObjectCanonicalFactory, latest_version=None
+    )
     identificatie = uuid.uuid4().hex
     bronorganisatie = factory.Faker("ssn", locale="nl_NL")
     creatiedatum = datetime.date(2018, 6, 27)

@@ -116,6 +116,153 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
             f"http://testserver.com{eo_detail_url}",
         )
 
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_with_specific_document_version(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=1",
+                "objectType": "zaak",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        oio = eio.canonical.objectinformatieobject_set.get()
+
+        self.assertEqual(1, oio.informatieobject_versie)
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_cant_set_document_version_directly(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}",
+                "objectType": "zaak",
+                "informatieobject_versie": 1,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        oio = eio.canonical.objectinformatieobject_set.get()
+
+        self.assertIsNone(oio.informatieobject_versie)
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_oios_to_different_document_versions(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=1",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=2",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        oios = eio.canonical.objectinformatieobject_set.all()
+
+        self.assertEqual(2, oios.count())
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_oios_to_specific_document_version_and_to_all_versions(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=1",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        oios = eio.canonical.objectinformatieobject_set.all()
+
+        self.assertEqual(2, oios.count())
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_duplicate_to_specific_document_version(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create()
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        self.client.patch(eio_url, {"beschrijving": "beschrijving2", "lock": lock})
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=1",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            self.list_url,
+            {
+                "object": ZAAK,
+                "informatieobject": f"http://testserver{eio_url}?versie=1",
+                "objectType": "zaak",
+            },
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "unique")
 
 @patch("zds_client.client.get_operation_url")
 @patch("zds_client.tests.mocks.MockClient.fetch_schema", return_value={})
