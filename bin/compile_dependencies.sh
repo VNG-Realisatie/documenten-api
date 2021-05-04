@@ -8,12 +8,12 @@ cd $toplevel
 
 # Base deps
 pip-compile \
-    --no-index \
+    --no-emit-index-url \
     requirements/base.in
 
 # Jenkins/tests deps
 pip-compile \
-    --no-index \
+    --no-emit-index-url \
     --output-file requirements/jenkins.txt \
     requirements/base.txt \
     requirements/testing.in \
