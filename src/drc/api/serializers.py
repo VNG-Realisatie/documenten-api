@@ -44,7 +44,7 @@ from drc.datamodel.models import (
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
-from .utils import create_filename, merge_files
+from .utils import create_filename, merge_files, GetVersionFromUrl
 from .validators import (
     InformatieObjectUniqueValidator,
     ObjectInformatieObjectValidator,
@@ -669,14 +669,18 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         queryset=EnkelvoudigInformatieObject.objects,
         help_text=get_help_text("datamodel.ObjectInformatieObject", "informatieobject"),
     )
-    informatieobject_versie = serializers.IntegerField(required=False, allow_null=True, default=None)
+    informatieobject_versie = serializers.IntegerField(
+        read_only=True,
+        allow_null=True,
+        default=GetVersionFromUrl()
+    )
 
     class Meta:
         model = ObjectInformatieObject
         fields = ("url", "informatieobject", "object", "object_type", "informatieobject_versie")
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
-            "informatieobject": {"validators": [IsImmutableValidator()]},
+            "informatieobject": {"validators": [IsImmutableValidator(), InformatieObjectVersionValidator()]},
             "object": {
                 "validators": [
                     URLValidator(
@@ -690,7 +694,6 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         validators = [
             ObjectInformatieObjectValidator(),
             InformatieObjectUniqueValidator("object", "informatieobject", "informatieobject_versie"),
-            InformatieObjectVersionValidator()
         ]
 
     def __init__(self, *args, **kwargs):
@@ -699,15 +702,12 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         value_display_mapping = add_choice_values_help_text(ObjectTypes)
         self.fields["object_type"].help_text += f"\n\n{value_display_mapping}"
 
-        if not hasattr(self, "initial_data"):
-            return
-
+    def validate(self, attrs):
         informatieobject_url = urlparse(self.initial_data["informatieobject"])
         query_params = parse_qs(informatieobject_url.query)
         if "versie" in query_params:
-            self.initial_data["informatieobject_versie"] = query_params["versie"][0]
-        else:
-            self.initial_data["informatieobject_versie"] = None
+            attrs["informatieobject_versie"] = query_params["versie"][0]
+        return super().validate(attrs)
 
 
 class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):

@@ -205,7 +205,7 @@ class EnkelvoudigInformatieObjectViewSet(
     def perform_destroy(self, instance):
         versie = self.request.query_params.get("versie")
         if versie:
-            return self.destroy_document_version(instance, versie)
+            return self.perform_destroy_single_version(instance, versie)
 
         if instance.canonical.objectinformatieobject_set.exists():
             raise serializers.ValidationError(
@@ -219,14 +219,9 @@ class EnkelvoudigInformatieObjectViewSet(
 
         super().perform_destroy(instance.canonical)
 
-    def destroy_document_version(self, document: EnkelvoudigInformatieObject, versie: int) -> None:
-        document_version = EnkelvoudigInformatieObject.objects.filter(
-            identificatie=document.identificatie, bronorganisatie=document.bronorganisatie, versie=versie
-        )
-        if not document_version.exists():
-            raise serializers.ValidationError(_("The document version requested does not exist"),
-                code="wrong-version-number",
-            )
+    def perform_destroy_single_version(self, document: EnkelvoudigInformatieObject, versie: int) -> None:
+        # Raise an error if the document with specified version doesn't exist
+        self.get_object()
 
         # Check if there are OIOs related to this specific version of the document
         oios_related_to_version = ObjectInformatieObject.objects.filter(informatieobject=document.canonical, informatieobject_versie=versie)
@@ -243,7 +238,7 @@ class EnkelvoudigInformatieObjectViewSet(
         # Check if this document version is the last one remaining. If it is, check if there are related OIOs
         # without version specified
         documents_in_history = EnkelvoudigInformatieObject.objects.filter(
-            identificatie=document.identificatie, bronorganisatie=document.bronorganisatie
+            canonical=document.canonical
         )
         if documents_in_history.count() == 1:
             oios_related = ObjectInformatieObject.objects.filter(informatieobject=document.canonical)
