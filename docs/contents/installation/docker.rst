@@ -19,7 +19,7 @@ Docker basics
 
    .. code-block:: bash
 
-       $ git clone https://github.com/VNG-realisatie/gemma-documentregistratiecomponent.git drc
+       $ git clone https://github.com/VNG-realisatie/documenten-api.git drc
        Cloning into 'drc'...
        ...
 
@@ -103,6 +103,6 @@ fixtures to populate your database initially.
 You can override this location through the ``FIXTURES_DIR`` environment
 variable. Only ``*.json`` files are considered.
 
-.. _Github: https://github.com/VNG-realisatie/gemma-documentregistratiecomponent
+.. _Github: https://github.com/VNG-realisatie/documenten-api
 .. _Docker: https://docs.docker.com/install/
 .. _Docker Compose: https://docs.docker.com/compose/install/

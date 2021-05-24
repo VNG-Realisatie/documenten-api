@@ -32,13 +32,13 @@ You can retrieve the source code using the following command:
 
    .. code-block:: bash
 
-        $ git clone git@github.com:VNG-realisatie/gemma-documentregistratiecomponent.git drc
+        $ git clone git@github.com:VNG-realisatie/documenten-api.git drc
 
 **Note:** You can also use the HTTPS syntax:
 
    .. code-block:: bash
 
-        $ git clone https://github.com/VNG-realisatie/gemma-documentregistratiecomponent.git drc
+        $ git clone https://github.com/VNG-realisatie/documenten-api.git drc
 
 Setting up virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^
