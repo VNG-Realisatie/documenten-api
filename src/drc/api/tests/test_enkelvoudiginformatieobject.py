@@ -10,6 +10,7 @@ from freezegun import freeze_time
 from privates.test import temp_private_root
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.constants import ObjectTypes
 from vng_api_common.tests import (
     JWTAuthMixin,
     get_operation_url,
@@ -20,6 +21,7 @@ from vng_api_common.tests import (
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject,
     EnkelvoudigInformatieObjectCanonical,
+    ObjectInformatieObject,
 )
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectFactory,
@@ -376,6 +378,62 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, "inhoud")
         self.assertEqual(error["code"], "invalid")
+
+    def test_filter_by_object_external(self):
+        eio1 = EnkelvoudigInformatieObjectFactory.create()
+        eio2 = EnkelvoudigInformatieObjectFactory.create()
+
+        ObjectInformatieObject(
+            informatieobject=eio1.canonical,
+            object="http://zrc.com/zaken/1",
+            object_type=ObjectTypes.zaak,
+        ).save()
+        ObjectInformatieObject(
+            informatieobject=eio2.canonical,
+            object="http://zrc.com/zaken/2",
+            object_type=ObjectTypes.zaak,
+        ).save()
+
+        response = self.client.get(self.list_url, {"object": "http://zrc.com/zaken/1"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()["results"]
+
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(response_data[0]["identificatie"], eio1.identificatie)
+
+    def test_filter_by_object_multiple(self):
+        eio1 = EnkelvoudigInformatieObjectFactory.create()
+        eio2 = EnkelvoudigInformatieObjectFactory.create()
+        eio3 = EnkelvoudigInformatieObjectFactory.create()
+
+        ObjectInformatieObject(
+            informatieobject=eio1.canonical,
+            object="http://zrc.com/zaken/1",
+            object_type=ObjectTypes.zaak,
+        ).save()
+        ObjectInformatieObject(
+            informatieobject=eio2.canonical,
+            object="http://brc.com/besluiten/2",
+            object_type=ObjectTypes.besluit,
+        ).save()
+        ObjectInformatieObject(
+            informatieobject=eio3.canonical,
+            object="http://zrc.com/zaken/3",
+            object_type=ObjectTypes.zaak,
+        ).save()
+
+        url1 = "http://zrc.com/zaken/1"
+        url2 = "http://brc.com/besluiten/2"
+
+        response = self.client.get(f"{self.list_url}?object={url1},{url2}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()["results"]
+
+        self.assertEqual(len(response_data), 2)
+        self.assertEqual(response_data[0]["identificatie"], eio1.identificatie)
+        self.assertEqual(response_data[1]["identificatie"], eio2.identificatie)
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
