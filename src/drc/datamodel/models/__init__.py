@@ -1,4 +1,4 @@
-from .bestandseel import BestandsDeel # noqa
+from .bestandsdeel import BestandsDeel # noqa
 from .enkelvoudig_informatieobject import (
     EnkelvoudigInformatieObjectCanonical,
     EnkelvoudigInformatieObject
