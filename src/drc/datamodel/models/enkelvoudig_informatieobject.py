@@ -1,16 +1,16 @@
 import uuid as _uuid
 
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from privates.fields import PrivateMediaFileField
-from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.caching import ETagMixin
+from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.models import APIMixin
 
-from .informatieobject import InformatieObject
 from ..constants import ChecksumAlgoritmes
+from .informatieobject import InformatieObject
 
 
 class EnkelvoudigInformatieObjectCanonical(models.Model):

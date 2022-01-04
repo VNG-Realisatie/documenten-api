@@ -1,7 +1,6 @@
 import uuid as _uuid
 
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.caching import ETagMixin
 from vng_api_common.models import APIMixin
