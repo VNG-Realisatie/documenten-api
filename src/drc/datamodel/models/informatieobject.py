@@ -2,11 +2,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.descriptors import GegevensGroepType
-from vng_api_common.fields import RSINField
+from vng_api_common.fields import RSINField, VertrouwelijkheidsAanduidingField
 from vng_api_common.utils import generate_unique_identification
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import OndertekeningSoorten
+from ..constants import OndertekeningSoorten, Statussen
 from ..query import InformatieobjectQuerySet
 from ..validators import validate_status
 
