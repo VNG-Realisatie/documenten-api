@@ -8,7 +8,25 @@ from drc.datamodel.models import Verzending
 
 
 class GegevensGroepTypeMixin:
-    def get_gegevens_groep_type_fields(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        gegevens_groep_type_fields = self._get_gegevens_groep_type_fields()
+
+        for attribute in gegevens_groep_type_fields:
+            if not attribute.required:
+                continue
+
+            required_groep_fields = set(
+                field
+                for field in list(attribute.mapping.values())
+                if field.name not in attribute.optional
+            )
+
+            for field in required_groep_fields:
+                self.fields[field.name].required = True
+
+    def _get_gegevens_groep_type_fields(self):
         return [
             attribute
             for name, attribute in self._meta.model.__dict__.items()
@@ -24,7 +42,7 @@ class GegevensGroepTypeMixin:
         """
         super().clean()
 
-        gegevens_groep_type_fields = self.get_gegevens_groep_type_fields()
+        gegevens_groep_type_fields = self._get_gegevens_groep_type_fields()
         missing_field_errors = {}
 
         for attribute in gegevens_groep_type_fields:
@@ -40,19 +58,14 @@ class GegevensGroepTypeMixin:
                 if field.name in self.cleaned_data and self.cleaned_data[field.name]
             )
 
-            if attribute.required:
-                error_message = _("%(field)s is een verplicht veld.")
-                missing_fields = required_groep_fields - filled_in_required_fields
-            else:
-                error_message = _(
-                    "%(field)s is een verplicht veld wanneer gerelateerde velden zijn ingevuld."
-                )
-
-                missing_fields = (
-                    required_groep_fields - filled_in_required_fields
-                    if filled_in_required_fields
-                    else []
-                )
+            error_message = _(
+                "%(field)s is een verplicht veld wanneer gerelateerde velden zijn ingevuld."
+            )
+            missing_fields = (
+                required_groep_fields - filled_in_required_fields
+                if filled_in_required_fields
+                else []
+            )
 
             if missing_fields:
                 missing_field_errors.update(
