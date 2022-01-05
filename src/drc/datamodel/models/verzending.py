@@ -203,10 +203,9 @@ class Verzending(models.Model):
         ),
     )
 
-    # TODO: add validation for a maximum of 5 numbers
     buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer = models.PositiveIntegerField(
         _("postbus-of antwoordnummer"),
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(1), MaxValueValidator(9999)],
         help_text=_(
             "De numerieke aanduiding zoals deze door de Nederlandse PTT is vastgesteld"
             " voor postbusadressen en antwoordnummeradressen."
