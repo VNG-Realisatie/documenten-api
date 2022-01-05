@@ -51,7 +51,7 @@ def validate_postal_code(value):
             code="invalid-length",
         )
 
-    postal_digits = value[:-4]
+    postal_digits = value[:4]
 
     if not all(digit.isdigit() for digit in postal_digits):
         raise ValidationError(_("De eerste vier karakters dienen een cijfer te zijn."))

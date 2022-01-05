@@ -104,6 +104,7 @@ class Verzending(models.Model):
         ),
         validators=[MinValueValidator(1), MaxValueValidator(99999)],
         blank=True,
+        null=True,
     )
     binnenlands_correspondentieadres_huisnummer_toevoeging = models.CharField(
         _("huisnummer toevoeging"),
@@ -195,21 +196,23 @@ class Verzending(models.Model):
             "adres_buitenland_2": buitenlands_correspondentieadres_adres_buitenland_2,
             "adres_buitenland_3": buitenlands_correspondentieadres_adres_buitenland_3,
         },
+        required=True,
         optional=(
             "adres_buitenland_1",
             "adres_buitenland_3",
         ),
     )
 
+    # TODO: add validation for a maximum of 5 numbers
     buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer = models.PositiveIntegerField(
         _("postbus-of antwoordnummer"),
-        max_length=5,
         validators=[MinValueValidator(1)],
         help_text=_(
             "De numerieke aanduiding zoals deze door de Nederlandse PTT is vastgesteld"
             " voor postbusadressen en antwoordnummeradressen."
         ),
         blank=True,
+        null=True,
     )
     buitenlands_correspondentiepostadres_postadres_postcode = models.CharField(
         _("postadres postcode"),
@@ -244,7 +247,11 @@ class Verzending(models.Model):
             "postadres_type": buitenlands_correspondentiepostadres_postadrestype,
             "woonplaatsnaam": buitenlands_correspondentiepostadres_woonplaats,
         },
+        required=True,
     )
+
+    def __str__(self):
+        return _("Verzending %(uuid)s") % {"uuid": str(self.uuid)}
 
     class Meta:
         verbose_name = _("Verzending")

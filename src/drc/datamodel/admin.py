@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 from privates.admin import PrivateMediaMixin
 
+from drc.datamodel.forms import VerzendingForm
+
 from .models import (
     BestandsDeel,
     EnkelvoudigInformatieObject,
@@ -71,10 +73,10 @@ class BestandsDeelAdmin(PrivateMediaMixin, admin.ModelAdmin):
     private_media_fields = ("inhoud",)
 
 
-# TODO: add GegevensGroepType validation. If one of the GegevensGroepType fields
-# is filled in, required fields for that GegevensGroepType should be filled in too.
 @admin.register(Verzending)
 class VerzendingAdmin(admin.ModelAdmin):
+    form = VerzendingForm
+
     list_display = (
         "uuid",
         "aard_relatie",
