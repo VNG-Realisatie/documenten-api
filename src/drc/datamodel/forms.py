@@ -41,8 +41,13 @@ class GegevensGroepTypeMixin:
             )
 
             if attribute.required:
+                error_message = _("%(field)s is een verplicht veld.")
                 missing_fields = required_groep_fields - filled_in_required_fields
             else:
+                error_message = _(
+                    "%(field)s is een verplicht veld wanneer gerelateerde velden zijn ingevuld."
+                )
+
                 missing_fields = (
                     required_groep_fields - filled_in_required_fields
                     if filled_in_required_fields
@@ -53,9 +58,7 @@ class GegevensGroepTypeMixin:
                 missing_field_errors.update(
                     {
                         field.name: ValidationError(
-                            _(
-                                "%(field)s is een verplicht veld wanneer gerelateerde velden zijn ingevuld."
-                            ),
+                            error_message,
                             code="required",
                             params={"field": field.verbose_name},
                         )
