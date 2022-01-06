@@ -1,10 +1,10 @@
-from api.audits import AUDIT_DRC
 from rest_framework import viewsets
 from vng_api_common.audittrails.viewsets import AuditTrailViewsetMixin
 from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
+from drc.api.audits import AUDIT_DRC
 from drc.api.data_filtering import ListFilterByAuthorizationsMixin
 from drc.api.filters import GebruiksrechtenFilter
 from drc.api.kanalen import KANAAL_DOCUMENTEN

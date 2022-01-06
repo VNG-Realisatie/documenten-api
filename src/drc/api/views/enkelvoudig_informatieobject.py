@@ -3,24 +3,36 @@ from django.utils.translation import gettext as _
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-
 from sendfile import sendfile
-
+from vng_api_common.audittrails.viewsets import (
+    AuditTrailViewSet,
+    AuditTrailViewsetMixin,
+)
 from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
-from vng_api_common.audittrails.viewsets import AuditTrailViewSet, AuditTrailViewsetMixin
 
+from drc.api.audits import AUDIT_DRC
 from drc.api.filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
+)
+from drc.api.kanalen import KANAAL_DOCUMENTEN
+from drc.api.renderers import BinaryFileRenderer
+from drc.api.schema import EIOAutoSchema
+from drc.api.scopes import (
+    SCOPE_DOCUMENTEN_AANMAKEN,
+    SCOPE_DOCUMENTEN_ALLES_LEZEN,
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+    SCOPE_DOCUMENTEN_LOCK,
 )
 from drc.api.serializers import (
     EnkelvoudigInformatieObjectCreateLockSerializer,
@@ -29,20 +41,7 @@ from drc.api.serializers import (
     LockEnkelvoudigInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
-from drc.api.views import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
-
-from drc.api.audits import AUDIT_DRC
-from drc.api.kanalen import KANAAL_DOCUMENTEN
-from drc.api.renderers import BinaryFileRenderer
-from drc.api.schema import EIOAutoSchema
-from drc.api.scopes import (
-    SCOPE_DOCUMENTEN_ALLES_LEZEN,
-    SCOPE_DOCUMENTEN_AANMAKEN,
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-    SCOPE_DOCUMENTEN_BIJWERKEN,
-    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
-    SCOPE_DOCUMENTEN_LOCK,
-)
+from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
 from ..data_filtering import ListFilterByAuthorizationsMixin
@@ -326,7 +325,7 @@ class EnkelvoudigInformatieObjectViewSet(
     @action(detail=True, methods=["post"])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
-        canonical = eio.canonical
+        eio.canonical
         # check if it's a force unlock by administrator
         force_unlock = False
         if self.request.jwt_auth.has_auth(
