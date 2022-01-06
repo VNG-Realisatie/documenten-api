@@ -1,34 +1,33 @@
 import math
-import uuid
 import os
+import uuid
+
 from django.conf import settings
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile, File
 from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
+
+from rest_framework import serializers
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
-
 from vng_api_common.serializers import (
     GegevensGroepSerializer,
     add_choice_values_help_text,
 )
-
-from rest_framework import serializers
 from vng_api_common.validators import IsImmutableValidator, PublishValidator
 
-from drc.api.serializers.bestandsdeel import BestandsDeelSerializer
 from drc.api.auth import get_ztc_auth
+from drc.api.fields import AnyBase64File
+from drc.api.serializers.bestandsdeel import BestandsDeelSerializer
 from drc.api.utils import create_filename, merge_files
 from drc.api.validators import StatusValidator
-from drc.datamodel.constants import Statussen
-from drc.datamodel.models.bestandsdeel import BestandsDeel
-from drc.api.fields import AnyBase64File
-from drc.datamodel.constants import ChecksumAlgoritmes, OndertekeningSoorten
+from drc.datamodel.constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject,
     EnkelvoudigInformatieObjectCanonical,
 )
+from drc.datamodel.models.bestandsdeel import BestandsDeel
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
