@@ -4,13 +4,13 @@ from django.urls import include, path
 from vng_api_common import routers
 from vng_api_common.schema import SchemaView
 
-from .viewsets import (
-    BestandsDeelViewSet,
+from .views.bestandsdeel import BestandsDeelViewSet
+from .views.enkelvoudig_informatieobject import (
     EnkelvoudigInformatieObjectAuditTrailViewSet,
     EnkelvoudigInformatieObjectViewSet,
-    GebruiksrechtenViewSet,
-    ObjectInformatieObjectViewSet,
 )
+from .views.gebruiksrechten import GebruiksrechtenViewSet
+from .views.object_informatieobject import ObjectInformatieObjectViewSet
 
 router = routers.DefaultRouter()
 router.register(
