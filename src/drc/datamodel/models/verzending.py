@@ -11,6 +11,9 @@ from ..validators import validate_postal_code
 
 
 # based on https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
+# TODO: create model for (and relation to) "BETROKKENE"?
+# TODO: create relation to INFORMATIEOBJECTTYPE?
+# TODO: create model/GegevensGroepType for LAND/GEBIED type (used for buitenlands_correspondentieadres_land_postadres)?
 class Verzending(models.Model):
     uuid = models.UUIDField(
         unique=True,
