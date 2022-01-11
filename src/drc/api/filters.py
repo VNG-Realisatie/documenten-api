@@ -54,10 +54,16 @@ class GebruiksrechtenFilter(FilterSet):
 
 
 class VerzendingFilter(FilterSet):
+    informatieobject = URLModelChoiceFilter(
+        queryset=EnkelvoudigInformatieObjectCanonical.objects.all(),
+        instance_path="canonical",
+        help_text=get_help_text("datamodel.Verzending", "informatieobject"),
+    )
+
     class Meta:
         model = Verzending
         fields = {
-            "aard_relatie": [
-                "exact",
-            ]
+            "aard_relatie": ["exact"],
+            "informatieobject": ["exact"],
+            "betrokkene": ["exact"],
         }
