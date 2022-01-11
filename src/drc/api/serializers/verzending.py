@@ -25,7 +25,7 @@ class BuitenlandsCorrespondentiepostadresVerzendingSerializer(GegevensGroepSeria
 
 
 class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
-    binnenlands_correspondentieadres_verzending = (
+    afwijkend_binnenlands_corresnpondentieadres_verzending = (
         BinnenlandsCorrespondentieadresVerzendingSerializer(
             required=False,
             help_text=_(
@@ -37,7 +37,7 @@ class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
         )
     )
 
-    buitenlands_correspondentieadres_verzending = (
+    afwijkendbuitenlands_correspondentieadres_verzending = (
         BuitenlandsCorrespondentieadresVerzendingSerializer(
             help_text=_(
                 "De gegevens van het adres in het buitenland van BETROKKENE, zijnde"
@@ -48,7 +48,7 @@ class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
         )
     )
 
-    buitenlands_correspondentie_postadres_verzending = (
+    afwijkend_correspondentie_posteadres_verzending = (
         BuitenlandsCorrespondentiepostadresVerzendingSerializer(
             help_text=_(
                 "De gegevens die tezamen een postbusadres of antwoordnummeradres"
@@ -63,13 +63,15 @@ class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
         model = Verzending
         fields = (
             "uuid",
+            "betrokkene",
+            "informatieobject",
             "aard_relatie",
             "toelichting",
             "ontvangstdatum",
             "verzenddatum",
-            "contact_persoon"
-            "contactpersoonnaam"
-            "binnenlands_correspondentieadres_verzending"
-            "buitenlands_correspondentieadres_verzending"
-            "buitenlands_correspondentie_postadres_verzending",
+            "contact_persoon",
+            "contactpersoonnaam",
+            "afwijkend_binnenlands_corresnpondentieadres_verzending",
+            "afwijkendbuitenlands_correspondentieadres_verzending",
+            "afwijkend_correspondentie_posteadres_verzending",
         )
