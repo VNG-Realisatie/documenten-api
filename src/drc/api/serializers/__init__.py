@@ -8,3 +8,4 @@ from .enkelvoudig_informatieobject import (
 )
 from .gebruiksrechten import GebruiksrechtenSerializer
 from .object_informatieobject import ObjectInformatieObjectSerializer
+from .verzending import VerzendingSerializer

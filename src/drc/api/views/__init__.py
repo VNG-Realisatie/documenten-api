@@ -5,3 +5,4 @@ from .enkelvoudig_informatieobject import (
 )
 from .gebruiksrechten import GebruiksrechtenViewSet
 from .object_informatieobject import ObjectInformatieObjectViewSet
+from .verzending import VerzendingViewSet

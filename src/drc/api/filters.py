@@ -8,6 +8,7 @@ from drc.datamodel.models import (
     EnkelvoudigInformatieObjectCanonical,
     Gebruiksrechten,
     ObjectInformatieObject,
+    Verzending,
 )
 
 
@@ -49,4 +50,14 @@ class GebruiksrechtenFilter(FilterSet):
             "informatieobject": ["exact"],
             "startdatum": ["lt", "lte", "gt", "gte"],
             "einddatum": ["lt", "lte", "gt", "gte"],
+        }
+
+
+class VerzendingFilter(FilterSet):
+    class Meta:
+        model = Verzending
+        fields = {
+            "aard_relatie": [
+                "exact",
+            ]
         }

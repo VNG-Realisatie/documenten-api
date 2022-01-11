@@ -10,15 +10,30 @@ from ..constants import AfzenderTypes, PostAdresTypes
 from ..validators import validate_postal_code
 
 
-# based on https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
-# TODO: create model for (and relation to) "BETROKKENE"?
-# TODO: create relation to INFORMATIEOBJECTTYPE?
-# TODO: create model/GegevensGroepType for LAND/GEBIED type (used for buitenlands_correspondentieadres_land_postadres)?
+# gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
 class Verzending(models.Model):
     uuid = models.UUIDField(
         unique=True,
         default=_uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)",
+    )
+
+    betrokkene = models.URLField(
+        _("betrokkene"),
+        help_text=_(
+            "URL-referentie naar de betrokkene waarvan het informatieobject is"
+            " ontvangen of waaraan dit is verzonden."
+        ),
+    )
+
+    informatieobject = models.ForeignKey(
+        "EnkelvoudigInformatieObjectCanonical",
+        verbose_name=_("informatieobject"),
+        help_text=_(
+            "URL-referentie naar het informatieobject dat is ontvangen of verzonden."
+        ),
+        on_delete=models.CASCADE,
+        related_name="verzendingen",
     )
 
     aard_relatie = models.CharField(
@@ -191,13 +206,20 @@ class Verzending(models.Model):
         ),
         blank=True,
     )
-    # TODO: add buitenlands_correspondentieadres_land_postadres,
-    # this field looks like a relation though.
+    buitenlands_correspondentieadres_land_postadres = models.URLField(
+        _("land postadres"),
+        help_text=_(
+            "Het LAND dat behoort bij het afwijkend buitenlandse correspondentieadres"
+            " van de betrokkene in zijn/haar rol bij de zaak."
+        ),
+        blank=True,
+    )
     buitenlands_correspondentieadres_verzending = GegevensGroepType(
         {
             "adres_buitenland_1": buitenlands_correspondentieadres_adres_buitenland_1,
             "adres_buitenland_2": buitenlands_correspondentieadres_adres_buitenland_2,
             "adres_buitenland_3": buitenlands_correspondentieadres_adres_buitenland_3,
+            "land_postadres": buitenlands_correspondentieadres_land_postadres,
         },
         required=True,
         optional=(

@@ -84,7 +84,10 @@ class VerzendingAdmin(admin.ModelAdmin):
         "verzenddatum",
         "ontvangstdatum",
     )
-    list_filter = ("aard_relatie",)
+    list_filter = (
+        "aard_relatie",
+        "informatieobject",
+    )
     ordering = (
         "-verzenddatum",
         "-ontvangstdatum",
@@ -93,6 +96,7 @@ class VerzendingAdmin(admin.ModelAdmin):
         "contactpersoonnaam",
         "uuid",
     )
+    raw_id_fields = ("informatieobject",)
 
     readonly_fields = ("uuid",)
 
@@ -106,6 +110,8 @@ class VerzendingAdmin(admin.ModelAdmin):
                     "toelichting",
                     "verzenddatum",
                     "ontvangstdatum",
+                    "betrokkene",
+                    "informatieobject",
                 ),
             },
         ),
@@ -134,11 +140,11 @@ class VerzendingAdmin(admin.ModelAdmin):
         (
             _("Afwijkend buitenlands correspondentieadres verzending"),
             {
-                # TODO: add buitenlands_correspondentieadres_land_postadres
                 "fields": (
                     "buitenlands_correspondentieadres_adres_buitenland_1",
                     "buitenlands_correspondentieadres_adres_buitenland_2",
                     "buitenlands_correspondentieadres_adres_buitenland_3",
+                    "buitenlands_correspondentieadres_land_postadres",
                 ),
             },
         ),

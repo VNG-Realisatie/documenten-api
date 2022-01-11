@@ -10,6 +10,7 @@ from .views import (
     EnkelvoudigInformatieObjectViewSet,
     GebruiksrechtenViewSet,
     ObjectInformatieObjectViewSet,
+    VerzendingViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -22,6 +23,7 @@ router.register(
 router.register("gebruiksrechten", GebruiksrechtenViewSet)
 router.register("objectinformatieobjecten", ObjectInformatieObjectViewSet)
 router.register("bestandsdelen", BestandsDeelViewSet)
+router.register("verzendingen", VerzendingViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 
