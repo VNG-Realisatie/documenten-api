@@ -2,8 +2,14 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from vng_api_common.serializers import GegevensGroepSerializer
+from vng_api_common.utils import get_help_text
+from vng_api_common.validators import IsImmutableValidator
 
+from drc.api.fields import EnkelvoudigInformatieObjectHyperlinkedRelatedField
 from drc.datamodel.models import Verzending
+from drc.datamodel.models.enkelvoudig_informatieobject import (
+    EnkelvoudigInformatieObject,
+)
 
 
 class BinnenlandsCorrespondentieadresVerzendingSerializer(GegevensGroepSerializer):
@@ -25,6 +31,13 @@ class BuitenlandsCorrespondentiepostadresVerzendingSerializer(GegevensGroepSeria
 
 
 class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
+    informatieobject = EnkelvoudigInformatieObjectHyperlinkedRelatedField(
+        view_name="enkelvoudiginformatieobject-detail",
+        lookup_field="uuid",
+        queryset=EnkelvoudigInformatieObject.objects,
+        help_text=get_help_text("datamodel.Verzending", "informatieobject"),
+    )
+
     afwijkend_binnenlands_corresnpondentieadres_verzending = (
         BinnenlandsCorrespondentieadresVerzendingSerializer(
             required=False,
@@ -62,7 +75,7 @@ class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Verzending
         fields = (
-            "uuid",
+            "url",
             "betrokkene",
             "informatieobject",
             "aard_relatie",
@@ -75,3 +88,8 @@ class VerzendingSerializer(serializers.HyperlinkedModelSerializer):
             "afwijkendbuitenlands_correspondentieadres_verzending",
             "afwijkend_correspondentie_posteadres_verzending",
         )
+
+        extra_kwargs = {
+            "url": {"lookup_field": "uuid"},
+            "informatieobject": {"validators": [IsImmutableValidator()]},
+        }
