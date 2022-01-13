@@ -4,7 +4,6 @@ from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin
 from vng_api_common.utils import get_help_text
-from vng_api_common.validators import IsImmutableValidator
 
 from drc.api.fields import EnkelvoudigInformatieObjectHyperlinkedRelatedField
 from drc.datamodel.models import Verzending
@@ -100,5 +99,4 @@ class VerzendingSerializer(
 
         extra_kwargs = {
             "url": {"lookup_field": "uuid", "read_only": True},
-            "informatieobject": {"validators": [IsImmutableValidator()]},
         }
