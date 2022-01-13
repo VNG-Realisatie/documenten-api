@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from vng_api_common.caching.models import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
 
 from ..constants import AfzenderTypes, PostAdresTypes
@@ -11,7 +12,7 @@ from ..validators import validate_postal_code
 
 
 # gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
-class Verzending(models.Model):
+class Verzending(ETagMixin, models.Model):
     uuid = models.UUIDField(
         unique=True,
         default=_uuid.uuid4,

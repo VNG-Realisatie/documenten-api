@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -22,8 +23,9 @@ class VerzendingViewSet(
     TODO
     """
 
-    queryset = Verzending.objects.all()
+    queryset = Verzending.objects.select_related("informatieobject")
     serializer_class = VerzendingSerializer
+    pagination_class = PageNumberPagination
     filterset_class = VerzendingFilter
     lookup_field = "uuid"
     required_scopes = {
