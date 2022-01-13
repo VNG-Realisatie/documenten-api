@@ -2555,7 +2555,7 @@
                         "type": "string",
                         "enum": [
                             "afzender",
-                            "afzender"
+                            "geadresseerde"
                         ]
                     },
                     {
@@ -4312,7 +4312,8 @@
                     "description": "Omschrijving van de aard van de relatie van de BETROKKENE tot het INFORMATIEOBJECT.",
                     "type": "string",
                     "enum": [
-                        "afzender"
+                        "afzender",
+                        "geadresseerde"
                     ]
                 },
                 "toelichting": {

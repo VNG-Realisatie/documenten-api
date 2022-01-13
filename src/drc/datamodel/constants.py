@@ -70,7 +70,7 @@ class ObjectInformatieObjectTypes(DjangoChoices):
 
 class AfzenderTypes(DjangoChoices):
     afzender = ChoiceItem("afzender", _("Afzender"))
-    geadresseerde = ChoiceItem("afzender", _("Geadresseerde"))
+    geadresseerde = ChoiceItem("geadresseerde", _("Geadresseerde"))
 
 
 class PostAdresTypes(DjangoChoices):
