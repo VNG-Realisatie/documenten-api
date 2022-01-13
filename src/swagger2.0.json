@@ -2544,7 +2544,8 @@
         "/verzendingen": {
             "get": {
                 "operationId": "verzending_list",
-                "description": "TODO",
+                "summary": "Alle VERZENDINGen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "aardRelatie",
@@ -2572,15 +2573,44 @@
                         "required": false,
                         "type": "string",
                         "format": "uri"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Verzending"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Verzending"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -2626,7 +2656,8 @@
             },
             "post": {
                 "operationId": "verzending_create",
-                "description": "TODO",
+                "summary": "Maak een VERZENDING aan.",
+                "description": "Voeg VERZENDINGen toe voor een INFORMATIEOBJECT en een BETROKKENE.",
                 "parameters": [
                     {
                         "name": "Content-Type",
@@ -2706,7 +2737,8 @@
         "/verzendingen/{uuid}": {
             "get": {
                 "operationId": "verzending_read",
-                "description": "TODO",
+                "summary": "Een specifieke VERZENDING opvragen.",
+                "description": "Een specifieke VERZENDING opvragen.",
                 "parameters": [
                     {
                         "name": "If-None-Match",
@@ -2823,7 +2855,8 @@
             },
             "put": {
                 "operationId": "verzending_update",
-                "description": "TODO",
+                "summary": "Werk een VERZENDING in zijn geheel bij.",
+                "description": "Werk een VERZENDING in zijn geheel bij.",
                 "parameters": [
                     {
                         "name": "Content-Type",
@@ -2896,7 +2929,8 @@
             },
             "patch": {
                 "operationId": "verzending_partial_update",
-                "description": "TODO",
+                "summary": "Werk een VERZENDING relatie deels bij.",
+                "description": "Werk een VERZENDING relatie deels bij.",
                 "parameters": [
                     {
                         "name": "Content-Type",
@@ -2969,7 +3003,7 @@
             },
             "delete": {
                 "operationId": "verzending_delete",
-                "description": "TODO",
+                "description": "Verwijder een VERZENDING.",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -4108,7 +4142,7 @@
             }
         },
         "BinnenlandsCorrespondentieadresVerzending": {
-            "title": "Afwijkend binnenlands corresnpondentieadres verzending",
+            "title": "Afwijkend binnenlands correspondentieadres verzending",
             "description": "Het correspondentieadres, betreffende een adresseerbaar object, van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere binnenlandse correspondentieadres van BETROKKENE.",
             "required": [
                 "huisnummer",
@@ -4250,11 +4284,14 @@
             ],
             "type": "object",
             "properties": {
-                "uuid": {
-                    "title": "Uuid",
-                    "description": "Unieke resource identifier (UUID4)",
+                "url": {
+                    "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
-                    "format": "uuid"
+                    "format": "uri",
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "betrokkene": {
                     "title": "Betrokkene",
@@ -4312,7 +4349,7 @@
                     "type": "string",
                     "maxLength": 40
                 },
-                "afwijkendBinnenlandsCorresnpondentieadresVerzending": {
+                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
                     "$ref": "#/definitions/BinnenlandsCorrespondentieadresVerzending"
                 },
                 "afwijkendbuitenlandsCorrespondentieadresVerzending": {

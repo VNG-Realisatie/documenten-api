@@ -20,7 +20,35 @@ class VerzendingViewSet(
     viewsets.ModelViewSet,
 ):
     """
-    TODO
+    Opvragen en bewerken van VERZENDINGen.
+
+    create:
+    Maak een VERZENDING aan.
+
+    Voeg VERZENDINGen toe voor een INFORMATIEOBJECT en een BETROKKENE.
+
+    list:
+    Alle VERZENDINGen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
+
+    retrieve:
+    Een specifieke VERZENDING opvragen.
+
+    Een specifieke VERZENDING opvragen.
+
+    update:
+    Werk een VERZENDING in zijn geheel bij.
+
+    Werk een VERZENDING in zijn geheel bij.
+
+    partial_update:
+    Werk een VERZENDING relatie deels bij.
+
+    Werk een VERZENDING relatie deels bij.
+
+    destroy:
+    Verwijder een VERZENDING.
     """
 
     queryset = Verzending.objects.select_related("informatieobject")

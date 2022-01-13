@@ -143,7 +143,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| uuid | Unieke resource identifier (UUID4) | string | nee | C​R​U​D |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | betrokkene | URL-referentie naar de betrokkene waarvan het informatieobject is ontvangen of waaraan dit is verzonden. | string | ja | C​R​U​D |
 | informatieobject | URL-referentie naar het informatieobject dat is ontvangen of verzonden. | string | ja | C​R​U​D |
 | aardRelatie | Omschrijving van de aard van de relatie van de BETROKKENE tot het INFORMATIEOBJECT. | string | ja | C​R​U​D |

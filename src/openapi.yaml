@@ -2037,7 +2037,8 @@ paths:
   /verzendingen:
     get:
       operationId: verzending_list
-      description: TODO
+      summary: Alle VERZENDINGen opvragen.
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
       parameters:
       - name: aardRelatie
         in: query
@@ -2065,6 +2066,12 @@ paths:
         schema:
           type: string
           format: uri
+      - name: page
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        required: false
+        schema:
+          type: integer
       responses:
         '200':
           description: OK
@@ -2077,9 +2084,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Verzending'
+                required:
+                - count
+                - results
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    format: uri
+                    nullable: true
+                  previous:
+                    type: string
+                    format: uri
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Verzending'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -2102,7 +2125,8 @@ paths:
       - verzendingen
     post:
       operationId: verzending_create
-      description: TODO
+      summary: Maak een VERZENDING aan.
+      description: Voeg VERZENDINGen toe voor een INFORMATIEOBJECT en een BETROKKENE.
       parameters:
       - name: Content-Type
         in: header
@@ -2156,7 +2180,8 @@ paths:
   /verzendingen/{uuid}:
     get:
       operationId: verzending_read
-      description: TODO
+      summary: Een specifieke VERZENDING opvragen.
+      description: Een specifieke VERZENDING opvragen.
       parameters:
       - name: If-None-Match
         in: header
@@ -2257,7 +2282,8 @@ paths:
       - verzendingen
     put:
       operationId: verzending_update
-      description: TODO
+      summary: Werk een VERZENDING in zijn geheel bij.
+      description: Werk een VERZENDING in zijn geheel bij.
       parameters:
       - name: Content-Type
         in: header
@@ -2306,7 +2332,8 @@ paths:
       - verzendingen
     patch:
       operationId: verzending_partial_update
-      description: TODO
+      summary: Werk een VERZENDING relatie deels bij.
+      description: Werk een VERZENDING relatie deels bij.
       parameters:
       - name: Content-Type
         in: header
@@ -2355,7 +2382,7 @@ paths:
       - verzendingen
     delete:
       operationId: verzending_delete
-      description: TODO
+      description: Verwijder een VERZENDING.
       responses:
         '204':
           description: No content
@@ -3774,7 +3801,7 @@ components:
           - zaak
           - verzoek
     BinnenlandsCorrespondentieadresVerzending:
-      title: Afwijkend binnenlands corresnpondentieadres verzending
+      title: Afwijkend binnenlands correspondentieadres verzending
       description: Het correspondentieadres, betreffende een adresseerbaar object,
         van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het
         ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere
@@ -3915,11 +3942,15 @@ components:
       - afwijkendCorrespondentiePosteadresVerzending
       type: object
       properties:
-        uuid:
-          title: Uuid
-          description: Unieke resource identifier (UUID4)
+        url:
+          title: Url
+          description: URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
           type: string
-          format: uuid
+          format: uri
+          readOnly: true
+          maxLength: 1000
+          minLength: 1
         betrokkene:
           title: Betrokkene
           description: URL-referentie naar de betrokkene waarvan het informatieobject
@@ -3987,7 +4018,7 @@ components:
             voorde BETROKKENE inzake het ontvangen of verzonden INFORMATIEOBJECT.
           type: string
           maxLength: 40
-        afwijkendBinnenlandsCorresnpondentieadresVerzending:
+        afwijkendBinnenlandsCorrespondentieadresVerzending:
           $ref: '#/components/schemas/BinnenlandsCorrespondentieadresVerzending'
         afwijkendbuitenlandsCorrespondentieadresVerzending:
           $ref: '#/components/schemas/BuitenlandsCorrespondentieadresVerzending'
