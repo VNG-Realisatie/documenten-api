@@ -7,6 +7,8 @@ import factory
 import factory.fuzzy
 from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
 
+from drc.datamodel.constants import AfzenderTypes, PostAdresTypes
+
 
 class EnkelvoudigInformatieObjectCanonicalFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -90,3 +92,31 @@ class BestandsDeelFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.BestandsDeel"
+
+
+class VerzendingFactory(factory.django.DjangoModelFactory):
+    informatieobject = factory.SubFactory(EnkelvoudigInformatieObjectCanonicalFactory)
+    aard_relatie = factory.fuzzy.FuzzyChoice(
+        [value for value, label in AfzenderTypes.choices]
+    )
+
+    betrokkene = factory.Faker("url")
+    contact_persoon = factory.Faker("url")
+
+    buitenlands_correspondentieadres_adres_buitenland_2 = "Breedstraat"
+    buitenlands_correspondentieadres_land_postadres = factory.Faker("url")
+
+    buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer = (
+        factory.fuzzy.FuzzyInteger(1, 9999)
+    )
+
+    buitenlands_correspondentiepostadres_postadres_postcode = "1800XY"
+    buitenlands_correspondentiepostadres_postadrestype = factory.fuzzy.FuzzyChoice(
+        [value for value, label in PostAdresTypes.choices]
+    )
+    buitenlands_correspondentiepostadres_woonplaats = factory.Faker(
+        "city", locale="nl_NL"
+    )
+
+    class Meta:
+        model = "datamodel.Verzending"
