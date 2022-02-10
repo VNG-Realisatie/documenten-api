@@ -6,4 +6,4 @@ class DRCApiConfig(AppConfig):
 
     def ready(self):
         # ensure that the metaclass for every viewset has run
-        from . import viewsets  # noqa
+        from . import views  # noqa
