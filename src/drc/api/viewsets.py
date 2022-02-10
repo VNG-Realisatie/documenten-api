@@ -1,11 +1,12 @@
 from django.db import transaction
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import serializers, status, viewsets
+from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from sendfile import sendfile
@@ -13,20 +14,35 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailViewSet,
     AuditTrailViewsetMixin,
 )
-from vng_api_common.caching.decorators import conditional_retrieve
+from vng_api_common.caching import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
-from drc.api.audits import AUDIT_DRC
-from drc.api.filters import (
+from drc.datamodel.models import (
+    BestandsDeel,
+    EnkelvoudigInformatieObject,
+    Gebruiksrechten,
+    ObjectInformatieObject,
+)
+
+from .audits import AUDIT_DRC
+from .data_filtering import ListFilterByAuthorizationsMixin
+from .filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
+    GebruiksrechtenFilter,
+    ObjectInformatieObjectFilter,
 )
-from drc.api.kanalen import KANAAL_DOCUMENTEN
-from drc.api.renderers import BinaryFileRenderer
-from drc.api.schema import EIOAutoSchema
-from drc.api.scopes import (
+from .kanalen import KANAAL_DOCUMENTEN
+from .mixins import UpdateWithoutPartialMixin
+from .permissions import (
+    InformationObjectAuthScopesRequired,
+    InformationObjectRelatedAuthScopesRequired,
+)
+from .renderers import BinaryFileRenderer
+from .schema import EIOAutoSchema
+from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
     SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
@@ -34,18 +50,32 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     SCOPE_DOCUMENTEN_LOCK,
 )
-from drc.api.serializers import (
+from .serializers import (
+    BestandsDeelSerializer,
     EnkelvoudigInformatieObjectCreateLockSerializer,
     EnkelvoudigInformatieObjectSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer,
+    GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
+    ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
-from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
-from drc.datamodel.models import EnkelvoudigInformatieObject
+from .validators import RemoteRelationValidator
 
-from ..data_filtering import ListFilterByAuthorizationsMixin
-from ..permissions import InformationObjectAuthScopesRequired
+# Openapi query parameters for version querying
+VERSIE_QUERY_PARAM = openapi.Parameter(
+    "versie",
+    openapi.IN_QUERY,
+    description="Het (automatische) versienummer van het INFORMATIEOBJECT.",
+    type=openapi.TYPE_INTEGER,
+)
+REGISTRATIE_QUERY_PARAM = openapi.Parameter(
+    "registratieOp",
+    openapi.IN_QUERY,
+    description="Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het "
+    "kortst hiervoor zit wordt opgehaald.",
+    type=openapi.TYPE_STRING,
+)
 
 
 @conditional_retrieve()
@@ -325,7 +355,7 @@ class EnkelvoudigInformatieObjectViewSet(
     @action(detail=True, methods=["post"])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
-        eio.canonical
+        canonical = eio.canonical
         # check if it's a force unlock by administrator
         force_unlock = False
         if self.request.jwt_auth.has_auth(
@@ -341,6 +371,148 @@ class EnkelvoudigInformatieObjectViewSet(
         unlock_serializer.is_valid(raise_exception=True)
         unlock_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@conditional_retrieve()
+class ObjectInformatieObjectViewSet(
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en verwijderen van OBJECT-INFORMATIEOBJECT relaties.
+
+    Het betreft een relatie tussen een willekeurig OBJECT, bijvoorbeeld een
+    ZAAK in de Zaken API, en een INFORMATIEOBJECT.
+
+    create:
+    Maak een OBJECT-INFORMATIEOBJECT relatie aan.
+
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    Andere API's, zoals de Zaken API en de Besluiten API, gebruiken dit
+    endpoint bij het synchroniseren van relaties.
+
+    **Er wordt gevalideerd op**
+    - geldigheid `informatieobject` URL
+    - de combinatie `informatieobject` en `object` moet uniek zijn
+    - bestaan van `object` URL
+
+    list:
+    Alle OBJECT-INFORMATIEOBJECT relaties opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
+
+    retrieve:
+    Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
+
+    Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
+
+    destroy:
+    Verwijder een OBJECT-INFORMATIEOBJECT relatie.
+
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    Andere API's, zoals de Zaken API en de Besluiten API, gebruiken dit
+    endpoint bij het synchroniseren van relaties.
+    """
+
+    queryset = ObjectInformatieObject.objects.all()
+    serializer_class = ObjectInformatieObjectSerializer
+    filterset_class = ObjectInformatieObjectFilter
+    lookup_field = "uuid"
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "create": SCOPE_DOCUMENTEN_AANMAKEN,
+        "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
+
+    def perform_destroy(self, instance):
+        # destroy is only allowed if the remote relation does no longer exist, so check for that
+        validator = RemoteRelationValidator()
+
+        try:
+            validator(instance)
+        except serializers.ValidationError as exc:
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: exc}, code=exc.detail[0].code
+            )
+        else:
+            super().perform_destroy(instance)
+
+
+@conditional_retrieve()
+class GebruiksrechtenViewSet(
+    NotificationViewSetMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    AuditTrailViewsetMixin,
+    viewsets.ModelViewSet,
+):
+    """
+    Opvragen en bewerken van GEBRUIKSRECHTen bij een INFORMATIEOBJECT.
+
+    create:
+    Maak een GEBRUIKSRECHT aan.
+
+    Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.
+
+    **Opmerkingen**
+      - Het toevoegen van gebruiksrechten zorgt ervoor dat de
+        `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
+
+    list:
+    Alle GEBRUIKSRECHTen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
+
+    retrieve:
+    Een specifieke GEBRUIKSRECHT opvragen.
+
+    Een specifieke GEBRUIKSRECHT opvragen.
+
+    update:
+    Werk een GEBRUIKSRECHT in zijn geheel bij.
+
+    Werk een GEBRUIKSRECHT in zijn geheel bij.
+
+    partial_update:
+    Werk een GEBRUIKSRECHT relatie deels bij.
+
+    Werk een GEBRUIKSRECHT relatie deels bij.
+
+    destroy:
+    Verwijder een GEBRUIKSRECHT.
+
+    **Opmerkingen**
+      - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
+        wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
+        `null` gezet.
+    """
+
+    queryset = Gebruiksrechten.objects.all()
+    serializer_class = GebruiksrechtenSerializer
+    filterset_class = GebruiksrechtenFilter
+    lookup_field = "uuid"
+    notifications_kanaal = KANAAL_DOCUMENTEN
+    notifications_main_resource_key = "informatieobject"
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "create": SCOPE_DOCUMENTEN_AANMAKEN,
+        "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
+    }
+    audit = AUDIT_DRC
+    audittrail_main_resource_key = "informatieobject"
 
 
 class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
@@ -359,3 +531,17 @@ class EnkelvoudigInformatieObjectAuditTrailViewSet(AuditTrailViewSet):
     """
 
     main_resource_lookup_field = "enkelvoudiginformatieobject_uuid"
+
+
+class BestandsDeelViewSet(UpdateWithoutPartialMixin, viewsets.GenericViewSet):
+    """
+    update:
+    Upload een bestandsdeel
+    """
+
+    queryset = BestandsDeel.objects.all()
+    serializer_class = BestandsDeelSerializer
+    lookup_field = "uuid"
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = (InformationObjectRelatedAuthScopesRequired,)
+    required_scopes = {"update": SCOPE_DOCUMENTEN_BIJWERKEN}
