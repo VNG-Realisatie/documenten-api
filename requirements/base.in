@@ -20,7 +20,6 @@ django-extra-fields
 django-filter
 djangorestframework-camel-case
 djangorestframework-filters
-drf-writable-nested
 drf-yasg
 vng-api-common
 humanize
