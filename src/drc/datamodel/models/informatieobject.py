@@ -136,6 +136,11 @@ class InformatieObject(models.Model):
         )
     )
 
+    verschijningsvorm = models.TextField(
+        blank=True,
+        help_text=_("De essentiële opmaakaspecten van een INFORMATIEOBJECT."),
+    )
+
     objects = InformatieobjectQuerySet.as_manager()
 
     IDENTIFICATIE_PREFIX = "DOCUMENT"
