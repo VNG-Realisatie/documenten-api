@@ -24,7 +24,6 @@ def validate_status(status: str = None, ontvangstdatum: date = None, instance=No
     # it is an optional field...
     if not status:
         return
-
     invalid_statuses = Statussen.invalid_for_received()
     if status in invalid_statuses:
         values = ", ".join(invalid_statuses)

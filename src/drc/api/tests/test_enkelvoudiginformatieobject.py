@@ -26,6 +26,8 @@ from drc.datamodel.tests.factories import (
     ObjectInformatieObjectFactory,
 )
 
+from src.drc.datamodel.constants import Statussen
+
 INFORMATIEOBJECTTYPE = (
     "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
 )
@@ -34,7 +36,6 @@ INFORMATIEOBJECTTYPE = (
 @freeze_time("2018-06-27")
 @temp_private_root()
 class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
-
     list_url = reverse(EnkelvoudigInformatieObject)
     heeft_alle_autorisaties = True
 
