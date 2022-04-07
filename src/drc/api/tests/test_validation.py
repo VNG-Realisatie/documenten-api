@@ -211,7 +211,6 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
-
     url = reverse_lazy("enkelvoudiginformatieobject-list")
     heeft_alle_autorisaties = True
 
@@ -288,6 +287,43 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_update_eio_status_definitief_forbidden(self, *mocks):
+        eio = EnkelvoudigInformatieObjectFactory.create(
+            beschrijving="beschrijving1",
+            informatieobjecttype=INFORMATIEOBJECTTYPE,
+            status=Statussen.definitief,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
+        )
+
+        eio_response = self.client.get(eio_url)
+        eio_data = eio_response.data
+        print(f"data {eio_data}")
+
+        lock = self.client.post(f"{eio_url}/lock").data["lock"]
+        eio_data.update(
+            {
+                "beschrijving": "beschrijving2",
+                "inhoud": b64encode(b"aaaaa"),
+                "bestandsomvang": 5,
+                "lock": lock
+            }
+        )
+
+        for i in ["integriteit", "ondertekening"]:
+            eio_data.pop(i)
+
+        response = self.client.put(eio_url, eio_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "modify-status-definitief")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_eio_status_definitief_forbidden_exeception(self, *mocks):
         eio = EnkelvoudigInformatieObjectFactory.create(
             beschrijving="beschrijving1",
             informatieobjecttype=INFORMATIEOBJECTTYPE,
@@ -398,7 +434,6 @@ class ObjectInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.obj_has_shape", return_value=False)
     def test_create_oio_invalid_resource_zaak(self, *mocks):
-
         eio = EnkelvoudigInformatieObjectFactory.create()
         eio_url = reverse(
             "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
@@ -420,7 +455,6 @@ class ObjectInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.obj_has_shape", return_value=False)
     def test_create_oio_invalid_resource_besluit(self, *mocks):
-
         eio = EnkelvoudigInformatieObjectFactory.create()
         eio_url = reverse(
             "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
