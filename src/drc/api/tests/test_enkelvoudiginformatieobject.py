@@ -26,7 +26,6 @@ from drc.datamodel.tests.factories import (
     ObjectInformatieObjectFactory,
 )
 
-from src.drc.datamodel.constants import Statussen
 
 INFORMATIEOBJECTTYPE = (
     "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
