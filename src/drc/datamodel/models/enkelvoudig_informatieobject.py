@@ -68,15 +68,15 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
         max_length=255,
         blank=True,
         help_text='Het "Media Type" (voorheen "MIME type") voor de wijze waarop'
-        "de inhoud van het INFORMATIEOBJECT is vastgelegd in een "
-        "computerbestand. Voorbeeld: `application/msword`. Zie: "
-        "https://www.iana.org/assignments/media-types/media-types.xhtml",
+                  "de inhoud van het INFORMATIEOBJECT is vastgelegd in een "
+                  "computerbestand. Voorbeeld: `application/msword`. Zie: "
+                  "https://www.iana.org/assignments/media-types/media-types.xhtml",
     )
     taal = models.CharField(
         max_length=3,
         help_text="Een ISO 639-2/B taalcode waarin de inhoud van het "
-        "INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: "
-        "https://www.iso.org/standard/4767.html",
+                  "INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: "
+                  "https://www.iso.org/standard/4767.html",
     )
 
     bestandsnaam = models.CharField(
@@ -101,7 +101,7 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
         max_length=200,
         blank=True,
         help_text="De URL waarmee de inhoud van het INFORMATIEOBJECT op te "
-        "vragen is.",
+                  "vragen is.",
     )
 
     # these fields should not be modified directly, but go through the `integriteit` descriptor
