@@ -117,7 +117,7 @@ packaging==19.0
     #   sphinx
 pillow==6.2.1
     # via -r requirements/base.in
-psycopg2-binary==2.7.5
+psycopg2-binary==2.8.6
     # via -r requirements/base.in
 pygments==2.3.1
     # via sphinx

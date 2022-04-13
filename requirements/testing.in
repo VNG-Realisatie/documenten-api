@@ -8,3 +8,4 @@ pep8
 pylint
 tblib
 requests-mock
+django-capture-on-commit-callbacks
