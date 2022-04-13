@@ -221,31 +221,6 @@ class EnkelvoudigInformatieObjectViewSet(
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    # def update(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     force_bijwerken = False
-    #     if self.request.jwt_auth.has_auth(
-    #         scopes=SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
-    #         informatieobjecttype=instance.informatieobjecttype,
-    #         vertrouwelijkheidaanduiding=instance.vertrouwelijkheidaanduiding,
-    #     ):
-    #         force_bijwerken = True
-    #     partial = kwargs.pop('partial', False)
-    #     serializer = EnkelvoudigInformatieObjectWithLockSerializer(instance, partial=partial, data=request.data,
-    #                                                                context={"force_bijwerken": False,
-    #                                                                         'request': request})
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #
-    #     self.perform_update(serializer)
-    #
-    #     if getattr(instance, '_prefetched_objects_cache', None):
-    #         # If 'prefetch_related' has been applied to a queryset, we need to
-    #         # forcibly invalidate the prefetch cache on the instance.
-    #         instance._prefetched_objects_cache = {}
-    #
-    #     return Response(serializer.data)
-
     @swagger_auto_schema(
         method="get",
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
