@@ -7,8 +7,9 @@ raven
 Sphinx
 sphinx-rtd-theme
 markdown
+gemma-zds-client < 1.0
 
-Django
+Django ~= 2.2.0
 django-axes
 django-choices
 django-cors-middleware
