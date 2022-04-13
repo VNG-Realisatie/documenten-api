@@ -347,7 +347,6 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
 
         return valid_attrs
 
-
 class EnkelvoudigInformatieObjectCreateLockSerializer(
     EnkelvoudigInformatieObjectSerializer
 ):
