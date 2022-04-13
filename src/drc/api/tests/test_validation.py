@@ -216,9 +216,16 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
-
     url = reverse_lazy("enkelvoudiginformatieobject-list")
-    heeft_alle_autorisaties = True
+    # heeft_alle_autorisaties = True
+    informatieobjecttype = INFORMATIEOBJECTTYPE
+    scopes = [
+        SCOPE_DOCUMENTEN_LOCK,
+        SCOPE_DOCUMENTEN_AANMAKEN,
+        SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+        SCOPE_DOCUMENTEN_BIJWERKEN,
+    ]
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
@@ -328,18 +335,10 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    def test_update_eio_status_definitief_allowed(self, *mocks):
+    def test_update_eio_status_definitief_allowed_with_forced_bijwerken(self, *mocks):
 
-        self.applicatie.heeft_alle_autorisaties = True
-        # self.applicatie.scopes = [SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
-        #                           SCOPE_DOCUMENTEN_LOCK,
-        #                           SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
-        #                           SCOPE_DOCUMENTEN_ALLES_LEZEN,
-        #                           SCOPE_DOCUMENTEN_AANMAKEN,
-        #                           SCOPE_DOCUMENTEN_BIJWERKEN,
-        #                           SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
-        #                           ]
-        self.applicatie.save()
+        self.autorisatie.scopes += [SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN]
+        self.autorisatie.save()
 
         eio = EnkelvoudigInformatieObjectFactory.create(
             beschrijving="beschrijving1",
@@ -350,7 +349,6 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
         eio_url = reverse(
             "enkelvoudiginformatieobject-detail", kwargs={"uuid": eio.uuid}
         )
-
         eio_response = self.client.get(eio_url)
         eio_data = eio_response.data
         lock = self.client.post(f"{eio_url}/lock").data["lock"]
@@ -368,10 +366,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
         response = self.client.put(eio_url, eio_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        error = get_validation_errors(response, "nonFieldErrors")
-        self.assertEqual(error["code"], "modify-status-definitief")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
