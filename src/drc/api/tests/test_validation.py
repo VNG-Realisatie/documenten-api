@@ -18,6 +18,11 @@ from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse_lazy
+from drc.api.scopes import *
+
+from ..scopes import SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN, SCOPE_DOCUMENTEN_LOCK, SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, \
+    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_BIJWERKEN, \
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
 
 INFORMATIEOBJECTTYPE = "https://example.com/informatieobjecttype/foo"
 ZAAK = "https://zrc.nl/api/v1/zaken/1234"
@@ -300,7 +305,6 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
         eio_response = self.client.get(eio_url)
         eio_data = eio_response.data
-        print(f"data {eio_data}")
 
         lock = self.client.post(f"{eio_url}/lock").data["lock"]
         eio_data.update(
@@ -324,7 +328,19 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    def test_update_eio_status_definitief_forbidden_exeception(self, *mocks):
+    def test_update_eio_status_definitief_allowed(self, *mocks):
+
+        self.applicatie.heeft_alle_autorisaties = True
+        # self.applicatie.scopes = [SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+        #                           SCOPE_DOCUMENTEN_LOCK,
+        #                           SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+        #                           SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        #                           SCOPE_DOCUMENTEN_AANMAKEN,
+        #                           SCOPE_DOCUMENTEN_BIJWERKEN,
+        #                           SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+        #                           ]
+        self.applicatie.save()
+
         eio = EnkelvoudigInformatieObjectFactory.create(
             beschrijving="beschrijving1",
             informatieobjecttype=INFORMATIEOBJECTTYPE,
@@ -337,7 +353,6 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
 
         eio_response = self.client.get(eio_url)
         eio_data = eio_response.data
-
         lock = self.client.post(f"{eio_url}/lock").data["lock"]
         eio_data.update(
             {
