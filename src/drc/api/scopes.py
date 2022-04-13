@@ -32,6 +32,15 @@ SCOPE_DOCUMENTEN_BIJWERKEN = Scope(
 """,
 )
 
+SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN = Scope(
+    "documenten.geforceerd-bijwerken",
+    description="""
+**Allows**:
+
+* changes meta data of all documents including "definitief" ones
+""",
+)
+
 SCOPE_DOCUMENTEN_AANMAKEN = Scope(
     "documenten.aanmaken",
     description="""

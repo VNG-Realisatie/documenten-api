@@ -33,6 +33,7 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_BIJWERKEN,
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     SCOPE_DOCUMENTEN_LOCK,
+    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN
 )
 from drc.api.serializers import (
     EnkelvoudigInformatieObjectCreateLockSerializer,
@@ -148,8 +149,8 @@ class EnkelvoudigInformatieObjectViewSet(
         "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "create": SCOPE_DOCUMENTEN_AANMAKEN,
         "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
-        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
         "download": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "lock": SCOPE_DOCUMENTEN_LOCK,
         "unlock": SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
@@ -158,6 +159,23 @@ class EnkelvoudigInformatieObjectViewSet(
     audit = AUDIT_DRC
 
     swagger_schema = EIOAutoSchema
+
+    def get_serializer_context(self):
+        context = super(EnkelvoudigInformatieObjectViewSet, self).get_serializer_context()
+        if self.action in ["update", "partial_update"]:
+            instance = self.get_object()
+            force_bijwerken = False
+            if self.request.jwt_auth.has_auth(
+                scopes=SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+                informatieobjecttype=instance.informatieobjecttype,
+                vertrouwelijkheidaanduiding=instance.vertrouwelijkheidaanduiding,
+            ):
+                force_bijwerken = True
+            context.update({
+                "force_bijwerken": force_bijwerken
+            })
+
+        return context
 
     def get_renderers(self):
         if self.action == "download":
@@ -193,7 +211,7 @@ class EnkelvoudigInformatieObjectViewSet(
         """
         if self.action in ["update", "partial_update"]:
             return EnkelvoudigInformatieObjectWithLockSerializer
-        elif self.action == "create":
+        if self.action == "create":
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
@@ -202,6 +220,31 @@ class EnkelvoudigInformatieObjectViewSet(
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+    # def update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     force_bijwerken = False
+    #     if self.request.jwt_auth.has_auth(
+    #         scopes=SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+    #         informatieobjecttype=instance.informatieobjecttype,
+    #         vertrouwelijkheidaanduiding=instance.vertrouwelijkheidaanduiding,
+    #     ):
+    #         force_bijwerken = True
+    #     partial = kwargs.pop('partial', False)
+    #     serializer = EnkelvoudigInformatieObjectWithLockSerializer(instance, partial=partial, data=request.data,
+    #                                                                context={"force_bijwerken": False,
+    #                                                                         'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #
+    #     self.perform_update(serializer)
+    #
+    #     if getattr(instance, '_prefetched_objects_cache', None):
+    #         # If 'prefetch_related' has been applied to a queryset, we need to
+    #         # forcibly invalidate the prefetch cache on the instance.
+    #         instance._prefetched_objects_cache = {}
+    #
+    #     return Response(serializer.data)
 
     @swagger_auto_schema(
         method="get",
