@@ -199,7 +199,6 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
 
     def validate(self, attrs):
         valid_attrs = super().validate(attrs)
-
         # check if file.size equal bestandsomvang
         if self.instance is None:  # create
             inhoud = valid_attrs.get("inhoud")
@@ -338,17 +337,16 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
             raise serializers.ValidationError(
                 _("Lock id is not correct"), code="incorrect-lock-id"
             )
-
         if self.instance.canonical.latest_version.status == Statussen.definitief:
-            raise serializers.ValidationError(
-                _(
-                    "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
-                ),
-                code="modify-status-definitief",
-            )
+            if not self.context["force_bijwerken"]:
+                raise serializers.ValidationError(
+                    _(
+                        "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
+                    ),
+                    code="modify-status-definitief",
+                )
 
         return valid_attrs
-
 
 class EnkelvoudigInformatieObjectCreateLockSerializer(
     EnkelvoudigInformatieObjectSerializer
