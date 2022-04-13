@@ -12,8 +12,6 @@ certifi==2018.4.16
     # via requests
 chardet==3.0.4
     # via requests
-click==7.1.2
-    # via pip-tools
 coreapi==2.3.3
     # via drf-yasg
 coreschema==0.0.4
@@ -92,8 +90,6 @@ idna==2.7
     # via requests
 imagesize==1.1.0
     # via sphinx
-importlib-metadata==4.0.1
-    # via pep517
 inflection==0.3.1
     # via drf-yasg
 iso-639==0.4.5
@@ -114,11 +110,7 @@ oyaml==0.7
     # via vng-api-common
 packaging==19.0
     # via sphinx
-pep517==0.10.0
-    # via pip-tools
 pillow==6.2.1
-    # via -r requirements/base.in
-pip-tools==6.1.0
     # via -r requirements/base.in
 psycopg2-binary==2.7.5
     # via -r requirements/base.in
@@ -176,10 +168,6 @@ sphinxcontrib-websupport==1.1.0
     # via sphinx
 sqlparse==0.3.0
     # via django
-toml==0.10.2
-    # via pep517
-typing-extensions==3.10.0.0
-    # via importlib-metadata
 unidecode==1.0.22
     # via vng-api-common
 uritemplate==3.0.0
@@ -190,11 +178,6 @@ urllib3==1.24.3
     # via requests
 vng-api-common==1.4.4
     # via -r requirements/base.in
-zipp==3.4.1
-    # via
-    #   importlib-metadata
-    #   pep517
 
 # The following packages are considered to be unsafe in a requirements file:
-# pip
 # setuptools
