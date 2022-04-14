@@ -40,7 +40,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         self.assertNotEqual(data["lock"], "")
 
     def test_lock_create_new_version(self):
-        """test that locking file creates the new version of document """
+        """test that locking file creates the new version of document"""
         canonical = EnkelvoudigInformatieObjectCanonicalFactory.create()
         eio = canonical.latest_version
         assert eio.versie == 1
