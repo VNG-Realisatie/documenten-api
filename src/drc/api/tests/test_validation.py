@@ -20,9 +20,15 @@ from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 from .utils import reverse_lazy
 from drc.api.scopes import *
 
-from ..scopes import SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN, SCOPE_DOCUMENTEN_LOCK, SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK, \
-    SCOPE_DOCUMENTEN_ALLES_LEZEN, SCOPE_DOCUMENTEN_AANMAKEN, SCOPE_DOCUMENTEN_BIJWERKEN, \
-    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN
+from ..scopes import (
+    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+    SCOPE_DOCUMENTEN_LOCK,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+    SCOPE_DOCUMENTEN_ALLES_LEZEN,
+    SCOPE_DOCUMENTEN_AANMAKEN,
+    SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+)
 
 INFORMATIEOBJECTTYPE = "https://example.com/informatieobjecttype/foo"
 ZAAK = "https://zrc.nl/api/v1/zaken/1234"
@@ -217,7 +223,6 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
     url = reverse_lazy("enkelvoudiginformatieobject-list")
-    # heeft_alle_autorisaties = True
     informatieobjecttype = INFORMATIEOBJECTTYPE
     scopes = [
         SCOPE_DOCUMENTEN_LOCK,
@@ -319,7 +324,7 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
                 "beschrijving": "beschrijving2",
                 "inhoud": b64encode(b"aaaaa"),
                 "bestandsomvang": 5,
-                "lock": lock
+                "lock": lock,
             }
         )
 
