@@ -18,7 +18,6 @@ from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
 
 from .utils import reverse_lazy
-from drc.api.scopes import *
 
 from ..scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
