@@ -16,6 +16,7 @@ from drc.datamodel.tests.factories import (
 
 from ..scopes import SCOPE_DOCUMENTEN_ALLES_LEZEN
 
+
 @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
 class InformatieObjectScopeForbiddenTests(AuthCheckMixin, APITestCase):
     def test_cannot_create_io_without_correct_scope(self):
@@ -136,6 +137,7 @@ class InformatieObjectReadCorrectScopeTests(JWTAuthMixin, APITestCase):
 
         response_data = response.json()
         self.assertEqual(len(response_data), 4)
+
 
 class GebruiksrechtenReadTests(JWTAuthMixin, APITestCase):
 
