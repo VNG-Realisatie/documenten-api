@@ -356,9 +356,9 @@ SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
 SENDFILE_URL = PRIVATE_MEDIA_URL
 
 # settings for uploading large files
-MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2**30))
-CHUNK_SIZE = 4 * 2**30  # 4 GB
-READ_CHUNK = 6 * 2**20  # 6 MB
+MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2 ** 30))
+CHUNK_SIZE = 4 * 2 ** 30  # 4 GB
+READ_CHUNK = 6 * 2 ** 20  # 6 MB
 DEFAULT_EXTENSION = "bin"
 
 # Relevant for multipart parser, which comes into play with file uploads in the
