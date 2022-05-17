@@ -41,7 +41,7 @@ from .permissions import (
     InformationObjectRelatedAuthScopesRequired,
 )
 from .renderers import BinaryFileRenderer
-from .schema import EIOAutoSchema
+from .schema import BestandsDeelSchema, EIOAutoSchema
 from .scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
     SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -355,7 +355,6 @@ class EnkelvoudigInformatieObjectViewSet(
     @action(detail=True, methods=["post"])
     def unlock(self, request, *args, **kwargs):
         eio = self.get_object()
-        canonical = eio.canonical
         # check if it's a force unlock by administrator
         force_unlock = False
         if self.request.jwt_auth.has_auth(
@@ -545,3 +544,5 @@ class BestandsDeelViewSet(UpdateWithoutPartialMixin, viewsets.GenericViewSet):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = (InformationObjectRelatedAuthScopesRequired,)
     required_scopes = {"update": SCOPE_DOCUMENTEN_BIJWERKEN}
+
+    swagger_schema = BestandsDeelSchema

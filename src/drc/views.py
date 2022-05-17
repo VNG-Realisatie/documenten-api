@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.exceptions import APIException
+from rest_framework.renderers import JSONRenderer
 from rest_framework.views import APIView
 from vng_api_common.views import exception_handler
 
@@ -12,10 +13,16 @@ class Http413(APIException):
     default_code = "entity_too_large"
 
 
+class ProblemJSONRenderer(JSONRenderer):
+    media_type = "application/problem+json"
+
+
 class ErrorView(APIView):
     exception_class = None
     title = None
     swagger_schema = None
+
+    renderer_classes = (ProblemJSONRenderer,)
 
     def get(self, request, *args, **kwargs):
         exc = self.exception_class(detail=self.title)

@@ -98,7 +98,7 @@ info = openapi.Info(
 )
 
 
-class EIOAutoSchema(AutoSchema):
+class RequestEntityTooLargeSchema(AutoSchema):
     """
     Add the HTTP 413 error response to the schema.
 
@@ -118,3 +118,11 @@ class EIOAutoSchema(AutoSchema):
         )
 
         return responses
+
+
+class EIOAutoSchema(RequestEntityTooLargeSchema):
+    pass
+
+
+class BestandsDeelSchema(RequestEntityTooLargeSchema):
+    pass

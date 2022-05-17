@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     "vng_api_common.notifications",
     "drf_yasg",
     "rest_framework",
-    "rest_framework_filters",
     "django_markup",
     "solo",
     "privates",
@@ -272,10 +271,12 @@ AUTHENTICATION_BACKENDS = [
 
 SESSION_COOKIE_NAME = "drc_sessionid"
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 #
 # Silenced checks
 #
-SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
+SILENCED_SYSTEM_CHECKS = ["rest_framework.W001", "axes.W002", "axes.W003"]
 
 #
 # Custom settings
@@ -358,9 +359,9 @@ SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
 SENDFILE_URL = PRIVATE_MEDIA_URL
 
 # settings for uploading large files
-MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2 ** 30))
-CHUNK_SIZE = 4 * 2 ** 30  # 4 GB
-READ_CHUNK = 6 * 2 ** 20  # 6 MB
+MIN_UPLOAD_SIZE = int(os.getenv("MIN_UPLOAD_SIZE", 4 * 2**30))
+CHUNK_SIZE = 4 * 2**30  # 4 GB
+READ_CHUNK = 6 * 2**20  # 6 MB
 DEFAULT_EXTENSION = "bin"
 
 # Relevant for multipart parser, which comes into play with file uploads in the

@@ -1,6 +1,6 @@
 {
   "name": "drc",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "drc referentie implementatie API",
   "main": "src/index.js",
   "directories": {

@@ -2,7 +2,7 @@
 Documenten API
 ==============
 
-:Version: 1.0.1
+:Version: 1.1.0
 :Source: https://github.com/VNG-Realisatie/documenten-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 
@@ -23,7 +23,10 @@ Versie      Release datum   API specificatie                                    
 ==========  ==============  =====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_,                                           `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/autorisaties.md>`_                             `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/stable/1.0.x..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/stable/1.1.x..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.1.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.1.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.1.0..stable/1.1.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.0.1..stable/1.0.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
@@ -103,7 +106,7 @@ Licensed under the EUPL_
     :alt: Code style
     :target: https://github.com/psf/black
 
-.. |python-versions| image:: https://img.shields.io/badge/python-3.6%2B-blue.svg
+.. |python-versions| image:: https://img.shields.io/badge/python-3.9%2B-blue.svg
     :alt: Supported Python version
 
 .. |lint-oas| image:: https://github.com/VNG-Realisatie/documenten-api/workflows/lint-oas/badge.svg

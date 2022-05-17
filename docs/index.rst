@@ -5,7 +5,7 @@ Documentregistratiecomponent
 :Version: 0.1.5
 :Source: https://github.com/VNG-Realisatie/documenten-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
-:PythonVersion: 3.6
+:PythonVersion: 3.9
 
 |build-status|
 
