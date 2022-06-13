@@ -16,6 +16,7 @@ from vng_api_common.audittrails.viewsets import (
 )
 from vng_api_common.caching import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.search import SearchMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -47,6 +48,7 @@ from drc.api.serializers import (
     BestandsDeelSerializer,
     EnkelvoudigInformatieObjectCreateLockSerializer,
     EnkelvoudigInformatieObjectSerializer,
+    EnkelvoudigInformatieObjectZoekSerializer,
     EnkelvoudigInformatieObjectWithLockSerializer,
     GebruiksrechtenSerializer,
     LockEnkelvoudigInformatieObjectSerializer,
@@ -67,6 +69,7 @@ from drc.datamodel.models import (
 class EnkelvoudigInformatieObjectViewSet(
     NotificationViewSetMixin,
     CheckQueryParamsMixin,
+    SearchMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
@@ -158,6 +161,8 @@ class EnkelvoudigInformatieObjectViewSet(
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (InformationObjectAuthScopesRequired,)
+    search_input_serializer_class = EnkelvoudigInformatieObjectZoekSerializer
+
     required_scopes = {
         "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -166,6 +171,7 @@ class EnkelvoudigInformatieObjectViewSet(
         "update": SCOPE_DOCUMENTEN_BIJWERKEN,
         "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
         "download": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "_zoek": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "lock": SCOPE_DOCUMENTEN_LOCK,
         "unlock": SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     }
@@ -173,6 +179,17 @@ class EnkelvoudigInformatieObjectViewSet(
     audit = AUDIT_DRC
 
     swagger_schema = EIOAutoSchema
+
+    @swagger_auto_schema(
+        manual_parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM]
+    )
+    @action(methods=("post",), detail=False, name="enkelvoudiginformatieobject__zoek")
+    def _zoek(self, request, *args, **kwargs):
+        search_input = self.get_search_input()
+        queryset = self.filter_queryset(self.get_queryset())
+        for name, value in search_input.items():
+            queryset = queryset.filter(**{name: value})
+        return self.get_search_output(queryset)
 
     def get_renderers(self):
         if self.action == "download":
