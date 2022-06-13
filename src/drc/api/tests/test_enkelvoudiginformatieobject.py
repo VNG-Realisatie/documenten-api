@@ -95,7 +95,6 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         expected_file_url = get_operation_url(
             "enkelvoudiginformatieobject_download", uuid=stored_object.uuid
         )
-
         expected_response = content.copy()
         expected_response.update(
             {
