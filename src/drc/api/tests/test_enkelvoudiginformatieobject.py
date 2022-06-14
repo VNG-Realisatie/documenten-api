@@ -34,6 +34,7 @@ INFORMATIEOBJECTTYPE = (
 @freeze_time("2018-06-27")
 @temp_private_root()
 class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
+
     list_url = reverse(EnkelvoudigInformatieObject)
     heeft_alle_autorisaties = True
 
@@ -56,6 +57,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "beschrijving": "test_beschrijving",
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
             "vertrouwelijkheidaanduiding": "openbaar",
+            "verschijningsvorm": "Vorm A",
         }
 
         # Send to the API
@@ -84,6 +86,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(stored_object.beschrijving, "test_beschrijving")
         self.assertEqual(stored_object.informatieobjecttype, INFORMATIEOBJECTTYPE)
         self.assertEqual(stored_object.vertrouwelijkheidaanduiding, "openbaar")
+        self.assertEqual(stored_object.verschijningsvorm, "Vorm A")
 
         expected_url = reverse(
             "enkelvoudiginformatieobject-detail",
@@ -108,6 +111,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
                 "verzenddatum": None,
                 "ondertekening": {"soort": "", "datum": None},
                 "indicatieGebruiksrecht": None,
+                "verschijningsvorm": "Vorm A",
                 "status": "",
                 "locked": False,
                 "bestandsdelen": [],
@@ -163,6 +167,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "verzenddatum": None,
             "ondertekening": {"soort": "", "datum": None},
             "indicatieGebruiksrecht": None,
+            "verschijningsvorm": "",
             "vertrouwelijkheidaanduiding": "openbaar",
             "integriteit": {"algoritme": "", "waarde": "", "datum": None},
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
