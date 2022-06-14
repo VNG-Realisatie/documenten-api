@@ -2,7 +2,6 @@ from django_filters import rest_framework as filters
 from vng_api_common.filters import URLModelChoiceFilter
 from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_help_text
-
 from drc.datamodel.models import (
     EnkelvoudigInformatieObject,
     EnkelvoudigInformatieObjectCanonical,
@@ -12,9 +11,15 @@ from drc.datamodel.models import (
 
 
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
+    def zoek_uuids(self, queryset, name, values):
+        values = list(dict(self.data).values())[0]
+        return queryset.filter(uuid__in=values)
+
+    zoek = filters.CharFilter(method="zoek_uuids")
+
     class Meta:
         model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie")
+        fields = ("identificatie", "bronorganisatie", "zoek")
 
 
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):
