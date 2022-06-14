@@ -16,7 +16,6 @@ from vng_api_common.audittrails.viewsets import (
 )
 from vng_api_common.caching import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
-from vng_api_common.search import SearchMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
