@@ -15,19 +15,19 @@ from drc.datamodel.models.enkelvoudig_informatieobject import (
 class BinnenlandsCorrespondentieadresVerzendingSerializer(GegevensGroepSerializer):
     class Meta:
         model = Verzending
-        gegevensgroep = "binnenlands_correspondentieadres_verzending"
+        gegevensgroep = "binnenlands_correspondentieadres"
 
 
 class BuitenlandsCorrespondentieadresVerzendingSerializer(GegevensGroepSerializer):
     class Meta:
         model = Verzending
-        gegevensgroep = "buitenlands_correspondentieadres_verzending"
+        gegevensgroep = "buitenlands_correspondentieadres"
 
 
 class BuitenlandsCorrespondentiepostadresVerzendingSerializer(GegevensGroepSerializer):
     class Meta:
         model = Verzending
-        gegevensgroep = "buitenlands_correspondentiepostadres_verzending"
+        gegevensgroep = "correspondentie_postadres"
 
 
 class VerzendingSerializer(
@@ -43,7 +43,7 @@ class VerzendingSerializer(
         help_text=get_help_text("datamodel.Verzending", "informatieobject"),
     )
 
-    afwijkend_binnenlands_correspondentieadres_verzending = (
+    binnenlands_correspondentieadres = (
         BinnenlandsCorrespondentieadresVerzendingSerializer(
             required=False,
             help_text=_(
@@ -52,32 +52,29 @@ class VerzendingSerializer(
                 " in het ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt"
                 " van het reguliere binnenlandse correspondentieadres van BETROKKENE."
             ),
-            source="binnenlands_correspondentieadres_verzending",
         )
     )
 
-    afwijkend_buitenlands_correspondentieadres_verzending = (
+    buitenlands_correspondentieadres = (
         BuitenlandsCorrespondentieadresVerzendingSerializer(
+            required=False,
             help_text=_(
                 "De gegevens van het adres in het buitenland van BETROKKENE, zijnde"
                 " afzender of geadresseerde, zoals vermeld in het ontvangen of"
                 " verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere"
                 " correspondentiegegevens van BETROKKENE."
             ),
-            source="buitenlands_correspondentieadres_verzending",
         )
     )
 
-    afwijkend_correspondentie_posteadres_verzending = (
-        BuitenlandsCorrespondentiepostadresVerzendingSerializer(
-            help_text=_(
-                "De gegevens die tezamen een postbusadres of antwoordnummeradres"
-                " vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals"
-                " vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat"
-                " afwijkt van de reguliere correspondentiegegevens van BETROKKENE."
-            ),
-            source="buitenlands_correspondentiepostadres_verzending",
-        )
+    correspondentie_postadres = BuitenlandsCorrespondentiepostadresVerzendingSerializer(
+        required=False,
+        help_text=_(
+            "De gegevens die tezamen een postbusadres of antwoordnummeradres"
+            " vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals"
+            " vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat"
+            " afwijkt van de reguliere correspondentiegegevens van BETROKKENE."
+        ),
     )
 
     class Meta:
@@ -92,9 +89,9 @@ class VerzendingSerializer(
             "verzenddatum",
             "contact_persoon",
             "contactpersoonnaam",
-            "afwijkend_binnenlands_correspondentieadres_verzending",
-            "afwijkend_buitenlands_correspondentieadres_verzending",
-            "afwijkend_correspondentie_posteadres_verzending",
+            "binnenlands_correspondentieadres",
+            "buitenlands_correspondentieadres",
+            "correspondentie_postadres",
         )
 
         extra_kwargs = {

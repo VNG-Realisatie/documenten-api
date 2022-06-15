@@ -1,9 +1,11 @@
 import uuid
 from base64 import b64encode
 from copy import deepcopy
+from datetime import timedelta
 from unittest.mock import patch
 
 from django.test import override_settings
+from django.utils import timezone
 
 import requests_mock
 from privates.test import temp_private_root
@@ -13,9 +15,13 @@ from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
-from drc.datamodel.constants import OndertekeningSoorten, Statussen
+from drc.datamodel.constants import AfzenderTypes, OndertekeningSoorten, Statussen
 from drc.datamodel.models import ObjectInformatieObject
-from drc.datamodel.tests.factories import EnkelvoudigInformatieObjectFactory
+from drc.datamodel.tests.factories import (
+    EnkelvoudigInformatieObjectCanonicalFactory,
+    EnkelvoudigInformatieObjectFactory,
+    VerzendingFactory,
+)
 
 from .utils import reverse_lazy
 from drc.api.scopes import *
@@ -218,6 +224,140 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         response = self.client.post(url, content)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_validate_one_address_on_create(self):
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+
+        response = self.client.post(
+            reverse("verzending-list"),
+            {
+                "betrokkene": "https://foo.com/persoonX",
+                "informatieobject": eio_url,
+                "aardRelatie": AfzenderTypes.geadresseerde,
+                "toelichting": "Verzending van XYZ",
+                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                "contactPersoon": "https://foo.com/persoonY",
+                "contactpersoonnaam": "persoonY",
+                "binnenlandsCorrespondentieadres": {
+                    "huisletter": "Q",
+                    "huisnummer": 1,
+                    "huisnummerToevoeging": "XYZ",
+                    "naamOpenbareRuimte": "ParkY",
+                    "postcode": "1800XY",
+                    "woonplaatsnaam": "Alkmaar",
+                },
+                "buitenlandsCorrespondentieadres": {
+                    "adresBuitenland1": "Adres 1",
+                    "adresBuitenland2": "Adres 2",
+                    "adresBuitenland3": "Adres 3",
+                    "landPostadres": "https://foo.com/landY",
+                },
+                "correspondentiePostadres": {
+                    "postBusOfAntwoordnummer": "1",
+                    "postadresPostcode": "3322DT",
+                    "postadresType": "antwoordnummer",
+                    "woonplaatsnaam": "4",
+                },
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_validate_zero_address_on_create(self):
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+
+        response = self.client.post(
+            reverse("verzending-list"),
+            {
+                "betrokkene": "https://foo.com/persoonX",
+                "informatieobject": eio_url,
+                "aardRelatie": AfzenderTypes.geadresseerde,
+                "toelichting": "Verzending van XYZ",
+                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                "contactPersoon": "https://foo.com/persoonY",
+                "contactpersoonnaam": "persoonY",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_validate_one_address_on_partial_update(self):
+        verzending = VerzendingFactory(betrokkene="https://foo.com/PersoonY")
+
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": "https://foo.com/PersoonX",
+                "binnenlandsCorrespondentieadres": {
+                    "huisletter": "Q",
+                    "huisnummer": 1,
+                    "huisnummerToevoeging": "XYZ",
+                    "naamOpenbareRuimte": "ParkY",
+                    "postcode": "1800XY",
+                    "woonplaatsnaam": "Alkmaar",
+                },
+            },
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_update(self):
+        verzending = VerzendingFactory()
+
+        new_eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        informatieobject_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"version": "1", "uuid": new_eio.latest_version.uuid},
+        )
+
+        response = self.client.put(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": verzending.betrokkene,
+                "informatieobject": f"http://testserver{informatieobject_url}",
+                "aardRelatie": verzending.aard_relatie,
+                "toelichting": verzending.toelichting,
+                "ontvangstdatum": verzending.ontvangstdatum,
+                "verzenddatum": verzending.verzenddatum,
+                "contactPersoon": verzending.contact_persoon,
+                "contactpersoonnaam": verzending.contactpersoonnaam,
+            },
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(verzending.informatieobject, new_eio)
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
