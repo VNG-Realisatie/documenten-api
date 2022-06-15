@@ -114,7 +114,6 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 },
             },
         )
-
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         verzending = Verzending.objects.get()
