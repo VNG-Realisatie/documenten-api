@@ -3,11 +3,12 @@ from base64 import b64encode
 from copy import deepcopy
 from datetime import timedelta
 from unittest.mock import patch
+
+from django.test import override_settings
 from django.utils import timezone
 from datetime import timedelta
 
 from django.test import override_settings
-from django.utils import timezone
 
 import requests_mock
 from privates.test import temp_private_root
@@ -251,7 +252,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
                 "contactPersoon": "https://foo.com/persoonY",
                 "contactpersoonnaam": "persoonY",
-                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
+                "binnenlandsCorrespondentieadres": {
                     "huisletter": "Q",
                     "huisnummer": 1,
                     "huisnummerToevoeging": "XYZ",
@@ -259,13 +260,13 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                     "postcode": "1800XY",
                     "woonplaatsnaam": "Alkmaar",
                 },
-                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+                "buitenlandsCorrespondentieadres": {
                     "adresBuitenland1": "Adres 1",
                     "adresBuitenland2": "Adres 2",
                     "adresBuitenland3": "Adres 3",
                     "landPostadres": "https://foo.com/landY",
                 },
-                "afwijkendCorrespondentiePosteadresVerzending": {
+                "correspondentiePostadres": {
                     "postBusOfAntwoordnummer": "1",
                     "postadresPostcode": "3322DT",
                     "postadresType": "antwoordnummer",
@@ -273,7 +274,9 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 },
             },
         )
+        from pprint import pprint
 
+        pprint(response.__dict__)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertEqual(response.data["code"], "invalid-amount")
 
@@ -314,7 +317,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
             reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
             {
                 "betrokkene": "https://foo.com/PersoonX",
-                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
+                "binnenlandsCorrespondentieadres": {
                     "huisletter": "Q",
                     "huisnummer": 1,
                     "huisnummerToevoeging": "XYZ",
@@ -354,28 +357,12 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 "verzenddatum": verzending.verzenddatum,
                 "contactPersoon": verzending.contact_persoon,
                 "contactpersoonnaam": verzending.contactpersoonnaam,
-                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
-                    "adresBuitenland1": "another_address",
-                    "landPostadres": verzending.buitenlands_correspondentieadres_land_postadres,
-                },
-                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
-                    "huisletter": "Q",
-                    "huisnummer": 1,
-                    "huisnummerToevoeging": "XYZ",
-                    "naamOpenbareRuimte": "ParkY",
-                    "postcode": "1800XY",
-                    "woonplaatsnaam": "Alkmaar",
-                },
             },
         )
 
         verzending.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            verzending.buitenlands_correspondentieadres_adres_buitenland_1,
-            "another_address",
-        )
         self.assertEqual(verzending.informatieobject, new_eio)
 
 

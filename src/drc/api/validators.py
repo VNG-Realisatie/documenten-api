@@ -15,18 +15,6 @@ from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
 from .utils import get_absolute_url
-from pprint import pprint
-
-
-class OnlyOneAddressValidator:
-    def set_context(self, serializer):
-        pass
-        # self.instance = getattr(serializer, "instance", None)
-        # pprint(serializer)
-
-    def __call__(self, attrs: dict):
-        # pprint(attrs)
-        pass
 
 
 class StatusValidator:

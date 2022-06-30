@@ -6,7 +6,6 @@ from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGr
 from vng_api_common.utils import get_help_text
 
 from drc.api.fields import EnkelvoudigInformatieObjectHyperlinkedRelatedField
-from drc.api.validators import OnlyOneAddressValidator
 from drc.datamodel.models import Verzending
 from drc.datamodel.models.enkelvoudig_informatieobject import (
     EnkelvoudigInformatieObject,
@@ -98,4 +97,3 @@ class VerzendingSerializer(
         extra_kwargs = {
             "url": {"lookup_field": "uuid", "read_only": True},
         }
-        validators = [OnlyOneAddressValidator()]
