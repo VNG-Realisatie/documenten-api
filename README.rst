@@ -24,7 +24,7 @@ Versie      Release datum   API specificatie                                    
 master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_,                                           `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/autorisaties.md>`_                             `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/gemma-documentregistratiecomponent/compare/stable/1.1.x..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
-1.1.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.1.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/notificaties.md>`_
+1.1.x       2022-06-30      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.1.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.1.0..stable/1.1.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.0.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.0.x/src/notificaties.md>`_
@@ -35,9 +35,7 @@ master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https:/
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/1.0.0...1.0.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.0       2019-11-18      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_,                                                                `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/autorisaties.md>`_                              `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_
-
-1.1.0       2022-06-30      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.1.0/src/openapi.yaml>`_,                                                                `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/autorisaties.md>`_                              `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/1.0.0/src/notificaties.md>`_
-                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/1.0.0/src/openapi.yaml>`_                            
+                         
 ==========  ==============  =====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 
 Zie ook: `Alle versies en wijzigingen <https://github.com/VNG-Realisatie/documenten-api/blob/master/CHANGELOG.rst>`_
@@ -48,6 +46,7 @@ Ondersteuning
 ==========  ==============  ==========================  =================
 Versie      Release datum   Einddatum ondersteuning     Documentatie
 ==========  ==============  ==========================  =================
+1.1.x       2022-06-30      (nog niet bekend)           `Documentatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
 1.x         2019-11-18      (nog niet bekend)           `Documentatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
 ==========  ==============  ==========================  =================
 
