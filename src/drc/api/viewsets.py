@@ -173,6 +173,7 @@ class EnkelvoudigInformatieObjectViewSet(
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (InformationObjectAuthScopesRequired,)
+
     required_scopes = {
         "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
