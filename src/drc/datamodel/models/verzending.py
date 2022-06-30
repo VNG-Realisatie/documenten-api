@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.core.exceptions import ValidationError
 from rest_framework.exceptions import APIException
 from vng_api_common.caching.models import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
@@ -226,8 +226,8 @@ class Verzending(ETagMixin, models.Model):
         },
         required=False,
         optional=(
-            "adres_buitenland_2",
-            "adres_buitenland_3",
+            "adres_buitenland2",
+            "adres_buitenland3",
         ),
     )
 

@@ -108,5 +108,17 @@ class VerzendingFactory(factory.django.DjangoModelFactory):
     buitenlands_correspondentieadres_adres_buitenland_1 = "Breedstraat"
     buitenlands_correspondentieadres_land_postadres = factory.Faker("url")
 
+    # buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer = (
+    #     factory.fuzzy.FuzzyInteger(1, 9999)
+    # )
+    #
+    # buitenlands_correspondentiepostadres_postadres_postcode = "1800XY"
+    # buitenlands_correspondentiepostadres_postadrestype = factory.fuzzy.FuzzyChoice(
+    #     [value for value, label in PostAdresTypes.choices]
+    # )
+    # buitenlands_correspondentiepostadres_woonplaats = factory.Faker(
+    #     "city", locale="nl_NL"
+    # )
+
     class Meta:
         model = "datamodel.Verzending"

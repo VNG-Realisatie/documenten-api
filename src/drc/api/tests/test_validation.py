@@ -265,10 +265,118 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                     "adresBuitenland3": "Adres 3",
                     "landPostadres": "https://foo.com/landY",
                 },
+                "afwijkendCorrespondentiePosteadresVerzending": {
+                    "postBusOfAntwoordnummer": "1",
+                    "postadresPostcode": "3322DT",
+                    "postadresType": "antwoordnummer",
+                    "woonplaatsnaam": "4",
+                },
             },
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-amount")
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_validate_zero_address_on_create(self):
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+
+        response = self.client.post(
+            reverse("verzending-list"),
+            {
+                "betrokkene": "https://foo.com/persoonX",
+                "informatieobject": eio_url,
+                "aardRelatie": AfzenderTypes.geadresseerde,
+                "toelichting": "Verzending van XYZ",
+                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                "contactPersoon": "https://foo.com/persoonY",
+                "contactpersoonnaam": "persoonY",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_validate_one_address_on_partial_update(self):
+        verzending = VerzendingFactory(betrokkene="https://foo.com/PersoonY")
+
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": "https://foo.com/PersoonX",
+                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
+                    "huisletter": "Q",
+                    "huisnummer": 1,
+                    "huisnummerToevoeging": "XYZ",
+                    "naamOpenbareRuimte": "ParkY",
+                    "postcode": "1800XY",
+                    "woonplaatsnaam": "Alkmaar",
+                },
+            },
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["code"], "invalid-amount")
+
+    def test_update(self):
+        verzending = VerzendingFactory()
+
+        new_eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        informatieobject_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"version": "1", "uuid": new_eio.latest_version.uuid},
+        )
+
+        response = self.client.put(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": verzending.betrokkene,
+                "informatieobject": f"http://testserver{informatieobject_url}",
+                "aardRelatie": verzending.aard_relatie,
+                "toelichting": verzending.toelichting,
+                "ontvangstdatum": verzending.ontvangstdatum,
+                "verzenddatum": verzending.verzenddatum,
+                "contactPersoon": verzending.contact_persoon,
+                "contactpersoonnaam": verzending.contactpersoonnaam,
+                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+                    "adresBuitenland1": "another_address",
+                    "landPostadres": verzending.buitenlands_correspondentieadres_land_postadres,
+                },
+                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
+                    "huisletter": "Q",
+                    "huisnummer": 1,
+                    "huisnummerToevoeging": "XYZ",
+                    "naamOpenbareRuimte": "ParkY",
+                    "postcode": "1800XY",
+                    "woonplaatsnaam": "Alkmaar",
+                },
+            },
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_adres_buitenland_1,
+            "another_address",
+        )
+        self.assertEqual(verzending.informatieobject, new_eio)
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")

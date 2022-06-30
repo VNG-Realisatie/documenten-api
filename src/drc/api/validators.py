@@ -15,28 +15,18 @@ from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
 from .utils import get_absolute_url
+from pprint import pprint
 
 
 class OnlyOneAddressValidator:
-    """
-    Er kan maar 1 adres per verzending opgevoerd worden.
-    """
-
     def set_context(self, serializer):
-        self.instance = getattr(serializer, "instance", None)
+        pass
+        # self.instance = getattr(serializer, "instance", None)
+        # pprint(serializer)
 
     def __call__(self, attrs: dict):
-        if not self.instance:
-            has_content_1 = bool("binnenlands_correspondentieadres_verzending" in attrs)
-            has_content_2 = bool("buitenlands_correspondentieadres_verzending" in attrs)
-            has_content_3 = bool(
-                "buitenlands_correspondentiepostadres_verzending" in attrs
-            )
-            if sum([has_content_1, has_content_2, has_content_3]) != 1:
-                raise serializers.ValidationError(
-                    "verzending must contain precisely one correspondentieadres",
-                    code="invalid-amount",
-                )
+        # pprint(attrs)
+        pass
 
 
 class StatusValidator:
