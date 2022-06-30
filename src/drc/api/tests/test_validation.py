@@ -274,9 +274,6 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 },
             },
         )
-        from pprint import pprint
-
-        pprint(response.__dict__)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertEqual(response.data["code"], "invalid-amount")
 
