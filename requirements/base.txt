@@ -79,6 +79,8 @@ drf-extra-fields==3.4.0
     # via -r requirements/base.in
 drf-nested-routers==0.93.4
     # via vng-api-common
+drf-writable-nested==0.6.3
+    # via -r requirements/base.in
 drf-yasg==1.20.0
     # via
     #   -r requirements/base.in

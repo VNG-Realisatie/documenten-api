@@ -19,30 +19,23 @@ from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
-from drc.datamodel.models import (
-    BestandsDeel,
-    EnkelvoudigInformatieObject,
-    Gebruiksrechten,
-    ObjectInformatieObject,
-)
-
-from .audits import AUDIT_DRC
-from .data_filtering import ListFilterByAuthorizationsMixin
-from .filters import (
+from drc.api.audits import AUDIT_DRC
+from drc.api.data_filtering import ListFilterByAuthorizationsMixin
+from drc.api.filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
     GebruiksrechtenFilter,
     ObjectInformatieObjectFilter,
 )
-from .kanalen import KANAAL_DOCUMENTEN
-from .mixins import UpdateWithoutPartialMixin
-from .permissions import (
+from drc.api.kanalen import KANAAL_DOCUMENTEN
+from drc.api.mixins import UpdateWithoutPartialMixin
+from drc.api.permissions import (
     InformationObjectAuthScopesRequired,
     InformationObjectRelatedAuthScopesRequired,
 )
-from .renderers import BinaryFileRenderer
-from .schema import BestandsDeelSchema, EIOAutoSchema
-from .scopes import (
+from drc.api.renderers import BinaryFileRenderer
+from drc.api.schema import BestandsDeelSchema, EIOAutoSchema
+from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
     SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
@@ -50,7 +43,7 @@ from .scopes import (
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     SCOPE_DOCUMENTEN_LOCK,
 )
-from .serializers import (
+from drc.api.serializers import (
     BestandsDeelSerializer,
     EnkelvoudigInformatieObjectCreateLockSerializer,
     EnkelvoudigInformatieObjectSerializer,
@@ -60,21 +53,13 @@ from .serializers import (
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
-from .validators import RemoteRelationValidator
-
-# Openapi query parameters for version querying
-VERSIE_QUERY_PARAM = openapi.Parameter(
-    "versie",
-    openapi.IN_QUERY,
-    description="Het (automatische) versienummer van het INFORMATIEOBJECT.",
-    type=openapi.TYPE_INTEGER,
-)
-REGISTRATIE_QUERY_PARAM = openapi.Parameter(
-    "registratieOp",
-    openapi.IN_QUERY,
-    description="Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het "
-    "kortst hiervoor zit wordt opgehaald.",
-    type=openapi.TYPE_STRING,
+from drc.api.validators import RemoteRelationValidator
+from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
+from drc.datamodel.models import (
+    BestandsDeel,
+    EnkelvoudigInformatieObject,
+    Gebruiksrechten,
+    ObjectInformatieObject,
 )
 
 
