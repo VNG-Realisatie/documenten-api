@@ -34,7 +34,6 @@ INFORMATIEOBJECTTYPE = (
 @freeze_time("2018-06-27")
 @temp_private_root()
 class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
-
     list_url = reverse(EnkelvoudigInformatieObject)
     heeft_alle_autorisaties = True
 
