@@ -120,6 +120,8 @@ drf-nested-routers==0.93.4
     # via
     #   -r requirements/base.txt
     #   vng-api-common
+drf-writable-nested==0.6.3
+    # via -r requirements/base.txt
 drf-yasg==1.20.0
     # via
     #   -r requirements/base.txt

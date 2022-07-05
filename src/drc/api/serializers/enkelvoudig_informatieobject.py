@@ -1,124 +1,33 @@
-"""
-Serializers of the Document Registratie Component REST API
-"""
-import binascii
 import math
-import os.path
+import os
 import uuid
-from base64 import b64decode
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile, File
 from django.db import transaction
-from django.utils.http import urlencode
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
-from drf_extra_fields.fields import Base64FileField
-from privates.storages import PrivateMediaFileSystemStorage
-from rest_framework import exceptions, serializers
-from rest_framework.reverse import reverse
-from vng_api_common.constants import ObjectTypes, VertrouwelijkheidsAanduiding
+from rest_framework import serializers
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import (
     GegevensGroepSerializer,
     add_choice_values_help_text,
 )
-from vng_api_common.utils import get_help_text
-from vng_api_common.validators import (
-    IsImmutableValidator,
-    PublishValidator,
-    ResourceValidator,
-    URLValidator,
-)
+from vng_api_common.validators import IsImmutableValidator, PublishValidator
 
+from drc.api.auth import get_ztc_auth
+from drc.api.fields import AnyBase64File
+from drc.api.serializers.bestandsdeel import BestandsDeelSerializer
+from drc.api.utils import create_filename, merge_files
+from drc.api.validators import StatusValidator
 from drc.datamodel.constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
 from drc.datamodel.models import (
-    BestandsDeel,
     EnkelvoudigInformatieObject,
     EnkelvoudigInformatieObjectCanonical,
-    Gebruiksrechten,
-    ObjectInformatieObject,
 )
-
-from .auth import get_zrc_auth, get_ztc_auth
-from .utils import create_filename, merge_files
-from .validators import (
-    InformatieObjectUniqueValidator,
-    ObjectInformatieObjectValidator,
-    StatusValidator,
-)
-
-
-class AnyFileType:
-    def __contains__(self, item):
-        return True
-
-
-class AnyBase64File(Base64FileField):
-    ALLOWED_TYPES = AnyFileType()
-
-    def __init__(self, view_name: str = None, *args, **kwargs):
-        self.view_name = view_name
-        super().__init__(*args, **kwargs)
-
-    def get_file_extension(self, filename, decoded_file):
-        return "bin"
-
-    def to_internal_value(self, base64_data):
-        try:
-            return super().to_internal_value(base64_data)
-        except Exception as exc:
-            try:
-                b64decode(base64_data)
-            except binascii.Error as e:
-                if str(e) == "Incorrect padding":
-                    raise ValidationError(
-                        _("The provided base64 data has incorrect padding"),
-                        code="incorrect-base64-padding",
-                    )
-                raise ValidationError(str(e), code="invalid-base64")
-            except TypeError as exc:
-                raise ValidationError(str(exc))
-
-    def to_representation(self, file):
-        is_private_storage = isinstance(file.storage, PrivateMediaFileSystemStorage)
-
-        if not is_private_storage or self.represent_in_base64:
-            return super().to_representation(file)
-
-        # if there is no associated file link is not returned
-        try:
-            file.file
-        except ValueError:
-            return None
-
-        assert (
-            self.view_name
-        ), "You must pass the `view_name` kwarg for private media fields"
-
-        model_instance = file.instance
-        request = self.context.get("request")
-
-        url_field = self.parent.fields["url"]
-        lookup_field = url_field.lookup_field
-        kwargs = {lookup_field: getattr(model_instance, lookup_field)}
-        url = reverse(self.view_name, kwargs=kwargs, request=request)
-
-        # Retrieve the correct version to construct the download url that
-        # points to the content of that version
-        instance = self.parent.instance
-        # in case of pagination instance can be a list object
-        if isinstance(instance, list):
-            instance = instance[0]
-
-        if hasattr(instance, "versie"):
-            versie = instance.versie
-        else:
-            versie = instance.get(uuid=kwargs["uuid"]).versie
-        query_string = urlencode({"versie": versie})
-        return f"{url}?{query_string}"
+from drc.datamodel.models.bestandsdeel import BestandsDeel
 
 
 class IntegriteitSerializer(GegevensGroepSerializer):
@@ -143,83 +52,6 @@ class OndertekeningSerializer(GegevensGroepSerializer):
 
         value_display_mapping = add_choice_values_help_text(OndertekeningSoorten)
         self.fields["soort"].help_text += f"\n\n{value_display_mapping}"
-
-
-class EnkelvoudigInformatieObjectHyperlinkedRelatedField(
-    serializers.HyperlinkedRelatedField
-):
-    """
-    Custom field to construct the url for models that have a ForeignKey to
-    `EnkelvoudigInformatieObject`
-
-    Needed because the canonical `EnkelvoudigInformatieObjectCanonical` no longer stores
-    the uuid, but the `EnkelvoudigInformatieObject`\s related to it do
-    store the uuid
-    """
-
-    def get_url(self, obj, view_name, request, format):
-        obj_latest_version = obj.latest_version
-        return super().get_url(obj_latest_version, view_name, request, format)
-
-    def get_object(self, view_name, view_args, view_kwargs):
-        lookup_value = view_kwargs[self.lookup_url_kwarg]
-        lookup_kwargs = {self.lookup_field: lookup_value}
-        try:
-            return (
-                self.get_queryset()
-                .filter(**lookup_kwargs)
-                .order_by("-versie")
-                .first()
-                .canonical
-            )
-        except (TypeError, AttributeError):
-            self.fail("does_not_exist")
-
-
-class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
-    lock = serializers.CharField(
-        write_only=True,
-        help_text="Hash string, which represents id of the lock of related informatieobject",
-    )
-
-    class Meta:
-        model = BestandsDeel
-        fields = ("url", "volgnummer", "omvang", "inhoud", "voltooid", "lock")
-        extra_kwargs = {
-            "url": {"lookup_field": "uuid"},
-            "volgnummer": {"read_only": True},
-            "omvang": {"read_only": True},
-            "voltooid": {
-                "read_only": True,
-                "help_text": _(
-                    "Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: "
-                    "het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen."
-                ),
-            },
-            "inhoud": {"write_only": True},
-        }
-
-    def validate(self, attrs):
-        valid_attrs = super().validate(attrs)
-
-        inhoud = valid_attrs.get("inhoud")
-        lock = valid_attrs.get("lock")
-        if inhoud:
-            if inhoud.size != self.instance.omvang:
-                raise serializers.ValidationError(
-                    _(
-                        "Het aangeleverde bestand heeft een afwijkende bestandsgrootte (volgens het `grootte`-veld)."
-                        "Verwachting: {expected}b, ontvangen: {received}b"
-                    ).format(expected=self.instance.omvang, received=inhoud.size),
-                    code="file-size",
-                )
-
-        if lock != self.instance.informatieobject.lock:
-            raise serializers.ValidationError(
-                _("Lock id is not correct"), code="incorrect-lock-id"
-            )
-
-        return valid_attrs
 
 
 class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -289,6 +121,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "ontvangstdatum",
             "verzenddatum",
             "indicatie_gebruiksrecht",
+            "verschijningsvorm",
             "ondertekening",
             "integriteit",
             "informatieobjecttype",  # van-relatie,
@@ -659,65 +492,3 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             part.delete()
 
         return self.instance
-
-
-class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
-    informatieobject = EnkelvoudigInformatieObjectHyperlinkedRelatedField(
-        view_name="enkelvoudiginformatieobject-detail",
-        lookup_field="uuid",
-        queryset=EnkelvoudigInformatieObject.objects,
-        help_text=get_help_text("datamodel.ObjectInformatieObject", "informatieobject"),
-    )
-
-    class Meta:
-        model = ObjectInformatieObject
-        fields = ("url", "informatieobject", "object", "object_type")
-        extra_kwargs = {
-            "url": {"lookup_field": "uuid"},
-            "informatieobject": {"validators": [IsImmutableValidator()]},
-            "object": {
-                "validators": [
-                    URLValidator(
-                        get_auth=get_zrc_auth, headers={"Accept-Crs": "EPSG:4326"}
-                    ),
-                    IsImmutableValidator(),
-                ]
-            },
-            "object_type": {"validators": [IsImmutableValidator()]},
-        }
-        validators = [
-            ObjectInformatieObjectValidator(),
-            InformatieObjectUniqueValidator("object", "informatieobject"),
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        value_display_mapping = add_choice_values_help_text(ObjectTypes)
-        self.fields["object_type"].help_text += f"\n\n{value_display_mapping}"
-
-        if not hasattr(self, "initial_data"):
-            return
-
-
-class GebruiksrechtenSerializer(serializers.HyperlinkedModelSerializer):
-    informatieobject = EnkelvoudigInformatieObjectHyperlinkedRelatedField(
-        view_name="enkelvoudiginformatieobject-detail",
-        lookup_field="uuid",
-        queryset=EnkelvoudigInformatieObject.objects,
-        help_text=get_help_text("datamodel.Gebruiksrechten", "informatieobject"),
-    )
-
-    class Meta:
-        model = Gebruiksrechten
-        fields = (
-            "url",
-            "informatieobject",
-            "startdatum",
-            "einddatum",
-            "omschrijving_voorwaarden",
-        )
-        extra_kwargs = {
-            "url": {"lookup_field": "uuid"},
-            "informatieobject": {"validators": [IsImmutableValidator()]},
-        }
