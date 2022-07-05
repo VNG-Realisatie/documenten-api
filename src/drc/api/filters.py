@@ -20,12 +20,6 @@ class EnkelvoudigInformatieObjectListFilter(FilterSet):
         fields = ("identificatie", "bronorganisatie", "uuid")
 
 
-class EnkelvoudigInformatieObjectListFilter(FilterSet):
-    class Meta:
-        model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie")
-
-
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):
     versie = filters.NumberFilter(field_name="versie")
     registratie_op = filters.IsoDateTimeFilter(
