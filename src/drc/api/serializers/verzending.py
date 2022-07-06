@@ -56,7 +56,7 @@ class VerzendingSerializer(
         )
     )
 
-    afwijkendbuitenlands_correspondentieadres_verzending = (
+    afwijkend_buitenlands_correspondentieadres_verzending = (
         BuitenlandsCorrespondentieadresVerzendingSerializer(
             help_text=_(
                 "De gegevens van het adres in het buitenland van BETROKKENE, zijnde"
@@ -93,7 +93,7 @@ class VerzendingSerializer(
             "contact_persoon",
             "contactpersoonnaam",
             "afwijkend_binnenlands_correspondentieadres_verzending",
-            "afwijkendbuitenlands_correspondentieadres_verzending",
+            "afwijkend_buitenlands_correspondentieadres_verzending",
             "afwijkend_correspondentie_posteadres_verzending",
         )
 

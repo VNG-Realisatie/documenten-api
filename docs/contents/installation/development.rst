@@ -6,7 +6,7 @@ Prerequisites
 
 You need the following libraries and/or programs:
 
-* `Python`_ 3.6 or higher
+* `Python`_ 3.9 or higher
 * Python `Virtualenv`_ and `Pip`_
 * `PostgreSQL`_ 9.5 or above
 * `Node.js`_

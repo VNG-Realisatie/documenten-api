@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.1.0-alpha"
+        "version": "1.2.0-alpha4"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -100,6 +100,20 @@
                     },
                     "410": {
                         "$ref": "#/responses/410"
+                    },
+                    "413": {
+                        "description": "Request entity too large",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
                     },
                     "415": {
                         "$ref": "#/responses/415"
@@ -435,25 +449,7 @@
                 "operationId": "audittrail_read",
                 "summary": "Een specifieke audit trail regel opvragen.",
                 "description": "Een specifieke audit trail regel opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -461,10 +457,6 @@
                             "$ref": "#/definitions/AuditTrail"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -993,23 +985,6 @@
                         "in": "query",
                         "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
-                    },
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            }
-                        }
                     }
                 ],
                 "responses": {
@@ -3238,7 +3213,6 @@
             }
         },
         "Ondertekening": {
-            "title": "ondertekening",
             "description": "Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.",
             "required": [
                 "soort",
@@ -3266,7 +3240,6 @@
             "x-nullable": true
         },
         "Integriteit": {
-            "title": "integriteit",
             "description": "Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand.",
             "required": [
                 "algoritme",
@@ -3706,7 +3679,6 @@
             }
         },
         "Wijzigingen": {
-            "title": "Wijzigingen",
             "type": "object",
             "properties": {
                 "oud": {
@@ -3742,7 +3714,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API\n* `vrc` - Verzoeken API",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -3752,7 +3724,8 @@
                         "drc",
                         "brc",
                         "cmc",
-                        "kc"
+                        "kc",
+                        "vrc"
                     ]
                 },
                 "applicatieId": {
@@ -4157,7 +4130,6 @@
             }
         },
         "BinnenlandsCorrespondentieadresVerzending": {
-            "title": "Afwijkend binnenlands correspondentieadres verzending",
             "description": "Het correspondentieadres, betreffende een adresseerbaar object, van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere binnenlandse correspondentieadres van BETROKKENE.",
             "required": [
                 "huisnummer",
@@ -4208,7 +4180,6 @@
             }
         },
         "BuitenlandsCorrespondentieadresVerzending": {
-            "title": "Afwijkendbuitenlands correspondentieadres verzending",
             "description": "De gegevens van het adres in het buitenland van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
             "required": [
                 "adresBuitenland2",
@@ -4246,7 +4217,6 @@
             }
         },
         "BuitenlandsCorrespondentiepostadresVerzending": {
-            "title": "Afwijkend correspondentie posteadres verzending",
             "description": "De gegevens die tezamen een postbusadres of antwoordnummeradres vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
             "required": [
                 "postBusOfAntwoordnummer",
@@ -4294,7 +4264,7 @@
                 "informatieobject",
                 "aardRelatie",
                 "contactPersoon",
-                "afwijkendbuitenlandsCorrespondentieadresVerzending",
+                "afwijkendBuitenlandsCorrespondentieadresVerzending",
                 "afwijkendCorrespondentiePosteadresVerzending"
             ],
             "type": "object",
@@ -4368,7 +4338,7 @@
                 "afwijkendBinnenlandsCorrespondentieadresVerzending": {
                     "$ref": "#/definitions/BinnenlandsCorrespondentieadresVerzending"
                 },
-                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+                "afwijkendBuitenlandsCorrespondentieadresVerzending": {
                     "$ref": "#/definitions/BuitenlandsCorrespondentieadresVerzending"
                 },
                 "afwijkendCorrespondentiePosteadresVerzending": {

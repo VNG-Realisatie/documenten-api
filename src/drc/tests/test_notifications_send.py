@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -49,11 +50,13 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
         }
 
-        response = self.client.post(url, data)
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         data = response.json()
+
         client.create.assert_called_once_with(
             "notificaties",
             {
@@ -79,14 +82,15 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
         eio_url = reverse(eio)
         api_url = get_operation_url("gebruiksrechten_create")
 
-        response = self.client.post(
-            api_url,
-            {
-                "informatieobject": f"http://testserver{eio_url}",
-                "startdatum": "2019-10-22T00:00:00Z",
-                "omschrijvingVoorwaarden": "mlem",
-            },
-        )
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.post(
+                api_url,
+                {
+                    "informatieobject": f"http://testserver{eio_url}",
+                    "startdatum": "2019-10-22T00:00:00Z",
+                    "omschrijvingVoorwaarden": "mlem",
+                },
+            )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         client.create.assert_called_once()

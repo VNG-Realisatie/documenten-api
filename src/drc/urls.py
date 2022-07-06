@@ -15,8 +15,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("drc.api.urls")),
     # dynamic backend URLs for nginx error pages
-    path("413.json", HTTP413View.as_view()),
-    path("500.json", HTTP500View.as_view()),
+    path("413.json", HTTP413View.as_view(), name="example-error-413"),
+    path("500.json", HTTP500View.as_view(), name="example-error-500"),
     # Simply show the index template.
     path("", TemplateView.as_view(template_name="index.html")),
     path("view-config/", ViewConfigView.as_view(), name="view-config"),

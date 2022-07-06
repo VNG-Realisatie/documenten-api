@@ -217,15 +217,15 @@ class Verzending(ETagMixin, models.Model):
     )
     buitenlands_correspondentieadres_verzending = GegevensGroepType(
         {
-            "adres_buitenland1": buitenlands_correspondentieadres_adres_buitenland_1,
-            "adres_buitenland2": buitenlands_correspondentieadres_adres_buitenland_2,
-            "adres_buitenland3": buitenlands_correspondentieadres_adres_buitenland_3,
+            "adres_buitenland_1": buitenlands_correspondentieadres_adres_buitenland_1,
+            "adres_buitenland_2": buitenlands_correspondentieadres_adres_buitenland_2,
+            "adres_buitenland_3": buitenlands_correspondentieadres_adres_buitenland_3,
             "land_postadres": buitenlands_correspondentieadres_land_postadres,
         },
         required=True,
         optional=(
-            "adres_buitenland1",
-            "adres_buitenland3",
+            "adres_buitenland_2",
+            "adres_buitenland_3",
         ),
     )
 

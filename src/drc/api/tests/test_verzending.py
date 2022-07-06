@@ -8,6 +8,7 @@ from vng_api_common.tests import JWTAuthMixin, reverse
 from vng_api_common.tests.schema import get_validation_errors
 
 from drc.datamodel.constants import AfzenderTypes, PostAdresTypes
+from drc.datamodel.models.verzending import Verzending
 from drc.datamodel.tests.factories import (
     EnkelvoudigInformatieObjectCanonicalFactory,
     VerzendingFactory,
@@ -69,7 +70,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 "postadresType": verzending.buitenlands_correspondentiepostadres_postadrestype,
                 "woonplaatsnaam": verzending.buitenlands_correspondentiepostadres_woonplaats,
             },
-            "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+            "afwijkendBuitenlandsCorrespondentieadresVerzending": {
                 "adresBuitenland1": verzending.buitenlands_correspondentieadres_adres_buitenland_1,
                 "adresBuitenland2": verzending.buitenlands_correspondentieadres_adres_buitenland_2,
                 "adresBuitenland3": verzending.buitenlands_correspondentieadres_adres_buitenland_3,
@@ -117,7 +118,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                     "postadresType": PostAdresTypes.postbusnummer,
                     "woonplaatsnaam": "Den Haag",
                 },
-                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+                "afwijkendBuitenlandsCorrespondentieadresVerzending": {
                     "adresBuitenland1": "Adres 1",
                     "adresBuitenland2": "Adres 2",
                     "adresBuitenland3": "Adres 3",
@@ -128,10 +129,81 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        verzending = Verzending.objects.get()
+
+        # afwijkendBinnenlandsCorrespondentieadresVerzending
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_huisletter,
+            "Q",
+        )
+
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_huisnummer,
+            1,
+        )
+
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_huisnummer_toevoeging,
+            "XYZ",
+        )
+
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_naam_openbare_ruimte,
+            "ParkY",
+        )
+
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_postcode,
+            "1800XY",
+        )
+
+        self.assertEqual(
+            verzending.binnenlands_correspondentieadres_woonplaats,
+            "Alkmaar",
+        )
+
+        # afwijkendCorrespondentiePosteadresVerzending
+        self.assertEqual(
+            verzending.buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer,
+            20,
+        )
+
+        self.assertEqual(
+            verzending.buitenlands_correspondentiepostadres_postadres_postcode,
+            "1800YX",
+        )
+
+        self.assertEqual(
+            verzending.buitenlands_correspondentiepostadres_postadrestype,
+            PostAdresTypes.postbusnummer,
+        )
+
+        self.assertEqual(
+            verzending.buitenlands_correspondentiepostadres_woonplaats,
+            "Den Haag",
+        )
+
+        # afwijkendBuitenlandsCorrespondentieadresVerzending
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_adres_buitenland_1,
+            "Adres 1",
+        )
+
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_adres_buitenland_2,
+            "Adres 2",
+        )
+
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_adres_buitenland_3,
+            "Adres 3",
+        )
+
     def test_update(self):
         verzending = VerzendingFactory(
             binnenlands_correspondentieadres_huisletter="Y",
             buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer=20,
+            buitenlands_correspondentieadres_adres_buitenland_1="Adres 1",
         )
 
         new_eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
@@ -161,7 +233,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                     "postadresType": verzending.buitenlands_correspondentiepostadres_postadrestype,
                     "woonplaatsnaam": verzending.buitenlands_correspondentiepostadres_woonplaats,
                 },
-                "afwijkendbuitenlandsCorrespondentieadresVerzending": {
+                "afwijkendBuitenlandsCorrespondentieadresVerzending": {
                     "adresBuitenland1": verzending.buitenlands_correspondentieadres_adres_buitenland_1,
                     "adresBuitenland2": verzending.buitenlands_correspondentieadres_adres_buitenland_2,
                     "adresBuitenland3": verzending.buitenlands_correspondentieadres_adres_buitenland_3,
@@ -224,3 +296,54 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
             response, "afwijkendCorrespondentiePosteadresVerzending.postadresPostcode"
         )
         self.assertEqual(error["reason"], "Postcode moet 6 tekens lang zijn.")
+
+    def test_required_buitenlands_correspondentieadres(self):
+        """
+        Test that `adresBuitenland1` is required for the
+        `afwijkendBuitenlandsCorrespondentieadresVerzending` gegevensgroeptype.
+        """
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+
+        response = self.client.post(
+            reverse("verzending-list"),
+            {
+                "betrokkene": "https://foo.com/persoonX",
+                "informatieobject": eio_url,
+                "aardRelatie": AfzenderTypes.geadresseerde,
+                "toelichting": "Verzending van XYZ",
+                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                "contactPersoon": "https://foo.com/persoonY",
+                "contactpersoonnaam": "persoonY",
+                "afwijkendCorrespondentiePosteadresVerzending": {
+                    "postBusOfAntwoordnummer": 20,
+                    "postadresPostcode": "1800YX",
+                    "postadresType": PostAdresTypes.postbusnummer,
+                    "woonplaatsnaam": "Den Haag",
+                },
+                "afwijkendBuitenlandsCorrespondentieadresVerzending": {
+                    "adresBuitenland2": "Adres 2",
+                    "adresBuitenland3": "Adres 3",
+                    "landPostadres": "https://foo.com/landY",
+                },
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(
+            response,
+            "afwijkendBuitenlandsCorrespondentieadresVerzending.adresBuitenland_1",
+        )
+
+        self.assertEqual(error["code"], "required")
