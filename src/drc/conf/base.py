@@ -134,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -305,7 +304,6 @@ AXES_ONLY_USER_FAILURES = (
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = (
     False  # Default: False (you might want to block on username and IP)
 )
-
 
 HIJACK_LOGIN_REDIRECT_URL = "/"
 HIJACK_LOGOUT_REDIRECT_URL = reverse_lazy("admin:accounts_user_changelist")
