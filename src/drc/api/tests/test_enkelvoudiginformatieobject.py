@@ -302,6 +302,18 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             },
         )
 
+    def test_filter_zoek_uuids(self):
+        eio1 = EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
+        eio2 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar")
+        eio3 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar2")
+        response = self.client.get(self.list_url, {"uuid": [eio2.uuid, eio1.uuid]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()["results"]
+
+        self.assertEqual(len(response_data), 2)
+        self.assertEqual(response_data[0]["identificatie"], "foo")
+        self.assertEqual(response_data[1]["identificatie"], "bar")
+
     def test_filter_by_identification(self):
         EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
         EnkelvoudigInformatieObjectFactory.create(identificatie="bar")
