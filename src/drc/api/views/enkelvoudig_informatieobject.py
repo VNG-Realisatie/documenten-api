@@ -177,9 +177,7 @@ class EnkelvoudigInformatieObjectViewSet(
     swagger_schema = EIOAutoSchema
 
     def get_serializer_context(self):
-        context = super(
-            EnkelvoudigInformatieObjectViewSet, self
-        ).get_serializer_context()
+        context = super().get_serializer_context()
         if self.action in ["update", "partial_update"]:
             instance = self.get_object()
             force_bijwerken = False
