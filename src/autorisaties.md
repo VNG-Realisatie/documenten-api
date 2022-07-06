@@ -40,6 +40,17 @@ Zie de repository van de [Autorisaties API](https://github.com/VNG-Realisatie/au
 * attributen van een document te wijzingen
 
 
+### documenten.geforceerd-bijwerken
+
+**Scope**
+`documenten.geforceerd-bijwerken`
+
+
+**Allows**:
+
+* changes meta data of all documents including &quot;definitief&quot; ones
+
+
 ### documenten.geforceerd-unlock
 
 **Scope**
