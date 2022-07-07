@@ -26,7 +26,6 @@ from drc.datamodel.tests.factories import (
     ObjectInformatieObjectFactory,
 )
 
-
 INFORMATIEOBJECTTYPE = (
     "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
 )
@@ -306,7 +305,10 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         eio1 = EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
         eio2 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar")
         eio3 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar2")
-        response = self.client.get(self.list_url, {"uuid_in": [eio2.uuid, eio1.uuid]})
+        response = self.client.get(self.list_url, {"uuidIn": [eio2.uuid, eio1.uuid]})
+        from pprint import pprint
+
+        pprint(response.json())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = response.json()["results"]
 
