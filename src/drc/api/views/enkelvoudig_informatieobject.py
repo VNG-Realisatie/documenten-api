@@ -42,6 +42,7 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_BIJWERKEN,
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     SCOPE_DOCUMENTEN_LOCK,
+    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
 )
 from drc.api.serializers import (
     BestandsDeelSerializer,
@@ -163,8 +164,9 @@ class EnkelvoudigInformatieObjectViewSet(
         "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "create": SCOPE_DOCUMENTEN_AANMAKEN,
         "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
-        "update": SCOPE_DOCUMENTEN_BIJWERKEN,
-        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN,
+        "update": SCOPE_DOCUMENTEN_BIJWERKEN | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+        "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN
+        | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
         "download": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "lock": SCOPE_DOCUMENTEN_LOCK,
         "unlock": SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
@@ -173,6 +175,21 @@ class EnkelvoudigInformatieObjectViewSet(
     audit = AUDIT_DRC
 
     swagger_schema = EIOAutoSchema
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action in ["update", "partial_update"]:
+            instance = self.get_object()
+            force_bijwerken = False
+            if self.request.jwt_auth.has_auth(
+                scopes=SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+                informatieobjecttype=instance.informatieobjecttype,
+                vertrouwelijkheidaanduiding=instance.vertrouwelijkheidaanduiding,
+            ):
+                force_bijwerken = True
+            context.update({"force_bijwerken": force_bijwerken})
+
+        return context
 
     def get_renderers(self):
         if self.action == "download":
@@ -208,7 +225,7 @@ class EnkelvoudigInformatieObjectViewSet(
         """
         if self.action in ["update", "partial_update"]:
             return EnkelvoudigInformatieObjectWithLockSerializer
-        elif self.action == "create":
+        if self.action == "create":
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 

@@ -30,7 +30,7 @@ class EnkelvoudigInformatieObjectCanonical(models.Model):
 
     @property
     def latest_version(self):
-        versies = self.enkelvoudiginformatieobject_set.order_by("-versie")
+        versies = self.enkelvoudiginformatieobject_set.order_by("-versie", "-pk")
         return versies.first()
 
     @property
