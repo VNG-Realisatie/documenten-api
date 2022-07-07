@@ -306,7 +306,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         eio1 = EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
         eio2 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar")
         eio3 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar2")
-        response = self.client.get(self.list_url, {"uuid": [eio2.uuid, eio1.uuid]})
+        response = self.client.get(self.list_url, {"uuid_in": [eio2.uuid, eio1.uuid]})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = response.json()["results"]
 
