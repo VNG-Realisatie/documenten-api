@@ -58,9 +58,9 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
             "contactPersoon": verzending.contact_persoon,
             "contactpersoonnaam": verzending.contactpersoonnaam,
             "buitenlandsCorrespondentieadres": {
-                "adresBuitenland_1": verzending.buitenlands_correspondentieadres_adres_buitenland_1,
-                "adresBuitenland_2": "",
-                "adresBuitenland_3": "",
+                "adresBuitenland1": verzending.buitenlands_correspondentieadres_adres_buitenland_1,
+                "adresBuitenland2": "",
+                "adresBuitenland3": "",
                 "landPostadres": verzending.buitenlands_correspondentieadres_land_postadres,
             },
             "binnenlandsCorrespondentieadres": {
@@ -78,7 +78,11 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 "woonplaatsnaam": "",
             },
         }
+        from pprint import pprint
 
+        pprint(expected_data)
+        print("-----=-=-=-=-=-=-=-=-=-=-=-=")
+        pprint(response.json())
         self.assertEqual(response.json(), expected_data)
 
     def test_create(self):

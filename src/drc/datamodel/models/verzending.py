@@ -227,7 +227,6 @@ class Verzending(ETagMixin, models.Model):
         },
         required=False,
         optional=(
-            # "adres_buitenland_1",
             "adres_buitenland_2",
             "adres_buitenland_3",
         ),
