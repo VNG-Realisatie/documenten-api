@@ -6,9 +6,6 @@ from unittest.mock import patch
 
 from django.test import override_settings
 from django.utils import timezone
-from datetime import timedelta
-
-from django.test import override_settings
 
 import requests_mock
 from privates.test import temp_private_root
@@ -18,6 +15,7 @@ from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import URLValidator
 from zds_client.tests.mocks import mock_client
 
+from drc.api.scopes import *
 from drc.datamodel.constants import AfzenderTypes, OndertekeningSoorten, Statussen
 from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.tests.factories import (
@@ -26,18 +24,16 @@ from drc.datamodel.tests.factories import (
     VerzendingFactory,
 )
 
-from .utils import reverse_lazy
-from drc.api.scopes import *
-
 from ..scopes import (
-    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
-    SCOPE_DOCUMENTEN_LOCK,
-    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
-    SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_AANMAKEN,
-    SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
+    SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
+    SCOPE_DOCUMENTEN_LOCK,
 )
+from .utils import reverse_lazy
 
 INFORMATIEOBJECTTYPE = "https://example.com/informatieobjecttype/foo"
 ZAAK = "https://zrc.nl/api/v1/zaken/1234"
@@ -261,9 +257,9 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                     "woonplaatsnaam": "Alkmaar",
                 },
                 "buitenlandsCorrespondentieadres": {
-                    "adresBuitenland1": "Adres 1",
-                    "adresBuitenland2": "Adres 2",
-                    "adresBuitenland3": "Adres 3",
+                    "adresBuitenland_1": "Adres 1",
+                    "adresBuitenland_2": "Adres 2",
+                    "adresBuitenland_3": "Adres 3",
                     "landPostadres": "https://foo.com/landY",
                 },
                 "correspondentiePostadres": {
@@ -274,7 +270,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 },
             },
         )
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["code"], "invalid-amount")
 
     def test_validate_zero_address_on_create(self):
@@ -304,7 +300,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
             },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["code"], "invalid-amount")
 
     def test_validate_one_address_on_partial_update(self):
@@ -327,7 +323,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
 
         verzending.refresh_from_db()
 
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["code"], "invalid-amount")
 
     def test_update(self):

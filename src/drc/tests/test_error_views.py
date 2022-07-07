@@ -8,6 +8,9 @@ class ErrorViewTestCase(APITestCase):
         response = self.client.get(reverse("example-error-413"))
 
         response_data = response.json()
+        from pprint import pprint
+
+        pprint(response_data)
 
         self.assertEqual(response.status_code, status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
         self.assertEqual(response_data["code"], "entity_too_large")

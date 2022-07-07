@@ -9,11 +9,12 @@ from rest_framework.exceptions import APIException
 from vng_api_common.caching.models import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
 
+# gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
+from ...api.exceptions import OneAddressOnlyVerzendingException
 from ..constants import AfzenderTypes, PostAdresTypes
 from ..validators import validate_postal_code
 
 
-# gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
 class Verzending(ETagMixin, models.Model):
     uuid = models.UUIDField(
         unique=True,
@@ -226,8 +227,9 @@ class Verzending(ETagMixin, models.Model):
         },
         required=False,
         optional=(
-            "adres_buitenland2",
-            "adres_buitenland3",
+            # "adres_buitenland_1",
+            "adres_buitenland_2",
+            "adres_buitenland_3",
         ),
     )
 
@@ -302,10 +304,7 @@ class Verzending(ETagMixin, models.Model):
             != 1
             and self.id
         ):
-            raise APIException(
-                "verzending must contain precisely one correspondentieadres",
-                code="invalid-amount",
-            )
+            raise OneAddressOnlyVerzendingException()
         super().save(*args, **kwargs)
 
     def check_gegevensgroep_contains_content(self, gegevensgroep):
