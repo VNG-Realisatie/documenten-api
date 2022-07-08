@@ -11,7 +11,7 @@ from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
 
-from drc.datamodel.models import ObjectInformatieObject, Verzending
+from drc.datamodel.models import ObjectInformatieObject
 from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth

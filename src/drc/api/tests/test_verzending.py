@@ -114,9 +114,6 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 },
             },
         )
-        from pprint import pprint
-
-        pprint(response.json())
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
