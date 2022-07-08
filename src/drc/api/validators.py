@@ -23,47 +23,51 @@ class OneAddressValidator:
     Class to validate that only one address is send with each request and only one address is assiociated with each Verzending within the database.
     """
 
+    def __init__(self):
+        self.attrs_binnenlands_not_empty: bool
+        self.attrs_postadres_not_empty: bool
+        self.attrs_buitenlands_not_empty: bool
+        self.instance_binnenlands_not_empty: bool
+        self.instance_postadres_not_empty: bool
+        self.instance_buitenlands_not_empty: bool
+
     def set_context(self, serializer):
         self.instance = getattr(serializer, "instance", None)
 
     def __call__(self, attrs: dict):
-        (
-            attrs_binnenlands_not_empty,
-            attrs_postadres_not_empty,
-            attrs_buitenlands_not_empty,
-        ) = self.check_existance_of_attrs_addresses(attrs)
+        self.check_existence_of_attrs_addresses(attrs)
 
         if self.instance:
+            self.check_existence_of_instance_addresses()
 
-            (
-                instance_binnenlands_not_empty,
-                instance_postadres_not_empty,
-                instance_buitenlands_not_empty,
-            ) = self.check_existance_of_instance_addresses()
             if (
                 sum(
                     [
-                        attrs_binnenlands_not_empty,
-                        attrs_buitenlands_not_empty,
-                        attrs_postadres_not_empty,
+                        self.attrs_binnenlands_not_empty,
+                        self.attrs_buitenlands_not_empty,
+                        self.attrs_postadres_not_empty,
                     ]
                 )
                 == 0
             ):
                 return
+
             if (
                 any(
                     [
-                        attrs_binnenlands_not_empty != instance_binnenlands_not_empty,
-                        attrs_postadres_not_empty != instance_postadres_not_empty,
-                        attrs_buitenlands_not_empty != instance_buitenlands_not_empty,
+                        self.attrs_binnenlands_not_empty
+                        != self.instance_binnenlands_not_empty,
+                        self.attrs_postadres_not_empty
+                        != self.instance_postadres_not_empty,
+                        self.attrs_buitenlands_not_empty
+                        != self.instance_buitenlands_not_empty,
                     ]
                 )
                 or sum(
                     [
-                        instance_binnenlands_not_empty,
-                        instance_postadres_not_empty,
-                        instance_buitenlands_not_empty,
+                        self.instance_binnenlands_not_empty,
+                        self.instance_postadres_not_empty,
+                        self.instance_buitenlands_not_empty,
                     ]
                 )
                 != 1
@@ -79,9 +83,9 @@ class OneAddressValidator:
             if (
                 sum(
                     [
-                        attrs_binnenlands_not_empty,
-                        attrs_buitenlands_not_empty,
-                        attrs_postadres_not_empty,
+                        self.attrs_binnenlands_not_empty,
+                        self.attrs_buitenlands_not_empty,
+                        self.attrs_postadres_not_empty,
                     ]
                 )
                 != 1
@@ -99,47 +103,40 @@ class OneAddressValidator:
                 return True
         return False
 
-    def check_existance_of_attrs_addresses(self, attrs: dict):
-        try:
-            attrs_binnenlands_not_empty = self.check_gegevensgroep_contains_content(
+    def check_existence_of_attrs_addresses(self, attrs: dict):
+
+        self.attrs_binnenlands_not_empty = (
+            self.check_gegevensgroep_contains_content(
                 attrs["binnenlands_correspondentieadres"]
             )
-        except KeyError:
-            attrs_binnenlands_not_empty = False
-        try:
-            attrs_postadres_not_empty = self.check_gegevensgroep_contains_content(
+            if "binnenlands_correspondentieadres" in attrs
+            else False
+        )
+        self.attrs_postadres_not_empty = (
+            self.check_gegevensgroep_contains_content(
                 attrs["correspondentie_postadres"]
             )
-        except KeyError:
-            attrs_postadres_not_empty = False
-        try:
-            attrs_buitenlands_not_empty = self.check_gegevensgroep_contains_content(
+            if "correspondentie_postadres" in attrs
+            else False
+        )
+        self.attrs_buitenlands_not_empty = (
+            self.check_gegevensgroep_contains_content(
                 attrs["buitenlands_correspondentieadres"]
             )
-        except KeyError:
-            attrs_buitenlands_not_empty = False
-
-        return (
-            attrs_binnenlands_not_empty,
-            attrs_postadres_not_empty,
-            attrs_buitenlands_not_empty,
+            if "buitenlands_correspondentieadres" in attrs
+            else False
         )
 
-    def check_existance_of_instance_addresses(self):
+    def check_existence_of_instance_addresses(self):
 
-        instance_binnenlands_not_empty = self.check_gegevensgroep_contains_content(
+        self.instance_binnenlands_not_empty = self.check_gegevensgroep_contains_content(
             self.instance.binnenlands_correspondentieadres
         )
-        instance_postadres_not_empty = self.check_gegevensgroep_contains_content(
+        self.instance_postadres_not_empty = self.check_gegevensgroep_contains_content(
             self.instance.correspondentie_postadres
         )
-        instance_buitenlands_not_empty = self.check_gegevensgroep_contains_content(
+        self.instance_buitenlands_not_empty = self.check_gegevensgroep_contains_content(
             self.instance.buitenlands_correspondentieadres
-        )
-        return (
-            instance_binnenlands_not_empty,
-            instance_postadres_not_empty,
-            instance_buitenlands_not_empty,
         )
 
 
