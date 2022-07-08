@@ -36,7 +36,6 @@ class OneAddressValidator:
 
     def __call__(self, attrs: dict):
         self.check_existence_of_attrs_addresses(attrs)
-
         if self.instance:
             self.check_existence_of_instance_addresses()
 
