@@ -19,7 +19,6 @@ INFORMATIEOBJECTTYPE = "https://example.com/informatieobjecttype/foo"
 
 class VerzendingAPITests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
-    maxDiff = None
 
     def test_list(self):
         VerzendingFactory.create_batch(size=3)
@@ -78,11 +77,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 "woonplaatsnaam": "",
             },
         }
-        from pprint import pprint
 
-        pprint(expected_data)
-        print("-----=-=-=-=-=-=-=-=-=-=-=-=")
-        pprint(response.json())
         self.assertEqual(response.json(), expected_data)
 
     def test_create(self):
@@ -119,6 +114,9 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 },
             },
         )
+        from pprint import pprint
+
+        pprint(response.json())
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -180,7 +178,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 "contactPersoon": verzending.contact_persoon,
                 "contactpersoonnaam": verzending.contactpersoonnaam,
                 "buitenlandsCorrespondentieadres": {
-                    "adresBuitenland_1": "another_address",
+                    "adresBuitenland1": "another_address",
                     "landPostadres": verzending.buitenlands_correspondentieadres_land_postadres,
                 },
             },
@@ -270,8 +268,8 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
                 "contactPersoon": "https://foo.com/persoonY",
                 "contactpersoonnaam": "persoonY",
                 "buitenlandsCorrespondentieadres": {
-                    "adresBuitenland_2": "Adres 2",
-                    "adresBuitenland_3": "Adres 3",
+                    "adresBuitenland2": "Adres 2",
+                    "adresBuitenland3": "Adres 3",
                     "landPostadres": "https://foo.com/landY",
                 },
             },

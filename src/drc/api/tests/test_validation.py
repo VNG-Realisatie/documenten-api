@@ -270,8 +270,9 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
                 },
             },
         )
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["code"], "invalid-amount")
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
     def test_validate_zero_address_on_create(self):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
@@ -301,9 +302,9 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["code"], "invalid-amount")
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
-    def test_validate_one_address_on_partial_update(self):
+    def test_validate_one_address_on_partial_patch(self):
         verzending = VerzendingFactory(betrokkene="https://foo.com/PersoonY")
 
         response = self.client.patch(
@@ -324,7 +325,7 @@ class EnkelvoudigInformatieObjectTests(JWTAuthMixin, APITestCase):
         verzending.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["code"], "invalid-amount")
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
     def test_update(self):
         verzending = VerzendingFactory()

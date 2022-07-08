@@ -1,16 +1,14 @@
 import uuid as _uuid
 
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework.exceptions import APIException
 from vng_api_common.caching.models import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
 
-# gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
 from ...api.exceptions import OneAddressOnlyVerzendingException
+# gebaseerd op https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/relatieklasse/verzending
 from ..constants import AfzenderTypes, PostAdresTypes
 from ..validators import validate_postal_code
 
@@ -284,30 +282,3 @@ class Verzending(ETagMixin, models.Model):
     class Meta:
         verbose_name = _("Verzending")
         verbose_name_plural = _("Verzendingen")
-
-    def save(self, *args, **kwargs):
-        if (
-            sum(
-                [
-                    self.check_gegevensgroep_contains_content(
-                        self.binnenlands_correspondentieadres
-                    ),
-                    self.check_gegevensgroep_contains_content(
-                        self.correspondentie_postadres
-                    ),
-                    self.check_gegevensgroep_contains_content(
-                        self.buitenlands_correspondentieadres
-                    ),
-                ]
-            )
-            != 1
-            and self.id
-        ):
-            raise OneAddressOnlyVerzendingException()
-        super().save(*args, **kwargs)
-
-    def check_gegevensgroep_contains_content(self, gegevensgroep):
-        for value in gegevensgroep.values():
-            if value != "" and value != None:
-                return True
-        return False
