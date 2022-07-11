@@ -2,6 +2,25 @@
 Wijzigingen
 ===========
 
+1.2.0 (2022-07-07)
+===========
+
+API spec changes
+----------------
+
+* Add relatieklasse Verzendingen
+* Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO
+* Add query parameter to retrieve a list of documents with certain UUIDs
+
+Implementation changes
+----------------------
+
+* Enable updating document metadata for documents with status "definitief" by way of the scope `geforceerd-bijwerken`
+
+Breaking changes
+----------------
+* none
+
 1.1.0 (2022-06-30)
 ===========
 
