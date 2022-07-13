@@ -674,6 +674,4 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
         response = self.client.post(url, {})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        error = get_validation_errors(response, "nonFieldErrors")
-        self.assertEqual(error["code"], "empty_search_body")
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "required")
