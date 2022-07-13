@@ -1,12 +1,11 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import exceptions, serializers
-from rest_framework.exceptions import ValidationError as ValidationErrorRest
+from rest_framework.exceptions import ValidationError
 from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
@@ -16,127 +15,6 @@ from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
 from .utils import get_absolute_url
-
-
-class OneAddressValidator:
-    """
-    Class to validate that only one address is send with each request and only one address is assiociated with each Verzending within the database.
-    """
-
-    def __init__(self):
-        self.attrs_binnenlands_not_empty: bool
-        self.attrs_postadres_not_empty: bool
-        self.attrs_buitenlands_not_empty: bool
-        self.instance_binnenlands_not_empty: bool
-        self.instance_postadres_not_empty: bool
-        self.instance_buitenlands_not_empty: bool
-
-    def set_context(self, serializer):
-        self.instance = getattr(serializer, "instance", None)
-
-    def __call__(self, attrs: dict):
-        self.check_existence_of_attrs_addresses(attrs)
-        if self.instance:
-            self.check_existence_of_instance_addresses()
-
-            if (
-                sum(
-                    [
-                        self.attrs_binnenlands_not_empty,
-                        self.attrs_buitenlands_not_empty,
-                        self.attrs_postadres_not_empty,
-                    ]
-                )
-                == 0
-            ):
-                return
-
-            if (
-                any(
-                    [
-                        self.attrs_binnenlands_not_empty
-                        != self.instance_binnenlands_not_empty,
-                        self.attrs_postadres_not_empty
-                        != self.instance_postadres_not_empty,
-                        self.attrs_buitenlands_not_empty
-                        != self.instance_buitenlands_not_empty,
-                    ]
-                )
-                or sum(
-                    [
-                        self.instance_binnenlands_not_empty,
-                        self.instance_postadres_not_empty,
-                        self.instance_buitenlands_not_empty,
-                    ]
-                )
-                != 1
-            ):
-                raise ValidationErrorRest(
-                    detail=_(
-                        "Verzending must contain precisely one correspondentieadress"
-                    ),
-                    code="invalid-address",
-                )
-
-        elif attrs:
-            if (
-                sum(
-                    [
-                        self.attrs_binnenlands_not_empty,
-                        self.attrs_buitenlands_not_empty,
-                        self.attrs_postadres_not_empty,
-                    ]
-                )
-                != 1
-            ):
-                raise ValidationErrorRest(
-                    detail=_(
-                        "Verzending must contain precisely one correspondentieadress"
-                    ),
-                    code="invalid-address",
-                )
-
-    def check_gegevensgroep_contains_content(self, gegevensgroep: dict) -> bool:
-        for value in gegevensgroep.values():
-            if value != "" and value != None:
-                return True
-        return False
-
-    def check_existence_of_attrs_addresses(self, attrs: dict):
-
-        self.attrs_binnenlands_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["binnenlands_correspondentieadres"]
-            )
-            if "binnenlands_correspondentieadres" in attrs
-            else False
-        )
-        self.attrs_postadres_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["correspondentie_postadres"]
-            )
-            if "correspondentie_postadres" in attrs
-            else False
-        )
-        self.attrs_buitenlands_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["buitenlands_correspondentieadres"]
-            )
-            if "buitenlands_correspondentieadres" in attrs
-            else False
-        )
-
-    def check_existence_of_instance_addresses(self):
-
-        self.instance_binnenlands_not_empty = self.check_gegevensgroep_contains_content(
-            self.instance.binnenlands_correspondentieadres
-        )
-        self.instance_postadres_not_empty = self.check_gegevensgroep_contains_content(
-            self.instance.correspondentie_postadres
-        )
-        self.instance_buitenlands_not_empty = self.check_gegevensgroep_contains_content(
-            self.instance.buitenlands_correspondentieadres
-        )
 
 
 class StatusValidator:

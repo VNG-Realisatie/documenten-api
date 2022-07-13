@@ -2,11 +2,11 @@ from django.utils.translation import gettext_lazy as _
 
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin
 from vng_api_common.utils import get_help_text
 
 from drc.api.fields import EnkelvoudigInformatieObjectHyperlinkedRelatedField
-from drc.api.validators import OneAddressValidator
 from drc.datamodel.models import Verzending
 from drc.datamodel.models.enkelvoudig_informatieobject import (
     EnkelvoudigInformatieObject,
@@ -98,4 +98,20 @@ class VerzendingSerializer(
         extra_kwargs = {
             "url": {"lookup_field": "uuid", "read_only": True},
         }
-        validators = [OneAddressValidator()]
+
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+
+        address_fields = (
+            "binnenlands_correspondentieadres",
+            "buitenlands_correspondentieadres",
+            "correspondentie_postadres",
+        )
+
+        if not any((field in validated_data for field in address_fields)):
+            raise ValidationError(
+                _("Verzending must contain precisely one correspondentieadress"),
+                code="invalid-address",
+            )
+
+        return validated_data
