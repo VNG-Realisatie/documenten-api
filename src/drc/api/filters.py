@@ -13,11 +13,9 @@ from drc.datamodel.models import (
 
 
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
-    uuid_in = filters.AllValuesMultipleFilter(field_name="uuid")
-
     class Meta:
         model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie", "uuid_in")
+        fields = ("identificatie", "bronorganisatie")
 
 
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):

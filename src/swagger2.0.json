@@ -22,9 +22,9 @@
     ],
     "securityDefinitions": {
         "JWT-Claims": {
-            "type": "http",
+            "bearerFormat": "JWT",
             "scheme": "bearer",
-            "bearerFormat": "JWT"
+            "type": "http"
         }
     },
     "security": [
@@ -168,13 +168,6 @@
                         "name": "bronorganisatie",
                         "in": "query",
                         "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "uuid",
-                        "in": "query",
-                        "description": "Unieke resource identifier (UUID4)",
                         "required": false,
                         "type": "string"
                     },
@@ -380,6 +373,132 @@
             },
             "parameters": []
         },
+        "/enkelvoudiginformatieobjecten/_zoek": {
+            "post": {
+                "operationId": "enkelvoudiginformatieobject__zoek",
+                "description": "Opvragen en bewerken van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten).",
+                "parameters": [
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "description": "Content type van de verzoekinhoud.",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "application/json"
+                        ]
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EIOZoek"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EnkelvoudigInformatieObjectData"
+                                    }
+                                }
+                            }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/responses/403"
+                    },
+                    "406": {
+                        "$ref": "#/responses/406"
+                    },
+                    "409": {
+                        "$ref": "#/responses/409"
+                    },
+                    "410": {
+                        "$ref": "#/responses/410"
+                    },
+                    "413": {
+                        "description": "Request entity too large",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "$ref": "#/responses/415"
+                    },
+                    "429": {
+                        "$ref": "#/responses/429"
+                    },
+                    "500": {
+                        "$ref": "#/responses/500"
+                    }
+                },
+                "tags": [
+                    "enkelvoudiginformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "documenten.lezen"
+                        ]
+                    }
+                ]
+            },
+            "parameters": []
+        },
         "/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail": {
             "get": {
                 "operationId": "audittrail_list",
@@ -456,7 +575,25 @@
                 "operationId": "audittrail_read",
                 "summary": "Een specifieke audit trail regel opvragen.",
                 "description": "Een specifieke audit trail regel opvragen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -464,6 +601,10 @@
                             "$ref": "#/definitions/AuditTrail"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -555,13 +696,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -636,13 +777,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -970,6 +1111,23 @@
                         "in": "query",
                         "description": "Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.",
                         "type": "string"
+                    },
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1742,13 +1900,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -1823,13 +1981,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -2314,13 +2472,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -2395,13 +2553,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -2707,13 +2865,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -2781,13 +2939,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            },
                             "multipleValues": {
                                 "summary": "Meerdere ETag-waardes",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
                             }
                         }
                     }
@@ -3198,6 +3356,7 @@
             }
         },
         "Ondertekening": {
+            "title": "ondertekening",
             "description": "Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter vaststelling' heeft.",
             "required": [
                 "soort",
@@ -3225,6 +3384,7 @@
             "x-nullable": true
         },
         "Integriteit": {
+            "title": "integriteit",
             "description": "Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand.",
             "required": [
                 "algoritme",
@@ -3663,7 +3823,226 @@
                 }
             }
         },
+        "EIOZoek": {
+            "type": "object",
+            "properties": {
+                "uuid__in": {
+                    "description": "Array of unieke resource identifiers (UUID4)",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "identificatie": {
+                    "title": "Identificatie",
+                    "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "EnkelvoudigInformatieObjectData": {
+            "required": [
+                "bronorganisatie",
+                "creatiedatum",
+                "titel",
+                "auteur",
+                "taal",
+                "informatieobjecttype"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "identificatie": {
+                    "title": "Identificatie",
+                    "description": "Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 40
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecre\u00eberd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.",
+                    "type": "string",
+                    "maxLength": 9,
+                    "minLength": 1
+                },
+                "creatiedatum": {
+                    "title": "Creatiedatum",
+                    "description": "Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "titel": {
+                    "title": "Titel",
+                    "description": "De naam waaronder het INFORMATIEOBJECT formeel bekend is.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "vertrouwelijkheidaanduiding": {
+                    "title": "Vertrouwelijkheidaanduiding",
+                    "description": "Aanduiding van de mate waarin het INFORMATIEOBJECT voor de openbaarheid bestemd is.\n\nUitleg bij mogelijke waarden:\n\n* `openbaar` - Openbaar\n* `beperkt_openbaar` - Beperkt openbaar\n* `intern` - Intern\n* `zaakvertrouwelijk` - Zaakvertrouwelijk\n* `vertrouwelijk` - Vertrouwelijk\n* `confidentieel` - Confidentieel\n* `geheim` - Geheim\n* `zeer_geheim` - Zeer geheim",
+                    "type": "string",
+                    "enum": [
+                        "openbaar",
+                        "beperkt_openbaar",
+                        "intern",
+                        "zaakvertrouwelijk",
+                        "vertrouwelijk",
+                        "confidentieel",
+                        "geheim",
+                        "zeer_geheim"
+                    ]
+                },
+                "auteur": {
+                    "title": "Auteur",
+                    "description": "De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het cre\u00ebren van de inhoud van het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "status": {
+                    "title": "Status",
+                    "description": "Aanduiding van de stand van zaken van een INFORMATIEOBJECT. De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van de Status in 'gearchiveerd' impliceert dat het informatieobject een duurzaam, niet-wijzigbaar Formaat dient te hebben.\n\nUitleg bij mogelijke waarden:\n\n* `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.\n* `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar moet nog vastgesteld worden.\n* `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand vastgesteld dan wel ontvangen.\n* `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-element.",
+                    "type": "string",
+                    "enum": [
+                        "in_bewerking",
+                        "ter_vaststelling",
+                        "definitief",
+                        "gearchiveerd"
+                    ]
+                },
+                "formaat": {
+                    "title": "Formaat",
+                    "description": "Het \"Media Type\" (voorheen \"MIME type\") voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`. Zie: https://www.iana.org/assignments/media-types/media-types.xhtml",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "taal": {
+                    "title": "Taal",
+                    "description": "Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: https://www.iso.org/standard/4767.html",
+                    "type": "string",
+                    "maxLength": 3,
+                    "minLength": 3
+                },
+                "versie": {
+                    "title": "Versie",
+                    "description": "Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "beginRegistratie": {
+                    "title": "Begin registratie",
+                    "description": "Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "bestandsnaam": {
+                    "title": "Bestandsnaam",
+                    "description": "De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie.",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "inhoud": {
+                    "title": "Inhoud",
+                    "description": "Binaire inhoud, in base64 ge\u00ebncodeerd.",
+                    "type": "string",
+                    "format": "bytes",
+                    "x-nullable": true
+                },
+                "bestandsomvang": {
+                    "title": "Bestandsomvang",
+                    "description": "Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.",
+                    "type": "integer",
+                    "maximum": 9223372036854775807,
+                    "minimum": 0,
+                    "x-nullable": true
+                },
+                "link": {
+                    "title": "Link",
+                    "description": "De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen is.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200
+                },
+                "beschrijving": {
+                    "title": "Beschrijving",
+                    "description": "Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.",
+                    "type": "string",
+                    "maxLength": 1000
+                },
+                "ontvangstdatum": {
+                    "title": "Ontvangstdatum",
+                    "description": "De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
+                    "type": "string",
+                    "format": "date",
+                    "x-nullable": true
+                },
+                "verzenddatum": {
+                    "title": "Verzenddatum",
+                    "description": "De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt.",
+                    "type": "string",
+                    "format": "date",
+                    "x-nullable": true
+                },
+                "indicatieGebruiksrecht": {
+                    "title": "Indicatie gebruiksrecht",
+                    "description": "Indicatie of er beperkingen gelden aangaande het gebruik van het informatieobject anders dan raadpleging. Dit veld mag `null` zijn om aan te geven dat de indicatie nog niet bekend is. Als de indicatie gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen via de GEBRUIKSRECHTen resource.",
+                    "type": "boolean",
+                    "x-nullable": true
+                },
+                "verschijningsvorm": {
+                    "title": "Verschijningsvorm",
+                    "description": "De essenti\u00eble opmaakaspecten van een INFORMATIEOBJECT.",
+                    "type": "string"
+                },
+                "ondertekening": {
+                    "$ref": "#/definitions/Ondertekening"
+                },
+                "integriteit": {
+                    "$ref": "#/definitions/Integriteit"
+                },
+                "informatieobjecttype": {
+                    "title": "Informatieobjecttype",
+                    "description": "URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API).",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "locked": {
+                    "title": "locked",
+                    "description": "Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden.",
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "bestandsdelen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BestandsDeel"
+                    },
+                    "readOnly": true
+                }
+            }
+        },
         "Wijzigingen": {
+            "title": "Wijzigingen",
             "type": "object",
             "properties": {
                 "oud": {
@@ -3699,7 +4078,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API\n* `vrc` - Verzoeken API",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -3709,8 +4088,7 @@
                         "drc",
                         "brc",
                         "cmc",
-                        "kc",
-                        "vrc"
+                        "kc"
                     ]
                 },
                 "applicatieId": {
@@ -3915,6 +4293,7 @@
             }
         },
         "BinnenlandsCorrespondentieadresVerzending": {
+            "title": "Afwijkend binnenlands correspondentieadres verzending",
             "description": "Het correspondentieadres, betreffende een adresseerbaar object, van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere binnenlandse correspondentieadres van BETROKKENE.",
             "required": [
                 "huisnummer",
@@ -3965,27 +4344,28 @@
             }
         },
         "BuitenlandsCorrespondentieadresVerzending": {
+            "title": "Afwijkend buitenlands correspondentieadres verzending",
             "description": "De gegevens van het adres in het buitenland van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
             "required": [
-                "adresBuitenland1",
+                "adresBuitenland_1",
                 "landPostadres"
             ],
             "type": "object",
             "properties": {
-                "adresBuitenland1": {
+                "adresBuitenland_1": {
                     "title": "Adres buitenland 1",
                     "description": "Het eerste deel dat behoort bij het afwijkend buitenlandse correspondentieadres van de betrokkene in zijn/haar rol bij de zaak.",
                     "type": "string",
                     "maxLength": 35,
                     "minLength": 1
                 },
-                "adresBuitenland2": {
+                "adresBuitenland_2": {
                     "title": "Adres buitenland 2",
                     "description": "Het tweede deel dat behoort bij het afwijkend buitenlandse correspondentieadres van de betrokkene in zijn/haar rol bij de zaak.",
                     "type": "string",
                     "maxLength": 35
                 },
-                "adresBuitenland3": {
+                "adresBuitenland_3": {
                     "title": "Adres buitenland 3",
                     "description": "Het derde deel dat behoort bij het afwijkend buitenlandse correspondentieadres van de betrokkene in zijn/haar rol bij de zaak.",
                     "type": "string",
@@ -4002,6 +4382,7 @@
             }
         },
         "BuitenlandsCorrespondentiepostadresVerzending": {
+            "title": "Afwijkend correspondentie posteadres verzending",
             "description": "De gegevens die tezamen een postbusadres of antwoordnummeradres vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
             "required": [
                 "postBusOfAntwoordnummer",
