@@ -670,6 +670,8 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(eio2)}")
 
     def test_zoek_without_params(self):
+        url = get_operation_url("enkelvoudiginformatieobjecten__zoek")
+
         url = reverse("enkelvoudiginformatieobject-list")
 
         response = self.client.post(f"{url}/_zoek", {})
