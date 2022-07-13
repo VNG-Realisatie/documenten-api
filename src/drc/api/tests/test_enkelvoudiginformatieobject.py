@@ -657,9 +657,9 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
 
     def test_zoek_uuid_in(self):
         eio1, eio2, eio3 = EnkelvoudigInformatieObjectFactory.create_batch(3)
-        url = reverse("enkelvoudiginformatieobject-list")
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
         data = {"uuid__in": [eio1.uuid, eio2.uuid]}
-        response = self.client.post(f"{url}/_zoek", data)
+        response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -670,11 +670,8 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(eio2)}")
 
     def test_zoek_without_params(self):
-        url = get_operation_url("enkelvoudiginformatieobjecten__zoek")
-
-        url = reverse("enkelvoudiginformatieobject-list")
-
-        response = self.client.post(f"{url}/_zoek", {})
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
+        response = self.client.post(url, {})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
