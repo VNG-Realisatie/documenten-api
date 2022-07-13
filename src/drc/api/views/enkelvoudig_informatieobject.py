@@ -204,6 +204,9 @@ class EnkelvoudigInformatieObjectViewSet(
 
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
+        """
+        Opvragen van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten) op basis van zoekcriteria.
+        """
         search_input = self.get_search_input()
         queryset = self.filter_queryset(self.get_queryset())
         for name, value in search_input.items():

@@ -376,7 +376,7 @@
         "/enkelvoudiginformatieobjecten/_zoek": {
             "post": {
                 "operationId": "enkelvoudiginformatieobject__zoek",
-                "description": "Opvragen en bewerken van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten).",
+                "description": "Opvragen van (ENKELVOUDIG) INFORMATIEOBJECTen (documenten) op basis van zoekcriteria.",
                 "parameters": [
                     {
                         "name": "Content-Type",
@@ -3824,6 +3824,9 @@
             }
         },
         "EIOZoek": {
+            "required": [
+                "uuid__in"
+            ],
             "type": "object",
             "properties": {
                 "uuid__in": {
