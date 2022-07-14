@@ -32,7 +32,7 @@ WORKDIR /app
 COPY ./*.json /app/
 RUN npm install
 
-COPY ./Gulpfile.js /app/
+COPY ./*.js ./.babelrc /app/
 COPY ./build /app/build/
 
 COPY src/drc/sass/ /app/src/drc/sass/
@@ -55,8 +55,7 @@ COPY ./setup.cfg /app/setup.cfg
 COPY ./bin/runtests.sh /runtests.sh
 
 # Stage 3.3 - Copy source code
-COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
-COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
+COPY --from=frontend-build /app/src/drc/static/bundles /app/src/drc/static/bundles
 COPY ./src /app/src
 COPY ./bin/reset_sequences.sql /app/bin/
 ARG COMMIT_HASH
@@ -95,8 +94,7 @@ WORKDIR /app
 COPY ./bin/docker_start.sh /start.sh
 RUN mkdir /app/log
 
-COPY --from=frontend-build /app/src/drc/static/fonts /app/src/drc/static/fonts
-COPY --from=frontend-build /app/src/drc/static/css /app/src/drc/static/css
+COPY --from=frontend-build /app/src/drc/static/bundles /app/src/drc/static/bundles
 COPY ./src /app/src
 COPY ./docs /app/docs
 COPY ./CHANGELOG.rst /app/CHANGELOG.rst
