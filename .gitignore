@@ -14,6 +14,7 @@ __pycache__
 /node_modules/
 
 # Generated files
+src/drc/static/bundles
 src/drc/static/fonts
 src/drc/static/css/screen.css
 
