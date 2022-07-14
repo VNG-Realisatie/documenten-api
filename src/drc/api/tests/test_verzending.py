@@ -21,7 +21,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     def test_list(self):
-        VerzendingFactory.create_batch(size=3)
+        VerzendingFactory.create_batch(size=3, has_address=True)
 
         response = self.client.get(reverse("verzending-list"))
 
@@ -31,7 +31,7 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(data["count"], 3)
 
     def test_detail(self):
-        verzending = VerzendingFactory()
+        verzending = VerzendingFactory(has_address=True)
 
         detail_url = reverse("verzending-detail", kwargs={"uuid": verzending.uuid})
         informatieobject_url = reverse(
@@ -118,7 +118,6 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         verzending = Verzending.objects.get()
-
         # afwijkendBinnenlandsCorrespondentieadresVerzending
         self.assertEqual(
             verzending.binnenlands_correspondentieadres_huisletter,
@@ -151,8 +150,10 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         )
 
     def test_update(self):
-        verzending = VerzendingFactory()
-
+        verzending = VerzendingFactory(
+            buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
+            buitenlands_correspondentieadres_land_postadres="https://example.com",
+        )
         new_eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
             latest_version__creatiedatum="2018-12-24",
             latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
@@ -191,7 +192,9 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(verzending.informatieobject, new_eio)
 
     def test_partial_update(self):
-        verzending = VerzendingFactory(betrokkene="https://foo.com/PersoonY")
+        verzending = VerzendingFactory(
+            betrokkene="https://foo.com/PersoonY", has_address=True
+        )
 
         response = self.client.patch(
             reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
@@ -204,78 +207,9 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(verzending.betrokkene, "https://foo.com/PersoonX")
 
     def test_delete(self):
-        verzending = VerzendingFactory()
-
+        verzending = VerzendingFactory(has_address=True)
         response = self.client.delete(
             reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_postal_code_validation(self):
-        verzending = VerzendingFactory(
-            buitenlands_correspondentiepostadres_postadres_postcode="1800XY"
-        )
-
-        response = self.client.patch(
-            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
-            {
-                "correspondentiePostadres": {
-                    "postBusOfAntwoordnummer": verzending.buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer,
-                    "postadresPostcode": "18800RR",
-                    "postadresType": verzending.buitenlands_correspondentiepostadres_postadrestype,
-                    "woonplaatsnaam": verzending.buitenlands_correspondentiepostadres_woonplaats,
-                }
-            },
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        error = get_validation_errors(
-            response, "correspondentiePostadres.postadresPostcode"
-        )
-        self.assertEqual(error["reason"], "Postcode moet 6 tekens lang zijn.")
-
-    def test_required_buitenlands_correspondentieadres(self):
-        """
-        Test that `adresBuitenland1` is required for the
-        `afwijkendBuitenlandsCorrespondentieadresVerzending` gegevensgroeptype.
-        """
-        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
-            latest_version__creatiedatum="2018-12-24",
-            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
-        )
-
-        eio_url = reverse(
-            "enkelvoudiginformatieobject-detail",
-            kwargs={"uuid": eio.latest_version.uuid},
-        )
-
-        response = self.client.post(
-            reverse("verzending-list"),
-            {
-                "betrokkene": "https://foo.com/persoonX",
-                "informatieobject": eio_url,
-                "aardRelatie": AfzenderTypes.geadresseerde,
-                "toelichting": "Verzending van XYZ",
-                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
-                    "%Y-%m-%d"
-                ),
-                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
-                "contactPersoon": "https://foo.com/persoonY",
-                "contactpersoonnaam": "persoonY",
-                "buitenlandsCorrespondentieadres": {
-                    "adresBuitenland2": "Adres 2",
-                    "adresBuitenland3": "Adres 3",
-                    "landPostadres": "https://foo.com/landY",
-                },
-            },
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        error = get_validation_errors(
-            response,
-            "buitenlandsCorrespondentieadres.adresBuitenland_1",
-        )
-        self.assertEqual(error["code"], "required")

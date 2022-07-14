@@ -105,8 +105,11 @@ class VerzendingFactory(factory.django.DjangoModelFactory):
     betrokkene = factory.Faker("url")
     contact_persoon = factory.Faker("url")
 
-    buitenlands_correspondentieadres_adres_buitenland_1 = "Breedstraat"
-    buitenlands_correspondentieadres_land_postadres = factory.Faker("url")
-
     class Meta:
         model = "datamodel.Verzending"
+
+    class Params:
+        has_address = factory.Trait(
+            buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
+            buitenlands_correspondentieadres_land_postadres="https://example.com",
+        )

@@ -1,12 +1,11 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import exceptions, serializers
-from rest_framework.exceptions import ValidationError as ValidationErrorRest
+from rest_framework.exceptions import ValidationError
 from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
@@ -23,118 +22,99 @@ class OneAddressValidator:
     Class to validate that only one address is send with each request and only one address is assiociated with each Verzending within the database.
     """
 
-    def __init__(self):
-        self.attrs_binnenlands_not_empty: bool
-        self.attrs_postadres_not_empty: bool
-        self.attrs_buitenlands_not_empty: bool
-        self.instance_binnenlands_not_empty: bool
-        self.instance_postadres_not_empty: bool
-        self.instance_buitenlands_not_empty: bool
-
     def set_context(self, serializer):
         self.instance = getattr(serializer, "instance", None)
 
     def __call__(self, attrs: dict):
-        self.check_existence_of_attrs_addresses(attrs)
-        if self.instance:
-            self.check_existence_of_instance_addresses()
+        self.set_attrs_addresses(attrs)
+        empty_attrs = not any(
+            (
+                self.attrs_binnenlands_not_empty,
+                self.attrs_buitenlands_not_empty,
+                self.attrs_postadres_not_empty,
+            )
+        )
 
-            if (
-                sum(
-                    [
-                        self.attrs_binnenlands_not_empty,
-                        self.attrs_buitenlands_not_empty,
-                        self.attrs_postadres_not_empty,
-                    ]
+        invalid_amount = (
+            sum(
+                (
+                    self.attrs_binnenlands_not_empty,
+                    self.attrs_buitenlands_not_empty,
+                    self.attrs_postadres_not_empty,
                 )
-                == 0
-            ):
+            )
+            != 1
+        )
+
+        if self.instance:
+            self.set_instance_addresses()
+            # attrs_instance_mismatch = sum([
+            #     self.attrs_binnenlands_not_empty != self.instance_binnenlands_not_empty and not self.attrs_binnenlands_to_be_removed,
+            #     self.attrs_postadres_not_empty != self.instance_postadres_not_empty and not self.attrs_postadres_to_be_removed,
+            #     self.attrs_buitenlands_not_empty != self.instance_buitenlands_not_empty and not self.attrs_buitenlands_to_be_removed,
+            # ])
+            attrs_instance_mismatch = any(
+                [
+                    self.attrs_binnenlands_not_empty
+                    != self.instance_binnenlands_not_empty,
+                    self.attrs_postadres_not_empty != self.instance_postadres_not_empty,
+                    self.attrs_buitenlands_not_empty
+                    != self.instance_buitenlands_not_empty,
+                ]
+            )
+            print(attrs)
+            if empty_attrs:
                 return
 
-            if (
-                any(
-                    [
-                        self.attrs_binnenlands_not_empty
-                        != self.instance_binnenlands_not_empty,
-                        self.attrs_postadres_not_empty
-                        != self.instance_postadres_not_empty,
-                        self.attrs_buitenlands_not_empty
-                        != self.instance_buitenlands_not_empty,
-                    ]
-                )
-                or sum(
-                    [
-                        self.instance_binnenlands_not_empty,
-                        self.instance_postadres_not_empty,
-                        self.instance_buitenlands_not_empty,
-                    ]
-                )
-                != 1
-            ):
-                raise ValidationErrorRest(
-                    detail=_(
-                        "Verzending must contain precisely one correspondentieadress"
-                    ),
-                    code="invalid-address",
-                )
+            if invalid_amount or attrs_instance_mismatch:
+                self.raise_validation_error()
 
         elif attrs:
-            if (
-                sum(
-                    [
-                        self.attrs_binnenlands_not_empty,
-                        self.attrs_buitenlands_not_empty,
-                        self.attrs_postadres_not_empty,
-                    ]
-                )
-                != 1
-            ):
-                raise ValidationErrorRest(
-                    detail=_(
-                        "Verzending must contain precisely one correspondentieadress"
-                    ),
-                    code="invalid-address",
-                )
+            if invalid_amount:
+                self.raise_validation_error()
 
-    def check_gegevensgroep_contains_content(self, gegevensgroep: dict) -> bool:
-        for value in gegevensgroep.values():
-            if value != "" and value != None:
-                return True
-        return False
-
-    def check_existence_of_attrs_addresses(self, attrs: dict):
-
-        self.attrs_binnenlands_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["binnenlands_correspondentieadres"]
-            )
-            if "binnenlands_correspondentieadres" in attrs
-            else False
-        )
-        self.attrs_postadres_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["correspondentie_postadres"]
-            )
-            if "correspondentie_postadres" in attrs
-            else False
-        )
-        self.attrs_buitenlands_not_empty = (
-            self.check_gegevensgroep_contains_content(
-                attrs["buitenlands_correspondentieadres"]
-            )
-            if "buitenlands_correspondentieadres" in attrs
-            else False
+    def raise_validation_error(self):
+        raise ValidationError(
+            detail=_("Verzending must contain precisely one correspondentieadress"),
+            code="invalid-address",
         )
 
-    def check_existence_of_instance_addresses(self):
+    def check_content(self, gegevensgroep: dict) -> bool:
+        return any(value for value in gegevensgroep.values())
 
-        self.instance_binnenlands_not_empty = self.check_gegevensgroep_contains_content(
+    def set_attrs_addresses(self, attrs: dict):
+
+        self.attrs_binnenlands_to_be_removed = (
+            attrs.get("binnenlands_correspondentieadres", False) == {}
+        )
+
+        self.attrs_postadres_to_be_removed = (
+            attrs.get("correspondentie_postadres", False) == {},
+        )
+
+        self.attrs_buitenlands_to_be_removed = (
+            attrs.get("buitenlands_correspondentieadres", False) == {},
+        )
+
+        self.attrs_binnenlands_not_empty = self.check_content(
+            attrs.get("binnenlands_correspondentieadres", {})
+        )
+        self.attrs_postadres_not_empty = self.check_content(
+            attrs.get("correspondentie_postadres", {})
+        )
+
+        self.attrs_buitenlands_not_empty = self.check_content(
+            attrs.get("buitenlands_correspondentieadres", {})
+        )
+
+    def set_instance_addresses(self):
+        self.instance_binnenlands_not_empty = self.check_content(
             self.instance.binnenlands_correspondentieadres
         )
-        self.instance_postadres_not_empty = self.check_gegevensgroep_contains_content(
+        self.instance_postadres_not_empty = self.check_content(
             self.instance.correspondentie_postadres
         )
-        self.instance_buitenlands_not_empty = self.check_gegevensgroep_contains_content(
+        self.instance_buitenlands_not_empty = self.check_content(
             self.instance.buitenlands_correspondentieadres
         )
 

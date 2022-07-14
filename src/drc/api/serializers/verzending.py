@@ -99,3 +99,17 @@ class VerzendingSerializer(
             "url": {"lookup_field": "uuid", "read_only": True},
         }
         validators = [OneAddressValidator()]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        buitenlands_correspondentieadres = self.initial_data.get(
+            "buitenlands_correspondentieadres", False
+        )
+        print(buitenlands_correspondentieadres)
+        if buitenlands_correspondentieadres == None:
+            print("HER")
+            self.instance.buitenlands_correspondentieadres_adres_buitenland_1 = ""
+            self.instance.buitenlands_correspondentieadres_adres_buitenland_2 = ""
+            self.instance.buitenlands_correspondentieadres_adres_buitenland_3 = ""
+            self.instance.buitenlands_correspondentieadres_land_postadres = ""
+            self.initial_data.pop("buitenlands_correspondentieadres")

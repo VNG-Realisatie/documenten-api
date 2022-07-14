@@ -118,7 +118,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -309,7 +309,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -378,10 +378,35 @@ paths:
       operationId: audittrail_read
       summary: Een specifieke audit trail regel opvragen.
       description: Een specifieke audit trail regel opvragen.
+      parameters:
+      - name: If-None-Match
+        in: header
+        description: "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+          n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+          \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+          \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+          \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+          \ voor meer informatie."
+        required: false
+        examples:
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
+        schema:
+          type: string
       responses:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -463,12 +488,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -528,12 +553,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -615,7 +640,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -688,7 +713,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -790,6 +815,24 @@ paths:
           die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.
         schema:
           type: string
+      - name: If-None-Match
+        in: header
+        description: "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+          n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+          \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+          \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+          \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+          \ voor meer informatie."
+        required: false
+        examples:
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
+        schema:
+          type: string
       responses:
         '200':
           description: De binaire bestandsinhoud
@@ -813,7 +856,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
@@ -825,7 +868,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
@@ -837,7 +880,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
@@ -849,7 +892,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
@@ -861,7 +904,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -873,7 +916,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
@@ -885,7 +928,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
@@ -897,7 +940,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/octet-stream:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
@@ -961,7 +1004,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '401':
@@ -973,7 +1016,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
@@ -985,7 +1028,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
@@ -997,7 +1040,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
@@ -1009,7 +1052,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
@@ -1021,7 +1064,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -1033,7 +1076,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
@@ -1045,7 +1088,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
@@ -1057,7 +1100,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
@@ -1113,7 +1156,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '401':
@@ -1125,7 +1168,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
@@ -1137,7 +1180,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
@@ -1149,7 +1192,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
@@ -1161,7 +1204,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
@@ -1173,7 +1216,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
@@ -1185,7 +1228,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
@@ -1197,7 +1240,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
@@ -1209,7 +1252,7 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
@@ -1423,12 +1466,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -1488,12 +1531,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -1855,12 +1898,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -1920,12 +1963,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -2156,12 +2199,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -2218,12 +2261,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          oneValue:
-            summary: "E\xE9n ETag-waarde"
-            value: '"79054025255fb1a26e4bc422aef54eb4"'
           multipleValues:
             summary: Meerdere ETag-waardes
             value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+          oneValue:
+            summary: "E\xE9n ETag-waarde"
+            value: '"79054025255fb1a26e4bc422aef54eb4"'
         schema:
           type: string
       responses:
@@ -2546,9 +2589,9 @@ components:
       required: true
   securitySchemes:
     JWT-Claims:
-      type: http
-      scheme: bearer
       bearerFormat: JWT
+      scheme: bearer
+      type: http
   schemas:
     BestandsDeel:
       required:
@@ -2696,6 +2739,7 @@ components:
           items:
             $ref: '#/components/schemas/FieldValidationError'
     Ondertekening:
+      title: ondertekening
       description: Aanduiding van de rechtskracht van een informatieobject. Mag niet
         van een waarde zijn voorzien als de `status` de waarde 'in bewerking' of 'ter
         vaststelling' heeft.
@@ -2730,6 +2774,7 @@ components:
           format: date
       nullable: true
     Integriteit:
+      title: integriteit
       description: Uitdrukking van mate van volledigheid en onbeschadigd zijn van
         digitaal bestand.
       required:
@@ -3268,6 +3313,7 @@ components:
           readOnly: true
           minLength: 1
     Wijzigingen:
+      title: Wijzigingen
       type: object
       properties:
         oud:
@@ -3318,9 +3364,7 @@ components:
 
             * `cmc` - Contactmomenten API
 
-            * `kc` - Klanten API
-
-            * `vrc` - Verzoeken API'
+            * `kc` - Klanten API'
           type: string
           enum:
           - ac
@@ -3331,7 +3375,6 @@ components:
           - brc
           - cmc
           - kc
-          - vrc
         applicatieId:
           title: Applicatie id
           description: Unieke identificatie van de applicatie, binnen de organisatie.
@@ -3532,6 +3575,7 @@ components:
           - zaak
           - verzoek
     BinnenlandsCorrespondentieadresVerzending:
+      title: Binnenlands correspondentieadres
       description: Het correspondentieadres, betreffende een adresseerbaar object,
         van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het
         ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere
@@ -3585,28 +3629,29 @@ components:
           maxLength: 80
           minLength: 1
     BuitenlandsCorrespondentieadresVerzending:
+      title: Buitenlands correspondentieadres
       description: De gegevens van het adres in het buitenland van BETROKKENE, zijnde
         afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT
         en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.
       required:
-      - adresBuitenland1
+      - adresBuitenland_1
       - landPostadres
       type: object
       properties:
-        adresBuitenland1:
+        adresBuitenland_1:
           title: Adres buitenland 1
           description: Het eerste deel dat behoort bij het afwijkend buitenlandse
             correspondentieadres van de betrokkene in zijn/haar rol bij de zaak.
           type: string
           maxLength: 35
           minLength: 1
-        adresBuitenland2:
+        adresBuitenland_2:
           title: Adres buitenland 2
           description: Het tweede deel dat behoort bij het afwijkend buitenlandse
             correspondentieadres van de betrokkene in zijn/haar rol bij de zaak.
           type: string
           maxLength: 35
-        adresBuitenland3:
+        adresBuitenland_3:
           title: Adres buitenland 3
           description: Het derde deel dat behoort bij het afwijkend buitenlandse correspondentieadres
             van de betrokkene in zijn/haar rol bij de zaak.
@@ -3621,6 +3666,7 @@ components:
           maxLength: 200
           minLength: 1
     BuitenlandsCorrespondentiepostadresVerzending:
+      title: Correspondentie postadres
       description: De gegevens die tezamen een postbusadres of antwoordnummeradres
         vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in
         het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere
@@ -3666,8 +3712,6 @@ components:
       - informatieobject
       - aardRelatie
       - contactPersoon
-      - afwijkendBuitenlandsCorrespondentieadresVerzending
-      - afwijkendCorrespondentiePosteadresVerzending
       type: object
       properties:
         url:
@@ -3747,9 +3791,9 @@ components:
             voorde BETROKKENE inzake het ontvangen of verzonden INFORMATIEOBJECT.
           type: string
           maxLength: 40
-        afwijkendBinnenlandsCorrespondentieadresVerzending:
+        binnenlandsCorrespondentieadres:
           $ref: '#/components/schemas/BinnenlandsCorrespondentieadresVerzending'
-        afwijkendBuitenlandsCorrespondentieadresVerzending:
+        buitenlandsCorrespondentieadres:
           $ref: '#/components/schemas/BuitenlandsCorrespondentieadresVerzending'
-        afwijkendCorrespondentiePosteadresVerzending:
+        correspondentiePostadres:
           $ref: '#/components/schemas/BuitenlandsCorrespondentiepostadresVerzending'
