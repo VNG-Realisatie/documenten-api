@@ -305,7 +305,6 @@ class InformatieObjectStatusTests(JWTAuthMixin, APITestCase):
                 response = self.client.patch(url, data)
 
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-                print(response.json())
                 error = get_validation_errors(response, "status")
                 self.assertEqual(error["code"], "invalid_for_received")
 
