@@ -24,6 +24,7 @@ class OneAddressValidator:
 
     def set_context(self, serializer):
         self.instance = getattr(serializer, "instance", None)
+        self.partial_update = getattr(serializer, "partial", None)
 
     def __call__(self, attrs: dict):
         self.set_attrs_addresses(attrs)
@@ -47,12 +48,7 @@ class OneAddressValidator:
         )
 
         if self.instance:
-            self.set_instance_addresses()
-            # attrs_instance_mismatch = sum([
-            #     self.attrs_binnenlands_not_empty != self.instance_binnenlands_not_empty and not self.attrs_binnenlands_to_be_removed,
-            #     self.attrs_postadres_not_empty != self.instance_postadres_not_empty and not self.attrs_postadres_to_be_removed,
-            #     self.attrs_buitenlands_not_empty != self.instance_buitenlands_not_empty and not self.attrs_buitenlands_to_be_removed,
-            # ])
+            self.set_instance_addresses(attrs)
             attrs_instance_mismatch = any(
                 [
                     self.attrs_binnenlands_not_empty
@@ -62,11 +58,24 @@ class OneAddressValidator:
                     != self.instance_buitenlands_not_empty,
                 ]
             )
-            print(attrs)
-            if empty_attrs:
-                return
 
-            if invalid_amount or attrs_instance_mismatch:
+            remove_current_db_address = any(
+                [
+                    self.instance_binnenlands_to_be_removed,
+                    self.instance_postadres_to_be_removed,
+                    self.instance_buitenlands_to_be_removed,
+                ]
+            )
+
+            if self.partial_update:
+                if empty_attrs:
+                    return
+
+            if (
+                invalid_amount
+                or attrs_instance_mismatch
+                and not remove_current_db_address
+            ):
                 self.raise_validation_error()
 
         elif attrs:
@@ -80,21 +89,11 @@ class OneAddressValidator:
         )
 
     def check_content(self, gegevensgroep: dict) -> bool:
-        return any(value for value in gegevensgroep.values())
+        if gegevensgroep:
+            return any(value for value in gegevensgroep.values())
+        return False
 
     def set_attrs_addresses(self, attrs: dict):
-
-        self.attrs_binnenlands_to_be_removed = (
-            attrs.get("binnenlands_correspondentieadres", False) == {}
-        )
-
-        self.attrs_postadres_to_be_removed = (
-            attrs.get("correspondentie_postadres", False) == {},
-        )
-
-        self.attrs_buitenlands_to_be_removed = (
-            attrs.get("buitenlands_correspondentieadres", False) == {},
-        )
 
         self.attrs_binnenlands_not_empty = self.check_content(
             attrs.get("binnenlands_correspondentieadres", {})
@@ -107,7 +106,7 @@ class OneAddressValidator:
             attrs.get("buitenlands_correspondentieadres", {})
         )
 
-    def set_instance_addresses(self):
+    def set_instance_addresses(self, attrs):
         self.instance_binnenlands_not_empty = self.check_content(
             self.instance.binnenlands_correspondentieadres
         )
@@ -116,6 +115,27 @@ class OneAddressValidator:
         )
         self.instance_buitenlands_not_empty = self.check_content(
             self.instance.buitenlands_correspondentieadres
+        )
+
+        self.instance_binnenlands_to_be_removed = all(
+            [
+                attrs.get("binnenlands_correspondentieadres", {}) == None,
+                self.instance_binnenlands_not_empty,
+            ]
+        )
+
+        self.instance_postadres_to_be_removed = all(
+            [
+                attrs.get("correspondentie_postadres", {}) == None,
+                self.instance_postadres_not_empty,
+            ]
+        )
+
+        self.instance_buitenlands_to_be_removed = all(
+            [
+                attrs.get("buitenlands_correspondentieadres", {}) == None,
+                self.instance_buitenlands_not_empty,
+            ]
         )
 
 

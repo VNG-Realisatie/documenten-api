@@ -683,9 +683,6 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
             buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
             buitenlands_correspondentieadres_land_postadres="https://example.com",
         )
-
-        # TODO: hoe zie jij het voor je als men dit scenario wilt toepassen?
-        # Een None waarde meegeven als je een address leeg wilt maken?
         response = self.client.patch(
             reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
             {
@@ -699,7 +696,6 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
         )
 
         verzending.refresh_from_db()
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # buitenlandsCorrespondentieadres

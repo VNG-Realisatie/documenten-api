@@ -47,6 +47,7 @@ class VerzendingSerializer(
     binnenlands_correspondentieadres = (
         BinnenlandsCorrespondentieadresVerzendingSerializer(
             required=False,
+            allow_null=True,
             help_text=_(
                 "Het correspondentieadres, betreffende een adresseerbaar object,"
                 " van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld"
@@ -59,6 +60,7 @@ class VerzendingSerializer(
     buitenlands_correspondentieadres = (
         BuitenlandsCorrespondentieadresVerzendingSerializer(
             required=False,
+            allow_null=True,
             help_text=_(
                 "De gegevens van het adres in het buitenland van BETROKKENE, zijnde"
                 " afzender of geadresseerde, zoals vermeld in het ontvangen of"
@@ -70,6 +72,7 @@ class VerzendingSerializer(
 
     correspondentie_postadres = BuitenlandsCorrespondentiepostadresVerzendingSerializer(
         required=False,
+        allow_null=True,
         help_text=_(
             "De gegevens die tezamen een postbusadres of antwoordnummeradres"
             " vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals"
@@ -99,17 +102,3 @@ class VerzendingSerializer(
             "url": {"lookup_field": "uuid", "read_only": True},
         }
         validators = [OneAddressValidator()]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        buitenlands_correspondentieadres = self.initial_data.get(
-            "buitenlands_correspondentieadres", False
-        )
-        print(buitenlands_correspondentieadres)
-        if buitenlands_correspondentieadres == None:
-            print("HER")
-            self.instance.buitenlands_correspondentieadres_adres_buitenland_1 = ""
-            self.instance.buitenlands_correspondentieadres_adres_buitenland_2 = ""
-            self.instance.buitenlands_correspondentieadres_adres_buitenland_3 = ""
-            self.instance.buitenlands_correspondentieadres_land_postadres = ""
-            self.initial_data.pop("buitenlands_correspondentieadres")
