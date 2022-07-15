@@ -692,6 +692,9 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
                     "naamOpenbareRuimte": "ParkY",
                     "woonplaatsnaam": "Alkmaar",
                 },
+                "verzenddatum": verzending.verzenddatum,
+                "contactPersoon": verzending.contact_persoon,
+                "contactpersoonnaam": verzending.contactpersoonnaam,
             },
         )
 
@@ -714,6 +717,35 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
             verzending.binnenlands_correspondentieadres_woonplaats,
             "Alkmaar",
         )
+
+    def test_no_address_change_update(self):
+        verzending = VerzendingFactory(
+            buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
+            buitenlands_correspondentieadres_land_postadres="https://example.com",
+        )
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "verzenddatum": verzending.verzenddatum,
+                "contactPersoon": verzending.contact_persoon,
+                "contactpersoonnaam": verzending.contactpersoonnaam,
+            },
+        )
+
+        verzending.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # buitenlandsCorrespondentieadres
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_adres_buitenland_1,
+            "Breedstraat",
+        )
+        self.assertEqual(
+            verzending.buitenlands_correspondentieadres_land_postadres,
+            "https://example.com",
+        )
+
+        self.assertEqual(verzending.verzenddatum, verzending.verzenddatum)
 
     def test_change_same_address_partial_update(self):
         verzending = VerzendingFactory(
@@ -781,7 +813,6 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
         )
 
         verzending.refresh_from_db()
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(verzending.informatieobject, new_eio)
 

@@ -59,7 +59,7 @@ class OneAddressValidator:
                 ]
             )
 
-            remove_current_db_address = any(
+            remove_instance_address = any(
                 [
                     self.instance_binnenlands_to_be_removed,
                     self.instance_postadres_to_be_removed,
@@ -74,7 +74,7 @@ class OneAddressValidator:
             if (
                 invalid_amount
                 or attrs_instance_mismatch
-                and not remove_current_db_address
+                and not remove_instance_address
             ):
                 self.raise_validation_error()
 
