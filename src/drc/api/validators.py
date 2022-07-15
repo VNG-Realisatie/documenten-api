@@ -1,11 +1,12 @@
 from collections import OrderedDict
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import exceptions, serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError as ValdationErrorRest
 from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
@@ -83,7 +84,7 @@ class OneAddressValidator:
                 self.raise_validation_error()
 
     def raise_validation_error(self):
-        raise ValidationError(
+        raise ValdationErrorRest(
             detail=_("Verzending must contain precisely one correspondentieadress"),
             code="invalid-address",
         )
