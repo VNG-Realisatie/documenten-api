@@ -496,6 +496,5 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
 class EIOZoekSerializer(serializers.Serializer):
     uuid__in = serializers.ListField(
         child=serializers.UUIDField(),
-        required=True,
         help_text=_("Array of unieke resource identifiers (UUID4)"),
     )
