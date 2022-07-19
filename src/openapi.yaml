@@ -47,7 +47,7 @@ info:
   license:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
-  version: 1.2.0-rc1
+  version: 1.2.0-rc2
 security:
 - JWT-Claims: []
 paths:
@@ -323,6 +323,7 @@ paths:
       operationId: enkelvoudiginformatieobject__zoek
       summary: Voer een zoekopdracht uit op (ENKELVOUDIG) INFORMATIEOBJECTen .
       description: 'Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
+
         niet geschikt voor zoekopdrachten met UUIDs.'
       parameters:
       - name: Content-Type

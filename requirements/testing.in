@@ -9,3 +9,6 @@ pylint
 tblib
 requests-mock
 django-capture-on-commit-callbacks
+
+# Debug tooling
+django-debug-toolbar

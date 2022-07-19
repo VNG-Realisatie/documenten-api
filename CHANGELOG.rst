@@ -2,6 +2,40 @@
 Wijzigingen
 ===========
 
+1.2.0-rc2 (2022-07-19)
+===========
+
+API spec changes
+----------------
+
+* Replace Gulp with  Webpack
+* Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows
+  users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field
+
+Implementation changes
+----------------------
+
+* Require one of the fields to be filled in for the ``Verzending`` resource:
+    * ``binnenlandsCorrespondentieadres``
+    * ``buitenlandsCorrespondentieadres``
+    * ``correspondentiePostadres``
+
+
+1.2.0-rc1 (2022-07-06)
+===========
+
+API spec changes
+----------------
+
+* Add ``Verzending`` resource
+* Add ``uuid`` query parameter to ``EnkelvoudigInformatieObject``
+
+Implementation changes
+----------------------
+
+* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing
+  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief``
+
 1.1.0 (2022-06-30)
 ===========
 
