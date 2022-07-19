@@ -16,6 +16,7 @@ from vng_api_common.serializers import (
     add_choice_values_help_text,
 )
 from vng_api_common.validators import IsImmutableValidator, PublishValidator
+
 from drc.api.auth import get_ztc_auth
 from drc.api.fields import AnyBase64File
 from drc.api.serializers.bestandsdeel import BestandsDeelSerializer
@@ -490,3 +491,10 @@ class UnlockEnkelvoudigInformatieObjectSerializer(serializers.ModelSerializer):
             part.delete()
 
         return self.instance
+
+
+class EIOZoekSerializer(serializers.Serializer):
+    uuid__in = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=_("Array of unieke resource identifiers (UUID4)"),
+    )

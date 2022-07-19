@@ -16,6 +16,7 @@ from vng_api_common.audittrails.viewsets import (
 )
 from vng_api_common.caching import conditional_retrieve
 from vng_api_common.notifications.viewsets import NotificationViewSetMixin
+from vng_api_common.search import SearchMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
@@ -40,9 +41,9 @@ from drc.api.scopes import (
     SCOPE_DOCUMENTEN_ALLES_LEZEN,
     SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
     SCOPE_DOCUMENTEN_BIJWERKEN,
+    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
     SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
     SCOPE_DOCUMENTEN_LOCK,
-    SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
 )
 from drc.api.serializers import (
     BestandsDeelSerializer,
@@ -54,6 +55,7 @@ from drc.api.serializers import (
     ObjectInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
+from drc.api.serializers.enkelvoudig_informatieobject import EIOZoekSerializer
 from drc.api.validators import RemoteRelationValidator
 from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
 from drc.datamodel.models import (
@@ -68,6 +70,7 @@ from drc.datamodel.models import (
 class EnkelvoudigInformatieObjectViewSet(
     NotificationViewSetMixin,
     CheckQueryParamsMixin,
+    SearchMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
@@ -158,10 +161,13 @@ class EnkelvoudigInformatieObjectViewSet(
     ).distinct("canonical")
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
+    search_input_serializer_class = EIOZoekSerializer
+
     permission_classes = (InformationObjectAuthScopesRequired,)
     required_scopes = {
         "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "retrieve": SCOPE_DOCUMENTEN_ALLES_LEZEN,
+        "_zoek": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "create": SCOPE_DOCUMENTEN_AANMAKEN,
         "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
         "update": SCOPE_DOCUMENTEN_BIJWERKEN | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
@@ -195,6 +201,24 @@ class EnkelvoudigInformatieObjectViewSet(
         if self.action == "download":
             return [BinaryFileRenderer]
         return super().get_renderers()
+
+    @action(methods=("post",), detail=False)
+    def _zoek(self, request, *args, **kwargs):
+        """
+        Voer een zoekopdracht uit op (ENKELVOUDIG) INFORMATIEOBJECTen .
+
+        Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
+        niet geschikt voor zoekopdrachten met UUIDs.
+        """
+
+        search_input = self.get_search_input()
+        queryset = self.filter_queryset(self.get_queryset())
+        for name, value in search_input.items():
+            queryset = queryset.filter(**{name: value})
+
+        return self.get_search_output(queryset)
+
+    _zoek.is_search_action = True
 
     @transaction.atomic
     def perform_destroy(self, instance):

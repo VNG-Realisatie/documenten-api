@@ -26,7 +26,6 @@ from drc.datamodel.tests.factories import (
     ObjectInformatieObjectFactory,
 )
 
-
 INFORMATIEOBJECTTYPE = (
     "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/1"
 )
@@ -301,18 +300,6 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
                 "datum": date(2018, 12, 13),
             },
         )
-
-    def test_filter_zoek_uuids(self):
-        eio1 = EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
-        eio2 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar")
-        eio3 = EnkelvoudigInformatieObjectFactory.create(identificatie="bar2")
-        response = self.client.get(self.list_url, {"uuid": [eio2.uuid, eio1.uuid]})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()["results"]
-
-        self.assertEqual(len(response_data), 2)
-        self.assertEqual(response_data[0]["identificatie"], "foo")
-        self.assertEqual(response_data[1]["identificatie"], "bar")
 
     def test_filter_by_identification(self):
         EnkelvoudigInformatieObjectFactory.create(identificatie="foo")
@@ -663,3 +650,28 @@ class EnkelvoudigInformatieObjectPaginationAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response_data["count"], 2)
         self.assertIsNone(response_data["previous"])
         self.assertIsNone(response_data["next"])
+
+
+class EIOZoekTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    def test_zoek_uuid_in(self):
+        eio1, eio2, eio3 = EnkelvoudigInformatieObjectFactory.create_batch(3)
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
+        data = {"uuid__in": [eio1.uuid, eio2.uuid]}
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        data = sorted(data, key=lambda eio: eio["identificatie"])
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]["url"], f"http://testserver{reverse(eio1)}")
+        self.assertEqual(data[1]["url"], f"http://testserver{reverse(eio2)}")
+
+    def test_zoek_without_params(self):
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
+        response = self.client.post(url, {})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "required")
