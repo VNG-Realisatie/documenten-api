@@ -2,27 +2,35 @@
 Wijzigingen
 ===========
 
-1.2.0 (2022-07-19)
+1.2.0-rc2 (2022-07-19)
 ===========
 
 API spec changes
 ----------------
 
-* Add relatieklasse Verzendingen
-* Add missing RGBZ attributes for existing resources. Among other things to support TMLO
-* Add query parameter to retrieve a list of documents with certain UUIDs
-* Add the possibility to see addressees for a sent letter.
-* Add a new endpoint to retrieve a list of `EnkelvoudigInformatieObjectData` with certain UUIDs
+* Replace Gulp with  Webpack
+* Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows
+  users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field
+* Require one of the fields to be filled in for the ``Verzending`` resource:
+    * ``binnenlandsCorrespondentieadres``
+    * ``buitenlandsCorrespondentieadres``
+    * ``correspondentiePostadres``
 
+
+1.2.0-rc1 (2022-07-06)
+===========
+
+API spec changes
+----------------
+
+* Add ``Verzending`` resource
+* Add ``uuid`` query parameter to ``EnkelvoudigInformatieObject``
 
 Implementation changes
 ----------------------
 
-* Enable updating document metadata for documents with status "definitief" by way of the scope `geforceerd-bijwerken`
-
-Breaking changes
-----------------
-* none
+* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing
+  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief``
 
 1.1.0 (2022-06-30)
 ===========
