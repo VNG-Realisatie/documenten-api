@@ -581,8 +581,10 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
     def test_add_address_to_already_existing_address_partial_update(self):
-        verzending = VerzendingFactory(betrokkene="https://foo.com/PersoonY")
-
+        verzending = VerzendingFactory(
+            buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
+            buitenlands_correspondentieadres_land_postadres="https://example.com",
+        )
         response = self.client.patch(
             reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
             {
