@@ -180,7 +180,7 @@ uritemplate==3.0.0
     #   drf-yasg
 urllib3==1.24.3
     # via requests
-vng_api_common @ git+https://github.com/VNG-Realisatie/vng-api-common@20ce4a6d28f6408eae6e4c44ac2ff182e005020c
+vng-api-common @ git+https://github.com/VNG-Realisatie/vng-api-common@20ce4a6d28f6408eae6e4c44ac2ff182e005020c
     # via -r requirements/base.in
 
 # The following packages are considered to be unsafe in a requirements file:
