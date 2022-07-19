@@ -2,15 +2,18 @@
 Wijzigingen
 ===========
 
-1.2.0 (2022-07-07)
+1.2.0 (2022-07-19)
 ===========
 
 API spec changes
 ----------------
 
 * Add relatieklasse Verzendingen
-* Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO
+* Add missing RGBZ attributes for existing resources. Among other things to support TMLO
 * Add query parameter to retrieve a list of documents with certain UUIDs
+* Add the possibility to see addressees for a sent letter.
+* Add a new endpoint to retrieve a list of `EnkelvoudigInformatieObjectData` with certain UUIDs
+
 
 Implementation changes
 ----------------------
