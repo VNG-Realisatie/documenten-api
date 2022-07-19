@@ -11,6 +11,10 @@ API spec changes
 * Replace Gulp with  Webpack
 * Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows
   users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field
+
+Implementation changes
+----------------------
+
 * Require one of the fields to be filled in for the ``Verzending`` resource:
     * ``binnenlandsCorrespondentieadres``
     * ``buitenlandsCorrespondentieadres``
