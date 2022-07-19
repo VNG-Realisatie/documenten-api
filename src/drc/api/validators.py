@@ -6,6 +6,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import exceptions, serializers
+from rest_framework.exceptions import ValidationError as ValdationErrorRest
 from vng_api_common.models import APICredential
 from vng_api_common.validators import ResourceValidator
 from zds_client import ClientError
@@ -15,6 +16,130 @@ from drc.datamodel.validators import validate_status
 
 from .auth import get_zrc_auth
 from .utils import get_absolute_url
+
+
+class OneAddressValidator:
+    """
+    Class to validate that only one address is send with each request and only one address is associated with each Verzending within the database.
+    To replace an address with PUT/PATCH, if it is the same GegevensGroepType, it can just be overwritten. If it is to be replaced with another GegevensGroepType,
+    the existing GegevensGroepType address has to be set equal to None to indicate it will be removed.
+    """
+
+    def set_context(self, serializer):
+        self.instance = getattr(serializer, "instance", None)
+        self.partial_update = getattr(serializer, "partial", None)
+
+    def __call__(self, attrs: dict):
+        self.set_attrs_addresses(attrs)
+        empty_attrs = not any(
+            (
+                self.attrs_binnenlands_not_empty,
+                self.attrs_buitenlands_not_empty,
+                self.attrs_postadres_not_empty,
+            )
+        )
+
+        invalid_amount = (
+            sum(
+                (
+                    self.attrs_binnenlands_not_empty,
+                    self.attrs_buitenlands_not_empty,
+                    self.attrs_postadres_not_empty,
+                )
+            )
+            != 1
+        )
+
+        if self.instance:
+            self.set_instance_addresses(attrs)
+            attrs_instance_mismatch = any(
+                [
+                    self.attrs_binnenlands_not_empty
+                    != self.instance_binnenlands_not_empty,
+                    self.attrs_postadres_not_empty != self.instance_postadres_not_empty,
+                    self.attrs_buitenlands_not_empty
+                    != self.instance_buitenlands_not_empty,
+                ]
+            )
+
+            remove_instance_address = any(
+                [
+                    self.instance_binnenlands_to_be_removed,
+                    self.instance_postadres_to_be_removed,
+                    self.instance_buitenlands_to_be_removed,
+                ]
+            )
+
+            if self.partial_update:
+                if empty_attrs:
+                    return
+
+            if (
+                invalid_amount
+                or attrs_instance_mismatch
+                and not remove_instance_address
+            ):
+                self.raise_validation_error()
+
+        elif attrs:
+            if invalid_amount:
+                self.raise_validation_error()
+
+    def raise_validation_error(self):
+        raise ValdationErrorRest(
+            detail=_("Verzending must contain precisely one correspondentieadress"),
+            code="invalid-address",
+        )
+
+    def check_content(self, gegevensgroep: dict) -> bool:
+        if gegevensgroep:
+            return any(value for value in gegevensgroep.values())
+        return False
+
+    def set_attrs_addresses(self, attrs: dict):
+
+        self.attrs_binnenlands_not_empty = self.check_content(
+            attrs.get("binnenlands_correspondentieadres", {})
+        )
+        self.attrs_postadres_not_empty = self.check_content(
+            attrs.get("correspondentie_postadres", {})
+        )
+
+        self.attrs_buitenlands_not_empty = self.check_content(
+            attrs.get("buitenlands_correspondentieadres", {})
+        )
+
+    def set_instance_addresses(self, attrs):
+        self.instance_binnenlands_not_empty = self.check_content(
+            self.instance.binnenlands_correspondentieadres
+        )
+        self.instance_postadres_not_empty = self.check_content(
+            self.instance.correspondentie_postadres
+        )
+        self.instance_buitenlands_not_empty = self.check_content(
+            self.instance.buitenlands_correspondentieadres
+        )
+
+        self.instance_binnenlands_to_be_removed = all(
+            [
+                attrs.get("binnenlands_correspondentieadres", {}) == None,
+                self.instance_binnenlands_not_empty,
+            ]
+        )
+
+        self.instance_postadres_to_be_removed = all(
+            [
+                attrs.get("correspondentie_postadres", {}) == None,
+                self.instance_postadres_not_empty,
+            ]
+        )
+
+        self.instance_buitenlands_to_be_removed = all(
+            [
+                attrs.get("buitenlands_correspondentieadres", {}) == None,
+                self.instance_buitenlands_not_empty,
+            ]
+        )
 
 
 class StatusValidator:

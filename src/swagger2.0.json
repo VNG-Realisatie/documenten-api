@@ -4303,7 +4303,8 @@
                     "maxLength": 80,
                     "minLength": 1
                 }
-            }
+            },
+            "x-nullable": true
         },
         "BuitenlandsCorrespondentieadresVerzending": {
             "description": "De gegevens van het adres in het buitenland van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
@@ -4340,7 +4341,8 @@
                     "maxLength": 200,
                     "minLength": 1
                 }
-            }
+            },
+            "x-nullable": true
         },
         "BuitenlandsCorrespondentiepostadresVerzending": {
             "description": "De gegevens die tezamen een postbusadres of antwoordnummeradres vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE.",
@@ -4382,16 +4384,15 @@
                     "maxLength": 80,
                     "minLength": 1
                 }
-            }
+            },
+            "x-nullable": true
         },
         "Verzending": {
             "required": [
                 "betrokkene",
                 "informatieobject",
                 "aardRelatie",
-                "contactPersoon",
-                "afwijkendBuitenlandsCorrespondentieadresVerzending",
-                "afwijkendCorrespondentiePosteadresVerzending"
+                "contactPersoon"
             ],
             "type": "object",
             "properties": {
@@ -4461,13 +4462,13 @@
                     "type": "string",
                     "maxLength": 40
                 },
-                "afwijkendBinnenlandsCorrespondentieadresVerzending": {
+                "binnenlandsCorrespondentieadres": {
                     "$ref": "#/definitions/BinnenlandsCorrespondentieadresVerzending"
                 },
-                "afwijkendBuitenlandsCorrespondentieadresVerzending": {
+                "buitenlandsCorrespondentieadres": {
                     "$ref": "#/definitions/BuitenlandsCorrespondentieadresVerzending"
                 },
-                "afwijkendCorrespondentiePosteadresVerzending": {
+                "correspondentiePostadres": {
                     "$ref": "#/definitions/BuitenlandsCorrespondentiepostadresVerzending"
                 }
             }

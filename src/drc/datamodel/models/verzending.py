@@ -163,7 +163,7 @@ class Verzending(ETagMixin, models.Model):
         max_length=80,
         blank=True,
     )
-    binnenlands_correspondentieadres_verzending = GegevensGroepType(
+    binnenlands_correspondentieadres = GegevensGroepType(
         {
             "huisletter": binnenlands_correspondentieadres_huisletter,
             "huisnummer": binnenlands_correspondentieadres_huisnummer,
@@ -215,14 +215,14 @@ class Verzending(ETagMixin, models.Model):
         ),
         blank=True,
     )
-    buitenlands_correspondentieadres_verzending = GegevensGroepType(
+    buitenlands_correspondentieadres = GegevensGroepType(
         {
             "adres_buitenland_1": buitenlands_correspondentieadres_adres_buitenland_1,
             "adres_buitenland_2": buitenlands_correspondentieadres_adres_buitenland_2,
             "adres_buitenland_3": buitenlands_correspondentieadres_adres_buitenland_3,
             "land_postadres": buitenlands_correspondentieadres_land_postadres,
         },
-        required=True,
+        required=False,
         optional=(
             "adres_buitenland_2",
             "adres_buitenland_3",
@@ -265,14 +265,14 @@ class Verzending(ETagMixin, models.Model):
         ),
         blank=True,
     )
-    buitenlands_correspondentiepostadres_verzending = GegevensGroepType(
+    correspondentie_postadres = GegevensGroepType(
         {
             "post_bus_of_antwoordnummer": buitenlands_correspondentiepostadres_postbus_of_antwoord_nummer,
             "postadres_postcode": buitenlands_correspondentiepostadres_postadres_postcode,
             "postadres_type": buitenlands_correspondentiepostadres_postadrestype,
             "woonplaatsnaam": buitenlands_correspondentiepostadres_woonplaats,
         },
-        required=True,
+        required=False,
     )
 
     def __str__(self):
