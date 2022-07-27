@@ -1,5 +1,5 @@
 Pillow
-psycopg2-binary>2.7.5
+psycopg2-binary
 python-dotenv
 python-dateutil
 pytz
@@ -9,15 +9,15 @@ sphinx-rtd-theme
 markdown
 
 Django>=3.2
-django-axes>=5.33.0
-django-appconf>=1.0.5
-django-choices>=1.7.2
+django-axes
+django-appconf
+django-choices
 django-cors-middleware
-django-markup==1.3
+django-markup[all_filter_dependencies]>=1.5.0
 django-privates
 
 djangorestframework
-drf-extra-fields>=3.2.1
+drf-extra-fields
 django-filter>=21.1
 djangorestframework-camel-case
 drf-writable-nested
