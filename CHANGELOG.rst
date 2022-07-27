@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+1.2.0-rc3 (2022-07-27)
+===========
+
+* Add missing ``bleach`` dependency
+
 1.2.0-rc2 (2022-07-19)
 ===========
 
