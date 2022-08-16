@@ -24,6 +24,8 @@ bleach==5.0.1
     # via
     #   -r requirements/base.txt
     #   django-markup
+bump2version==1.0.1
+    # via -r requirements/testing.in
 certifi==2018.4.16
     # via
     #   -r requirements/base.txt
