@@ -58,7 +58,6 @@ django==3.2.13
     #   django-choices
     #   django-debug-toolbar
     #   django-filter
-    #   django-jenkins
     #   django-markup
     #   django-privates
     #   django-rest-framework-condition
@@ -92,8 +91,6 @@ django-ipware==4.0.2
     # via
     #   -r requirements/base.txt
     #   django-axes
-django-jenkins==0.110.0
-    # via -r requirements/ci.in
 django-markup[all_filter_dependencies]==1.5
     # via -r requirements/base.txt
 django-privates==1.0.1.post0
