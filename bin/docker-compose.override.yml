@@ -4,11 +4,11 @@ services:
   tests:
     build:
       context: ./
-      target: jenkins
+      target: ci
     volumes:
       - ${WORKSPACE}/reports:/app/reports
     environment:
-      - DJANGO_SETTINGS_MODULE=drc.conf.jenkins
+      - DJANGO_SETTINGS_MODULE=drc.conf.ci
       - SECRET_KEY=jenkins
       - DB_NAME=postgres
       - DB_USER=postgres
