@@ -9,10 +9,25 @@ pip-compile^
     --no-emit-index-url^
     requirements/base.in
 
-REM Jenkins/tests deps
+REM Production deps
 pip-compile^
     --no-emit-index-url^
-    --output-file requirements/jenkins.txt^
+    --output-file requirements/production.txt^
+    requirements/base.txt^
+    requirements/production.in
+
+REM CI deps
+pip-compile^
+    --no-emit-index-url^
+    --output-file requirements/ci.txt^
     requirements/base.txt^
     requirements/testing.in^
-    requirements/jenkins.in
+    requirements/ci.in
+
+REM Dev deps
+pip-compile^
+    --no-emit-index-url^
+    --output-file requirements/dev.txt^
+    requirements/base.txt^
+    requirements/testing.in^
+    requirements/dev.in
