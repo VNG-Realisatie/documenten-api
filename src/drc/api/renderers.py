@@ -3,7 +3,7 @@ from rest_framework.renderers import BaseRenderer
 
 class BinaryFileRenderer(BaseRenderer):
     media_type = "application/octet-stream"
-    format = None
+    format = "octet-stream"  # TODO: test this behavior
     charset = None
     render_style = "binary"
 

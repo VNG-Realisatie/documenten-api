@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import include, path
 
 from vng_api_common import routers
-from vng_api_common.schema import SchemaView
+from vng_api_common.views import SchemaViewAPI, SchemaViewRedoc
 
 from .views import (
     BestandsDeelViewSet,
@@ -17,7 +17,9 @@ router = routers.DefaultRouter()
 router.register(
     "enkelvoudiginformatieobjecten",
     EnkelvoudigInformatieObjectViewSet,
-    [routers.nested("audittrail", EnkelvoudigInformatieObjectAuditTrailViewSet)],
+    [
+        routers.nested("audittrail", EnkelvoudigInformatieObjectAuditTrailViewSet)
+    ],  # TODO: uncomment this for testing, this should be fixed though
     basename="enkelvoudiginformatieobject",
 )
 router.register("gebruiksrechten", GebruiksrechtenViewSet)
@@ -34,13 +36,13 @@ urlpatterns = [
             [
                 # API documentation
                 url(
-                    r"^schema/openapi(?P<format>\.json|\.yaml)$",
-                    SchemaView.without_ui(cache_timeout=None),
+                    r"^schema/openapi.yaml",
+                    SchemaViewAPI.as_view(),
                     name="schema-json",
                 ),
                 url(
                     r"^schema/$",
-                    SchemaView.with_ui("redoc", cache_timeout=None),
+                    SchemaViewRedoc.as_view(),
                     name="schema-redoc",
                 ),
                 # actual API

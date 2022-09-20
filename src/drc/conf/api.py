@@ -9,29 +9,32 @@ REST_FRAMEWORK["PAGE_SIZE"] = 100
 
 SECURITY_DEFINITION_NAME = "JWT-Claims"
 
-SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
-SWAGGER_SETTINGS.update(
+SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
+SPECTACULAR_SETTINGS.update(
     {
-        "DEFAULT_INFO": "drc.api.schema.info",
-        "SECURITY_DEFINITIONS": {
-            SECURITY_DEFINITION_NAME: {
-                # OAS 3.0
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                # not official...
-                # 'scopes': {},  # TODO: set up registry that's filled in later...
-                # Swagger 2.0
-                # 'name': 'Authorization',
-                # 'in': 'header'
-                # 'type': 'apiKey',
-            }
+        "COMPONENT_SPLIT_REQUEST": True,
+        "POSTPROCESSING_HOOKS": [
+            "drf_spectacular.hooks.postprocess_schema_enums",
+            "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        ],
+        "SCHEMA_PATH_PREFIX": "/api/v1",
+        "SERVERS": [{"url": "/api/v1"}],
+        "EXTENSIONS_INFO": {},
+        "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
+        "APPEND_COMPONENTS": {
+            "securitySchemes": {
+                "JWT-Claims": {
+                    "type": "http",
+                    "bearerFormat": "JWT",
+                    "scheme": "bearer",
+                }
+            },
         },
-        # no geo things here
-        "DEFAULT_FIELD_INSPECTORS": (
-            "vng_api_common.inspectors.files.FileFieldInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
+        "SECURITY": [
+            {
+                "JWT-Claims": [],
+            }
+        ],
     }
 )
 
