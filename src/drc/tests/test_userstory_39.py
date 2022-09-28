@@ -66,7 +66,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertTrue(
             download_url.path,
-            get_operation_url("enkelvoudiginformatieobject_download", uuid=eio.uuid),
+            get_operation_url("enkelvoudiginformatieobjecten_download", uuid=eio.uuid),
         )
 
     def test_read_detail_file(self):
@@ -77,7 +77,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio.uuid
         )
 
         response = self.client.get(file_url)
@@ -104,6 +104,6 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(
             download_url.path,
             get_operation_url(
-                "enkelvoudiginformatieobject_download", uuid=eio.latest_version.uuid
+                "enkelvoudiginformatieobjecten_download", uuid=eio.latest_version.uuid
             ),
         )

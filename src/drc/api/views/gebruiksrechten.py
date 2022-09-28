@@ -1,3 +1,6 @@
+from django.utils.translation import gettext as _
+
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from vng_api_common.audittrails.viewsets import AuditTrailViewsetMixin
 from vng_api_common.caching.decorators import conditional_retrieve
@@ -20,6 +23,42 @@ from drc.datamodel.models.gebruiksrechten import Gebruiksrechten
 
 
 @conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle GEBRUIKSRECHTen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke GEBRUIKSRECHT opvragen."),
+        description=_("Een specifieke GEBRUIKSRECHT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een GEBRUIKSRECHT aan."),
+        description=_(
+            "Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT."
+            "  \n**Opmerkingen**\n"
+            "   - Het toevoegen van gebruiksrechten zorgt ervoor dat de"
+            "  `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt."
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een GEBRUIKSRECHT."),
+        description=_(
+            "\n**Opmerkingen**\n"
+            "  - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd"
+            "  wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op"
+            "`null` gezet."
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een GEBRUIKSRECHT in zijn geheel bij."),
+        description=_("Werk een GEBRUIKSRECHT in zijn geheel bij."),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een GEBRUIKSRECHT relatie deels bij."),
+        description=_("Werk een GEBRUIKSRECHT relatie deels bij."),
+    ),
+)
 class GebruiksrechtenViewSet(
     NotificationViewSetMixin,
     CheckQueryParamsMixin,
@@ -27,46 +66,9 @@ class GebruiksrechtenViewSet(
     AuditTrailViewsetMixin,
     viewsets.ModelViewSet,
 ):
-    """
-    Opvragen en bewerken van GEBRUIKSRECHTen bij een INFORMATIEOBJECT.
-
-    create:
-    Maak een GEBRUIKSRECHT aan.
-
-    Voeg GEBRUIKSRECHTen toe voor een INFORMATIEOBJECT.
-
-    **Opmerkingen**
-      - Het toevoegen van gebruiksrechten zorgt ervoor dat de
-        `indicatieGebruiksrecht` op het informatieobject op `true` gezet wordt.
-
-    list:
-    Alle GEBRUIKSRECHTen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    retrieve:
-    Een specifieke GEBRUIKSRECHT opvragen.
-
-    Een specifieke GEBRUIKSRECHT opvragen.
-
-    update:
-    Werk een GEBRUIKSRECHT in zijn geheel bij.
-
-    Werk een GEBRUIKSRECHT in zijn geheel bij.
-
-    partial_update:
-    Werk een GEBRUIKSRECHT relatie deels bij.
-
-    Werk een GEBRUIKSRECHT relatie deels bij.
-
-    destroy:
-    Verwijder een GEBRUIKSRECHT.
-
-    **Opmerkingen**
-      - Indien het laatste GEBRUIKSRECHT van een INFORMATIEOBJECT verwijderd
-        wordt, dan wordt de `indicatieGebruiksrecht` van het INFORMATIEOBJECT op
-        `null` gezet.
-    """
+    global_description = _(
+        "Opvragen en bewerken van GEBRUIKSRECHTen bij een INFORMATIEOBJECT."
+    )
 
     queryset = Gebruiksrechten.objects.all()
     serializer_class = GebruiksrechtenSerializer

@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "vng_api_common.authorizations",
     "vng_api_common.audittrails",
     "vng_api_common.notifications",
-    "drf_yasg",
+    "drf_spectacular",
     "rest_framework",
     "django_markup",
     "solo",

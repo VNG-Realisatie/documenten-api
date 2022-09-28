@@ -26,7 +26,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create()
         assert eio.lock == ""
         url = get_operation_url(
-            "enkelvoudiginformatieobject_lock", uuid=eio.latest_version.uuid
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.latest_version.uuid
         )
 
         response = self.client.post(url)
@@ -45,7 +45,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         eio = canonical.latest_version
         assert eio.versie == 1
         assert canonical.enkelvoudiginformatieobject_set.count() == 1
-        url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        url = get_operation_url("enkelvoudiginformatieobjecten_lock", uuid=eio.uuid)
 
         response = self.client.post(url)
 
@@ -63,7 +63,7 @@ class EioLockAPITests(JWTAuthMixin, APITestCase):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create(lock=uuid.uuid4().hex)
 
         url = get_operation_url(
-            "enkelvoudiginformatieobject_lock", uuid=eio.latest_version.uuid
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.latest_version.uuid
         )
         response = self.client.post(url)
 
@@ -161,7 +161,7 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
             latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE, lock=lock
         )
         url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=eio.latest_version.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=eio.latest_version.uuid
         )
 
         response = self.client.post(url, {"lock": lock})
@@ -180,7 +180,7 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
             lock=uuid.uuid4().hex,
         )
         url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=eio.latest_version.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=eio.latest_version.uuid
         )
 
         response = self.client.post(url)
@@ -201,7 +201,7 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
             lock=uuid.uuid4().hex,
         )
         url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=eio.latest_version.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=eio.latest_version.uuid
         )
 
         response = self.client.post(url)

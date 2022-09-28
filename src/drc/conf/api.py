@@ -2,38 +2,32 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.2.0-rc3"
+API_VERSION = "1.2.0-rc4"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
 SECURITY_DEFINITION_NAME = "JWT-Claims"
 
-SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
-SWAGGER_SETTINGS.update(
+DOCUMENTATION_INFO_MODULE = "drc.api.schema"
+
+SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
+SPECTACULAR_SETTINGS.update(
     {
-        "DEFAULT_INFO": "drc.api.schema.info",
-        "SECURITY_DEFINITIONS": {
-            SECURITY_DEFINITION_NAME: {
-                # OAS 3.0
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                # not official...
-                # 'scopes': {},  # TODO: set up registry that's filled in later...
-                # Swagger 2.0
-                # 'name': 'Authorization',
-                # 'in': 'header'
-                # 'type': 'apiKey',
-            }
-        },
-        # no geo things here
-        "DEFAULT_FIELD_INSPECTORS": (
-            "vng_api_common.inspectors.files.FileFieldInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
+        "SERVERS": [{"url": "https://documenten-api.test.vng.cloud/api/v1"}],
     }
 )
+
+SPECTACULAR_EXTENSIONS = [
+    "vng_api_common.extensions.fields.hyperlink_identity.HyperlinkedIdentityFieldExtension",
+    "vng_api_common.extensions.fields.many_related.ManyRelatedFieldExtension",
+    "vng_api_common.extensions.fields.read_only.ReadOnlyFieldExtension",
+    "vng_api_common.extensions.filters.query.FilterExtension",
+    "vng_api_common.extensions.serializers.gegevensgroep.GegevensGroepExtension",
+    "vng_api_common.extensions.fields.files.FileFieldExtension",
+]
+
+DRF_EXCLUDED_ENDPOINTS.extend(["413.json", "500.json"])
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = "1.0"
 

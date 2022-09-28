@@ -77,7 +77,7 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         data = response.json()
         eio = EnkelvoudigInformatieObject.objects.get()
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio.uuid
         )
 
         self.assertEqual(
@@ -166,7 +166,7 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         data = response.json()
         eio = EnkelvoudigInformatieObject.objects.get()
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio.uuid
         )
 
         self.assertEqual(eio.bestandsomvang, 0)
@@ -231,7 +231,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -247,7 +249,7 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         data = response.json()
         eio_new = eio.canonical.latest_version
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio_new.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio_new.uuid
         )
 
         self.assertEqual(eio_new.versie, 2)
@@ -273,7 +275,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -294,7 +298,7 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         data = response.json()
         eio_new = eio.canonical.latest_version
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio_new.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio_new.uuid
         )
 
         self.assertEqual(eio.canonical.bestandsdelen.count(), 0)
@@ -318,7 +322,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -352,7 +358,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -382,7 +390,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -422,7 +432,9 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
             informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         detail_url = reverse(eio)
-        lock_url = get_operation_url("enkelvoudiginformatieobject_lock", uuid=eio.uuid)
+        lock_url = get_operation_url(
+            "enkelvoudiginformatieobjecten_lock", uuid=eio.uuid
+        )
 
         # lock
         response_lock = self.client.post(lock_url)
@@ -452,7 +464,7 @@ class SmallFileUpload(MockValidationsMixin, JWTAuthMixin, APITestCase):
         data = response.json()
         eio_new = eio.canonical.latest_version
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=eio_new.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=eio_new.uuid
         )
 
         self.assertEqual(eio.canonical.bestandsdelen.count(), 0)
@@ -539,7 +551,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
     def _unlock(self):
         unlock_url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=self.eio.uuid
         )
 
         response = self.client.post(unlock_url, {"lock": self.canonical.lock})
@@ -557,7 +569,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
     def _download_file(self):
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=self.eio.uuid
         )
 
         response = self.client.get(file_url)
@@ -683,7 +695,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # unlock
         unlock_url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=self.eio.uuid
         )
 
         response = self.client.post(unlock_url, {"lock": self.canonical.lock})
@@ -720,7 +732,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # unlock
         unlock_url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=self.eio.uuid
         )
 
         response = self.client.post(unlock_url, {"lock": self.canonical.lock})
@@ -766,7 +778,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # force unlock
         unlock_url = get_operation_url(
-            "enkelvoudiginformatieobject_unlock", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_unlock", uuid=self.eio.uuid
         )
 
         response = self.client.post(unlock_url)
@@ -793,7 +805,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -839,7 +851,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update metedata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -869,7 +881,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -901,7 +913,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -914,7 +926,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
         self.canonical.refresh_from_db()
         self.eio.refresh_from_db()
         file_url = get_operation_url(
-            "enkelvoudiginformatieobject_download", uuid=self.eio.uuid
+            "enkelvoudiginformatieobjecten_download", uuid=self.eio.uuid
         )
 
         self.assertEqual(self.eio.bestandsomvang, 0)
@@ -935,7 +947,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(

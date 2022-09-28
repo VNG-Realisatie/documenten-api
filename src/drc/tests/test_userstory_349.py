@@ -36,7 +36,7 @@ class US349TestCase(JWTAuthMixin, APITestCase):
         GebruiksrechtenFactory.create(informatieobject=informatieobject)
 
         informatieobject_delete_url = get_operation_url(
-            "enkelvoudiginformatieobject_delete",
+            "enkelvoudiginformatieobject_destroy",
             uuid=informatieobject.latest_version.uuid,
         )
 

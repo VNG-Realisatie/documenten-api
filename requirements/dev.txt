@@ -14,6 +14,10 @@ asgiref==3.5.2
     #   django
 astroid==2.11.7
     # via pylint
+attrs==22.1.0
+    # via
+    #   -r requirements/base.txt
+    #   jsonschema
 babel==2.6.0
     # via
     #   -r requirements/base.txt
@@ -25,7 +29,7 @@ bleach==5.0.1
     #   -r requirements/base.txt
     #   django-markup
 bump2version==1.0.1
-    # via -r requirements/testing.in
+    # via -r requirements/dev.in
 certifi==2018.4.16
     # via
     #   -r requirements/base.txt
@@ -36,17 +40,6 @@ chardet==3.0.4
     #   requests
 click==8.1.3
     # via black
-coreapi==2.3.3
-    # via
-    #   -r requirements/base.txt
-    #   drf-yasg
-coreschema==0.0.4
-    # via
-    #   -r requirements/base.txt
-    #   coreapi
-    #   drf-yasg
-coverage==6.4.4
-    # via -r requirements/testing.in
 dill==0.3.5.1
     # via pylint
 django==3.2.13
@@ -65,7 +58,7 @@ django==3.2.13
     #   djangorestframework
     #   drf-extra-fields
     #   drf-nested-routers
-    #   drf-yasg
+    #   drf-spectacular
     #   vng-api-common
 django-appconf==1.0.5
     # via -r requirements/base.txt
@@ -80,9 +73,7 @@ django-choices==1.7.2
 django-cors-middleware==1.3.1
     # via -r requirements/base.txt
 django-debug-toolbar==3.6.0
-    # via
-    #   -r requirements/dev.in
-    #   -r requirements/testing.in
+    # via -r requirements/dev.in
 django-filter==21.1
     # via
     #   -r requirements/base.txt
@@ -112,7 +103,7 @@ djangorestframework==3.12.4
     #   -r requirements/base.txt
     #   drf-extra-fields
     #   drf-nested-routers
-    #   drf-yasg
+    #   drf-spectacular
     #   vng-api-common
 djangorestframework-camel-case==1.3.0
     # via
@@ -130,12 +121,12 @@ drf-nested-routers==0.93.4
     # via
     #   -r requirements/base.txt
     #   vng-api-common
-drf-writable-nested==0.6.3
-    # via -r requirements/base.txt
-drf-yasg==1.20.0
+drf-spectacular==0.24.2
     # via
     #   -r requirements/base.txt
     #   vng-api-common
+drf-writable-nested==0.6.3
+    # via -r requirements/base.txt
 factory-boy==3.2.1
     # via -r requirements/testing.in
 faker==14.1.0
@@ -163,7 +154,7 @@ imagesize==1.1.0
 inflection==0.3.1
     # via
     #   -r requirements/base.txt
-    #   drf-yasg
+    #   drf-spectacular
 iso-639==0.4.5
     # via
     #   -r requirements/base.txt
@@ -176,15 +167,14 @@ isort==5.10.1
     # via
     #   -r requirements/testing.in
     #   pylint
-itypes==1.1.0
-    # via
-    #   -r requirements/base.txt
-    #   coreapi
 jinja2==2.10.1
     # via
     #   -r requirements/base.txt
-    #   coreschema
     #   sphinx
+jsonschema==4.16.0
+    # via
+    #   -r requirements/base.txt
+    #   drf-spectacular
 lazy-object-proxy==1.7.1
     # via astroid
 markdown==3.1
@@ -206,7 +196,6 @@ oyaml==0.7
 packaging==19.0
     # via
     #   -r requirements/base.txt
-    #   drf-yasg
     #   sphinx
 pathspec==0.9.0
     # via black
@@ -236,6 +225,10 @@ pyparsing==2.3.1
     # via
     #   -r requirements/base.txt
     #   packaging
+pyrsistent==0.18.1
+    # via
+    #   -r requirements/base.txt
+    #   jsonschema
 python-creole==1.4.10
     # via
     #   -r requirements/base.txt
@@ -255,6 +248,7 @@ pytz==2018.4
 pyyaml==5.1.2
     # via
     #   -r requirements/base.txt
+    #   drf-spectacular
     #   gemma-zds-client
     #   oyaml
     #   vng-api-common
@@ -267,21 +261,12 @@ regex==2022.7.25
 requests==2.21.0
     # via
     #   -r requirements/base.txt
-    #   coreapi
     #   gemma-zds-client
     #   requests-mock
     #   sphinx
     #   vng-api-common
 requests-mock==1.9.3
     # via -r requirements/testing.in
-ruamel-yaml==0.17.21
-    # via
-    #   -r requirements/base.txt
-    #   drf-yasg
-ruamel-yaml-clib==0.2.6
-    # via
-    #   -r requirements/base.txt
-    #   ruamel-yaml
 six==1.16.0
     # via
     #   -r requirements/base.txt
@@ -337,13 +322,12 @@ typing-extensions==4.3.0
 uritemplate==3.0.0
     # via
     #   -r requirements/base.txt
-    #   coreapi
-    #   drf-yasg
+    #   drf-spectacular
 urllib3==1.24.3
     # via
     #   -r requirements/base.txt
     #   requests
-vng_api_common @ git+https://github.com/VNG-Realisatie/vng-api-common@20ce4a6d28f6408eae6e4c44ac2ff182e005020c
+vng_api_common @ git+https://github.com//MatthijsBekendam/vng-api-common.git@drf_compatibilty_newer_django_fix
     # via -r requirements/base.txt
 webencodings==0.5.1
     # via
