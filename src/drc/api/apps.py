@@ -7,7 +7,7 @@ class DRCApiConfig(AppConfig):
     name = "drc.api"
 
     def ready(self):
+        register_extensions()
+
         # ensure that the metaclass for every viewset has run
         from . import views  # noqa
-
-        register_extensions()

@@ -15,6 +15,7 @@ SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
         "SERVERS": [{"url": "https://documenten-api.test.vng.cloud/api/v1"}],
+        "COMPONENT_SPLIT_REQUEST": True,
     }
 )
 

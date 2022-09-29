@@ -47,7 +47,7 @@ Uitleg bij mogelijke waarden:
 | resourceUrl | De URL naar het object. | string | ja | C​R​U​D |
 | toelichting | Toelichting waarom de handeling is uitgevoerd. | string | nee | C​R​U​D |
 | resourceWeergave | Vriendelijke identificatie van het object. | string | ja | C​R​U​D |
-| aanmaakdatum | De datum waarop de handeling is gedaan. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| aanmaakdatum | De datum waarop de handeling is gedaan. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | wijzigingen |  |  | ja | C​R​U​D |
 
 ## BestandsDeel
@@ -56,12 +56,10 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| volgnummer | Een volgnummer dat de volgorde van de bestandsdelen aangeeft. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
-| omvang | De grootte van dit specifieke bestandsdeel. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
-| inhoud | De (binaire) bestandsinhoud van dit specifieke bestandsdeel. | string | nee | C​R​U​D |
-| voltooid | Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen. | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
-| lock | Hash string, which represents id of the lock of related informatieobject | string | ja | C​R​U​D |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
+| volgnummer | Een volgnummer dat de volgorde van de bestandsdelen aangeeft. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
+| omvang | De grootte van dit specifieke bestandsdeel. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
+| voltooid | Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
 
 ## EnkelvoudigInformatieObject
 
@@ -69,7 +67,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | identificatie | Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT. | string | nee | C​R​U​D |
 | bronorganisatie | Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd. | string | ja | C​R​U​D |
 | creatiedatum | Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT. | string | ja | C​R​U​D |
@@ -97,8 +95,8 @@ Uitleg bij mogelijke waarden:
 * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-element. |  | nee | C​R​U​D |
 | formaat | Het &quot;Media Type&quot; (voorheen &quot;MIME type&quot;) voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`. Zie: https://www.iana.org/assignments/media-types/media-types.xhtml | string | nee | C​R​U​D |
 | taal | Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT is vastgelegd. Voorbeeld: `nld`. Zie: https://www.iso.org/standard/4767.html | string | ja | C​R​U​D |
-| versie | Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt. | integer | nee | ~~C~~​R​~~U~~​~~D~~ |
-| beginRegistratie | Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| versie | Het (automatische) versienummer van het INFORMATIEOBJECT. Deze begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
+| beginRegistratie | Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of gewijzigd. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsnaam | De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd, inclusief extensie. | string | nee | C​R​U​D |
 | inhoud | Download URL van de binaire inhoud. | string | nee | C​R​U​D |
 | bestandsomvang | Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt. | integer | nee | C​R​U​D |
@@ -111,8 +109,8 @@ Uitleg bij mogelijke waarden:
 | ondertekening | Aanduiding van de rechtskracht van een informatieobject. Mag niet van een waarde zijn voorzien als de `status` de waarde &#x27;in bewerking&#x27; of &#x27;ter vaststelling&#x27; heeft. |  | nee | C​R​U​D |
 | integriteit | Uitdrukking van mate van volledigheid en onbeschadigd zijn van digitaal bestand. |  | nee | C​R​U​D |
 | informatieobjecttype | URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi API). | string | ja | C​R​U​D |
-| locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | nee | ~~C~~​R​~~U~~​~~D~~ |
-| bestandsdelen |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
+| locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
+| bestandsdelen |  | array | ja | ~~C~~​R​~~U~~​~~D~~ |
 
 ## Gebruiksrechten
 
@@ -120,7 +118,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | informatieobject | URL-referentie naar het INFORMATIEOBJECT. | string | ja | C​R​U​D |
 | startdatum | Begindatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject de startdatum. | string | ja | C​R​U​D |
 | einddatum | Einddatum van de periode waarin de gebruiksrechtvoorwaarden van toepassing zijn. | string | nee | C​R​U​D |
@@ -132,7 +130,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | informatieobject | URL-referentie naar het INFORMATIEOBJECT. | string | ja | C​R​U​D |
 | object | URL-referentie naar het gerelateerde OBJECT (in deze of een andere API). | string | ja | C​R​U​D |
 | objectType | Het type van het gerelateerde OBJECT.
@@ -148,7 +146,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 | betrokkene | URL-referentie naar de betrokkene waarvan het informatieobject is ontvangen of waaraan dit is verzonden. | string | ja | C​R​U​D |
 | informatieobject | URL-referentie naar het informatieobject dat is ontvangen of verzonden. | string | ja | C​R​U​D |
 | aardRelatie | Omschrijving van de aard van de relatie van de BETROKKENE tot het INFORMATIEOBJECT. |  | ja | C​R​U​D |
