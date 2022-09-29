@@ -4,8 +4,6 @@
 #
 #    pip-compile --no-emit-index-url --output-file=requirements/production.txt requirements/base.txt requirements/production.in
 #
--e git+https://github.com//MatthijsBekendam/vng-api-common.git@drf_compatibilty_newer_django_fix#egg=vng_api_common
-    # via -r requirements/base.txt
 alabaster==0.7.12
     # via
     #   -r requirements/base.txt
@@ -270,6 +268,8 @@ urllib3==1.24.3
     #   requests
 uwsgi==2.0.20
     # via -r requirements/production.in
+vng_api_common @ git+https://github.com//MatthijsBekendam/vng-api-common.git@drf_compatibilty_newer_django_fix
+    # via -r requirements/base.txt
 webencodings==0.5.1
     # via
     #   -r requirements/base.txt
