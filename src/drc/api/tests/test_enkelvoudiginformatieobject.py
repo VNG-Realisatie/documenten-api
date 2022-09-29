@@ -92,7 +92,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             kwargs={"version": "1", "uuid": stored_object.uuid},
         )
         expected_file_url = get_operation_url(
-            "enkelvoudiginformatieobjecten_download", uuid=stored_object.uuid
+            "enkelvoudiginformatieobject_download", uuid=stored_object.uuid
         )
 
         expected_response = content.copy()
@@ -142,7 +142,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         file_url = get_operation_url(
-            "enkelvoudiginformatieobjecten_download", uuid=test_object.uuid
+            "enkelvoudiginformatieobject_download", uuid=test_object.uuid
         )
         expected = {
             "url": f"http://testserver{detail_url}",
@@ -187,7 +187,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         )
 
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobjecten_download", uuid=eio.uuid
+            "enkelvoudiginformatieobject_download", uuid=eio.uuid
         )
 
         response = self.client.get(eio_url, HTTP_ACCEPT="application/octet-stream")
@@ -199,7 +199,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
         )
 
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobjecten_download", uuid=eio.uuid
+            "enkelvoudiginformatieobject_download", uuid=eio.uuid
         )
 
         eio.delete()
@@ -657,7 +657,7 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
 
     def test_zoek_uuid_in(self):
         eio1, eio2, eio3 = EnkelvoudigInformatieObjectFactory.create_batch(3)
-        url = get_operation_url("enkelvoudiginformatieobjecten__zoek")
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
         data = {"uuid__in": [eio1.uuid, eio2.uuid]}
         response = self.client.post(url, data)
 
@@ -670,7 +670,7 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(eio2)}")
 
     def test_zoek_without_params(self):
-        url = get_operation_url("enkelvoudiginformatieobjecten__zoek")
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
         response = self.client.post(url, {})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

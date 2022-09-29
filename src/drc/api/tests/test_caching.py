@@ -31,9 +31,7 @@ class EnkelvoudigInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCas
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/api/v1/enkelvoudiginformatieobjecten/{uuid}"]["get"][
-            "parameters"
-        ][0]["in"]
+        endpoint = spec["paths"]["/api/v1/enkelvoudiginformatieobjecten/{uuid}"]
 
         self.assertIn("head", endpoint)
 
@@ -69,9 +67,7 @@ class ObjectInformatieObjectCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/api/v1/objectinformatieobjecten/{uuid}"]["get"][
-            "parameters"
-        ][0]["in"]
+        endpoint = spec["paths"]["/api/v1/objectinformatieobjecten/{uuid}"]
 
         self.assertIn("head", endpoint)
 
@@ -107,9 +103,7 @@ class GebruiksrechtenCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/api/v1/gebruiksrechten/{uuid}"]["get"]["parameters"][
-            0
-        ]["in"]
+        endpoint = spec["paths"]["/api/v1/gebruiksrechten/{uuid}"]
 
         self.assertIn("head", endpoint)
 
