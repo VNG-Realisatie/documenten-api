@@ -1,9 +1,6 @@
-from django.core.validators import MinValueValidator
 from django.utils.translation import gettext as _
 
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
-from privates.fields import PrivateMediaFileField
 from rest_framework import serializers, viewsets
 from rest_framework.parsers import FormParser, MultiPartParser
 
