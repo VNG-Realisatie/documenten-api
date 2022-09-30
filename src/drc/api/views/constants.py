@@ -1,16 +1,17 @@
-from drf_yasg import openapi
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter
 
 # Openapi query parameters for version querying
-VERSIE_QUERY_PARAM = openapi.Parameter(
-    "versie",
-    openapi.IN_QUERY,
+VERSIE_QUERY_PARAM = OpenApiParameter(
+    name="versie",
+    location=OpenApiParameter.QUERY,
     description="Het (automatische) versienummer van het INFORMATIEOBJECT.",
-    type=openapi.TYPE_INTEGER,
+    type=OpenApiTypes.INT,
 )
-REGISTRATIE_QUERY_PARAM = openapi.Parameter(
-    "registratieOp",
-    openapi.IN_QUERY,
+REGISTRATIE_QUERY_PARAM = OpenApiParameter(
+    name="registratieOp",
+    location=OpenApiParameter.QUERY,
     description="Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT die qua `begin_registratie` het "
     "kortst hiervoor zit wordt opgehaald.",
-    type=openapi.TYPE_STRING,
+    type=OpenApiTypes.STR,
 )

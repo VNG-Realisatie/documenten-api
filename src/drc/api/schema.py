@@ -2,18 +2,32 @@ from collections import OrderedDict
 
 from django.conf import settings
 
-from drf_yasg import openapi
+from drf_spectacular.utils import OpenApiResponse
 from humanize import naturalsize
 from rest_framework import status
-from vng_api_common.inspectors.view import HTTP_STATUS_CODE_TITLES, AutoSchema
 from vng_api_common.notifications.utils import notification_documentation
+from vng_api_common.schema import HTTP_STATUS_CODE_TITLES, AutoSchema
 from vng_api_common.serializers import FoutSerializer
 
 from .kanalen import KANAAL_DOCUMENTEN
 
 min_upload_size = naturalsize(settings.MIN_UPLOAD_SIZE, binary=True)
 
-description = f"""Een API om een documentregistratiecomponent (DRC) te benaderen.
+__all__ = [
+    "TITLE",
+    "DESCRIPTION",
+    "CONTACT",
+    "LICENSE",
+    "VERSION",
+]
+TITLE = f"{settings.PROJECT_NAME} API"
+VERSION = settings.API_VERSION
+CONTACT = {
+    "email": "standaarden.ondersteuning@vng.nl",
+    "url": settings.DOCUMENTATION_URL,
+}
+LICENSE = {"name": "EUPL 1.2", "url": "https://opensource.org/licenses/EUPL-1.2"}
+DESCRIPTION = f"""Een API om een documentregistratiecomponent (DRC) te benaderen.
 
 In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een
 INFORMATIEOBJECT is een digitaal document voorzien van meta-gegevens.
@@ -84,19 +98,6 @@ genereren.
 * [Zaakgericht werken]({settings.DOCUMENTATION_URL})
 """
 
-info = openapi.Info(
-    title=f"{settings.PROJECT_NAME} API",
-    default_version=settings.API_VERSION,
-    description=description,
-    contact=openapi.Contact(
-        email="standaarden.ondersteuning@vng.nl",
-        url=settings.DOCUMENTATION_URL,
-    ),
-    license=openapi.License(
-        name="EUPL 1.2", url="https://opensource.org/licenses/EUPL-1.2"
-    ),
-)
-
 
 class RequestEntityTooLargeSchema(AutoSchema):
     """
@@ -113,8 +114,9 @@ class RequestEntityTooLargeSchema(AutoSchema):
 
         status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
         fout_schema = self.serializer_to_schema(FoutSerializer())
-        responses[status_code] = openapi.Response(
-            description=HTTP_STATUS_CODE_TITLES.get(status_code, ""), schema=fout_schema
+        responses[status_code] = OpenApiResponse(
+            description=HTTP_STATUS_CODE_TITLES.get(status_code, ""),
+            response=fout_schema,
         )
 
         return responses

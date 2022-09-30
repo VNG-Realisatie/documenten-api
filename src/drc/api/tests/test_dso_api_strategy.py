@@ -9,23 +9,12 @@ from .utils import reverse
 
 
 class DSOApiStrategyTests(APITestCase):
-    def test_api_19_documentation_version_json(self):
-        url = reverse("schema-json", kwargs={"format": ".json"})
-
-        response = self.client.get(url)
-
-        self.assertIn("application/json", response["Content-Type"])
-
-        doc = response.json()
-
-        self.assertGreaterEqual(doc["openapi"], "3.0.0")
-
     def test_api_19_documentation_version_yaml(self):
-        url = reverse("schema-json", kwargs={"format": ".yaml"})
+        url = reverse("schema-yaml")
 
         response = self.client.get(url)
 
-        self.assertIn("application/yaml", response["Content-Type"])
+        self.assertIn("application/vnd.oai.openapi", response["Content-Type"])
 
         doc = yaml.safe_load(response.content)
 
@@ -34,7 +23,7 @@ class DSOApiStrategyTests(APITestCase):
     @override_settings(ROOT_URLCONF="drc.api.tests.test_urls")
     def test_api_24_version_header(self):
         response = self.client.get("/test-view")
-        self.assertEqual(response["API-version"], "1.2.0-rc3")
+        self.assertEqual(response["API-version"], "1.2.0-rc4")
 
 
 class DSOApi50Tests(APITestCase):

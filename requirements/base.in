@@ -21,8 +21,8 @@ drf-extra-fields
 django-filter>=21.1
 djangorestframework-camel-case
 drf-writable-nested
-drf-yasg
 
-git+https://github.com/VNG-Realisatie/vng-api-common@20ce4a6d28f6408eae6e4c44ac2ff182e005020c#egg=vng_api_common
+drf_spectacular
+git+https://github.com//MatthijsBekendam/vng-api-common.git@drf_compatibilty_newer_django_fix#egg=vng_api_common
 
 humanize

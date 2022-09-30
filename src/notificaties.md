@@ -31,6 +31,6 @@ De architectuur van de notificaties staat beschreven op <a href="https://github.
 
 * <code>enkelvoudiginformatieobject</code>: create, update, destroy
 
-* <code>gebruiksrechten</code>: create, update, destroy, create, update, destroy
+* <code>gebruiksrechten</code>: create, update, destroy
 
 

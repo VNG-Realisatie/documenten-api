@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import include, path
 
 from vng_api_common import routers
-from vng_api_common.schema import SchemaView
+from vng_api_common.views import SchemaViewAPI, SchemaViewRedoc
 
 from .views import (
     BestandsDeelViewSet,
@@ -34,13 +34,13 @@ urlpatterns = [
             [
                 # API documentation
                 url(
-                    r"^schema/openapi(?P<format>\.json|\.yaml)$",
-                    SchemaView.without_ui(cache_timeout=None),
-                    name="schema-json",
+                    r"^schema/openapi.yaml",
+                    SchemaViewAPI.as_view(),
+                    name="schema-yaml",
                 ),
                 url(
-                    r"^schema/$",
-                    SchemaView.with_ui("redoc", cache_timeout=None),
+                    r"^schema/",
+                    SchemaViewRedoc.as_view(url_name="schema-redoc"),
                     name="schema-redoc",
                 ),
                 # actual API

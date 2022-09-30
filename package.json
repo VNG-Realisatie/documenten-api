@@ -1,6 +1,6 @@
 {
   "name": "drc",
-  "version": "1.2.0-rc3",
+  "version": "1.2.0-rc4",
   "description": "drc referentie implementatie API",
   "main": "src/index.js",
   "directories": {
@@ -29,6 +29,7 @@
     "babel-loader": "latest",
     "css-loader": "latest",
     "cssnano": "^5.1.12",
+    "prettier": "^2.7.1",
     "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "latest",
     "postcss-loader": "latest",

@@ -793,7 +793,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -839,7 +839,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update metedata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -869,7 +869,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -901,7 +901,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
@@ -935,7 +935,7 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
 
         # update file metadata
         eio_url = get_operation_url(
-            "enkelvoudiginformatieobject_read", uuid=self.eio.uuid
+            "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
         )
 
         response = self.client.patch(
