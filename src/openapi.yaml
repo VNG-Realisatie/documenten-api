@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BestandsDeel'
+                $ref: '#/components/schemas/CustomResponseForWriteOnlyFields'
           description: OK
         '400':
           headers:
@@ -5624,6 +5624,46 @@ components:
         - postadresType
         - woonplaatsnaam
       nullable: true
+    CustomResponseForWriteOnlyFields:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          title: url
+          description:
+            URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          minLength: 1
+          maxLength: 1000
+        lock:
+          type: string
+          description: Hash string, which represents id of the lock of related informatieobject
+          title: lock
+        omvang:
+          type: integer
+          description: De grootte van dit specifieke bestandsdeel.
+          title: omvang
+        inhoud:
+          type: string
+          format: uri
+          description: De (binaire) bestandsinhoud van dit specifieke bestandsdeel.
+          title: inhoud
+        voltooid:
+          type: boolean
+          description:
+            'Indicatie of dit bestandsdeel volledig is geupload. Dat wil
+            zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk
+            ontvangen.'
+          title: voltooid
+        volgnummer:
+          type: integer
+          description: Een volgnummer dat de volgorde van de bestandsdelen aangeeft.
+          title: volgnummer
+      required:
+        - lock
+        - url
     EIOZoekRequest:
       type: object
       properties:
