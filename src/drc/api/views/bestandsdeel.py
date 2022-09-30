@@ -15,38 +15,39 @@ from drc.datamodel.models.bestandsdeel import BestandsDeel
 @extend_schema_view(
     update=extend_schema(
         summary=_("Upload een bestandsdeel."),
+        responses={
+            200: inline_serializer(
+                name="BestandsDeelResponse",
+                fields={
+                    "url": serializers.HyperlinkedIdentityField(
+                        view_name="bestandsdeel_update"
+                    ),
+                    "lock": serializers.CharField(
+                        help_text=BestandsDeelSerializer._declared_fields[
+                            "lock"
+                        ].help_text,
+                    ),
+                    "omvang": serializers.IntegerField(
+                        help_text=BestandsDeel.omvang.field.help_text, required=False
+                    ),
+                    "inhoud": serializers.URLField(
+                        help_text="De URL naar de bestandsinhoud van dit specifieke bestandsdeel.",
+                        required=False,
+                    ),
+                    "voltooid": serializers.BooleanField(
+                        help_text=BestandsDeelSerializer.Meta.extra_kwargs["voltooid"][
+                            "help_text"
+                        ],
+                        required=False,
+                    ),
+                    "volgnummer": serializers.IntegerField(
+                        help_text=BestandsDeel.volgnummer.field.help_text,
+                        required=False,
+                    ),
+                },
+            )
+        },
     ),
-)
-@extend_schema(
-    responses={
-        200: inline_serializer(
-            name="BestandsDeelResponse",
-            fields={
-                "url": serializers.HyperlinkedIdentityField(
-                    view_name="bestandsdeel_update"
-                ),
-                "lock": serializers.CharField(
-                    help_text=BestandsDeelSerializer._declared_fields["lock"].help_text,
-                ),
-                "omvang": serializers.IntegerField(
-                    help_text=BestandsDeel.omvang.field.help_text, required=False
-                ),
-                "inhoud": serializers.URLField(
-                    help_text="De URL naar de bestandsinhoud van dit specifieke bestandsdeel.",
-                    required=False,
-                ),
-                "voltooid": serializers.BooleanField(
-                    help_text=BestandsDeelSerializer.Meta.extra_kwargs["voltooid"][
-                        "help_text"
-                    ],
-                    required=False,
-                ),
-                "volgnummer": serializers.IntegerField(
-                    help_text=BestandsDeel.volgnummer.field.help_text, required=False
-                ),
-            },
-        )
-    }
 )
 class BestandsDeelViewSet(UpdateWithoutPartialMixin, viewsets.GenericViewSet):
     queryset = BestandsDeel.objects.all()
