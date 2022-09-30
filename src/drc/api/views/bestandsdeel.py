@@ -20,7 +20,7 @@ from drc.datamodel.models.bestandsdeel import BestandsDeel
 @extend_schema(
     responses={
         200: inline_serializer(
-            name="CustomResponseForWriteOnlyFields",
+            name="BestandsDeelResponse",
             fields={
                 "url": serializers.HyperlinkedIdentityField(
                     view_name="bestandsdeel_update"
@@ -31,7 +31,7 @@ from drc.datamodel.models.bestandsdeel import BestandsDeel
                 "omvang": serializers.IntegerField(
                     help_text=BestandsDeel.omvang.field.help_text, required=False
                 ),
-                "inhoud": serializers.FileField(
+                "inhoud": serializers.URLField(
                     help_text=BestandsDeel.inhoud.field.help_text, required=False
                 ),
                 "voltooid": serializers.BooleanField(
