@@ -32,7 +32,8 @@ from drc.datamodel.models.bestandsdeel import BestandsDeel
                     help_text=BestandsDeel.omvang.field.help_text, required=False
                 ),
                 "inhoud": serializers.URLField(
-                    help_text=BestandsDeel.inhoud.field.help_text, required=False
+                    help_text="De URL naar de bestandsinhoud van dit specifieke bestandsdeel.",
+                    required=False,
                 ),
                 "voltooid": serializers.BooleanField(
                     help_text=BestandsDeelSerializer.Meta.extra_kwargs["voltooid"][
