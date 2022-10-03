@@ -67,6 +67,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_markup",
     "solo",
+    "simple_certmanager",
+    "zgw_consumers",
+    "notifications_api_common",
     "privates",
     # Project applications.
     "drc.accounts",

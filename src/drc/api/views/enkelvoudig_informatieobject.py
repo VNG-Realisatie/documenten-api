@@ -8,6 +8,7 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
 )
+from notifications_api_common.viewsets import NotificationViewSetMixin
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -19,7 +20,6 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailViewsetMixin,
 )
 from vng_api_common.caching import conditional_retrieve
-from vng_api_common.notifications.viewsets import NotificationViewSetMixin
 from vng_api_common.search import SearchMixin
 from vng_api_common.serializers import FoutSerializer
 from vng_api_common.viewsets import CheckQueryParamsMixin

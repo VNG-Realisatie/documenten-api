@@ -29,7 +29,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_create_enkelvoudiginformatieobject(self, mock_client, *mocks):
         """
         Registreer een ENKELVOUDIGINFORMATIEOBJECT
@@ -74,7 +74,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             },
         )
 
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_create_gebruiksrechten(self, mock_client):
         client = mock_client.return_value
 
