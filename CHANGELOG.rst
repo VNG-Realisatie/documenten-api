@@ -44,6 +44,15 @@ Implementation changes
 1.1.0 (2022-06-30)
 ===========
 
+Bug fixes
+----------------------
+
+* No API spec or Implementation changes, just updated the API version which unfortunately remained 1.1.0-alpha after deploying on 2020-12-04.
+
+
+1.1.0-alpha (2020-12-04)
+===========
+
 API spec changes
 ----------------
 
@@ -56,6 +65,7 @@ API spec changes
 * Implement caching (conditional GET with ETag headers) (`Issue 1096`_)
 * Add ``verzoek`` type to possible ``ObjectInformatieObject.object_type`` and ``kcc`` to component enum
 * Change ``ObjectInformatieObject.object`` ``maxLength`` from 200 -> 1000 (`Issue 1542`_)
+
 
 
 Implementation changes
