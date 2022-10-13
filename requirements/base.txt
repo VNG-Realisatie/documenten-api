@@ -142,7 +142,7 @@ notifications-api-common==0.1.0
     # via vng-api-common
 oyaml==0.7
     # via vng-api-common
-packaging==19.0
+packaging==21.3
     # via sphinx
 pillow==6.2.1
     # via -r requirements/base.in
@@ -175,7 +175,7 @@ python-dateutil==2.7.3
     #   faker
 python-dotenv==0.8.2
     # via -r requirements/base.in
-pytz==2018.4
+pytz==2022.4
     # via
     #   -r requirements/base.in
     #   babel
@@ -206,7 +206,6 @@ six==1.16.0
     #   django-sendfile2
     #   html5lib
     #   isodate
-    #   packaging
     #   python-dateutil
     #   requests-mock
     #   sphinx
@@ -230,7 +229,7 @@ uritemplate==3.0.0
     # via drf-spectacular
 urllib3==1.24.3
     # via requests
-vng_api_common @ git+https://github.com/VNG-Realisatie/vng-api-common@drf-spectacular-upgrade
+vng-api-common==1.11.0
     # via -r requirements/base.in
 webencodings==0.5.1
     # via

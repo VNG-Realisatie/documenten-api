@@ -23,6 +23,6 @@ djangorestframework-camel-case
 drf-writable-nested
 
 drf_spectacular
-vng_api_common
+vng_api_common==1.11.0
 
 humanize

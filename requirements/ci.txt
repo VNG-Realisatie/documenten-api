@@ -231,7 +231,7 @@ oyaml==0.7
     # via
     #   -r requirements/base.txt
     #   vng-api-common
-packaging==19.0
+packaging==21.3
     # via
     #   -r requirements/base.txt
     #   sphinx
@@ -288,7 +288,7 @@ python-dateutil==2.7.3
     #   freezegun
 python-dotenv==0.8.2
     # via -r requirements/base.txt
-pytz==2018.4
+pytz==2022.4
     # via
     #   -r requirements/base.txt
     #   babel
@@ -328,7 +328,6 @@ six==1.16.0
     #   django-sendfile2
     #   html5lib
     #   isodate
-    #   packaging
     #   python-dateutil
     #   requests-mock
     #   sphinx
@@ -379,7 +378,7 @@ urllib3==1.24.3
     # via
     #   -r requirements/base.txt
     #   requests
-vng_api_common @ git+https://github.com/VNG-Realisatie/vng-api-common@drf-spectacular-upgrade
+vng-api-common==1.11.0
     # via -r requirements/base.txt
 webencodings==0.5.1
     # via
