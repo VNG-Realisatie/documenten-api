@@ -23,6 +23,6 @@ djangorestframework-camel-case
 drf-writable-nested
 
 drf_spectacular
-git+https://github.com/VNG-Realisatie/vng-api-common@drf-spectacular-upgrade#egg=vng_api_common
+vng_api_common
 
 humanize
