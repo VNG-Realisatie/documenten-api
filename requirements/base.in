@@ -23,6 +23,6 @@ djangorestframework-camel-case
 drf-writable-nested
 
 drf_spectacular
-git+https://github.com//MatthijsBekendam/vng-api-common.git@drf_compatibilty_newer_django_fix#egg=vng_api_common
+vng_api_common==1.11.0
 
 humanize

@@ -4,8 +4,8 @@ from django.conf import settings
 
 from drf_spectacular.utils import OpenApiResponse
 from humanize import naturalsize
+from notifications_api_common.utils import notification_documentation
 from rest_framework import status
-from vng_api_common.notifications.utils import notification_documentation
 from vng_api_common.schema import HTTP_STATUS_CODE_TITLES, AutoSchema
 from vng_api_common.serializers import FoutSerializer
 

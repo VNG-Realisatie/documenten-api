@@ -2,7 +2,7 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.2.0-rc4"
+API_VERSION = "1.2.0-rc5"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
@@ -16,6 +16,8 @@ SPECTACULAR_SETTINGS.update(
     {
         "SERVERS": [{"url": "https://documenten-api.test.vng.cloud/api/v1"}],
         "COMPONENT_SPLIT_REQUEST": True,
+        # todo remove this line below when deploying to production
+        "SORT_OPERATION_PARAMETERS": False,
     }
 )
 
