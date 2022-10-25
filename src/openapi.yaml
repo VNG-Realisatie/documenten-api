@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.2.0-rc4
+  version: 1.2.0-rc6
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
@@ -56,6 +56,14 @@ paths:
       description: based on DRF mixin but without partial_update
       summary: Upload een bestandsdeel.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -64,14 +72,6 @@ paths:
               - application/x-www-form-urlencoded
               - multipart/form-data
           description: Content type van de verzoekinhoud.
-          required: true
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - bestandsdelen
@@ -241,6 +241,14 @@ paths:
         \ wordt getoond. Specifieke versies kunnen alleen"
       summary: Alle (ENKELVOUDIGe) INFORMATIEOBJECTen opvragen.
       parameters:
+        - name: identificatie
+          required: false
+          in: query
+          description:
+            Een binnen een gegeven context ondubbelzinnige referentie naar
+            het INFORMATIEOBJECT.
+          schema:
+            type: string
         - name: bronorganisatie
           required: false
           in: query
@@ -248,14 +256,6 @@ paths:
             "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
             \ die het informatieobject heeft gecre\xEBerd of heeft ontvangen en als\
             \ eerste in een samenwerkingsketen heeft vastgelegd."
-          schema:
-            type: string
-        - name: identificatie
-          required: false
-          in: query
-          description:
-            Een binnen een gegeven context ondubbelzinnige referentie naar
-            het INFORMATIEOBJECT.
           schema:
             type: string
         - name: page
@@ -418,15 +418,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - enkelvoudiginformatieobjecten
       requestBody:
@@ -718,18 +718,18 @@ paths:
       summary: Een specifieke audit trail regel opvragen.
       parameters:
         - in: path
-          name: enkelvoudiginformatieobject_uuid
-          schema:
-            type: string
-          description: Unieke resource identifier (UUID4)
-          required: true
-        - in: path
           name: uuid
           schema:
             type: string
             format: uuid
             description: Unieke identificatie van de audit regel.
             title: uuid
+          required: true
+        - in: path
+          name: enkelvoudiginformatieobject_uuid
+          schema:
+            type: string
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - enkelvoudiginformatieobjecten
@@ -877,6 +877,14 @@ paths:
         parameters worden opgevraagd.'
       summary: Een specifiek (ENKELVOUDIG) INFORMATIEOBJECT opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -896,25 +904,17 @@ paths:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
         - in: query
+          name: versie
+          schema:
+            type: integer
+          description: Het (automatische) versienummer van het INFORMATIEOBJECT.
+        - in: query
           name: registratieOp
           schema:
             type: string
           description:
             Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT
             die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
-        - in: query
-          name: versie
-          schema:
-            type: integer
-          description: Het (automatische) versienummer van het INFORMATIEOBJECT.
       tags:
         - enkelvoudiginformatieobjecten
       security:
@@ -1066,6 +1066,14 @@ paths:
         - het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`"
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -1075,23 +1083,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - enkelvoudiginformatieobjecten
       requestBody:
@@ -1255,6 +1255,14 @@ paths:
         - het `informatieobjecttype` mag niet gewijzigd worden\n - status NIET `definitief`"
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -1264,23 +1272,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - enkelvoudiginformatieobjecten
       requestBody:
@@ -1451,16 +1451,6 @@ paths:
         - audit trail regels'
       summary: Verwijder een (ENKELVOUDIG) INFORMATIEOBJECT.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -1469,6 +1459,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - enkelvoudiginformatieobjecten
       security:
@@ -1599,6 +1599,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ENKELVOUDIG INFORMATIE OBJECT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -1617,14 +1625,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - enkelvoudiginformatieobjecten
       responses:
@@ -1654,13 +1654,6 @@ paths:
       description: Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.
       summary: Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.
       parameters:
-        - in: query
-          name: registratieOp
-          schema:
-            type: string
-          description:
-            Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT
-            die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.
         - in: path
           name: uuid
           schema:
@@ -1674,6 +1667,13 @@ paths:
           schema:
             type: integer
           description: Het (automatische) versienummer van het INFORMATIEOBJECT.
+        - in: query
+          name: registratieOp
+          schema:
+            type: string
+          description:
+            Een datumtijd in ISO8601 formaat. De versie van het INFORMATIEOBJECT
+            die qua `begin_registratie` het kortst hiervoor zit wordt opgehaald.
       tags:
         - enkelvoudiginformatieobjecten
       security:
@@ -1751,14 +1751,6 @@ paths:
         bijgewerkt (`PUT`, `PATCH`) en weerontgrendeld worden.
       summary: Vergrendel een (ENKELVOUDIG) INFORMATIEOBJECT.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -1766,6 +1758,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - enkelvoudiginformatieobjecten
@@ -1848,14 +1848,6 @@ paths:
         wordt.
       summary: Ontgrendel een (ENKELVOUDIG) INFORMATIEOBJECT.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -1863,6 +1855,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - enkelvoudiginformatieobjecten
@@ -2107,38 +2107,6 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle GEBRUIKSRECHTen opvragen.
       parameters:
-        - name: einddatum__gt
-          required: false
-          in: query
-          description:
-            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
-            toepassing zijn.
-          schema:
-            type: string
-        - name: einddatum__gte
-          required: false
-          in: query
-          description:
-            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
-            toepassing zijn.
-          schema:
-            type: string
-        - name: einddatum__lt
-          required: false
-          in: query
-          description:
-            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
-            toepassing zijn.
-          schema:
-            type: string
-        - name: einddatum__lte
-          required: false
-          in: query
-          description:
-            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
-            toepassing zijn.
-          schema:
-            type: string
         - name: informatieobject
           required: false
           in: query
@@ -2146,6 +2114,24 @@ paths:
           schema:
             type: string
             format: uri
+        - name: startdatum__lt
+          required: false
+          in: query
+          description:
+            Begindatum van de periode waarin de gebruiksrechtvoorwaarden
+            van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject
+            de startdatum.
+          schema:
+            type: string
+        - name: startdatum__lte
+          required: false
+          in: query
+          description:
+            Begindatum van de periode waarin de gebruiksrechtvoorwaarden
+            van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject
+            de startdatum.
+          schema:
+            type: string
         - name: startdatum__gt
           required: false
           in: query
@@ -2164,22 +2150,36 @@ paths:
             de startdatum.
           schema:
             type: string
-        - name: startdatum__lt
+        - name: einddatum__lt
           required: false
           in: query
           description:
-            Begindatum van de periode waarin de gebruiksrechtvoorwaarden
-            van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject
-            de startdatum.
+            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
+            toepassing zijn.
           schema:
             type: string
-        - name: startdatum__lte
+        - name: einddatum__lte
           required: false
           in: query
           description:
-            Begindatum van de periode waarin de gebruiksrechtvoorwaarden
-            van toepassing zijn. Doorgaans is de datum van creatie van het informatieobject
-            de startdatum.
+            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
+            toepassing zijn.
+          schema:
+            type: string
+        - name: einddatum__gt
+          required: false
+          in: query
+          description:
+            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
+            toepassing zijn.
+          schema:
+            type: string
+        - name: einddatum__gte
+          required: false
+          in: query
+          description:
+            Einddatum van de periode waarin de gebruiksrechtvoorwaarden van
+            toepassing zijn.
           schema:
             type: string
       tags:
@@ -2337,15 +2337,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - gebruiksrechten
       requestBody:
@@ -2499,6 +2499,14 @@ paths:
       description: Een specifieke GEBRUIKSRECHT opvragen.
       summary: Een specifieke GEBRUIKSRECHT opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -2517,14 +2525,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - gebruiksrechten
       security:
@@ -2673,6 +2673,14 @@ paths:
       description: Werk een GEBRUIKSRECHT in zijn geheel bij.
       summary: Werk een GEBRUIKSRECHT in zijn geheel bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -2682,23 +2690,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - gebruiksrechten
       requestBody:
@@ -2859,6 +2859,14 @@ paths:
       description: Werk een GEBRUIKSRECHT relatie deels bij.
       summary: Werk een GEBRUIKSRECHT relatie deels bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -2868,23 +2876,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - gebruiksrechten
       requestBody:
@@ -3047,16 +3047,6 @@ paths:
         \ van het INFORMATIEOBJECT op`null` gezet."
       summary: Verwijder een GEBRUIKSRECHT.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -3065,6 +3055,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - gebruiksrechten
       security:
@@ -3195,6 +3195,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) GEBRUIKSRECHT INFORMATIEOBJECT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -3213,14 +3221,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - gebruiksrechten
       responses:
@@ -3250,19 +3250,19 @@ paths:
       description: ' Deze lijst kan gefilterd wordt met query-string parameters.'
       summary: Alle OBJECT-INFORMATIEOBJECT relaties opvragen.
       parameters:
-        - name: informatieobject
-          required: false
-          in: query
-          description: URL-referentie naar het INFORMATIEOBJECT.
-          schema:
-            type: string
-            format: uri
         - name: object
           required: false
           in: query
           description:
             URL-referentie naar het gerelateerde OBJECT (in deze of een andere
             API).
+          schema:
+            type: string
+            format: uri
+        - name: informatieobject
+          required: false
+          in: query
+          description: URL-referentie naar het INFORMATIEOBJECT.
           schema:
             type: string
             format: uri
@@ -3575,6 +3575,14 @@ paths:
       description: Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
       summary: Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -3593,14 +3601,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - objectinformatieobjecten
       security:
@@ -3890,6 +3890,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) OOBJECT-INFORMATIEOBJECT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -3908,14 +3916,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - objectinformatieobjecten
       responses:
@@ -3956,21 +3956,21 @@ paths:
             enum:
               - afzender
               - geadresseerde
-        - name: betrokkene
-          required: false
-          in: query
-          description:
-            URL-referentie naar de betrokkene waarvan het informatieobject
-            is ontvangen of waaraan dit is verzonden.
-          schema:
-            type: string
-            format: uri
         - name: informatieobject
           required: false
           in: query
           description:
             URL-referentie naar het informatieobject dat is ontvangen of
             verzonden.
+          schema:
+            type: string
+            format: uri
+        - name: betrokkene
+          required: false
+          in: query
+          description:
+            URL-referentie naar de betrokkene waarvan het informatieobject
+            is ontvangen of waaraan dit is verzonden.
           schema:
             type: string
             format: uri
@@ -4276,6 +4276,14 @@ paths:
       description: Een specifieke VERZENDING opvragen.
       summary: Een specifieke VERZENDING opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -4294,14 +4302,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - verzendingen
       responses:
@@ -4447,14 +4447,6 @@ paths:
       description: Werk een VERZENDING in zijn geheel bij.
       summary: Werk een VERZENDING in zijn geheel bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -4462,6 +4454,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - verzendingen
@@ -4620,14 +4620,6 @@ paths:
       description: Werk een VERZENDING relatie deels bij.
       summary: Werk een VERZENDING relatie deels bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -4635,6 +4627,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - verzendingen
@@ -4927,6 +4927,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) VERZENDING opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -4945,14 +4953,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - verzendingen
       responses:
