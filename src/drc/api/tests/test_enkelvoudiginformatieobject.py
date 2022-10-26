@@ -491,8 +491,14 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
 
         response = self.client.delete(eio_url)
 
+        eio.refresh_from_db()
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertNotEqual(lock, "")
+        self.assertNotEqual(eio.canonical.lock, "")
+        self.assertEqual(
+            response.json()["invalidParams"][0]["reason"],
+            "Locked objects cannot be destroyed",
+        )
 
     def test_eio_detail_retrieves_latest_version(self):
         eio = EnkelvoudigInformatieObjectFactory.create(beschrijving="beschrijving1")
