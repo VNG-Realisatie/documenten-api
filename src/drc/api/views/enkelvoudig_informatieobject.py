@@ -227,6 +227,11 @@ class EnkelvoudigInformatieObjectViewSet(
                 },
                 code="pending-relations",
             )
+        if instance.canonical.lock:
+            raise serializers.ValidationError(
+                {"field_error": _("Locked objects cannot be destroyed")},
+                code="destroy-locked",
+            )
 
         super().perform_destroy(instance.canonical)
 
