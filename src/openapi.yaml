@@ -7723,6 +7723,22 @@ components:
             in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere
             correspondentiegegevens van BETROKKENE.
           title: correspondentiePostadres
+        faxnummer:
+          type: string
+          nullable: true
+          description: Faxnummer van de afzender.
+          title: faxnummer
+          maxLength: 15
+        emailadres:
+          type: string
+          nullable: true
+          description: emailadres van de afzender.
+          title: emailadres
+          maxLength: 100
+        mijnOverheid:
+          type: boolean
+          description: mijnOverheid van de afzender.
+          title: mijn overheid
     PostadresTypeEnum:
       enum:
         - antwoordnummer
@@ -7924,6 +7940,22 @@ components:
             in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere
             correspondentiegegevens van BETROKKENE.
           title: correspondentiePostadres
+        faxnummer:
+          type: string
+          nullable: true
+          description: Faxnummer van de afzender.
+          title: faxnummer
+          maxLength: 15
+        emailadres:
+          type: string
+          nullable: true
+          description: emailadres van de afzender.
+          title: emailadres
+          maxLength: 100
+        mijnOverheid:
+          type: boolean
+          description: mijnOverheid van de afzender.
+          title: mijn overheid
       required:
         - aardRelatie
         - betrokkene
@@ -8040,6 +8072,22 @@ components:
             in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere
             correspondentiegegevens van BETROKKENE.
           title: correspondentiePostadres
+        faxnummer:
+          type: string
+          nullable: true
+          description: Faxnummer van de afzender.
+          title: faxnummer
+          maxLength: 15
+        emailadres:
+          type: string
+          nullable: true
+          description: emailadres van de afzender.
+          title: emailadres
+          maxLength: 100
+        mijnOverheid:
+          type: boolean
+          description: mijnOverheid van de afzender.
+          title: mijn overheid
       required:
         - aardRelatie
         - betrokkene

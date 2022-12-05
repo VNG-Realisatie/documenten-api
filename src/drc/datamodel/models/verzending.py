@@ -51,16 +51,21 @@ class Verzending(ETagMixin, models.Model):
         _("faxnummer"),
         max_length=15,
         help_text=_("Faxnummer van de afzender."),
+        blank=True,
+        null=True,
     )
     emailadres = models.CharField(
         _("emailadres"),
         max_length=100,
         help_text=_("emailadres van de afzender."),
+        blank=True,
+        null=True,
     )
     mijn_overheid = models.BooleanField(
         _("mijn overheid"),
         default=False,
         help_text=_("mijnOverheid van de afzender."),
+        blank=True,
     )
 
     toelichting = models.CharField(

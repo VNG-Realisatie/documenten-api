@@ -550,6 +550,45 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
+    def test_multiple_address_types_create_fails(self):
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+
+        response = self.client.post(
+            reverse("verzending-list"),
+            {
+                "betrokkene": "https://foo.com/persoonX",
+                "informatieobject": eio_url,
+                "aardRelatie": AfzenderTypes.geadresseerde,
+                "toelichting": "Verzending van XYZ",
+                "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                "contactPersoon": "https://foo.com/persoonY",
+                "contactpersoonnaam": "persoonY",
+                "binnenlandsCorrespondentieadres": {
+                    "huisletter": "Q",
+                    "huisnummer": 1,
+                    "huisnummerToevoeging": "XYZ",
+                    "naamOpenbareRuimte": "ParkY",
+                    "postcode": "1800XY",
+                    "woonplaatsnaam": "Alkmaar",
+                },
+                "emailadres": "test@gmail.com",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
+
     def test_no_address_create(self):
         eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
             latest_version__creatiedatum="2018-12-24",
@@ -580,6 +619,41 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
 
+    def test_create_different_correspondence_types(self):
+        eio = EnkelvoudigInformatieObjectCanonicalFactory.create(
+            latest_version__creatiedatum="2018-12-24",
+            latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE,
+        )
+
+        eio_url = reverse(
+            "enkelvoudiginformatieobject-detail",
+            kwargs={"uuid": eio.latest_version.uuid},
+        )
+        for correspondense_type in [
+            ("emailadres", "test@gmail.com"),
+            ("faxnummer", "2133145"),
+            ("mijn_overheid", "True"),
+        ]:
+            with self.subTest(test=correspondense_type):
+                response = self.client.post(
+                    reverse("verzending-list"),
+                    {
+                        "betrokkene": "https://foo.com/persoonX",
+                        "informatieobject": eio_url,
+                        "aardRelatie": AfzenderTypes.geadresseerde,
+                        "toelichting": "Verzending van XYZ",
+                        "ontvangstdatum": (timezone.now() - timedelta(days=3)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                        "verzenddatum": timezone.now().strftime("%Y-%m-%d"),
+                        "contactPersoon": "https://foo.com/persoonY",
+                        "contactpersoonnaam": "persoonY",
+                        correspondense_type[0]: correspondense_type[1],
+                    },
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_add_address_to_already_existing_address_partial_update(self):
         verzending = VerzendingFactory(
             buitenlands_correspondentieadres_adres_buitenland_1="Breedstraat",
@@ -604,6 +678,50 @@ class VerzendingTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
+
+    def test_add_fax_to_already_existing_mijn_overheid_partial_update_fails(self):
+        verzending = VerzendingFactory(mijn_overheid=True)
+
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {"betrokkene": "https://foo.com/PersoonX", "faxnummer": "1234"},
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()["invalidParams"][0]["code"], "invalid-address")
+
+    def test_add_fax_to_already_existing_mijn_overheid_partial_update(self):
+        verzending = VerzendingFactory(mijn_overheid=True)
+
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": "https://foo.com/PersoonX",
+                "faxnummer": "1234",
+                "mijnOverheid": False,
+            },
+        )
+
+        verzending.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_add_email_to_already_existing_mijn_overheid_partial_update(self):
+        verzending = VerzendingFactory(faxnummer="124335")
+
+        response = self.client.patch(
+            reverse("verzending-detail", kwargs={"uuid": verzending.uuid}),
+            {
+                "betrokkene": "https://foo.com/PersoonX",
+                "faxnummer": None,
+                "emailadres": "test@gmail.com",
+            },
+        )
+
+        verzending.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_add_address_to_already_existing_address_update(self):
         verzending = VerzendingFactory(

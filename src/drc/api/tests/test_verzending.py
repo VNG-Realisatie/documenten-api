@@ -56,6 +56,9 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
             "verzenddatum": verzending.verzenddatum,
             "contactPersoon": verzending.contact_persoon,
             "contactpersoonnaam": verzending.contactpersoonnaam,
+            "mijnOverheid": False,
+            "faxnummer": None,
+            "emailadres": None,
             "buitenlandsCorrespondentieadres": {
                 "adresBuitenland1": verzending.buitenlands_correspondentieadres_adres_buitenland_1,
                 "adresBuitenland2": "",
