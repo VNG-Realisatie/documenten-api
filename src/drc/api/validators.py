@@ -22,20 +22,24 @@ class OneAddressValidator:
     """
     Class to validate that only one address is send with each request and only one address is associated with each Verzending within the database.
     To replace an address with PUT/PATCH, if it is the same GegevensGroepType, it can just be overwritten. If it is to be replaced with another GegevensGroepType,
-    the existing GegevensGroepType address has to be set equal to None to indicate it will be removed.
-    """
+    the existing GegevensGroepType address, mijn_overheid, emailadres and faxnummer have to be set equal to None to indicate it will be removed."""
 
     def set_context(self, serializer):
         self.instance = getattr(serializer, "instance", None)
         self.partial_update = getattr(serializer, "partial", None)
 
     def __call__(self, attrs: dict):
+
         self.set_attrs_addresses(attrs)
+
         empty_attrs = not any(
             (
                 self.attrs_binnenlands_not_empty,
                 self.attrs_buitenlands_not_empty,
                 self.attrs_postadres_not_empty,
+                bool(self.email),
+                bool(self.mijn_overheid),
+                bool(self.faxnummer),
             )
         )
 
@@ -45,13 +49,17 @@ class OneAddressValidator:
                     self.attrs_binnenlands_not_empty,
                     self.attrs_buitenlands_not_empty,
                     self.attrs_postadres_not_empty,
+                    bool(self.email),
+                    bool(self.mijn_overheid),
+                    bool(self.faxnummer),
                 )
             )
             != 1
         )
-
         if self.instance:
+
             self.set_instance_addresses(attrs)
+
             attrs_instance_mismatch = any(
                 [
                     self.attrs_binnenlands_not_empty
@@ -59,21 +67,24 @@ class OneAddressValidator:
                     self.attrs_postadres_not_empty != self.instance_postadres_not_empty,
                     self.attrs_buitenlands_not_empty
                     != self.instance_buitenlands_not_empty,
+                    bool(self.email) != bool(self.instance.emailadres),
+                    bool(self.faxnummer) != bool(self.instance.faxnummer),
+                    bool(self.mijn_overheid) != self.instance.mijn_overheid,
                 ]
             )
-
             remove_instance_address = any(
                 [
                     self.instance_binnenlands_to_be_removed,
                     self.instance_postadres_to_be_removed,
                     self.instance_buitenlands_to_be_removed,
+                    self.instance_email_to_be_removed,
+                    self.instance_faxnummer_to_be_removed,
+                    self.instance_mijn_overheid_changed,
                 ]
             )
-
             if self.partial_update:
                 if empty_attrs:
                     return
-
             if (
                 invalid_amount
                 or attrs_instance_mismatch
@@ -97,6 +108,9 @@ class OneAddressValidator:
         return False
 
     def set_attrs_addresses(self, attrs: dict):
+        self.email = attrs.get("emailadres", {})
+        self.mijn_overheid = attrs.get("mijn_overheid", {})
+        self.faxnummer = attrs.get("faxnummer", {})
 
         self.attrs_binnenlands_not_empty = self.check_content(
             attrs.get("binnenlands_correspondentieadres", {})
@@ -139,6 +153,26 @@ class OneAddressValidator:
                 attrs.get("buitenlands_correspondentieadres", {}) == None,
                 self.instance_buitenlands_not_empty,
             ]
+        )
+
+        self.instance_email_to_be_removed = all(
+            [
+                attrs.get("emailadres", {}) == None,
+                bool(self.instance.emailadres),
+            ]
+        )
+        self.instance_faxnummer_to_be_removed = all(
+            [
+                attrs.get("faxnummer", {}) == None,
+                bool(self.instance.faxnummer),
+            ]
+        )
+        self.instance_mijn_overheid_changed = (
+            bool(
+                bool(attrs.get("mijn_overheid", {}))
+                != bool(self.instance.mijn_overheid),
+            )
+            and type(attrs.get("mijn_overheid", {})) == bool
         )
 
 

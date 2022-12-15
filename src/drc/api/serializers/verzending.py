@@ -96,9 +96,14 @@ class VerzendingSerializer(
             "binnenlands_correspondentieadres",
             "buitenlands_correspondentieadres",
             "correspondentie_postadres",
+            "faxnummer",
+            "emailadres",
+            "mijn_overheid",
         )
 
         extra_kwargs = {
             "url": {"lookup_field": "uuid", "read_only": True},
         }
-        validators = [OneAddressValidator()]
+        validators = [
+            OneAddressValidator(),
+        ]
