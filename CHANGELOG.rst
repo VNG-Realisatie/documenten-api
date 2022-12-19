@@ -1,6 +1,11 @@
 ===========
 Wijzigingen
 ===========
+1.2.0-rc7 (2022-12-19)
+===========
+
+* Validation such that locked documents cannot be deleted
+
 
 1.2.0-rc5 (2022-10-13)
 ===========
