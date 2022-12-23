@@ -2,60 +2,42 @@
 Wijzigingen
 ===========
 
-1.2.0-rc7 (2022-12-19)
+1.2.0 (2022-12-19)
 ===========
+API spec New Features
+----------------
 
-* Added Validation locked documents cannot be deleted.
+* Added Validation ``locked`` documents cannot be deleted. (`Issue 1956`_):
+* Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field (`Issue 1881`_):
+* Add ``Verzending`` resource (`Issue 1770`_): (`Issue 1785`_): (`Issue 1856`_):
+* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief`` (`Issue 1859`_): 
+* Added missing RGBZ attributes for existing resources to support TMLO. (`Issue 1884`_):
 
-1.2.0-rc5 (2022-10-13)
-===========
 
+API spec changes
+----------------
+
+* Fixed ``taal`` example to correct value ``dut`` instead of ``nl`` . (`Issue 1775`_):
+
+
+Implementation changes
+----------------------
 * Added new notifications module
-
-1.2.0-rc4 (2022-10-01)
-===========
-
-* replaced drf-yasg by drf-spectacular because yasg does not support Django 3.2
-
-
-1.2.0-rc3 (2022-07-27)
-===========
-
+* replaced drf-yasg by drf-spectacular due to yasg not supporting Django 3.2
 * Add missing ``bleach`` dependency
-
-1.2.0-rc2 (2022-07-19)
-===========
-
-API spec changes
-----------------
-
 * Replace Gulp with  Webpack
-* Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows
-  users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field
-
-Implementation changes
-----------------------
-
-* Require one of the fields to be filled in for the ``Verzending`` resource:
-    * ``binnenlandsCorrespondentieadres``
-    * ``buitenlandsCorrespondentieadres``
-    * ``correspondentiePostadres``
 
 
-1.2.0-rc1 (2022-07-06)
-===========
+.. _Issue 1956: https://github.com/VNG-Realisatie/gemma-zaken/issues/1956
+.. _Issue 1770: https://github.com/VNG-Realisatie/gemma-zaken/issues/1770
+.. _Issue 1881: https://github.com/VNG-Realisatie/gemma-zaken/issues/1881
+.. _Issue 1884: https://github.com/VNG-Realisatie/gemma-zaken/issues/1884
+.. _Issue 1785: https://github.com/VNG-Realisatie/gemma-zaken/issues/1785
+.. _Issue 1856: https://github.com/VNG-Realisatie/gemma-zaken/issues/1856
+.. _Issue 1775: https://github.com/VNG-Realisatie/gemma-zaken/issues/1775
 
-API spec changes
-----------------
 
-* Add ``Verzending`` resource
-* Add ``uuid`` query parameter to ``EnkelvoudigInformatieObject``
 
-Implementation changes
-----------------------
-
-* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing
-  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief``
 
 1.1.0 (2022-06-30)
 ===========
