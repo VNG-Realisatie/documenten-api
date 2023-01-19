@@ -186,7 +186,6 @@ class VerzendingAPITests(JWTAuthMixin, APITestCase):
         )
 
         verzending.refresh_from_db()
-        breakpoint()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             verzending.buitenlands_correspondentieadres_adres_buitenland_1,
