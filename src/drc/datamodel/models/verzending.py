@@ -47,6 +47,14 @@ class Verzending(ETagMixin, models.Model):
         ),
     )
 
+    telefoonnummer = models.CharField(
+        _("faxnummer"),
+        max_length=15,
+        help_text=_("Faxnummer van de afzender."),
+        blank=True,
+        null=True,
+    )
+
     faxnummer = models.CharField(
         _("faxnummer"),
         max_length=15,

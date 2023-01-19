@@ -37,6 +37,7 @@ class OneAddressValidator:
                 self.attrs_binnenlands_not_empty,
                 self.attrs_buitenlands_not_empty,
                 self.attrs_postadres_not_empty,
+                bool(self.telefoonnummer),
                 bool(self.email),
                 bool(self.mijn_overheid),
                 bool(self.faxnummer),
@@ -49,6 +50,7 @@ class OneAddressValidator:
                     self.attrs_binnenlands_not_empty,
                     self.attrs_buitenlands_not_empty,
                     self.attrs_postadres_not_empty,
+                    bool(self.telefoonnummer),
                     bool(self.email),
                     bool(self.mijn_overheid),
                     bool(self.faxnummer),
@@ -70,6 +72,7 @@ class OneAddressValidator:
                     bool(self.email) != bool(self.instance.emailadres),
                     bool(self.faxnummer) != bool(self.instance.faxnummer),
                     bool(self.mijn_overheid) != self.instance.mijn_overheid,
+                    bool(self.telefoonnummer) != self.instance.telefoonnummer,
                 ]
             )
             remove_instance_address = any(
@@ -80,6 +83,7 @@ class OneAddressValidator:
                     self.instance_email_to_be_removed,
                     self.instance_faxnummer_to_be_removed,
                     self.instance_mijn_overheid_changed,
+                    self.instance_telefoonnummer_to_be_removed,
                 ]
             )
             if self.partial_update:
@@ -111,6 +115,7 @@ class OneAddressValidator:
         self.email = attrs.get("emailadres", {})
         self.mijn_overheid = attrs.get("mijn_overheid", {})
         self.faxnummer = attrs.get("faxnummer", {})
+        self.telefoonnummer = attrs.get("telefoonnummer", {})
 
         self.attrs_binnenlands_not_empty = self.check_content(
             attrs.get("binnenlands_correspondentieadres", {})
@@ -165,6 +170,12 @@ class OneAddressValidator:
             [
                 attrs.get("faxnummer", {}) == None,
                 bool(self.instance.faxnummer),
+            ]
+        )
+        self.instance_telefoonnummer_to_be_removed = all(
+            [
+                attrs.get("telefoonnummer", {}) == None,
+                bool(self.instance.telefoonnummer),
             ]
         )
         self.instance_mijn_overheid_changed = (
