@@ -72,7 +72,7 @@ class OneAddressValidator:
                     bool(self.email) != bool(self.instance.emailadres),
                     bool(self.faxnummer) != bool(self.instance.faxnummer),
                     bool(self.mijn_overheid) != self.instance.mijn_overheid,
-                    bool(self.telefoonnummer) != self.instance.telefoonnummer,
+                    bool(self.telefoonnummer) != bool(self.instance.telefoonnummer),
                 ]
             )
             remove_instance_address = any(
