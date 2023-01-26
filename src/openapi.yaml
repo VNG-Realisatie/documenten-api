@@ -50,7 +50,7 @@ info:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
 paths:
-  /api/v1/bestandsdelen/{uuid}:
+  /bestandsdelen/{uuid}:
     put:
       operationId: bestandsdeel_update
       description: based on DRF mixin but without partial_update
@@ -231,7 +231,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten:
+  /enkelvoudiginformatieobjecten:
     get:
       operationId: enkelvoudiginformatieobject_list
       description:
@@ -574,7 +574,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail:
+  /enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail:
     get:
       operationId: audittrail_list
       description: Alle audit trail regels behorend bij het INFORMATIEOBJECT.
@@ -711,7 +711,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail/{uuid}:
+  /enkelvoudiginformatieobjecten/{enkelvoudiginformatieobject_uuid}/audittrail/{uuid}:
     get:
       operationId: audittrail_retrieve
       description: Een specifieke audit trail regel opvragen.
@@ -867,7 +867,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/{uuid}:
+  /enkelvoudiginformatieobjecten/{uuid}:
     get:
       operationId: enkelvoudiginformatieobject_retrieve
       description:
@@ -1648,7 +1648,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EnkelvoudigInformatieObject'
           description: OK
-  /api/v1/enkelvoudiginformatieobjecten/{uuid}/download:
+  /enkelvoudiginformatieobjecten/{uuid}/download:
     get:
       operationId: enkelvoudiginformatieobject_download
       description: Download de binaire data van het (ENKELVOUDIG) INFORMATIEOBJECT.
@@ -1742,7 +1742,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/{uuid}/lock:
+  /enkelvoudiginformatieobjecten/{uuid}/lock:
     post:
       operationId: enkelvoudiginformatieobject_lock
       description:
@@ -1840,7 +1840,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/{uuid}/unlock:
+  /enkelvoudiginformatieobjecten/{uuid}/unlock:
     post:
       operationId: enkelvoudiginformatieobject_unlock
       description:
@@ -1938,7 +1938,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/enkelvoudiginformatieobjecten/_zoek:
+  /enkelvoudiginformatieobjecten/_zoek:
     post:
       operationId: enkelvoudiginformatieobject__zoek
       description:
@@ -2101,7 +2101,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/gebruiksrechten:
+  /gebruiksrechten:
     get:
       operationId: gebruiksrechten_list
       description: Deze lijst kan gefilterd wordt met query-string parameters.
@@ -2493,7 +2493,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/gebruiksrechten/{uuid}:
+  /gebruiksrechten/{uuid}:
     get:
       operationId: gebruiksrechten_retrieve
       description: Een specifieke GEBRUIKSRECHT opvragen.
@@ -3244,7 +3244,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Gebruiksrechten'
           description: OK
-  /api/v1/objectinformatieobjecten:
+  /objectinformatieobjecten:
     get:
       operationId: objectinformatieobject_list
       description: ' Deze lijst kan gefilterd wordt met query-string parameters.'
@@ -3569,7 +3569,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/objectinformatieobjecten/{uuid}:
+  /objectinformatieobjecten/{uuid}:
     get:
       operationId: objectinformatieobject_retrieve
       description: Een specifieke OBJECT-INFORMATIEOBJECT relatie opvragen.
@@ -3939,7 +3939,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ObjectInformatieObject'
           description: OK
-  /api/v1/verzendingen:
+  /verzendingen:
     get:
       operationId: verzending_list
       description: Deze lijst kan gefilterd wordt met query-string parameters.
@@ -4270,7 +4270,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
-  /api/v1/verzendingen/{uuid}:
+  /verzendingen/{uuid}:
     get:
       operationId: verzending_retrieve
       description: Een specifieke VERZENDING opvragen.
@@ -8114,6 +8114,9 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/michielverhoef/Documenten_API/1.2.0
   - url: https://documenten-api.test.vng.cloud/api/v1
 tags:
   - name: enkelvoudiginformatieobjecten
