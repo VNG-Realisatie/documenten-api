@@ -165,7 +165,6 @@ class EioUnlockAPITests(JWTAuthMixin, APITestCase):
         )
 
         response = self.client.post(url, {"lock": lock})
-
         self.assertEqual(
             response.status_code, status.HTTP_204_NO_CONTENT, response.data
         )

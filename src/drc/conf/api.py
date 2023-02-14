@@ -16,7 +16,6 @@ SPECTACULAR_SETTINGS.update(
     {
         "SERVERS": [{"url": "https://documenten-api.test.vng.cloud/api/v1"}],
         "COMPONENT_SPLIT_REQUEST": True,
-        # todo remove this line below when deploying to production
         "SORT_OPERATION_PARAMETERS": False,
     }
 )
