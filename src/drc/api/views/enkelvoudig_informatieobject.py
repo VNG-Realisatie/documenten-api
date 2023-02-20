@@ -204,8 +204,6 @@ class EnkelvoudigInformatieObjectViewSet(
         description=_(
             "Zoeken/filteren gaat normaal via de `list` operatie, deze is echter niet geschikt voor zoekopdrachten met UUIDs."
         ),
-        request=YourRequestSerializer,
-        responses=YourResponseSerializer,
     )
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
