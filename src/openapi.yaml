@@ -8114,9 +8114,6 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
-  # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/michielverhoef/Documenten_API/1.2.0
   - url: https://documenten-api.test.vng.cloud/api/v1
 tags:
   - name: enkelvoudiginformatieobjecten
