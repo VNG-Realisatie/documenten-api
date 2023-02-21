@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.2.0
+  version: 1.2.1
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
