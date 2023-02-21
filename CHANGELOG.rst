@@ -1,6 +1,11 @@
 ===========
 Wijzigingen
 ===========
+1.2.1 (2022-02-21)
+===========
+
+* added resource `telefoonnummer` to verzending
+* removed double prefix `/api/v1` in openapi.yaml
 
 1.2.0 (2022-12-19)
 ===========
@@ -10,7 +15,7 @@ API spec New Features
 * Added Validation ``locked`` documents cannot be deleted. (`Issue 1956`_):
 * Added new ``/enkelvoudiginformatieobjecten/_zoek`` endpoint which allows users to search ``EnkelvoudingInformatieObject``s through the ``uuid`` field (`Issue 1881`_):
 * Add ``Verzending`` resource (`Issue 1770`_): (`Issue 1785`_): (`Issue 1856`_):
-* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief`` (`Issue 1859`_): 
+* Add new ``documenten.geforceerd-bijwerken`` scope which allows editing  ``EnkelvoudingInformatieObject`` with a status which equals ``definitief`` (`Issue 1859`_):
 * Added missing RGBZ attributes for existing resources to support TMLO. (`Issue 1884`_):
 
 
