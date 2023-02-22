@@ -158,10 +158,10 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | binnenlandsCorrespondentieadres | Het correspondentieadres, betreffende een adresseerbaar object, van de BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT indien dat afwijkt van het reguliere binnenlandse correspondentieadres van BETROKKENE. |  | nee | C​R​U​D |
 | buitenlandsCorrespondentieadres | De gegevens van het adres in het buitenland van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE. |  | nee | C​R​U​D |
 | correspondentiePostadres | De gegevens die tezamen een postbusadres of antwoordnummeradres vormen van BETROKKENE, zijnde afzender of geadresseerde, zoals vermeld in het ontvangen of verzonden INFORMATIEOBJECT en dat afwijkt van de reguliere correspondentiegegevens van BETROKKENE. |  | nee | C​R​U​D |
-| faxnummer | Faxnummer van de afzender. | string | nee | C​R​U​D |
-| emailadres | emailadres van de afzender. | string | nee | C​R​U​D |
-| mijnOverheid | mijnOverheid van de afzender. | boolean | nee | C​R​U​D |
-| telefoonnummer | telefoonnummer van de afzender. | string | nee | C​R​U​D |
+| faxnummer | faxnummer van de ontvanger of afzender. | string | nee | C​R​U​D |
+| emailadres | emailadres van de ontvanger of afzender. | string | nee | C​R​U​D |
+| mijnOverheid | is het informatieobject verzonden via mijnOverheid naar de ontvanger. | boolean | nee | C​R​U​D |
+| telefoonnummer | telefoonnummer van de ontvanger of afzender. | string | nee | C​R​U​D |
 
 
 * Create, Read, Update, Delete
