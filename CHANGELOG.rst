@@ -1,6 +1,18 @@
 ===========
 Wijzigingen
 ===========
+
+1.2.2 (2022-02-22)
+===========
+
+API spec bugfixes
+----------------
+
+* Fixed description of ``faxnummer``, ``telefoonnummer``, ``mijnOverheid and ``emailadres`` in ``Verzending`` resource
+* Fixed ``telefoonnnummer`` not shown in openapi.yaml
+* Sets baseUrl to production server
+
+
 1.2.1 (2022-02-21)
 ===========
 

@@ -2,7 +2,7 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.2.1"
+API_VERSION = "1.2.2"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
@@ -14,7 +14,15 @@ DOCUMENTATION_INFO_MODULE = "drc.api.schema"
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
-        "SERVERS": [{"url": "https://documenten-api.test.vng.cloud/api/v1"}],
+        # Optional list of servers.
+        # Each entry MUST contain "url", MAY contain "description", "variables"
+        # e.g. [{'url': 'https://example.com/v1', 'description': 'Text'}, ...]
+        "SERVERS": [
+            {
+                "url": "https://documenten-api.vng.cloud/api/v1",
+                "description": "Productie Omgeving",
+            }
+        ],
         "COMPONENT_SPLIT_REQUEST": True,
         "SORT_OPERATION_PARAMETERS": False,
     }
