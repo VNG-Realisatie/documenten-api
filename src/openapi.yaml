@@ -7726,23 +7726,25 @@ components:
         faxnummer:
           type: string
           nullable: true
-          description: Faxnummer van de afzender.
+          description: faxnummer van de ontvanger of afzender.
           title: faxnummer
           maxLength: 15
         emailadres:
           type: string
           nullable: true
-          description: emailadres van de afzender.
+          description: emailadres van de ontvanger of afzender.
           title: emailadres
           maxLength: 100
         mijnOverheid:
           type: boolean
-          description: mijnOverheid van de afzender.
+          description:
+            is het informatieobject verzonden via mijnOverheid naar de
+            ontvanger.
           title: mijn overheid
         telefoonnummer:
           type: string
           nullable: true
-          description: telefoonnummer van de afzender.
+          description: telefoonnummer van de ontvanger of afzender.
           title: telefoonnummer
           maxLength: 15
     PostadresTypeEnum:
@@ -7949,23 +7951,25 @@ components:
         faxnummer:
           type: string
           nullable: true
-          description: Faxnummer van de afzender.
+          description: faxnummer van de ontvanger of afzender.
           title: faxnummer
           maxLength: 15
         emailadres:
           type: string
           nullable: true
-          description: emailadres van de afzender.
+          description: emailadres van de ontvanger of afzender.
           title: emailadres
           maxLength: 100
         mijnOverheid:
           type: boolean
-          description: mijnOverheid van de afzender.
+          description:
+            is het informatieobject verzonden via mijnOverheid naar de
+            ontvanger.
           title: mijn overheid
         telefoonnummer:
           type: string
           nullable: true
-          description: telefoonnummer van de afzender.
+          description: telefoonnummer van de ontvanger of afzender.
           title: telefoonnummer
           maxLength: 15
       required:
@@ -8087,23 +8091,25 @@ components:
         faxnummer:
           type: string
           nullable: true
-          description: Faxnummer van de afzender.
+          description: faxnummer van de ontvanger of afzender.
           title: faxnummer
           maxLength: 15
         emailadres:
           type: string
           nullable: true
-          description: emailadres van de afzender.
+          description: emailadres van de ontvanger of afzender.
           title: emailadres
           maxLength: 100
         mijnOverheid:
           type: boolean
-          description: mijnOverheid van de afzender.
+          description:
+            is het informatieobject verzonden via mijnOverheid naar de
+            ontvanger.
           title: mijn overheid
         telefoonnummer:
           type: string
           nullable: true
-          description: telefoonnummer van de afzender.
+          description: telefoonnummer van de ontvanger of afzender.
           title: telefoonnummer
           maxLength: 15
       required:

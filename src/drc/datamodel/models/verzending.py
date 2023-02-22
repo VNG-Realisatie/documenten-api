@@ -50,7 +50,7 @@ class Verzending(ETagMixin, models.Model):
     telefoonnummer = models.CharField(
         _("telefoonnummer"),
         max_length=15,
-        help_text=_("telefoonnummer van de afzender."),
+        help_text=_("telefoonnummer van de ontvanger of afzender."),
         blank=True,
         null=True,
     )
@@ -58,21 +58,23 @@ class Verzending(ETagMixin, models.Model):
     faxnummer = models.CharField(
         _("faxnummer"),
         max_length=15,
-        help_text=_("Faxnummer van de afzender."),
+        help_text=_("faxnummer van de ontvanger of afzender."),
         blank=True,
         null=True,
     )
     emailadres = models.CharField(
         _("emailadres"),
         max_length=100,
-        help_text=_("emailadres van de afzender."),
+        help_text=_("emailadres van de ontvanger of afzender."),
         blank=True,
         null=True,
     )
     mijn_overheid = models.BooleanField(
         _("mijn overheid"),
         default=False,
-        help_text=_("mijnOverheid van de afzender."),
+        help_text=_(
+            "is het informatieobject verzonden via mijnOverheid naar de ontvanger."
+        ),
         blank=True,
     )
 
