@@ -7739,6 +7739,12 @@ components:
           type: boolean
           description: mijnOverheid van de afzender.
           title: mijn overheid
+        telefoonnummer:
+          type: string
+          nullable: true
+          description: telefoonnummer van de afzender.
+          title: telefoonnummer
+          maxLength: 15
     PostadresTypeEnum:
       enum:
         - antwoordnummer
@@ -7956,6 +7962,12 @@ components:
           type: boolean
           description: mijnOverheid van de afzender.
           title: mijn overheid
+        telefoonnummer:
+          type: string
+          nullable: true
+          description: telefoonnummer van de afzender.
+          title: telefoonnummer
+          maxLength: 15
       required:
         - aardRelatie
         - betrokkene
@@ -8088,6 +8100,12 @@ components:
           type: boolean
           description: mijnOverheid van de afzender.
           title: mijn overheid
+        telefoonnummer:
+          type: string
+          nullable: true
+          description: telefoonnummer van de afzender.
+          title: telefoonnummer
+          maxLength: 15
       required:
         - aardRelatie
         - betrokkene

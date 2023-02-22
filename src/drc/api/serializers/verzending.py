@@ -99,6 +99,7 @@ class VerzendingSerializer(
             "faxnummer",
             "emailadres",
             "mijn_overheid",
+            "telefoonnummer",
         )
 
         extra_kwargs = {

@@ -161,6 +161,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | faxnummer | Faxnummer van de afzender. | string | nee | C​R​U​D |
 | emailadres | emailadres van de afzender. | string | nee | C​R​U​D |
 | mijnOverheid | mijnOverheid van de afzender. | boolean | nee | C​R​U​D |
+| telefoonnummer | telefoonnummer van de afzender. | string | nee | C​R​U​D |
 
 
 * Create, Read, Update, Delete
