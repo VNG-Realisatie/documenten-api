@@ -2,7 +2,7 @@
 Documenten API
 ==============
 
-:Version: 1.2.1
+:Version: 1.2.2
 :Source: https://github.com/VNG-Realisatie/documenten-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 
