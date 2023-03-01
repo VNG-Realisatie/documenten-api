@@ -78,6 +78,9 @@ if subpath:
 # Additional Django settings
 #
 
+# turn off notifications in containers
+NOTIFICATIONS_DISABLED = bool(getenv("NOTIFICATIONS_DISABLED", False))
+
 # Disable security measures for development
 SESSION_COOKIE_SECURE = getenv("SESSION_COOKIE_SECURE", False)
 SESSION_COOKIE_HTTPONLY = getenv("SESSION_COOKIE_HTTPONLY", False)
