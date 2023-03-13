@@ -1,6 +1,8 @@
 import os
 import sys
 
+from .docker import getenv  # noqa isort:skip
+
 os.environ.setdefault(
     "SECRET_KEY", "%jp_t1u42ldzeb4s2d4tqj3ythtm)2)^ph%-b71#$*7_=&-(!g"
 )
@@ -58,6 +60,7 @@ CSRF_COOKIE_SECURE = False
 # Custom settings
 #
 ENVIRONMENT = "development"
+NOTIFICATIONS_DISABLED = bool(getenv("NOTIFICATIONS_DISABLED", False))
 
 #
 # Library settings
