@@ -6,8 +6,6 @@ on:
       - "master"
       - "stable/*"
     pull_request:
-      branches:
-        - "master"
 
 jobs:
   run:
