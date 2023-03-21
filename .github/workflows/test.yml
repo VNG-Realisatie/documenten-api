@@ -1,6 +1,13 @@
 name: test
 
-on: [push]
+on:
+  push:
+    branches:
+      - "master"
+      - "stable/*"
+    pull_request:
+      branches:
+        - "master"
 
 env:
   DJANGO_SETTINGS_MODULE: drc.conf.ci
