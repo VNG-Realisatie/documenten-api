@@ -1,0 +1,55 @@
+name: test
+
+on: [push]
+
+env:
+  DJANGO_SETTINGS_MODULE: drc.conf.ci
+  SECRET_KEY: dummy
+  DB_USER: postgres
+  DB_PASSWORD: ''
+  DEPLOYMENT: drc
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        postgres: ['10', '11']
+
+    name: Tests (PG ${{ matrix.postgres }})
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # - name: Install system packages
+      #   run: sudo apt-get install libgdal-dev gdal-bin
+
+      - name: Install dependencies
+        run: pip install -r requirements/ci.txt
+
+      - name: Build frontend
+        run: |
+          npm ci
+          npm run build
+      - name: Run tests
+        run: |
+          python src/manage.py collectstatic --noinput --link
+          coverage run src/manage.py test drc
+          coverage xml
+
+      - name: Publish coverage report
+        uses: codecov/codecov-action@v1
