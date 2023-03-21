@@ -5,7 +5,9 @@ on:
     branches:
       - "master"
       - "stable/*"
-    pull_request:
+  pull_request:
+    branches:
+      - "master"
 
 env:
   DJANGO_SETTINGS_MODULE: drc.conf.ci
