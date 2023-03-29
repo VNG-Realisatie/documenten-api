@@ -407,6 +407,7 @@ class EnkelvoudigInformatieObjectVersionHistoryAPITests(JWTAuthMixin, APITestCas
                 "inhoud": b64encode(b"aaaaa"),
                 "bestandsomvang": 5,
                 "lock": lock,
+                "informatieobjecttype": "https://example.com/ztc/api/v1/catalogus/1/informatieobjecttype/2",
             }
         )
 
