@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+1.3.0 (2023-03-29)
+===========
+
+Implementation changes
+----------------------
+
+* Changed permissions for EnkelVoudigInformatieObject such that PUT and PATCH can be applied to `InformatieObject` (`Issue 1777`_):
+
 1.2.3 (2022-03-01)
 ===========
 
