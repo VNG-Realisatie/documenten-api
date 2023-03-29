@@ -94,7 +94,6 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
             "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT. \n"
             " \n**Er wordt gevalideerd op**\n"
             "- correcte `lock` waarde\n"
-            "- het `informatieobjecttype` mag niet gewijzigd worden\n"
             "- status NIET `definitief`"
         ),
     ),
@@ -104,7 +103,6 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
             "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT. \n"
             "\n**Er wordt gevalideerd op**\n"
             " - correcte `lock` waarde\n"
-            "- het `informatieobjecttype` mag niet gewijzigd worden\n"
             " - status NIET `definitief`"
         ),
     ),

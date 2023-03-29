@@ -1063,7 +1063,7 @@ paths:
       description:
         "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
         \ INFORMATIEOBJECT. \n \n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
-        - het `informatieobjecttype` mag niet gewijzigd worden\n- status NIET `definitief`"
+        - status NIET `definitief`"
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
       parameters:
         - in: path
@@ -1252,7 +1252,7 @@ paths:
       description:
         "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
         \ INFORMATIEOBJECT. \n\n**Er wordt gevalideerd op**\n - correcte `lock` waarde\n\
-        - het `informatieobjecttype` mag niet gewijzigd worden\n - status NIET `definitief`"
+        \ - status NIET `definitief`"
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
       parameters:
         - in: path
