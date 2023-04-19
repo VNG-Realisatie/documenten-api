@@ -7,13 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0062_auto_20230222_1424'),
+        ("datamodel", "0062_auto_20230222_1424"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='enkelvoudiginformatieobject',
-            name='trefwoorden',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=100), blank=True, help_text="Een lijst van trefwoorden gescheiden door comma's.", null=True, size=None),
+            model_name="enkelvoudiginformatieobject",
+            name="trefwoorden",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=100),
+                blank=True,
+                help_text="Een lijst van trefwoorden gescheiden door comma's.",
+                null=True,
+                size=None,
+            ),
         ),
     ]
