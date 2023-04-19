@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0062_auto_20230222_1424'),
+        ("datamodel", "0062_auto_20230222_1424"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='objectinformatieobject',
-            name='naam_inverse_relatie',
-            field=models.CharField(blank=True, help_text='De naam van de relatie van INFORMATIEOBJECT naar OBJECT.', max_length=100, null=True),
+            model_name="objectinformatieobject",
+            name="naam_inverse_relatie",
+            field=models.CharField(
+                blank=True,
+                help_text="De naam van de relatie van INFORMATIEOBJECT naar OBJECT.",
+                max_length=100,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='objectinformatieobject',
-            name='naam_relatie',
-            field=models.CharField(blank=True, help_text='De naam van de relatie van OBJECT naar INFORMATIEOBJECT.', max_length=100, null=True),
+            model_name="objectinformatieobject",
+            name="naam_relatie",
+            field=models.CharField(
+                blank=True,
+                help_text="De naam van de relatie van OBJECT naar INFORMATIEOBJECT.",
+                max_length=100,
+                null=True,
+            ),
         ),
     ]

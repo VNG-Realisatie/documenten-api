@@ -3266,6 +3266,18 @@ paths:
           schema:
             type: string
             format: uri
+        - name: naamRelatie
+          required: false
+          in: query
+          description: De naam van de relatie van OBJECT naar INFORMATIEOBJECT.
+          schema:
+            type: string
+        - name: naamInverseRelatie
+          required: false
+          in: query
+          description: De naam van de relatie van INFORMATIEOBJECT naar OBJECT.
+          schema:
+            type: string
       tags:
         - objectinformatieobjecten
       security:
@@ -7208,6 +7220,18 @@ components:
             * `besluit` - Besluit
 
             * `zaak` - Zaak'
+        naamRelatie:
+          type: string
+          nullable: true
+          description: De naam van de relatie van OBJECT naar INFORMATIEOBJECT.
+          title: naam relatie
+          maxLength: 100
+        naamInverseRelatie:
+          type: string
+          nullable: true
+          description: De naam van de relatie van INFORMATIEOBJECT naar OBJECT.
+          title: naam inverse relatie
+          maxLength: 100
       required:
         - informatieobject
         - object
@@ -7243,6 +7267,18 @@ components:
             * `besluit` - Besluit
 
             * `zaak` - Zaak'
+        naamRelatie:
+          type: string
+          nullable: true
+          description: De naam van de relatie van OBJECT naar INFORMATIEOBJECT.
+          title: naam relatie
+          maxLength: 100
+        naamInverseRelatie:
+          type: string
+          nullable: true
+          description: De naam van de relatie van INFORMATIEOBJECT naar OBJECT.
+          title: naam inverse relatie
+          maxLength: 100
       required:
         - informatieobject
         - object
