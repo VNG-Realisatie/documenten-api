@@ -40,10 +40,14 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     naam_relatie = models.CharField(
         help_text="De naam van de relatie van OBJECT naar INFORMATIEOBJECT.",
         max_length=100,
+        null=True,
+        blank=True,
     )
     naam_inverse_relatie = models.CharField(
         help_text="De naam van de relatie van INFORMATIEOBJECT naar OBJECT.",
         max_length=100,
+        null=True,
+        blank=True,
     )
 
     objects = InformatieobjectRelatedQuerySet.as_manager()
