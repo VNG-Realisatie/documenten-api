@@ -26,7 +26,7 @@ class ObjectInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ObjectInformatieObject
-        fields = ("url", "informatieobject", "object", "object_type")
+        fields = ("url", "informatieobject", "object", "object_type", "naam_relatie", "naam_inverse_relatie")
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
             "informatieobject": {"validators": [IsImmutableValidator()]},

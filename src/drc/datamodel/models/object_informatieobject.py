@@ -28,7 +28,7 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
     )
     object = models.URLField(
         help_text="URL-referentie naar het gerelateerde OBJECT (in deze of een "
-        "andere API).",
+                  "andere API).",
         max_length=1000,
     )
     object_type = models.CharField(
@@ -36,6 +36,14 @@ class ObjectInformatieObject(ETagMixin, APIMixin, models.Model):
         max_length=100,
         choices=ObjectInformatieObjectTypes.choices,
         help_text="Het type van het gerelateerde OBJECT.",
+    )
+    naam_relatie = models.CharField(
+        help_text="De naam van de relatie van OBJECT naar INFORMATIEOBJECT.",
+        max_length=100,
+    )
+    naam_inverse_relatie = models.CharField(
+        help_text="De naam van de relatie van INFORMATIEOBJECT naar OBJECT.",
+        max_length=100,
     )
 
     objects = InformatieobjectRelatedQuerySet.as_manager()
