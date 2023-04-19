@@ -15,7 +15,7 @@ from drc.datamodel.models import (
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
     class Meta:
         model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie", "naam_relatie", "naam_inverse_relatie")
+        fields = ("identificatie", "bronorganisatie")
 
 
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):
@@ -34,7 +34,7 @@ class ObjectInformatieObjectFilter(FilterSet):
 
     class Meta:
         model = ObjectInformatieObject
-        fields = ("object", "informatieobject")
+        fields = ("object", "informatieobject", "naam_relatie", "naam_inverse_relatie")
 
 
 class GebruiksrechtenFilter(FilterSet):
