@@ -13,9 +13,11 @@ from drc.datamodel.models import (
 
 
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
+    trefwoorden = filters.CharFilter(lookup_expr='icontains')
+
     class Meta:
         model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie")
+        fields = ("identificatie", "bronorganisatie", "trefwoorden")
 
 
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):

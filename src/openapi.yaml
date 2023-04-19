@@ -258,6 +258,12 @@ paths:
             \ eerste in een samenwerkingsketen heeft vastgelegd."
           schema:
             type: string
+        - name: trefwoorden
+          required: false
+          in: query
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          schema:
+            type: string
         - name: page
           required: false
           in: query
@@ -5919,6 +5925,14 @@ components:
             $ref: '#/components/schemas/BestandsDeel'
           readOnly: true
           title: bestandsdelen
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
       required:
         - auteur
         - beginRegistratie
@@ -6177,6 +6191,14 @@ components:
             $ref: '#/components/schemas/BestandsDeel'
           readOnly: true
           title: bestandsdelen
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
         lock:
           type: string
           readOnly: true
@@ -6410,6 +6432,15 @@ components:
             API).
           title: informatieobjecttype
           maxLength: 200
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
       required:
         - auteur
         - bronorganisatie
@@ -6663,6 +6694,14 @@ components:
             $ref: '#/components/schemas/BestandsDeel'
           readOnly: true
           title: bestandsdelen
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
       required:
         - auteur
         - beginRegistratie
@@ -6887,6 +6926,15 @@ components:
             API).
           title: informatieobjecttype
           maxLength: 200
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
         lock:
           type: string
           writeOnly: true
@@ -7573,6 +7621,15 @@ components:
             API).
           title: informatieobjecttype
           maxLength: 200
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
         lock:
           type: string
           writeOnly: true
