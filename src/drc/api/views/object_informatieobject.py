@@ -8,6 +8,7 @@ from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.api.data_filtering import ListFilterByAuthorizationsMixin
 from drc.api.filters import ObjectInformatieObjectFilter
+from drc.api.inclusions import InclusionsMixin
 from drc.api.permissions import InformationObjectRelatedAuthScopesRequired
 from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
@@ -54,6 +55,7 @@ from drc.datamodel.models.object_informatieobject import ObjectInformatieObject
 class ObjectInformatieObjectViewSet(
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
+    InclusionsMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,

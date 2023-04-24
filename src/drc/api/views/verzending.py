@@ -7,6 +7,7 @@ from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.api.filters import VerzendingFilter
+from drc.api.inclusions import InclusionsMixin
 from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
     SCOPE_DOCUMENTEN_ALLES_LEZEN,
@@ -48,6 +49,7 @@ from drc.datamodel.models import Verzending
 )
 class VerzendingViewSet(
     CheckQueryParamsMixin,
+    InclusionsMixin,
     viewsets.ModelViewSet,
 ):
 

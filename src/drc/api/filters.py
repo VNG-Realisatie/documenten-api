@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext_lazy as _
+
 from django_filters import rest_framework as filters
 from vng_api_common.filters import URLModelChoiceFilter
 from vng_api_common.filtersets import FilterSet
@@ -12,7 +14,19 @@ from drc.datamodel.models import (
 )
 
 
+def expand_filter(queryset, name, value):
+    """expansion filter logic is placed at view level"""
+    return queryset
+
+
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
+    expand = filters.CharFilter(
+        method=expand_filter,
+        help_text=_(
+            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+        ),
+    )
+
     class Meta:
         model = EnkelvoudigInformatieObject
         fields = ("identificatie", "bronorganisatie")
@@ -31,6 +45,12 @@ class ObjectInformatieObjectFilter(FilterSet):
         instance_path="canonical",
         help_text=get_help_text("datamodel.ObjectInformatieObject", "informatieobject"),
     )
+    expand = filters.CharFilter(
+        method=expand_filter,
+        help_text=_(
+            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+        ),
+    )
 
     class Meta:
         model = ObjectInformatieObject
@@ -42,6 +62,12 @@ class GebruiksrechtenFilter(FilterSet):
         queryset=EnkelvoudigInformatieObjectCanonical.objects.all(),
         instance_path="canonical",
         help_text=get_help_text("datamodel.Gebruiksrechten", "informatieobject"),
+    )
+    expand = filters.CharFilter(
+        method=expand_filter,
+        help_text=_(
+            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+        ),
     )
 
     class Meta:
@@ -58,6 +84,12 @@ class VerzendingFilter(FilterSet):
         queryset=EnkelvoudigInformatieObjectCanonical.objects.all(),
         instance_path="canonical",
         help_text=get_help_text("datamodel.Verzending", "informatieobject"),
+    )
+    expand = filters.CharFilter(
+        method=expand_filter,
+        help_text=_(
+            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+        ),
     )
 
     class Meta:

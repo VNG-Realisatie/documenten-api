@@ -30,6 +30,7 @@ from drc.api.filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
 )
+from drc.api.inclusions import InclusionsMixin
 from drc.api.kanalen import KANAAL_DOCUMENTEN
 from drc.api.permissions import InformationObjectAuthScopesRequired
 from drc.api.renderers import BinaryFileRenderer
@@ -146,6 +147,7 @@ class EnkelvoudigInformatieObjectViewSet(
     SearchMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
+    InclusionsMixin,
     viewsets.ModelViewSet,
 ):
     global_description = _(
