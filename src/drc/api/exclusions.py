@@ -122,14 +122,14 @@ class ExpansionMixin:
         jwt_auth: JWTAuth,
     ) -> Union[dict, bool]:
         """Expand array of urls"""
-        array_data["_inclusions"][sub_field] = []
+        array_data["_expand"][sub_field] = []
         if array_data[sub_field]:
             for url in array_data[sub_field]:
                 data_from_url = self.get_data(
                     url, sub_field, called_external_uris, jwt_auth
                 )
-                array_data["_inclusions"][sub_field].append(data_from_url)
-                recursion_data = array_data["_inclusions"][sub_field]
+                array_data["_expand"][sub_field].append(data_from_url)
+                recursion_data = array_data["_expand"][sub_field]
 
             return False, recursion_data
         else:
@@ -146,13 +146,13 @@ class ExpansionMixin:
             data_from_url = self.get_data(
                 array_data[sub_field], sub_field, called_external_uris, jwt_auth
             )
-            array_data["_inclusions"][sub_field] = data_from_url
-            return False, array_data["_inclusions"][sub_field]
+            array_data["_expand"][sub_field] = data_from_url
+            return False, array_data["_expand"][sub_field]
         else:
-            array_data["_inclusions"][sub_field] = {}
+            array_data["_expand"][sub_field] = {}
             return True, array_data
 
-    def build_inclusions_schema(
+    def build_expand_schema(
         self,
         result: dict,
         fields_to_expand: list,
@@ -176,7 +176,7 @@ class ExpansionMixin:
 
                     if isinstance(recursion_data, list):
                         for data in recursion_data:
-                            data["_inclusions"] = {}
+                            data["_expand"] = {}
                             if isinstance(data[sub_field], list):
                                 break_off, recursion_data = self.expand_array(
                                     data, sub_field, called_external_uris, jwt_auth
@@ -189,7 +189,7 @@ class ExpansionMixin:
                             break
 
                     else:
-                        recursion_data["_inclusions"] = {}
+                        recursion_data["_expand"] = {}
                         if isinstance(recursion_data[sub_field], list):
                             break_off, recursion_data = self.expand_array(
                                 recursion_data,
@@ -214,8 +214,8 @@ class ExpansionMixin:
             fields_to_expand = expand_filter.split(",")
             called_external_uris = {}
             for serialized_data in serializer.data:
-                serialized_data["_inclusions"] = {}
-                self.build_inclusions_schema(
+                serialized_data["_expand"] = {}
+                self.build_expand_schema(
                     serialized_data,
                     fields_to_expand,
                     called_external_uris,
