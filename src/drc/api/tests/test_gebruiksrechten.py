@@ -137,6 +137,7 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
             informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
         )
         url = reverse("gebruiksrechten-list")
+
         response = self.client.get(url, {"expand": "informatieobject"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

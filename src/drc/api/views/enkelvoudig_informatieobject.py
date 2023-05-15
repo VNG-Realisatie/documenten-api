@@ -30,7 +30,7 @@ from drc.api.filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
 )
-from drc.api.inclusions import InclusionsMixin
+from drc.api.exclusions import ExpansionMixin
 from drc.api.kanalen import KANAAL_DOCUMENTEN
 from drc.api.permissions import InformationObjectAuthScopesRequired
 from drc.api.renderers import BinaryFileRenderer
@@ -147,7 +147,7 @@ class EnkelvoudigInformatieObjectViewSet(
     SearchMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
-    InclusionsMixin,
+    ExpansionMixin,
     viewsets.ModelViewSet,
 ):
     global_description = _(
@@ -159,7 +159,7 @@ class EnkelvoudigInformatieObjectViewSet(
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     search_input_serializer_class = EIOZoekSerializer
-
+    serializer_class = EnkelvoudigInformatieObjectSerializer
     permission_classes = (InformationObjectAuthScopesRequired,)
     required_scopes = {
         "list": SCOPE_DOCUMENTEN_ALLES_LEZEN,
