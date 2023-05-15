@@ -140,8 +140,8 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
         response = self.client.get(url, {"expand": "informatieobject"})
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         from pprint import pprint
 
         pprint(response.json())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

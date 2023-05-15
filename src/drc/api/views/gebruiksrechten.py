@@ -9,8 +9,8 @@ from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.api.audits import AUDIT_DRC
 from drc.api.data_filtering import ListFilterByAuthorizationsMixin
+from drc.api.exclusions import ExpandFieldValidator, ExpansionMixin
 from drc.api.filters import GebruiksrechtenFilter
-from drc.api.exclusions import ExpansionMixin
 from drc.api.kanalen import KANAAL_DOCUMENTEN
 from drc.api.permissions import InformationObjectRelatedAuthScopesRequired
 from drc.api.scopes import (
@@ -65,6 +65,7 @@ class GebruiksrechtenViewSet(
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailViewsetMixin,
+    ExpandFieldValidator,
     ExpansionMixin,
     viewsets.ModelViewSet,
 ):

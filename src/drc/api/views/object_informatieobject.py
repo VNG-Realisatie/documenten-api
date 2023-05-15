@@ -7,8 +7,8 @@ from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.api.data_filtering import ListFilterByAuthorizationsMixin
+from drc.api.exclusions import ExpandFieldValidator, ExpansionMixin
 from drc.api.filters import ObjectInformatieObjectFilter
-from drc.api.exclusions import ExpansionMixin
 from drc.api.permissions import InformationObjectRelatedAuthScopesRequired
 from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
@@ -55,6 +55,7 @@ from drc.datamodel.models.object_informatieobject import ObjectInformatieObject
 class ObjectInformatieObjectViewSet(
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
+    ExpandFieldValidator,
     ExpansionMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,

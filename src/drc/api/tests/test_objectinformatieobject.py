@@ -49,6 +49,13 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
         zio = eio.canonical.objectinformatieobject_set.get()
         self.assertEqual(zio.object, ZAAK)
 
+    def test_expand_mechanism(self):
+        oio = ObjectInformatieObjectFactory.create(is_zaak=True)
+
+        response = self.client.get(self.list_url, {"expand": "informatieobject.inhoud"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_with_objecttype_besluit(self, *mocks):
         eio = EnkelvoudigInformatieObjectFactory.create()
