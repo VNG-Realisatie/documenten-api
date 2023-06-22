@@ -67,10 +67,10 @@ NOTIFICATIONS_DISABLED = bool(getenv("NOTIFICATIONS_DISABLED", False))
 #
 
 # Django debug toolbar
-INSTALLED_APPS += ["debug_toolbar"]
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+# INSTALLED_APPS += ["debug_toolbar"]
+# MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 INTERNAL_IPS = ("127.0.0.1",)
-DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
+# DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 AXES_BEHIND_REVERSE_PROXY = (
     False  # Default: False (we are typically using Nginx as reverse proxy)
