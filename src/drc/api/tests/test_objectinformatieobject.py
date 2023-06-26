@@ -52,7 +52,7 @@ class ObjectInformatieObjectTests(JWTAuthMixin, APITestCase):
     def test_expand_mechanism(self):
         oio = ObjectInformatieObjectFactory.create(is_zaak=True)
 
-        response = self.client.get(self.list_url, {"expand": "informatieobject.inhoud"})
+        response = self.client.get(self.list_url, {"expand": "informatieobject"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
