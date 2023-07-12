@@ -1,3 +1,6 @@
+import json
+
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from rest_framework.renderers import BaseRenderer
 
 
@@ -15,3 +18,14 @@ class BinaryFileRenderer(BaseRenderer):
         if isinstance(data, str):
             return data.encode("utf-8")
         return data
+
+
+class CustomCamelCaseJSONRenderer(CamelCaseJSONRenderer):
+    """ search and replace Expand with _expand in the response """
+    def render(self, data, *args, **kwargs):
+        rendered = super().render(data, *args, **kwargs)
+        list_of_responses = json.loads(rendered)
+        for response in list_of_responses:
+            response["_expand"] = response.pop("Expand")
+        data_bytes = json.dumps(list_of_responses).encode("utf-8")
+        return data_bytes
