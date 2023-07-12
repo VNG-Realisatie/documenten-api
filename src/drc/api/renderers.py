@@ -1,8 +1,8 @@
 import json
+from json.decoder import JSONDecodeError
 
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from rest_framework.renderers import BaseRenderer
-from json.decoder import JSONDecodeError
 
 
 class BinaryFileRenderer(BaseRenderer):

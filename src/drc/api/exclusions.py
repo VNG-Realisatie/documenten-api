@@ -366,7 +366,7 @@ class ExpansionMixin:
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                    in parent_dict["_expand"][fields_of_level.sub_field]
+                                in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 if fields_of_level.is_empty:
                                     parent_dict["_expand"][
@@ -467,7 +467,11 @@ class ExpansionMixin:
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
             if self.action == "list":
-                for response_data in response.data if isinstance(response.data, list) else response.data['results']:
+                for response_data in (
+                    response.data
+                    if isinstance(response.data, list)
+                    else response.data["results"]
+                ):
                     response_data["_expand"] = {}
                     self.build_expand_schema(
                         response_data,
