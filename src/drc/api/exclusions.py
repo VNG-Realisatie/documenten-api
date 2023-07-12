@@ -2,49 +2,68 @@ import json
 import logging
 import re
 import uuid
-from collections import namedtuple
+from dataclasses import dataclass
 from urllib.request import Request, urlopen
 
 from django.contrib.contenttypes.models import ContentType
-from django.urls import Resolver404, resolve
+from django.urls import resolve
+from django.urls.exceptions import Resolver404
 from django.utils.translation import ugettext_lazy as _
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
 
 
-class ExpansionMixin:
-    ExpansionField = namedtuple(
-        "ExpansionField",
-        [
-            "id",
-            "parent",
-            "sub_field_parent",
-            "sub_field",
-            "level",
-            "type",
-            "value",
-            "is_empty",
-        ],
-    )
+@dataclass
+class ExpansionField:
+    def __init__(
+        self,
+        id,
+        parent,
+        sub_field_parent,
+        sub_field,
+        level,
+        struc_type,
+        value,
+        is_empty,
+    ):
+        self.id: str = id
+        self.parent: str = parent
+        self.sub_field_parent: str = sub_field_parent
+        self.sub_field: str = sub_field
+        self.level: int = level
+        self.type: str = struc_type
+        self.value: dict = value
+        self.is_empty: bool = is_empty
 
+
+EXPAND_QUERY_PARAM = OpenApiParameter(
+    name="expand",
+    location=OpenApiParameter.QUERY,
+    description="Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
+    type=OpenApiTypes.STR,
+)
+
+
+class ExpansionMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.expanded_fields = []
         self.called_external_uris = {}
 
-    def get_serializer(self, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output. The expansion mechanism will be applied for the list operation incase the "expand" query paramter has been set.
-        """
-        serializer = super().get_serializer(*args, **kwargs)
-        if not self.request:
-            return serializer
-        if self.action in ["list"]:
-            serializer = self.inclusions(serializer)
-        return serializer
+    @extend_schema(parameters=[EXPAND_QUERY_PARAM])
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        response = self.inclusions(response)
+        return response
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response = self.inclusions(response)
+        return response
 
     @staticmethod
     def _convert_to_internal_url(url: str) -> str:
@@ -68,6 +87,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLXlYWmZSd1RtQ3RSOSIsImlhdCI6MTY4ODk3NDk3NywiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.82-8YK4QU-67eAZ2HimzCCS5xmKZPoYGa3XVufrPOHk"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -131,12 +151,12 @@ class ExpansionMixin:
                     try:
                         urls = result[self.convert_camel_to_snake(sub_field)]
                     except KeyError:
-                        raise self.validation_invalid_expand_field(
-                            self.convert_camel_to_snake(sub_field)
-                        )
+                        try:
+                            urls = result[sub_field]
+                        except KeyError:
+                            raise self.validation_invalid_expand_field(sub_field)
 
                     if isinstance(urls, list):
-                        expansion["_expand"][sub_field] = []
                         for x in urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -149,7 +169,6 @@ class ExpansionMixin:
                                 original_data=result,
                             )
                     else:
-                        expansion["_expand"][sub_field] = {}
                         if urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -173,9 +192,12 @@ class ExpansionMixin:
                                     self.convert_camel_to_snake(sub_field)
                                 ]
                             except KeyError:
-                                raise self.validation_invalid_expand_field(
-                                    self.convert_camel_to_snake(sub_field)
-                                )
+                                try:
+                                    urls = field.value[sub_field]
+                                except KeyError:
+                                    raise self.validation_invalid_expand_field(
+                                        sub_field
+                                    )
                             if isinstance(urls, list):
                                 if urls:
                                     for x in urls:
@@ -191,7 +213,6 @@ class ExpansionMixin:
                                             field=field,
                                         )
                                 else:
-
                                     self._add_to_expanded_fields(
                                         loop_id,
                                         exp_field,
@@ -205,7 +226,6 @@ class ExpansionMixin:
                                     )
                             else:
                                 if urls:
-
                                     self._add_to_expanded_fields(
                                         loop_id,
                                         exp_field,
@@ -219,7 +239,6 @@ class ExpansionMixin:
                                     )
 
                                 else:
-
                                     self._add_to_expanded_fields(
                                         loop_id,
                                         exp_field,
@@ -231,6 +250,9 @@ class ExpansionMixin:
                                         original_data=result,
                                         field=field,
                                     )
+                        else:
+                            if self.next_iter_if_value_is_empty(field.value):
+                                field.is_empty = True
 
             if not self.expanded_fields:
                 continue
@@ -239,7 +261,6 @@ class ExpansionMixin:
 
         self.remove_key(expansion, "loop_id")
         self.remove_key(expansion, "depth")
-
         result["_expand"].update(expansion["_expand"])
 
     def _build_json(self, expansion: dict) -> dict:
@@ -249,17 +270,32 @@ class ExpansionMixin:
 
             for index, fields_of_level in enumerate(specific_levels):
                 if index == 0 and i == 0:
-                    if fields_of_level.type == "list":
+                    if fields_of_level.type == "list" and not expansion["_expand"].get(
+                        fields_of_level.sub_field, None
+                    ):
                         expansion["_expand"][fields_of_level.sub_field] = []
-                    else:
+                    elif fields_of_level.type == "dict" and not expansion[
+                        "_expand"
+                    ].get(fields_of_level.sub_field, None):
                         expansion["_expand"][fields_of_level.sub_field] = {}
 
                 if i == 0:
                     if fields_of_level.type == "list":
-                        expansion["_expand"][fields_of_level.sub_field].append(
-                            fields_of_level.value
-                        )
-                    else:
+                        skip = False
+                        for field_dict in expansion["_expand"][
+                            fields_of_level.sub_field
+                        ]:
+                            if fields_of_level.value["url"] == field_dict["url"]:
+                                skip = True
+                        if not skip:
+                            expansion["_expand"][fields_of_level.sub_field].append(
+                                fields_of_level.value
+                            )
+
+                    elif fields_of_level.type == "dict" and not expansion[
+                        "_expand"
+                    ].get(fields_of_level.sub_field, None):
+
                         expansion["_expand"][
                             fields_of_level.sub_field
                         ] = fields_of_level.value
@@ -274,7 +310,16 @@ class ExpansionMixin:
                         level=i,
                         field_level=fields_of_level.level,
                     )
-
+                    if not match:
+                        match = self.get_parent_dict(
+                            expansion["_expand"],
+                            target_key1="url",
+                            target_key2=None,
+                            target_value1=fields_of_level.parent,
+                            target_value2=None,
+                            level=i,
+                            field_level=fields_of_level.level,
+                        )
                     for parent_dict in match:
                         if isinstance(parent_dict, str):
                             if parent_dict != fields_of_level.sub_field_parent:
@@ -283,15 +328,28 @@ class ExpansionMixin:
                         if parent_dict.get("url", None) != fields_of_level.parent:
                             continue
 
-                        if not parent_dict.get("_expand", None) and isinstance(
+                        if not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], list
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: []}
+                        elif not parent_dict.get("_expand", {}).get(
+                            fields_of_level.sub_field, None
+                        ) and isinstance(parent_dict[fields_of_level.sub_field], list):
+                            parent_dict["_expand"].update(
+                                {fields_of_level.sub_field: []}
+                            )
 
-                        elif not parent_dict.get("_expand", None) and isinstance(
+                        elif not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], str
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: {}}
+
+                        elif not parent_dict.get("_expand", {}).get(
+                            fields_of_level.sub_field, None
+                        ) and isinstance(parent_dict[fields_of_level.sub_field], str):
+                            parent_dict["_expand"].update(
+                                {fields_of_level.sub_field: {}}
+                            )
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
@@ -308,12 +366,15 @@ class ExpansionMixin:
                                     ].append(fields_of_level.value)
 
                         elif isinstance(parent_dict[fields_of_level.sub_field], str):
+
                             if fields_of_level.is_empty:
                                 parent_dict["_expand"][fields_of_level.sub_field] = {}
                             else:
                                 parent_dict["_expand"][
                                     fields_of_level.sub_field
                                 ] = fields_of_level.value
+                        elif parent_dict[fields_of_level.sub_field] is None:
+                            parent_dict["_expand"] = {fields_of_level.sub_field: {}}
 
         return expansion
 
@@ -331,11 +392,19 @@ class ExpansionMixin:
         """Get the parent dictionary of the target value."""
 
         if isinstance(data, dict):
-            if (
-                data.get(target_key1) == target_value1
-                and data.get(target_key2) == target_value2
-                and data.get("depth") == level - 1
-            ):
+            to_compare = (
+                bool(
+                    data.get(target_key1) == target_value1
+                    and data.get(target_key2) == target_value2
+                    and data.get("depth") == level - 1
+                )
+                if target_key2
+                else bool(
+                    data.get(target_key1) == target_value1
+                    and data.get("depth") == level - 1
+                )
+            )
+            if to_compare:
                 return parent
             for key, value in data.items():
                 if isinstance(value, (dict, list)):
@@ -381,18 +450,22 @@ class ExpansionMixin:
                 if isinstance(item, (dict, list)):
                     self.remove_key(item, target_key)
 
-    def inclusions(self, serializer):
+    def inclusions(self, response):
         expand_filter = self.request.query_params.get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
-            for serialized_data in serializer.data:
-                serialized_data["_expand"] = {}
-                self.build_expand_schema(
-                    serialized_data,
-                    fields_to_expand,
-                )
+            if self.action == "list":
+                for response_data in response.data:
+                    response_data["_expand"] = {}
+                    self.build_expand_schema(
+                        response_data,
+                        fields_to_expand,
+                    )
+            elif self.action == "retrieve":
+                response.data["_expand"] = {}
+                self.build_expand_schema(response.data, fields_to_expand)
 
-        return serializer
+        return response
 
     @staticmethod
     def convert_camel_to_snake(string):
@@ -433,18 +506,21 @@ class ExpansionMixin:
         original_data,
         field=None,
     ):
-        field_to_add = self.ExpansionField(
+        copy_data = data.copy()
+        field_to_add = ExpansionField(
             loop_id,
             field.value["url"] if depth != 0 else original_data["url"],
             exp_field.split(".")[depth - 1] if depth != 0 else None,
             sub_field,
             depth,
             struc_type,
-            data,
+            copy_data,
             is_empty,
         )
+
         field_to_add.value["loop_id"] = loop_id
-        field_to_add.value["depth"] = depth
+        field_to_add.value["depth"] = field_to_add.level
+
         self.expanded_fields.append(field_to_add)
 
 

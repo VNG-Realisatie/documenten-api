@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django_filters import rest_framework as filters
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from vng_api_common.filters import URLModelChoiceFilter
 from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_help_text
@@ -20,11 +22,13 @@ def expand_filter(queryset, name, value):
 
 
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
-    expand = filters.CharFilter(
-        method=expand_filter,
-        help_text=_(
-            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
-        ),
+    expand = extend_schema_field(OpenApiTypes.STR)(
+        filters.CharFilter(
+            method=expand_filter,
+            help_text=_(
+                "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+            ),
+        )
     )
 
     class Meta:
@@ -45,11 +49,13 @@ class ObjectInformatieObjectFilter(FilterSet):
         instance_path="canonical",
         help_text=get_help_text("datamodel.ObjectInformatieObject", "informatieobject"),
     )
-    expand = filters.CharFilter(
-        method=expand_filter,
-        help_text=_(
-            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
-        ),
+    expand = extend_schema_field(OpenApiTypes.STR)(
+        filters.CharFilter(
+            method=expand_filter,
+            help_text=_(
+                "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+            ),
+        )
     )
 
     class Meta:
@@ -63,11 +69,13 @@ class GebruiksrechtenFilter(FilterSet):
         instance_path="canonical",
         help_text=get_help_text("datamodel.Gebruiksrechten", "informatieobject"),
     )
-    expand = filters.CharFilter(
-        method=expand_filter,
-        help_text=_(
-            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
-        ),
+    expand = extend_schema_field(OpenApiTypes.STR)(
+        filters.CharFilter(
+            method=expand_filter,
+            help_text=_(
+                "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+            ),
+        )
     )
 
     class Meta:
@@ -85,11 +93,13 @@ class VerzendingFilter(FilterSet):
         instance_path="canonical",
         help_text=get_help_text("datamodel.Verzending", "informatieobject"),
     )
-    expand = filters.CharFilter(
-        method=expand_filter,
-        help_text=_(
-            "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
-        ),
+    expand = extend_schema_field(OpenApiTypes.STR)(
+        filters.CharFilter(
+            method=expand_filter,
+            help_text=_(
+                "Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+            ),
+        )
     )
 
     class Meta:

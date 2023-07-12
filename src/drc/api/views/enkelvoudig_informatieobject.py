@@ -26,7 +26,7 @@ from vng_api_common.viewsets import CheckQueryParamsMixin
 
 from drc.api.audits import AUDIT_DRC
 from drc.api.data_filtering import ListFilterByAuthorizationsMixin
-from drc.api.exclusions import ExpandFieldValidator, ExpansionMixin
+from drc.api.exclusions import EXPAND_QUERY_PARAM, ExpandFieldValidator, ExpansionMixin
 from drc.api.filters import (
     EnkelvoudigInformatieObjectDetailFilter,
     EnkelvoudigInformatieObjectListFilter,
@@ -245,7 +245,7 @@ class EnkelvoudigInformatieObjectViewSet(
             return EnkelvoudigInformatieObjectDetailFilter
         return EnkelvoudigInformatieObjectListFilter
 
-    def get_serializer_class(self):
+    def get_serializer_class(self, *args, **kwargs):
         """
         To validate that a lock id is sent only with PUT and PATCH operations
         """
@@ -255,7 +255,9 @@ class EnkelvoudigInformatieObjectViewSet(
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
-    @extend_schema(parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM])
+    @extend_schema(
+        parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM, EXPAND_QUERY_PARAM]
+    )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
