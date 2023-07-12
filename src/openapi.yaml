@@ -262,10 +262,11 @@ paths:
           required: false
           in: query
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
+            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
+            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
+            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
+            \ genest zijn wordt de punt-notatie gebruikt."
           schema:
             type: string
         - name: page
@@ -930,10 +931,26 @@ paths:
           schema:
             type: string
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            Haal details van gelinkte resources direct op. Als je meerdere
+            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
+            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
+            gebruikt.
+          examples:
+            ExpandZaaktype:
+              value: zaaktype
+              summary: expand zaaktype
+            ExpandStatus:
+              value: status
+              summary: expand status
+            ExpandStatus.statustype:
+              value: status.statustype
+              summary: expand status.statustype
+            ExpandHoofdzaak.status.statustype:
+              value: hoofdzaak.status.statustype
+              summary: expand hoofdzaak.status.statustype
+            ExpandHoofdzaak.deelzaken.status.statustype:
+              value: hoofdzaak.deelzaken.status.statustype
+              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - enkelvoudiginformatieobjecten
       security:
@@ -2205,10 +2222,11 @@ paths:
           required: false
           in: query
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
+            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
+            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
+            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
+            \ genest zijn wordt de punt-notatie gebruikt."
           schema:
             type: string
       tags:
@@ -2559,10 +2577,26 @@ paths:
           schema:
             type: string
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            Haal details van gelinkte resources direct op. Als je meerdere
+            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
+            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
+            gebruikt.
+          examples:
+            ExpandZaaktype:
+              value: zaaktype
+              summary: expand zaaktype
+            ExpandStatus:
+              value: status
+              summary: expand status
+            ExpandStatus.statustype:
+              value: status.statustype
+              summary: expand status.statustype
+            ExpandHoofdzaak.status.statustype:
+              value: hoofdzaak.status.statustype
+              summary: expand hoofdzaak.status.statustype
+            ExpandHoofdzaak.deelzaken.status.statustype:
+              value: hoofdzaak.deelzaken.status.statustype
+              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - gebruiksrechten
       security:
@@ -3308,10 +3342,11 @@ paths:
           required: false
           in: query
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
+            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
+            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
+            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
+            \ genest zijn wordt de punt-notatie gebruikt."
           schema:
             type: string
       tags:
@@ -3654,10 +3689,26 @@ paths:
           schema:
             type: string
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            Haal details van gelinkte resources direct op. Als je meerdere
+            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
+            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
+            gebruikt.
+          examples:
+            ExpandZaaktype:
+              value: zaaktype
+              summary: expand zaaktype
+            ExpandStatus:
+              value: status
+              summary: expand status
+            ExpandStatus.statustype:
+              value: status.statustype
+              summary: expand status.statustype
+            ExpandHoofdzaak.status.statustype:
+              value: hoofdzaak.status.statustype
+              summary: expand hoofdzaak.status.statustype
+            ExpandHoofdzaak.deelzaken.status.statustype:
+              value: hoofdzaak.deelzaken.status.statustype
+              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - objectinformatieobjecten
       security:
@@ -4035,10 +4086,11 @@ paths:
           required: false
           in: query
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
+            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
+            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
+            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
+            \ genest zijn wordt de punt-notatie gebruikt."
           schema:
             type: string
         - name: page
@@ -4374,10 +4426,26 @@ paths:
           schema:
             type: string
           description:
-            'Example: `expand=informatieobjecttype,informatieobject`. Haal
-            details van gelinkte resources direct op. Als je meerdere resources tegelijk
-            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
-            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
+            Haal details van gelinkte resources direct op. Als je meerdere
+            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
+            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
+            gebruikt.
+          examples:
+            ExpandZaaktype:
+              value: zaaktype
+              summary: expand zaaktype
+            ExpandStatus:
+              value: status
+              summary: expand status
+            ExpandStatus.statustype:
+              value: status.statustype
+              summary: expand status.statustype
+            ExpandHoofdzaak.status.statustype:
+              value: hoofdzaak.status.statustype
+              summary: expand hoofdzaak.status.statustype
+            ExpandHoofdzaak.deelzaken.status.statustype:
+              value: hoofdzaak.deelzaken.status.statustype
+              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - verzendingen
       responses:

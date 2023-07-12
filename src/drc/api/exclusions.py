@@ -11,7 +11,7 @@ from django.urls.exceptions import Resolver404
 from django.utils.translation import ugettext_lazy as _
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema
 from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
@@ -43,8 +43,21 @@ class ExpansionField:
 EXPAND_QUERY_PARAM = OpenApiParameter(
     name="expand",
     location=OpenApiParameter.QUERY,
-    description="Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
+    description="Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
     type=OpenApiTypes.STR,
+    examples=[
+        OpenApiExample(name="expand zaaktype", value="zaaktype"),
+        OpenApiExample(name="expand status", value="status"),
+        OpenApiExample(name="expand status.statustype", value="status.statustype"),
+        OpenApiExample(
+            name="expand hoofdzaak.status.statustype",
+            value="hoofdzaak.status.statustype",
+        ),
+        OpenApiExample(
+            name="expand hoofdzaak.deelzaken.status.statustype",
+            value="hoofdzaak.deelzaken.status.statustype",
+        ),
+    ],
 )
 
 
@@ -87,7 +100,6 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLXlYWmZSd1RtQ3RSOSIsImlhdCI6MTY4ODk3NDk3NywiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.82-8YK4QU-67eAZ2HimzCCS5xmKZPoYGa3XVufrPOHk"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -354,7 +366,7 @@ class ExpansionMixin:
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                in parent_dict["_expand"][fields_of_level.sub_field]
+                                    in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 if fields_of_level.is_empty:
                                     parent_dict["_expand"][
@@ -455,7 +467,7 @@ class ExpansionMixin:
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
             if self.action == "list":
-                for response_data in response.data:
+                for response_data in response.data if isinstance(response.data, list) else response.data['results']:
                     response_data["_expand"] = {}
                     self.build_expand_schema(
                         response_data,
