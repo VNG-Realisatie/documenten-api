@@ -28,14 +28,36 @@ class CustomCamelCaseJSONRenderer(CamelCaseJSONRenderer):
         rendered = super().render(data, *args, **kwargs)
         try:
             list_of_responses = json.loads(rendered)
-        except JSONDecodeError:
+        except JSONDecodeError as e:
             return rendered
-        if isinstance(list_of_responses, dict):
-            if list_of_responses.get("Expand", None):
-                list_of_responses["_expand"] = list_of_responses.pop("Expand")
-        elif isinstance(list_of_responses, list):
-            for response in list_of_responses:
-                if response.get("Expand", None):
-                    response["_expand"] = response.pop("Expand")
+
+        list_of_responses = self.replace_key_nested_dicts(
+            list_of_responses, "Expand", "_expand"
+        )
         data_bytes = json.dumps(list_of_responses).encode("utf-8")
         return data_bytes
+
+    def replace_key_nested_dicts(self, nested_dicts, old_key, new_key):
+        if isinstance(nested_dicts, list):
+            new_list = []
+            for dictionary in nested_dicts:
+                new_list.append(self.replace_key(dictionary, old_key, new_key))
+            return new_list
+        else:
+            return self.replace_key(nested_dicts, old_key, new_key)
+
+    def replace_key(self, dictionary, old_key, new_key):
+        if isinstance(dictionary, dict):
+            new_dict = {}
+            for key, value in dictionary.items():
+                if key == old_key:
+                    key = new_key
+                new_dict[key] = self.replace_key(value, old_key, new_key)
+            return new_dict
+        elif isinstance(dictionary, list):
+            new_list = []
+            for item in dictionary:
+                new_list.append(self.replace_key(item, old_key, new_key))
+            return new_list
+        else:
+            return dictionary
