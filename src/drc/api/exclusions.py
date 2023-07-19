@@ -100,7 +100,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLThqSVhRTXNEVm44ciIsImlhdCI6MTY4OTc1Njc4MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.wMiugU3AaPvfTj0zhYKjCQ5Ztq7WMSIxlbtIoTEXehw"
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLThqSVhRTXNEVm44ciIsImlhdCI6MTY4OTc1Njc4MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.wMiugU3AaPvfTj0zhYKjCQ5Ztq7WMSIxlbtIoTEXehw"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -482,7 +482,11 @@ class ExpansionMixin:
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
             if self.action == "list":
-                for response_data in response.data["results"]:
+                for response_data in (
+                    response.data
+                    if isinstance(response.data, list)
+                    else response.data["results"]
+                ):
                     response_data["_expand"] = {}
                     self.build_expand_schema(
                         response_data,
