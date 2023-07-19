@@ -100,6 +100,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
+                access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLThqSVhRTXNEVm44ciIsImlhdCI6MTY4OTc1Njc4MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.wMiugU3AaPvfTj0zhYKjCQ5Ztq7WMSIxlbtIoTEXehw"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -192,6 +193,8 @@ class ExpansionMixin:
                                 is_empty=False,
                                 original_data=result,
                             )
+                        else:
+                            expansion["_expand"][exp_field] = {}
 
                 else:
 
@@ -343,10 +346,12 @@ class ExpansionMixin:
                         if not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], list
                         ):
+
                             parent_dict["_expand"] = {fields_of_level.sub_field: []}
                         elif not parent_dict.get("_expand", {}).get(
                             fields_of_level.sub_field, None
                         ) and isinstance(parent_dict[fields_of_level.sub_field], list):
+
                             parent_dict["_expand"].update(
                                 {fields_of_level.sub_field: []}
                             )
@@ -364,10 +369,14 @@ class ExpansionMixin:
                             )
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
-                            if (
-                                not fields_of_level.value
-                                in parent_dict["_expand"][fields_of_level.sub_field]
-                            ):
+                            add = True
+                            for expand in parent_dict["_expand"][
+                                fields_of_level.sub_field
+                            ]:
+                                if expand["url"] == fields_of_level.value["url"]:
+                                    add = False
+
+                            if add:
                                 if fields_of_level.is_empty:
                                     parent_dict["_expand"][
                                         fields_of_level.sub_field
@@ -378,15 +387,21 @@ class ExpansionMixin:
                                     ].append(fields_of_level.value)
 
                         elif isinstance(parent_dict[fields_of_level.sub_field], str):
-
                             if fields_of_level.is_empty:
-                                parent_dict["_expand"][fields_of_level.sub_field] = {}
+                                parent_dict["_expand"].update(
+                                    {fields_of_level.sub_field: {}}
+                                )
                             else:
-                                parent_dict["_expand"][
-                                    fields_of_level.sub_field
-                                ] = fields_of_level.value
+                                parent_dict["_expand"].update(
+                                    {fields_of_level.sub_field: fields_of_level.value}
+                                )
                         elif parent_dict[fields_of_level.sub_field] is None:
-                            parent_dict["_expand"] = {fields_of_level.sub_field: {}}
+                            try:
+                                parent_dict["_expand"].update(
+                                    {fields_of_level.sub_field: fields_of_level.value}
+                                )
+                            except KeyError:
+                                parent_dict["_expand"] = {fields_of_level.sub_field: {}}
 
         return expansion
 
@@ -467,11 +482,7 @@ class ExpansionMixin:
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
             if self.action == "list":
-                for response_data in (
-                    response.data
-                    if isinstance(response.data, list)
-                    else response.data["results"]
-                ):
+                for response_data in response.data["results"]:
                     response_data["_expand"] = {}
                     self.build_expand_schema(
                         response_data,
