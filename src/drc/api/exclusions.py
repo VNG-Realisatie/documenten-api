@@ -181,6 +181,8 @@ class ExpansionMixin:
                                 is_empty=False,
                                 original_data=result,
                             )
+                        if not urls:
+                            expansion["_expand"][exp_field] = []
                     else:
                         if urls:
                             self._add_to_expanded_fields(
@@ -194,7 +196,7 @@ class ExpansionMixin:
                                 original_data=result,
                             )
                         else:
-                            expansion["_expand"][exp_field] = {}
+                            expansion["_expand"][sub_field] = {}
 
                 else:
 
