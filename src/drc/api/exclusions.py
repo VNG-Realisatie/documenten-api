@@ -16,17 +16,6 @@ from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
 
-
-@dataclass
-class Records:
-    def __init__(self, depth, sub_field, loop_id, code, parent_code):
-        self.depth = depth
-        self.sub_field = sub_field
-        self.loop_id = loop_id
-        self.code = code
-        self.parent_code = parent_code
-
-
 def is_uri(s):
     try:
         from urllib.parse import urlparse
@@ -113,7 +102,7 @@ class ExpansionMixin:
             if not url.get("url", None):
                 for key, value in url.items():
                     if is_uri(value):
-                        url = key
+                        url = value
                         break
             else:
                 url = url.get("url", None)
@@ -128,10 +117,18 @@ class ExpansionMixin:
         return internal_url[:-1]
 
     def _get_external_data(self, url):
+        if isinstance(url, dict):
+            if not url.get("url", None):
+                for key, value in url.items():
+                    if is_uri(value):
+                        url = value
+                        break
+            else:
+                url = url.get("url", None)
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1sTlByUzVmWktwMUMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLWxOUHJTNWZaS3AxQyIsImlhdCI6MTY5MTA3MzY0MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1sTlByUzVmWktwMUMiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.-iRNb816VfUWwsnOBHq3vwJKWscRd_TQ_WmmJMWqVII"
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1SdTgyYkpMUlNRaWciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLVJ1ODJiSkxSU1FpZyIsImlhdCI6MTY5MjA4MTY1NiwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1SdTgyYkpMUlNRaWciLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.YBE7OTjwhB7xbBXVM1ZMuPixzY2BbhYz8XAcYxrn_GI"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
