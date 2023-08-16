@@ -336,14 +336,6 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
             raise serializers.ValidationError(
                 _("Lock id is not correct"), code="incorrect-lock-id"
             )
-        if self.instance.canonical.latest_version.status == Statussen.definitief:
-            if not self.context["force_bijwerken"]:
-                raise serializers.ValidationError(
-                    _(
-                        "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
-                    ),
-                    code="modify-status-definitief",
-                )
 
         return valid_attrs
 
