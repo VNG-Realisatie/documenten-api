@@ -22,6 +22,8 @@ def expand_filter(queryset, name, value):
 
 
 class EnkelvoudigInformatieObjectListFilter(FilterSet):
+    trefwoorden = filters.CharFilter(lookup_expr="icontains")
+
     expand = extend_schema_field(OpenApiTypes.STR)(
         filters.CharFilter(
             method=expand_filter,
@@ -35,7 +37,7 @@ class EnkelvoudigInformatieObjectListFilter(FilterSet):
 
     class Meta:
         model = EnkelvoudigInformatieObject
-        fields = ("identificatie", "bronorganisatie")
+        fields = ("identificatie", "bronorganisatie", "trefwoorden")
 
 
 class EnkelvoudigInformatieObjectDetailFilter(FilterSet):

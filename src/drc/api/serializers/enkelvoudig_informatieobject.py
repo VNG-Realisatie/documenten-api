@@ -127,6 +127,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "informatieobjecttype",  # van-relatie,
             "locked",
             "bestandsdelen",
+            "trefwoorden",
         )
         extra_kwargs = {
             "informatieobjecttype": {

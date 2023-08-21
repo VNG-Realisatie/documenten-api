@@ -1,5 +1,6 @@
 import uuid as _uuid
 
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -146,6 +147,13 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
             "Een datumtijd in ISO8601 formaat waarop deze versie van het INFORMATIEOBJECT is aangemaakt of "
             "gewijzigd."
         ),
+    )
+
+    trefwoorden = ArrayField(
+        models.CharField(max_length=100),
+        help_text="Een lijst van trefwoorden gescheiden door comma's.",
+        blank=True,
+        null=True,
     )
 
     class Meta:
