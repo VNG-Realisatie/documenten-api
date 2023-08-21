@@ -361,6 +361,9 @@ class ExpansionMixin:
                         field_level=fields_of_level.level,
                     )
 
+                    if not match:
+                        continue
+
                     for parent_dict in match:
                         if isinstance(parent_dict, str):
                             if parent_dict != fields_of_level.sub_field_parent:
