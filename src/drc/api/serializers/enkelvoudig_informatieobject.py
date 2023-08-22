@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.models import APICredential
@@ -127,6 +128,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "informatieobjecttype",  # van-relatie,
             "locked",
             "bestandsdelen",
+            "trefwoorden",
         )
         extra_kwargs = {
             "informatieobjecttype": {
@@ -139,6 +141,12 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
                 ]
             },
             "taal": {"min_length": 3},
+            "verzenddatum": {
+                "help_text": "**DEPRECATED** Dit attribuut is verplaatst naar resource Verzending. \n\n De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt."
+            },
+            "ontvangstdatum": {
+                "help_text": "**DEPRECATED** Dit attribuut is verplaatst naar resource Verzending. \n\n De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden aan documenten die van of naar andere personen ontvangen of verzonden zijn waarbij die personen niet deel uit maken van de behandeling van de zaak waarin het document een rol speelt."
+            },
         }
         read_only_fields = ["versie", "begin_registratie"]
         validators = [StatusValidator()]
@@ -336,14 +344,6 @@ class EnkelvoudigInformatieObjectWithLockSerializer(
             raise serializers.ValidationError(
                 _("Lock id is not correct"), code="incorrect-lock-id"
             )
-        if self.instance.canonical.latest_version.status == Statussen.definitief:
-            if not self.context["force_bijwerken"]:
-                raise serializers.ValidationError(
-                    _(
-                        "Het bijwerken van Informatieobjecten met status `definitief` is niet toegestaan"
-                    ),
-                    code="modify-status-definitief",
-                )
 
         return valid_attrs
 

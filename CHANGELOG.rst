@@ -2,6 +2,44 @@
 Wijzigingen
 ===========
 
+1.4.0 (2023-08-22)
+===========
+
+Implementation changes
+----------------------
+
+`Issue 2247`_:
+
+- **Added:** Implementation of 'trefwoorden' to the 'EnkelvoudigInformatieobject' model for improved metadata organization.
+- **Added:** Integration of 'trefwoorden' filter to facilitate precise content filtering.
+- **Changed:** Adjusted test suite to accommodate the new 'trefwoorden' attribute.
+- **Added:** Introduction of 'expand' feature to the 'documenten' API, enabling more comprehensive data retrieval.
+- **Changed:** Replaced hard-coded search logic for models and serializers.
+- **Changed:** Renamed '_inclusions' to '_expand' for better clarity and consistency.
+- **Changed:** Updated the 'expand' model to resolve previous errors and improve performance.
+- **Fixed:** Corrected the URL for signals to ensure proper functionality.
+- **Updated:** Expanded OpenAPI Specification (OAS) to include the 'expand' feature.
+- **Added:** Custom renderer to enable camel case formatting for improved API response consistency.
+- **Fixed:** Adjusted renderers to handle nested dictionaries and replace 'Expand' with '_expand'.
+- **Updated:** 'zrc expansions.py' for alignment with the latest enhancements.
+- **Fixed:** Handled scenarios involving empty values more gracefully.
+- **Fixed:** Corrected an issue where a URL within a nested dictionary caused a server error.
+- **Fixed:** signals url and removed notifications mixin #210
+- **Updated:** 'exclusions.py' to handle non-type objects more effectively during iteration.
+- **Updated:** Modified 'expfield' to 'sub_field' for clarity and precision in naming.
+
+`Issue 2241`_:
+
+- **Updated:** eio validation such that status==definitief does not block update/patch
+
+`Issue 2304`_:
+
+- **Updated:** help text for deprecated resources (verzenddatum and ontvangstdatum  in openapi.yaml
+
+.. _Issue 2247: https://github.com/VNG-Realisatie/gemma-zaken/issues/2247
+.. _Issue 2241: https://github.com/VNG-Realisatie/gemma-zaken/issues/2241
+.. _Issue 2304: https://github.com/VNG-Realisatie/gemma-zaken/issues/2304
+
 1.3.0 (2023-03-29)
 ===========
 

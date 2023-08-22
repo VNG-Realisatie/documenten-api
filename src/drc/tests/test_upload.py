@@ -790,7 +790,6 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
         * bestandsdelen objects are created
         """
         self._create_metadata()
-
         # update file metadata
         eio_url = get_operation_url(
             "enkelvoudiginformatieobject_retrieve", uuid=self.eio.uuid
@@ -808,6 +807,13 @@ class LargeFileAPITests(MockValidationsMixin, JWTAuthMixin, APITestCase):
         self.assertIsNone(data["inhoud"])  # the link to download is None
         self.assertEqual(len(data["bestandsdelen"]), 2)
         self.assertEqual(self.eio.beschrijving, "beschrijving2")
+
+    def test_expand_mechanism(self):
+        self._create_metadata()
+        list_call = get_operation_url("enkelvoudiginformatieobject_list")
+        response = self.client.get(list_call, {"expand": "bestandsdelen"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_metadata_after_unfinished_upload(self):
         """

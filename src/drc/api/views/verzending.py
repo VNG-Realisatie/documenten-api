@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from vng_api_common.caching.decorators import conditional_retrieve
 from vng_api_common.viewsets import CheckQueryParamsMixin
 
+from drc.api.exclusions import ExpandFieldValidator, ExpansionMixin
 from drc.api.filters import VerzendingFilter
 from drc.api.scopes import (
     SCOPE_DOCUMENTEN_AANMAKEN,
@@ -48,6 +49,8 @@ from drc.datamodel.models import Verzending
 )
 class VerzendingViewSet(
     CheckQueryParamsMixin,
+    ExpandFieldValidator,
+    ExpansionMixin,
     viewsets.ModelViewSet,
 ):
 

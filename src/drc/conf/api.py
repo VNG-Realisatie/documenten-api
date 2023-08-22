@@ -2,14 +2,18 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.3.0"
+API_VERSION = "1.4.0"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
+    "drc.api.renderers.CustomCamelCaseJSONRenderer",
+)
 
 SECURITY_DEFINITION_NAME = "JWT-Claims"
 
 DOCUMENTATION_INFO_MODULE = "drc.api.schema"
+DRC_BASE_URL = os.getenv("DRC_BASE_URL", "https://documenten-api.test.vng.cloud")
 
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
