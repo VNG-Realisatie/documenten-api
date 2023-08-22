@@ -2,7 +2,7 @@
 Documenten API
 ==============
 
-:Version: 1.3.0
+:Version: 1.4.0
 :Source: https://github.com/VNG-Realisatie/documenten-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, DRC
 
@@ -24,6 +24,8 @@ Versie      Release datum   API specificatie                                    
 master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_,                                           `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/autorisaties.md>`_                             `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/master/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-documentregistratiecomponent/master/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/stable/1.2.x..master>`_)
+1.4.0       2023-08-22      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.4.0/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.4.0/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.4.0/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.4.0/src/openapi.yaml>`_
 1.3.x       2023-03-29      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.1.x/src/openapi.yaml>`_,                                                         `Scopes <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/autorisaties.md>`_                       `Berichtkenmerken <https://github.com/VNG-Realisatie/documenten-api/blob/stable/1.1.x/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/documenten-api/stable/1.1.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/documenten-api/compare/stable/1.2.x..master>`_)
