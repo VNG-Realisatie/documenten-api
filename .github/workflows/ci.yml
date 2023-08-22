@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - "stable/*"
+      - "develop"
   pull_request:
     branches:
+      - "develop"
       - "master"
 
 env:
