@@ -131,3 +131,17 @@ class GebruiksrechtenTests(JWTAuthMixin, APITestCase):
 
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 self.assertEqual(len(response.data), 0)
+
+    def test_expand_mechanism(self):
+        gebruiksrechten = GebruiksrechtenFactory.create(
+            informatieobject__latest_version__informatieobjecttype=INFORMATIEOBJECTTYPE
+        )
+        url = reverse("gebruiksrechten-list")
+
+        response = self.client.get(url, {"expand": "informatieobject"})
+
+        from pprint import pprint
+
+        pprint(response.json())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
