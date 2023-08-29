@@ -51,7 +51,10 @@ from drc.api.serializers import (
     LockEnkelvoudigInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
-from drc.api.serializers.enkelvoudig_informatieobject import EIOZoekSerializer
+from drc.api.serializers.enkelvoudig_informatieobject import (
+    EIOZoekSerializer,
+    SchemaEIOSerializer,
+)
 from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
@@ -256,7 +259,8 @@ class EnkelvoudigInformatieObjectViewSet(
         return EnkelvoudigInformatieObjectSerializer
 
     @extend_schema(
-        parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM, EXPAND_QUERY_PARAM]
+        parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM, EXPAND_QUERY_PARAM],
+        responses=SchemaEIOSerializer,
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
