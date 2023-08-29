@@ -9,6 +9,7 @@ from drc.api.permissions import InformationObjectRelatedAuthScopesRequired
 from drc.api.schema import BestandsDeelSchema
 from drc.api.scopes import SCOPE_DOCUMENTEN_BIJWERKEN
 from drc.api.serializers import BestandsDeelSerializer
+from drc.api.serializers.bestandsdeel import SchemaBestandsDeelSerializer
 from drc.datamodel.models.bestandsdeel import BestandsDeel
 
 

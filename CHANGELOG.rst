@@ -1,6 +1,13 @@
 ===========
 Wijzigingen
 ===========
+1.4.1 (2023-08-29)
+===========
+
+- **Changed:** schema generation such that the `lock` attribute shows up in EIO.bestandsdelen GET response.
+
+Implementation changes
+----------------------
 
 1.4.0 (2023-08-22)
 ===========
