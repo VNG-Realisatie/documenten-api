@@ -7,7 +7,7 @@
 import re
 from collections import namedtuple
 
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 __author__ = "VNG Realisatie"
 __homepage__ = "https://github.com/VNG-Realisatie/documenten-api"
 __docformat__ = "restructuredtext"

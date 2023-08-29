@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.2.3
+  version: 1.2.4
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
@@ -5301,7 +5301,12 @@ components:
             zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk
             ontvangen.'
           title: voltooid
+        lock:
+          type: string
+          description: Hash string, which represents id of the lock of related informatieobject
+          title: lock
       required:
+        - lock
         - omvang
         - url
         - volgnummer
@@ -5317,7 +5322,6 @@ components:
           title: inhoud
         lock:
           type: string
-          writeOnly: true
           minLength: 1
           description: Hash string, which represents id of the lock of related informatieobject
           title: lock
