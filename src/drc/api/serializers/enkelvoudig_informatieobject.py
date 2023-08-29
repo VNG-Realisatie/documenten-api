@@ -20,7 +20,10 @@ from vng_api_common.validators import IsImmutableValidator, PublishValidator
 
 from drc.api.auth import get_ztc_auth
 from drc.api.fields import AnyBase64File
-from drc.api.serializers.bestandsdeel import BestandsDeelSerializer
+from drc.api.serializers.bestandsdeel import (
+    BestandsDeelSerializer,
+    SchemaBestandsDeelSerializer,
+)
 from drc.api.utils import create_filename, merge_files
 from drc.api.validators import StatusValidator
 from drc.datamodel.constants import ChecksumAlgoritmes, OndertekeningSoorten, Statussen
@@ -496,4 +499,10 @@ class EIOZoekSerializer(serializers.Serializer):
     uuid__in = serializers.ListField(
         child=serializers.UUIDField(),
         help_text=_("Array of unieke resource identifiers (UUID4)"),
+    )
+
+
+class SchemaEIOSerializer(EnkelvoudigInformatieObjectSerializer):
+    bestandsdelen = SchemaBestandsDeelSerializer(
+        source="canonical.bestandsdelen", many=True, read_only=True
     )

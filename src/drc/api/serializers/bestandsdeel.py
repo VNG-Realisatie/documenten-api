@@ -49,3 +49,9 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return valid_attrs
+
+
+class SchemaBestandsDeelSerializer(BestandsDeelSerializer):
+    lock = serializers.CharField(
+        help_text="Hash string, which represents id of the lock of related informatieobject",
+    )

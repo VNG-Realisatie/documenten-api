@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.4.0
+  version: 1.4.1
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
@@ -981,7 +981,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnkelvoudigInformatieObject'
+                $ref: '#/components/schemas/SchemaEIO'
           description: OK
         '401':
           headers:
@@ -7965,6 +7965,311 @@ components:
         - antwoordnummer
         - postbusnummer
       type: string
+    SchemaBestandsDeel:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          title: url
+          description:
+            URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          minLength: 1
+          maxLength: 1000
+        volgnummer:
+          type: integer
+          readOnly: true
+          description: Een volgnummer dat de volgorde van de bestandsdelen aangeeft.
+          title: volgnummer
+        omvang:
+          type: integer
+          readOnly: true
+          description: De grootte van dit specifieke bestandsdeel.
+          title: omvang
+        voltooid:
+          type: boolean
+          readOnly: true
+          description:
+            'Indicatie of dit bestandsdeel volledig is geupload. Dat wil
+            zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk
+            ontvangen.'
+          title: voltooid
+        lock:
+          type: string
+          description: Hash string, which represents id of the lock of related informatieobject
+          title: lock
+      required:
+        - lock
+        - omvang
+        - url
+        - volgnummer
+        - voltooid
+    SchemaEIO:
+      type: object
+      description: Serializer for the EnkelvoudigInformatieObject model
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          title: url
+          description:
+            URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          minLength: 1
+          maxLength: 1000
+        identificatie:
+          type: string
+          description:
+            Een binnen een gegeven context ondubbelzinnige referentie naar
+            het INFORMATIEOBJECT.
+          title: identificatie
+          maxLength: 40
+        bronorganisatie:
+          type: string
+          description:
+            "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie\
+            \ die het informatieobject heeft gecre\xEBerd of heeft ontvangen en als\
+            \ eerste in een samenwerkingsketen heeft vastgelegd."
+          title: bronorganisatie
+          maxLength: 9
+        creatiedatum:
+          type: string
+          format: date
+          description: Een datum of een gebeurtenis in de levenscyclus van het INFORMATIEOBJECT.
+          title: creatiedatum
+        titel:
+          type: string
+          description: De naam waaronder het INFORMATIEOBJECT formeel bekend is.
+          title: titel
+          maxLength: 200
+        vertrouwelijkheidaanduiding:
+          description:
+            'Aanduiding van de mate waarin het INFORMATIEOBJECT voor de
+            openbaarheid bestemd is.
+
+
+            Uitleg bij mogelijke waarden:
+
+
+            * `openbaar` - Openbaar
+
+            * `beperkt_openbaar` - Beperkt openbaar
+
+            * `intern` - Intern
+
+            * `zaakvertrouwelijk` - Zaakvertrouwelijk
+
+            * `vertrouwelijk` - Vertrouwelijk
+
+            * `confidentieel` - Confidentieel
+
+            * `geheim` - Geheim
+
+            * `zeer_geheim` - Zeer geheim'
+          title: vertrouwelijkheidaanduiding
+          oneOf:
+            - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
+            - $ref: '#/components/schemas/BlankEnum'
+        auteur:
+          type: string
+          description:
+            "De persoon of organisatie die in de eerste plaats verantwoordelijk\
+            \ is voor het cre\xEBren van de inhoud van het INFORMATIEOBJECT."
+          title: auteur
+          maxLength: 200
+        status:
+          description:
+            "Aanduiding van de stand van zaken van een INFORMATIEOBJECT.
+            De waarden 'in bewerking' en 'ter vaststelling' komen niet voor als
+            het attribuut `ontvangstdatum` van een waarde is voorzien. Wijziging van
+            de Status in 'gearchiveerd' impliceert dat het informatieobject een
+            duurzaam, niet-wijzigbaar Formaat dient te hebben.
+
+
+            Uitleg bij mogelijke waarden:
+
+
+            * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
+            vastgesteld dan wel ontvangen.
+
+            * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
+            gemaakt; een gearchiveerd informatie-element."
+          title: status
+          oneOf:
+            - $ref: '#/components/schemas/StatusEnum'
+            - $ref: '#/components/schemas/BlankEnum'
+        formaat:
+          type: string
+          description:
+            'Het "Media Type" (voorheen "MIME type") voor de wijze waaropde
+            inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand.
+            Voorbeeld: `application/msword`. Zie: https://www.iana.org/assignments/media-types/media-types.xhtml'
+          title: formaat
+          maxLength: 255
+        taal:
+          type: string
+          description:
+            'Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT
+            is vastgelegd. Voorbeeld: `dut`. Zie: https://www.iso.org/standard/4767.html'
+          title: taal
+          maxLength: 3
+          minLength: 3
+        versie:
+          type: integer
+          readOnly: true
+          description:
+            Het (automatische) versienummer van het INFORMATIEOBJECT. Deze
+            begint bij 1 als het INFORMATIEOBJECT aangemaakt wordt.
+          title: versie
+        beginRegistratie:
+          type: string
+          format: date-time
+          readOnly: true
+          description:
+            Een datumtijd in ISO8601 formaat waarop deze versie van het
+            INFORMATIEOBJECT is aangemaakt of gewijzigd.
+          title: begin registratie
+        bestandsnaam:
+          type: string
+          description:
+            De naam van het fysieke bestand waarin de inhoud van het informatieobject
+            is vastgelegd, inclusief extensie.
+          title: bestandsnaam
+          maxLength: 255
+        inhoud:
+          type: string
+          format: uri
+          description: Download URL van de binaire inhoud.
+          nullable: true
+          title: inhoud
+        bestandsomvang:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: Aantal bytes dat de inhoud van INFORMATIEOBJECT in beslag neemt.
+          title: bestandsomvang
+        link:
+          type: string
+          format: uri
+          description:
+            De URL waarmee de inhoud van het INFORMATIEOBJECT op te vragen
+            is.
+          title: link
+          maxLength: 200
+        beschrijving:
+          type: string
+          description: Een generieke beschrijving van de inhoud van het INFORMATIEOBJECT.
+          title: beschrijving
+          maxLength: 1000
+        ontvangstdatum:
+          type: string
+          format: date
+          nullable: true
+          description:
+            "**DEPRECATED** Dit attribuut is verplaatst naar resource Verzending.\
+            \ \n\n De datum waarop het INFORMATIEOBJECT ontvangen is. Verplicht te\
+            \ registreren voor INFORMATIEOBJECTen die van buiten de zaakbehandelende\
+            \ organisatie(s) ontvangen zijn. Ontvangst en verzending is voorbehouden\
+            \ aan documenten die van of naar andere personen ontvangen of verzonden\
+            \ zijn waarbij die personen niet deel uit maken van de behandeling van\
+            \ de zaak waarin het document een rol speelt."
+          title: ontvangstdatum
+        verzenddatum:
+          type: string
+          format: date
+          nullable: true
+          description:
+            "**DEPRECATED** Dit attribuut is verplaatst naar resource Verzending.\
+            \ \n\n De datum waarop het INFORMATIEOBJECT verzonden is, zoals deze op\
+            \ het INFORMATIEOBJECT vermeld is. Dit geldt voor zowel inkomende als\
+            \ uitgaande INFORMATIEOBJECTen. Eenzelfde informatieobject kan niet tegelijk\
+            \ inkomend en uitgaand zijn. Ontvangst en verzending is voorbehouden aan\
+            \ documenten die van of naar andere personen ontvangen of verzonden zijn\
+            \ waarbij die personen niet deel uit maken van de behandeling van de zaak\
+            \ waarin het document een rol speelt."
+          title: verzenddatum
+        indicatieGebruiksrecht:
+          type: boolean
+          nullable: true
+          description:
+            Indicatie of er beperkingen gelden aangaande het gebruik van
+            het informatieobject anders dan raadpleging. Dit veld mag `null` zijn
+            om aan te geven dat de indicatie nog niet bekend is. Als de indicatie
+            gezet is, dan kan je de gebruiksrechten die van toepassing zijn raadplegen
+            via de GEBRUIKSRECHTen resource.
+          title: indicatie gebruiksrecht
+        verschijningsvorm:
+          type: string
+          description: "De essenti\xEBle opmaakaspecten van een INFORMATIEOBJECT."
+          title: verschijningsvorm
+        ondertekening:
+          allOf:
+            - $ref: '#/components/schemas/Ondertekening'
+          nullable: true
+          description:
+            Aanduiding van de rechtskracht van een informatieobject. Mag
+            niet van een waarde zijn voorzien als de `status` de waarde 'in bewerking'
+            of 'ter vaststelling' heeft.
+          title: ondertekening
+        integriteit:
+          allOf:
+            - $ref: '#/components/schemas/Integriteit'
+          nullable: true
+          description:
+            Uitdrukking van mate van volledigheid en onbeschadigd zijn
+            van digitaal bestand.
+          title: integriteit
+        informatieobjecttype:
+          type: string
+          format: uri
+          description:
+            URL-referentie naar het INFORMATIEOBJECTTYPE (in de Catalogi
+            API).
+          title: informatieobjecttype
+          maxLength: 200
+        locked:
+          type: boolean
+          readOnly: true
+          description:
+            Geeft aan of het document gelocked is. Alleen als een document
+            gelocked is, mogen er aanpassingen gemaakt worden.
+          title: locked
+        bestandsdelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaBestandsDeel'
+          readOnly: true
+          title: bestandsdelen
+        trefwoorden:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          nullable: true
+          description: Een lijst van trefwoorden gescheiden door comma's.
+          title: trefwoorden
+      required:
+        - auteur
+        - beginRegistratie
+        - bestandsdelen
+        - bronorganisatie
+        - creatiedatum
+        - informatieobjecttype
+        - locked
+        - taal
+        - titel
+        - url
+        - versie
     SoortEnum:
       enum:
         - analoog
