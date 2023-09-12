@@ -50,7 +50,10 @@ from drc.api.serializers import (
     LockEnkelvoudigInformatieObjectSerializer,
     UnlockEnkelvoudigInformatieObjectSerializer,
 )
-from drc.api.serializers.enkelvoudig_informatieobject import EIOZoekSerializer
+from drc.api.serializers.enkelvoudig_informatieobject import (
+    EIOZoekSerializer,
+    SchemaEIOSerializer,
+)
 from drc.api.views.constants import REGISTRATIE_QUERY_PARAM, VERSIE_QUERY_PARAM
 from drc.datamodel.models import EnkelvoudigInformatieObject
 
@@ -167,7 +170,7 @@ class EnkelvoudigInformatieObjectViewSet(
         "destroy": SCOPE_DOCUMENTEN_ALLES_VERWIJDEREN,
         "update": SCOPE_DOCUMENTEN_BIJWERKEN | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_DOCUMENTEN_BIJWERKEN
-        | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
+                          | SCOPE_DOCUMENTEN_GEFORCEERD_BIJWERKEN,
         "download": SCOPE_DOCUMENTEN_ALLES_LEZEN,
         "lock": SCOPE_DOCUMENTEN_LOCK,
         "unlock": SCOPE_DOCUMENTEN_LOCK | SCOPE_DOCUMENTEN_GEFORCEERD_UNLOCK,
@@ -252,7 +255,7 @@ class EnkelvoudigInformatieObjectViewSet(
             return EnkelvoudigInformatieObjectCreateLockSerializer
         return EnkelvoudigInformatieObjectSerializer
 
-    @extend_schema(parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM])
+    @extend_schema(parameters=[VERSIE_QUERY_PARAM, REGISTRATIE_QUERY_PARAM], responses=SchemaEIOSerializer)
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 

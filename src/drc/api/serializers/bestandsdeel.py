@@ -7,6 +7,7 @@ from drc.datamodel.models import BestandsDeel
 
 class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
     lock = serializers.CharField(
+        write_only=True,
         help_text="Hash string, which represents id of the lock of related informatieobject",
     )
 
@@ -48,3 +49,9 @@ class BestandsDeelSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return valid_attrs
+
+
+class SchemaBestandsDeelSerializer(BestandsDeelSerializer):
+    lock = serializers.CharField(
+        help_text="Hash string, which represents id of the lock of related informatieobject",
+    )
