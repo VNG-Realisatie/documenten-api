@@ -266,6 +266,11 @@ class EnkelvoudigInformatieObjectViewSet(
         return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(
+        responses=SchemaEIOSerializer,
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+    @extend_schema(
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
         # https://swagger.io/docs/specification/2-0/mime-types/
         # OAS 3 has a better mechanism: https://swagger.io/docs/specification/describing-responses/
