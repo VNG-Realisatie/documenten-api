@@ -270,6 +270,7 @@ class EnkelvoudigInformatieObjectViewSet(
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
     @extend_schema(
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
         # https://swagger.io/docs/specification/2-0/mime-types/
