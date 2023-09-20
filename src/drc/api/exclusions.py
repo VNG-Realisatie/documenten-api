@@ -185,6 +185,7 @@ class ExpansionMixin:
     ):
         """Build the expand schema for the response. First, the fields to expand are split on the "." character. Then, the first part of the split is used to get the urls from the result. The urls are then used to get the corresponding data from the external api or from the local database. The data is then gathered/collected inside a list consisted of namedtuples. When all data is collected, it calls the _build_json method which builds the json response."""
         expansion = {"_expand": {}}
+        self.expanded_fields_all = []
 
         for exp_field in fields_to_expand:
             loop_id = str(uuid.uuid4())
@@ -509,9 +510,11 @@ class ExpansionMixin:
 
     def inclusions(self, response):
         expand_filter = self.request.query_params.get("expand", "")
+        if self.action == "_zoek":
+            expand_filter = self.get_search_input().get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
-            if self.action == "list":
+            if self.action == "list" or self.action == "_zoek":
                 for response_data in (
                     response.data
                     if isinstance(response.data, list)
