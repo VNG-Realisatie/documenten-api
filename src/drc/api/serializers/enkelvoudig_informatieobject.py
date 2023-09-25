@@ -500,6 +500,14 @@ class EIOZoekSerializer(serializers.Serializer):
         child=serializers.UUIDField(),
         help_text=_("Array of unieke resource identifiers (UUID4)"),
     )
+    expand = serializers.CharField(
+        help_text=_(
+            "Examples: \n"
+            "`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype, hoofdzaak.deelzaken.status.statustype`\n"
+            "Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
+        ),
+        required=False,
+    )
 
 
 class SchemaEIOSerializer(EnkelvoudigInformatieObjectSerializer):
