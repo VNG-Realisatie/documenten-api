@@ -510,6 +510,7 @@ class EIOZoekSerializer(serializers.Serializer):
     )
 
 
+
 class SchemaEIOSerializer(EnkelvoudigInformatieObjectSerializer):
     bestandsdelen = SchemaBestandsDeelSerializer(
         source="canonical.bestandsdelen", many=True, read_only=True

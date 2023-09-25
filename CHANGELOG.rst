@@ -7,7 +7,7 @@ Wijzigingen
 - **Changed:** added expand queryparameter to /zoek
 - **Changed:** bestandsdeel serializer to include lock attribute
 
-
+===========
 1.4.1 (2023-08-29)
 ===========
 
