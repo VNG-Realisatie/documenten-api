@@ -696,6 +696,19 @@ class EIOZoekTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[0]["url"], f"http://testserver{reverse(eio1)}")
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(eio2)}")
 
+    def test_zoek_expand(self):
+        eio1, eio2, eio3 = EnkelvoudigInformatieObjectFactory.create_batch(3)
+        url = get_operation_url("enkelvoudiginformatieobject__zoek")
+        data = {"uuid__in": [eio1.uuid, eio2.uuid], "expand": "url"}
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        data = sorted(data, key=lambda eio: eio["identificatie"])
+        self.assertEqual(len(data), 2)
+        self.assertTrue(bool(data[0]["_expand"]))
+
     def test_zoek_without_params(self):
         url = get_operation_url("enkelvoudiginformatieobject__zoek")
         response = self.client.post(url, {})

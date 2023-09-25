@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import models, transaction
 from django.utils.translation import gettext as _
 
 from drf_spectacular.types import OpenApiTypes
@@ -214,11 +214,17 @@ class EnkelvoudigInformatieObjectViewSet(
         search_input = self.get_search_input()
         queryset = self.filter_queryset(self.get_queryset())
         for name, value in search_input.items():
+            if name == "expand":
+                continue
             queryset = queryset.filter(**{name: value})
 
         return self.get_search_output(queryset)
 
     _zoek.is_search_action = True
+
+    def get_search_output(self, queryset: models.QuerySet):
+        response = super().get_search_output(queryset)
+        return self.inclusions(response)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -264,6 +270,12 @@ class EnkelvoudigInformatieObjectViewSet(
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        responses=SchemaEIOSerializer,
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
     @extend_schema(
         # see https://swagger.io/docs/specification/2-0/describing-responses/ and
