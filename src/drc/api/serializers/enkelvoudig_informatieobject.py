@@ -238,7 +238,10 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         for i in range(parts):
             chunk_size = min(settings.CHUNK_SIZE, full_size)
             BestandsDeel.objects.create(
-                informatieobject=canonical, omvang=chunk_size, volgnummer=i + 1
+                informatieobject=canonical,
+                omvang=chunk_size,
+                volgnummer=i + 1,
+                lock=canonical.lock,
             )
             full_size -= chunk_size
 
@@ -265,10 +268,6 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
         eio.integriteit = integriteit
         eio.ondertekening = ondertekening
         eio.save()
-
-        # large file process
-        if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
-            self._create_bestandsdeel(validated_data["bestandsomvang"], canonical)
 
         # create empty file if size == 0
         if eio.bestandsomvang == 0:
@@ -381,6 +380,8 @@ class EnkelvoudigInformatieObjectCreateLockSerializer(
         # lock document if it is a large file upload
         if not eio.inhoud and eio.bestandsomvang and eio.bestandsomvang > 0:
             eio.canonical.lock = uuid.uuid4().hex
+            # large file process
+            self._create_bestandsdeel(validated_data["bestandsomvang"], eio.canonical)
             eio.canonical.save()
         return eio
 
