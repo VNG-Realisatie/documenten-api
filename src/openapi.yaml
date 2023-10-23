@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.4.2
+  version: 1.4.3
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
@@ -83,7 +83,6 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/BestandsDeelRequest'
-        required: true
       security:
         - JWT-Claims:
             - documenten.bijwerken
@@ -5451,7 +5450,13 @@ components:
             zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk
             ontvangen.'
           title: voltooid
+        lock:
+          type: string
+          readOnly: true
+          description: Hash string, which represents id of the lock of related informatieobject
+          title: lock
       required:
+        - lock
         - omvang
         - url
         - volgnummer
@@ -5465,14 +5470,6 @@ components:
           writeOnly: true
           description: De (binaire) bestandsinhoud van dit specifieke bestandsdeel.
           title: inhoud
-        lock:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Hash string, which represents id of the lock of related informatieobject
-          title: lock
-      required:
-        - lock
     BestandsDeelResponse:
       type: object
       properties:
