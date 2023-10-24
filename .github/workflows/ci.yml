@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - "develop"
-      - "master"
 
 env:
   DJANGO_SETTINGS_MODULE: drc.conf.ci
