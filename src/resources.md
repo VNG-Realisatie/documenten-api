@@ -60,6 +60,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | volgnummer | Een volgnummer dat de volgorde van de bestandsdelen aangeeft. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
 | omvang | De grootte van dit specifieke bestandsdeel. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
 | voltooid | Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
+| lock | Hash string, which represents id of the lock of related informatieobject | string | ja | ~~C~~​R​~~U~~​~~D~~ |
 
 ## EnkelvoudigInformatieObject
 

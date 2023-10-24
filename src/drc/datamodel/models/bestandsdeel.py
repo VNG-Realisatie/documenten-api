@@ -28,6 +28,12 @@ class BestandsDeel(models.Model):
         blank=True,
         help_text=_("De (binaire) bestandsinhoud van dit specifieke bestandsdeel."),
     )
+    lock = models.CharField(
+        default="",
+        blank=True,
+        max_length=100,
+        help_text=_("Hash string, which represents id of the lock"),
+    )
 
     class Meta:
         verbose_name = "bestands deel"

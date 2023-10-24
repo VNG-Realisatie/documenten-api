@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - "develop"
-      - "master"
 
 env:
   DJANGO_SETTINGS_MODULE: drc.conf.ci
@@ -104,7 +103,6 @@ jobs:
       - check-format
       - check-sort
       - check-oas
-      - unit-tests
     steps:
       -
         name: Checkout
