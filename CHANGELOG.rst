@@ -1,6 +1,12 @@
 ===========
 Wijzigingen
 ===========
+1.4.3 (2023-10-24)
+===========
+
+- **Changed:** `lock` attribute shows up in EIO.bestandsdelen POST response after creating an EIO.
+
+===========
 1.4.2 (2023-09-25)
 ===========
 
