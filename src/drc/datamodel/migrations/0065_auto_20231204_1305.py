@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("datamodel", "0065_alter_bestandsdeel_lock"),
+        ("datamodel", "0064_bestandsdeel_lock"),
     ]
 
     operations = [
