@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Documenten API
-  version: 1.4.3
+  version: 1.5.0
   description:
     "Een API om een documentregistratiecomponent (DRC) te benaderen.\n\n\
     In een documentregistratiecomponent worden INFORMATIEOBJECTen opgeslagen. Een\n\
@@ -83,6 +83,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/BestandsDeelRequest'
+        required: true
       security:
         - JWT-Claims:
             - documenten.bijwerken
@@ -5279,6 +5280,11 @@ components:
         - sha_512
         - sha_3
       type: string
+    ArchiefstatusEnum:
+      enum:
+        - nog_te_archiveren
+        - gearchiveerd
+      type: string
     AuditTrail:
       type: object
       properties:
@@ -5452,7 +5458,6 @@ components:
           title: voltooid
         lock:
           type: string
-          readOnly: true
           description: Hash string, which represents id of the lock of related informatieobject
           title: lock
       required:
@@ -5470,6 +5475,13 @@ components:
           writeOnly: true
           description: De (binaire) bestandsinhoud van dit specifieke bestandsdeel.
           title: inhoud
+        lock:
+          type: string
+          minLength: 1
+          description: Hash string, which represents id of the lock of related informatieobject
+          title: lock
+      required:
+        - lock
     BestandsDeelResponse:
       type: object
       properties:
@@ -5510,6 +5522,12 @@ components:
       required:
         - lock
         - url
+    BevatPersoonsgegevensEnum:
+      enum:
+        - onbekend
+        - ja
+        - nee
+      type: string
     BinnenlandsCorrespondentieadresVerzending:
       type: object
       description:
@@ -5922,11 +5940,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -6086,6 +6109,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
       required:
         - auteur
         - beginRegistratie
@@ -6183,11 +6234,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -6321,6 +6377,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
       required:
         - auteur
         - bronorganisatie
@@ -6420,11 +6504,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -6584,6 +6673,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
       required:
         - auteur
         - beginRegistratie
@@ -6681,11 +6798,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -6819,6 +6941,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
         lock:
           type: string
           writeOnly: true
@@ -7101,6 +7251,9 @@ components:
           title: lock
       required:
         - lock
+    NullEnum:
+      enum:
+        - null
     ObjectInformatieObject:
       type: object
       properties:
@@ -7378,11 +7531,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -7516,6 +7674,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
         lock:
           type: string
           writeOnly: true
@@ -7824,11 +8010,16 @@ components:
 
             * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
 
-            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
-            moet nog vastgesteld worden.
+            * `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd
+            teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 
             * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand
             vastgesteld dan wel ontvangen.
+
+            * `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar
+            moet nog vastgesteld worden.
+
+            * `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 
             * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar
             gemaakt; een gearchiveerd informatie-element."
@@ -7988,6 +8179,34 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
+        archiefstatus:
+          allOf:
+            - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        bevatPersoonsgegevens:
+          nullable: true
+          description:
+            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
+            openbaar gemaakt mogen worden.
+          title: bevat persoonsgegevens
+          oneOf:
+            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
+            - $ref: '#/components/schemas/NullEnum'
+        ontvangen:
+          type: boolean
+          nullable: true
+          description: Legt vast of het document afkomstig is van een externe partij.
+          title: ontvangen
+        vervallen:
+          type: boolean
+          nullable: true
+          description:
+            Legt vast of het document een rol speelt in het huidige of
+            toekomstige proces.
+          title: vervallen
       required:
         - auteur
         - beginRegistratie
@@ -8009,8 +8228,10 @@ components:
     StatusEnum:
       enum:
         - in_bewerking
-        - ter_vaststelling
+        - concept
         - definitief
+        - ter_vaststelling
+        - vastgesteld
         - gearchiveerd
       type: string
     UnlockEnkelvoudigInformatieObjectRequest:

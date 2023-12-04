@@ -60,7 +60,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | volgnummer | Een volgnummer dat de volgorde van de bestandsdelen aangeeft. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
 | omvang | De grootte van dit specifieke bestandsdeel. | integer | ja | ~~C~~​R​~~U~~​~~D~~ |
 | voltooid | Indicatie of dit bestandsdeel volledig is geupload. Dat wil zeggen: het aantal bytes dat staat genoemd bij grootte is daadwerkelijk ontvangen. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
-| lock | Hash string, which represents id of the lock of related informatieobject | string | ja | ~~C~~​R​~~U~~​~~D~~ |
+| lock | Hash string, which represents id of the lock of related informatieobject | string | ja | C​R​U​D |
 
 ## EnkelvoudigInformatieObject
 
@@ -91,8 +91,10 @@ Uitleg bij mogelijke waarden:
 Uitleg bij mogelijke waarden:
 
 * `in_bewerking` - (In bewerking) Aan het informatieobject wordt nog gewerkt.
-* `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar moet nog vastgesteld worden.
+* `concept` - (Concept) Het document is inhoudelijk klaar om voorgelegd teworden aan anderen en zo nodig aangepast te worden opbasis van commentaar..
 * `definitief` - (Definitief) Informatieobject door bevoegd iets of iemand vastgesteld dan wel ontvangen.
+* `ter_vaststelling` - (Ter vaststelling) Informatieobject gereed maar moet nog vastgesteld worden.
+* `vastgesteld` - (Vastgesteld) Het besluitvormingstraject is afgerond.
 * `gearchiveerd` - (Gearchiveerd) Informatieobject duurzaam bewaarbaar gemaakt; een gearchiveerd informatie-element. |  | nee | C​R​U​D |
 | formaat | Het &quot;Media Type&quot; (voorheen &quot;MIME type&quot;) voor de wijze waaropde inhoud van het INFORMATIEOBJECT is vastgelegd in een computerbestand. Voorbeeld: `application/msword`. Zie: https://www.iana.org/assignments/media-types/media-types.xhtml | string | nee | C​R​U​D |
 | taal | Een ISO 639-2/B taalcode waarin de inhoud van het INFORMATIEOBJECT is vastgelegd. Voorbeeld: `dut`. Zie: https://www.iso.org/standard/4767.html | string | ja | C​R​U​D |
@@ -117,6 +119,10 @@ Uitleg bij mogelijke waarden:
 | locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsdelen |  | array | ja | ~~C~~​R​~~U~~​~~D~~ |
 | trefwoorden | Een lijst van trefwoorden gescheiden door comma&#x27;s. | array | nee | C​R​U​D |
+| archiefstatus | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. |  | nee | C​R​U​D |
+| bevatPersoonsgegevens | Legt vast of het document persoonsgegevens bevat die niet vrijelijk openbaar gemaakt mogen worden. |  | nee | C​R​U​D |
+| ontvangen | Legt vast of het document afkomstig is van een externe partij. | boolean | nee | C​R​U​D |
+| vervallen | Legt vast of het document een rol speelt in het huidige of toekomstige proces. | boolean | nee | C​R​U​D |
 
 ## Gebruiksrechten
 

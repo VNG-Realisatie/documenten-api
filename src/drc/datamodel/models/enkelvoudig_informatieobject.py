@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from djchoices import ChoiceItem, DjangoChoices
 from privates.fields import PrivateMediaFileField
 from vng_api_common.caching import ETagMixin
 from vng_api_common.descriptors import GegevensGroepType
@@ -12,6 +13,43 @@ from vng_api_common.models import APIMixin
 
 from ..constants import ChecksumAlgoritmes
 from .informatieobject import InformatieObject
+
+
+class Persoonsgegevens(DjangoChoices):
+    onbekend = ChoiceItem(
+        "onbekend",
+        _(
+            "Niet bekend of het document persoonsgegevens bevat die"
+            "niet vrijelijk openbaar gemaakt mogen worden."
+        ),
+    )
+    ja = ChoiceItem(
+        "ja",
+        _(
+            "Niet bekend of het document persoonsgegevens bevat die"
+            "niet vrijelijk openbaar gemaakt mogen worden."
+        ),
+    )
+    nee = ChoiceItem(
+        "nee",
+        _(
+            "Bevat geen persoonsgegevens die niet vrijelijk openbaar"
+            "gemaakt mogen worden."
+        ),
+    )
+
+
+class ArchiefStatusEIO(DjangoChoices):
+    nog_te_archiveren = ChoiceItem(
+        "nog_te_archiveren",
+        _("De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd."),
+    )
+    gearchiveerd = ChoiceItem(
+        "gearchiveerd",
+        _(
+            "De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt."
+        ),
+    )
 
 
 class EnkelvoudigInformatieObjectCanonical(models.Model):
@@ -89,6 +127,7 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
             "informatieobject is vastgelegd, inclusief extensie."
         ),
     )
+
     bestandsomvang = models.BigIntegerField(
         _("bestandsomvang"),
         validators=[MinValueValidator(0)],
@@ -154,6 +193,45 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
         help_text="Een lijst van trefwoorden gescheiden door comma's.",
         blank=True,
         null=True,
+    )
+
+    vervallen = models.BooleanField(
+        _("vervallen"),
+        blank=True,
+        default=None,
+        null=True,
+        help_text=_(
+            "Legt vast of het document een rol speelt in het huidige of toekomstige proces."
+        ),
+    )
+
+    ontvangen = models.BooleanField(
+        _("ontvangen"),
+        blank=True,
+        default=None,
+        null=True,
+        help_text=_("Legt vast of het document afkomstig is van een externe partij."),
+    )
+
+    archiefstatus = models.CharField(
+        _("archiefstatus"),
+        max_length=40,
+        choices=ArchiefStatusEIO.choices,
+        default=ArchiefStatusEIO.nog_te_archiveren,
+        help_text=_(
+            "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
+        ),
+    )
+
+    bevat_persoonsgegevens = models.CharField(
+        _("bevat persoonsgegevens"),
+        max_length=40,
+        null=True,
+        choices=Persoonsgegevens.choices,
+        default=Persoonsgegevens.onbekend,
+        help_text=_(
+            "Legt vast of het document persoonsgegevens bevat die niet vrijelijk openbaar gemaakt mogen worden."
+        ),
     )
 
     class Meta:
