@@ -22,7 +22,8 @@ class OneAddressValidator:
     """
     Class to validate that only one address is send with each request and only one address is associated with each Verzending within the database.
     To replace an address with PUT/PATCH, if it is the same GegevensGroepType, it can just be overwritten. If it is to be replaced with another GegevensGroepType,
-    the existing GegevensGroepType address, mijn_overheid, emailadres and faxnummer have to be set equal to None to indicate it will be removed."""
+    the existing GegevensGroepType address, mijn_overheid, emailadres and faxnummer have to be set equal to None to indicate it will be removed.
+    """
 
     def set_context(self, serializer):
         self.instance = getattr(serializer, "instance", None)

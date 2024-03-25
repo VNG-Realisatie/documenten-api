@@ -1,4 +1,4 @@
-Pillow
+Pillow==10.2.0
 psycopg2-binary
 python-dotenv
 python-dateutil

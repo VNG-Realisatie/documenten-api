@@ -1,6 +1,7 @@
 """
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
+
 import base64
 from datetime import date
 from unittest.mock import patch

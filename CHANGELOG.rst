@@ -1,11 +1,10 @@
 ===========
 Wijzigingen
 ===========
-1.5.0 (2023-13-05)
+1.5.0 (2024-25-03)
 ===========
 
-- **Changed:** Status within EIO to include more fields.
-- **Added:** Fields on EIO (vervallen, ontvangen, archiefstatus, bevat_persoonsgegevens).
+- **Added:** Fields on EIO (inhoudIsVervallen).
 
 ===========
 1.4.3 (2023-10-24)

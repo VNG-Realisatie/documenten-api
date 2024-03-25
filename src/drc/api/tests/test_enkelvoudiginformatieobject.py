@@ -57,10 +57,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "informatieobjecttype": INFORMATIEOBJECTTYPE,
             "vertrouwelijkheidaanduiding": "openbaar",
             "verschijningsvorm": "Vorm A",
-            "archiefstatus": "nog_te_archiveren",
-            "bevatPersoonsgegevens": "onbekend",
-            "ontvangen": None,
-            "vervallen": None,
+            "inhoudIsVervallen": None,
         }
 
         # Send to the API
@@ -179,10 +176,7 @@ class EnkelvoudigInformatieObjectAPITests(JWTAuthMixin, APITestCase):
             "locked": False,
             "bestandsdelen": [],
             "trefwoorden": None,
-            "archiefstatus": "nog_te_archiveren",
-            "bevatPersoonsgegevens": "onbekend",
-            "ontvangen": None,
-            "vervallen": None,
+            "inhoudIsVervallen": None,
         }
         response_data = response.json()
         self.assertEqual(sorted(response_data.keys()), sorted(expected.keys()))

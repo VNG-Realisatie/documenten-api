@@ -1104,8 +1104,7 @@ paths:
       operationId: enkelvoudiginformatieobject_update
       description:
         "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
-        \ INFORMATIEOBJECT. \n \n**Er wordt gevalideerd op**\n- correcte `lock` waarde\n\
-        - status NIET `definitief`"
+        \ INFORMATIEOBJECT."
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij.
       parameters:
         - in: path
@@ -1293,8 +1292,7 @@ paths:
       operationId: enkelvoudiginformatieobject_partial_update
       description:
         "Dit cre\xEBert altijd een nieuwe versie van het (ENKELVOUDIG)\
-        \ INFORMATIEOBJECT. \n\n**Er wordt gevalideerd op**\n - correcte `lock` waarde\n\
-        \ - status NIET `definitief`"
+        \ INFORMATIEOBJECT."
       summary: Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij.
       parameters:
         - in: path
@@ -5280,11 +5278,6 @@ components:
         - sha_512
         - sha_3
       type: string
-    ArchiefstatusEnum:
-      enum:
-        - nog_te_archiveren
-        - gearchiveerd
-      type: string
     AuditTrail:
       type: object
       properties:
@@ -5522,12 +5515,6 @@ components:
       required:
         - lock
         - url
-    BevatPersoonsgegevensEnum:
-      enum:
-        - onbekend
-        - ja
-        - nee
-      type: string
     BinnenlandsCorrespondentieadresVerzending:
       type: object
       description:
@@ -6109,34 +6096,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
       required:
         - auteur
         - beginRegistratie
@@ -6377,34 +6343,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
       required:
         - auteur
         - bronorganisatie
@@ -6673,34 +6618,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
       required:
         - auteur
         - beginRegistratie
@@ -6941,34 +6865,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
         lock:
           type: string
           writeOnly: true
@@ -7251,9 +7154,6 @@ components:
           title: lock
       required:
         - lock
-    NullEnum:
-      enum:
-        - null
     ObjectInformatieObject:
       type: object
       properties:
@@ -7674,34 +7574,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
         lock:
           type: string
           writeOnly: true
@@ -8179,34 +8058,13 @@ components:
           nullable: true
           description: Een lijst van trefwoorden gescheiden door comma's.
           title: trefwoorden
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
-          title: archiefstatus
-        bevatPersoonsgegevens:
-          nullable: true
-          description:
-            Legt vast of het document persoonsgegevens bevat die niet vrijelijk
-            openbaar gemaakt mogen worden.
-          title: bevat persoonsgegevens
-          oneOf:
-            - $ref: '#/components/schemas/BevatPersoonsgegevensEnum'
-            - $ref: '#/components/schemas/NullEnum'
-        ontvangen:
-          type: boolean
-          nullable: true
-          description: Legt vast of het document afkomstig is van een externe partij.
-          title: ontvangen
-        vervallen:
+        inhoudIsVervallen:
           type: boolean
           nullable: true
           description:
-            Legt vast of het document een rol speelt in het huidige of
-            toekomstige proces.
-          title: vervallen
+            Geeft aan of de inhoud van het informatieobject vervallen (dus
+            niet langer geldig) is.
+          title: inhoud is vervallen
       required:
         - auteur
         - beginRegistratie

@@ -119,10 +119,7 @@ Uitleg bij mogelijke waarden:
 | locked | Geeft aan of het document gelocked is. Alleen als een document gelocked is, mogen er aanpassingen gemaakt worden. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
 | bestandsdelen |  | array | ja | ~~C~~​R​~~U~~​~~D~~ |
 | trefwoorden | Een lijst van trefwoorden gescheiden door comma&#x27;s. | array | nee | C​R​U​D |
-| archiefstatus | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. |  | nee | C​R​U​D |
-| bevatPersoonsgegevens | Legt vast of het document persoonsgegevens bevat die niet vrijelijk openbaar gemaakt mogen worden. |  | nee | C​R​U​D |
-| ontvangen | Legt vast of het document afkomstig is van een externe partij. | boolean | nee | C​R​U​D |
-| vervallen | Legt vast of het document een rol speelt in het huidige of toekomstige proces. | boolean | nee | C​R​U​D |
+| inhoudIsVervallen | Geeft aan of de inhoud van het informatieobject vervallen (dus niet langer geldig) is. | boolean | nee | C​R​U​D |
 
 ## Gebruiksrechten
 

@@ -4,6 +4,7 @@ Test value of vertrouwelijkheidaanduiding while creating EnkelvoudigInformatieOb
 See:
 https://github.com/VNG-Realisatie/gemma-zaken/issues/609
 """
+
 from base64 import b64encode
 from unittest.mock import patch
 
