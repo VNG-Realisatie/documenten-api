@@ -5,6 +5,7 @@ See:
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/154 (us)
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/239 (mapping)
 """
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, TypeCheckMixin, get_operation_url

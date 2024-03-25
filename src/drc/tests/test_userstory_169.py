@@ -5,6 +5,7 @@ See:
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/169 (us)
 * https://github.com/VNG-Realisatie/gemma-zaken/issues/182 (mapping)
 """
+
 import base64
 from io import BytesIO
 from unittest.mock import patch

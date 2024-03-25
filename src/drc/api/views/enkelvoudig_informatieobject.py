@@ -95,19 +95,13 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
     update=extend_schema(
         summary=_("Werk een (ENKELVOUDIG) INFORMATIEOBJECT in zijn geheel bij."),
         description=_(
-            "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT. \n"
-            " \n**Er wordt gevalideerd op**\n"
-            "- correcte `lock` waarde\n"
-            "- status NIET `definitief`"
+            "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT."
         ),
     ),
     partial_update=extend_schema(
         summary=_("Werk een (ENKELVOUDIG) INFORMATIEOBJECT deels bij."),
         description=_(
-            "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT. \n"
-            "\n**Er wordt gevalideerd op**\n"
-            " - correcte `lock` waarde\n"
-            " - status NIET `definitief`"
+            "Dit creëert altijd een nieuwe versie van het (ENKELVOUDIG) INFORMATIEOBJECT."
         ),
     ),
     destroy=extend_schema(

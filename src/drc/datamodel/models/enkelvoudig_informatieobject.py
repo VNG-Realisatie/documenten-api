@@ -89,6 +89,7 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
             "informatieobject is vastgelegd, inclusief extensie."
         ),
     )
+
     bestandsomvang = models.BigIntegerField(
         _("bestandsomvang"),
         validators=[MinValueValidator(0)],
@@ -154,6 +155,16 @@ class EnkelvoudigInformatieObject(ETagMixin, APIMixin, InformatieObject):
         help_text="Een lijst van trefwoorden gescheiden door comma's.",
         blank=True,
         null=True,
+    )
+
+    inhoud_is_vervallen = models.BooleanField(
+        _("inhoud is vervallen"),
+        blank=True,
+        default=None,
+        null=True,
+        help_text=_(
+            "Geeft aan of de inhoud van het informatieobject vervallen (dus niet langer geldig) is."
+        ),
     )
 
     class Meta:

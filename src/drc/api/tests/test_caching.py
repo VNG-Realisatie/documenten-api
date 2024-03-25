@@ -1,6 +1,7 @@
 """
 Test that the caching mechanisms are in place.
 """
+
 from rest_framework import status
 from rest_framework.test import APITestCase, APITransactionTestCase
 from vng_api_common.tests import CacheMixin, JWTAuthMixin, generate_jwt_auth, reverse

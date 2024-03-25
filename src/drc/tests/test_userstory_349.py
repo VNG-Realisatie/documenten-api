@@ -1,6 +1,7 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
+
 from django.test import override_settings
 
 from rest_framework import status

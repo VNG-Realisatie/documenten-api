@@ -1,6 +1,7 @@
 """
 Guarantee that the proper authorization amchinery is in place.
 """
+
 from django.test import override_settings
 
 from rest_framework import status
