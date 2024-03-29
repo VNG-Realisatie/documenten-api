@@ -12,10 +12,14 @@ class Statussen(DjangoChoices):
         _("In bewerking"),
         description=_("Aan het informatieobject wordt nog gewerkt."),
     )
-    ter_vaststelling = ChoiceItem(
-        "ter_vaststelling",
-        _("Ter vaststelling"),
-        description=_("Informatieobject gereed maar moet nog vastgesteld " "worden."),
+    concept = ChoiceItem(
+        "concept",
+        _("Concept"),
+        description=_(
+            "Het document is inhoudelijk klaar om voorgelegd te"
+            "worden aan anderen en zo nodig aangepast te worden op"
+            "basis van commentaar.."
+        ),
     )
     definitief = ChoiceItem(
         "definitief",
@@ -24,6 +28,16 @@ class Statussen(DjangoChoices):
             "Informatieobject door bevoegd iets of iemand "
             "vastgesteld dan wel ontvangen."
         ),
+    )
+    ter_vaststelling = ChoiceItem(
+        "ter_vaststelling",
+        _("Ter vaststelling"),
+        description=_("Informatieobject gereed maar moet nog vastgesteld " "worden."),
+    )
+    Vastgesteld = ChoiceItem(
+        "vastgesteld",
+        _("Vastgesteld"),
+        description=_("Het besluitvormingstraject is afgerond."),
     )
     gearchiveerd = ChoiceItem(
         "gearchiveerd",

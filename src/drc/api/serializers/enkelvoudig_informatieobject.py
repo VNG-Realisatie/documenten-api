@@ -132,6 +132,7 @@ class EnkelvoudigInformatieObjectSerializer(serializers.HyperlinkedModelSerializ
             "locked",
             "bestandsdelen",
             "trefwoorden",
+            "inhoud_is_vervallen",
         )
         extra_kwargs = {
             "informatieobjecttype": {

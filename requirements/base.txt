@@ -144,9 +144,9 @@ oyaml==0.7
     # via vng-api-common
 packaging==21.3
     # via sphinx
-pillow==6.2.1
+pillow==10.2.0
     # via -r requirements/base.in
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.9
     # via -r requirements/base.in
 pycparser==2.21
     # via cffi
@@ -190,7 +190,7 @@ raven==6.9.0
     # via -r requirements/base.in
 regex==2022.7.25
     # via textile
-requests==2.21
+requests==2.21.0
     # via
     #   gemma-zds-client
     #   requests-mock
