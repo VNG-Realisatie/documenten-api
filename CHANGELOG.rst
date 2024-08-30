@@ -1,7 +1,7 @@
 ===========
 Wijzigingen
 ===========
-1.5.0 (2024-25-03)
+1.5.0 (2024-03-25)
 ===========
 
 - **Added:** Fields on EIO (inhoudIsVervallen).
